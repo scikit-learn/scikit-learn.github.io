@@ -52,29 +52,29 @@ Reference Steps
   .. tab-item:: Major/Minor RC
     :class-label: tab-4
 
-    Suppose that we are preparing the release `1.8.0rc1`.
+    Suppose that we are preparing the release `1.9.0rc1`.
 
     
     The first RC ideally counts as a **feature freeze**. Each coming release candidate
     and the final release afterwards should include only minor documentation changes
     and bug fixes. Any major enhancement or new feature should be excluded.
 
-    - Create the release branch `1.8.X` directly in the main repository,
+    - Create the release branch `1.9.X` directly in the main repository,
       where `X` is really the letter X, **not a placeholder**. The development for the
-      final and subsequent bug-fix releases of `1.8` should also happen
+      final and subsequent bug-fix releases of `1.9` should also happen
       under this branch with different tags.
 
       .. prompt:: bash
 
         git fetch upstream main
         git checkout upstream/main
-        git checkout -b 1.8.X
-        git push --set-upstream upstream 1.8.X
+        git checkout -b 1.9.X
+        git push --set-upstream upstream 1.9.X
     
 
     
 
-    - Create a PR targeting the `1.8.X` branch.
+    - Create a PR targeting the `1.9.X` branch.
       Copy the following release checklist to the description of this PR to track the
       progress.
 
@@ -131,7 +131,7 @@ Reference Steps
         git push --force write main
 
     - In the release branch, change the version number `__version__` in
-      `sklearn/__init__.py` to `1.8.0rc1`.
+      `sklearn/__init__.py` to `1.9.0rc1`.
 
     - Still in the release branch, set or update the upper bound on the build
       dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
@@ -143,14 +143,14 @@ Reference Steps
       numpy 2.2.5 is the most recent version, its upper bound should be set to <2.3.0.
 
     - In the release branch, generate the changelog for the incoming version, i.e.,
-      `doc/whats_new/1.8.rst`.
+      `doc/whats_new/1.9.rst`.
       During the RC period we want to keep the fragments when we generate the changelog
       because we'll generate it again for the final release, including the changes that
       may happen in between:
 
       .. prompt:: bash
 
-        towncrier build --keep --version 1.8.0
+        towncrier build --keep --version 1.9.0
 
     - Trigger the wheel builder with the `[cd build]` commit marker. See also the
       `workflow runs of the wheel builder
@@ -181,12 +181,12 @@ Reference Steps
       .. warning::
 
         This PR should be merged with the rebase mode instead of the usual squash mode
-        because we want to keep the history in the `1.8.X` branch close
+        because we want to keep the history in the `1.9.X` branch close
         to the history of the main branch which will help for future bug fix releases.
 
         In addition if on merging, the last commit, containing the `[cd build]` marker,
         is empty, the CD jobs won't be triggered. In this case, you can directly push
-        a commit with the marker in the `1.8.X` branch to trigger them.
+        a commit with the marker in the `1.9.X` branch to trigger them.
 
     - If the steps above went fine, proceed **with caution** to create a new tag for the
       release. This should be done only when you are almost certain that the release is
@@ -195,8 +195,8 @@ Reference Steps
 
       .. prompt:: bash
 
-        git tag -a 1.8.0rc1  # in the 1.8.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.8.0rc1
+        git tag -a 1.9.0rc1  # in the 1.9.X branch
+        git push https://github.com/scikit-learn/scikit-learn.git 1.9.0rc1
 
       .. warning::
 
@@ -229,7 +229,7 @@ Reference Steps
           rm -r dist
           python -m pip install -U wheelhouse_uploader twine
           python -m wheelhouse_uploader fetch \
-            --version 1.8.0rc1 --local-folder dist scikit-learn \
+            --version 1.9.0rc1 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
         These commands will download all the binary packages accumulated in the `staging
@@ -261,7 +261,258 @@ Reference Steps
   .. tab-item:: Major/Minor Final
     :class-label: tab-4
 
-    Suppose that we are preparing the release `1.8.0`.
+    Suppose that we are preparing the release `1.9.0`.
+
+    
+
+    
+    - Create a new branch from the `main` branch, then start an interactive rebase from
+      `1.9.X` to select the commits that need to be backported:
+
+      .. prompt:: bash
+
+        git rebase -i upstream/1.9.X
+
+      This will open an interactive rebase with the `git-rebase-todo` containing all the
+      latest commits on `main`. At this stage, you have to perform this interactive
+      rebase with at least someone else (to not forget something and to avoid doubts).
+
+      - Do not remove lines but drop commit by replacing `pick` with `drop`.
+      - Commits to pick for a bug-fix release are *generally* prefixed with `FIX`, `CI`,
+        and `DOC`. They should at least include all the commits of the merged PRs that
+        were milestoned for this release.
+      - Commits to `drop` for a bug-fix release are *generally* prefixed with `FEAT`,
+        `MAINT`, `ENH`, and `API`. Reasons for not including them are to prevent change
+        of behavior (which should only happen in major/minor releases).
+      - After having dropped or picked commits, **do not exit** but paste the content of
+        the `git-rebase-todo` message in the PR. This file is located at
+        `.git/rebase-merge/git-rebase-todo`.
+      - Save and exit to start the interactive rebase. Resolve merge conflicts when
+        necessary.
+    
+
+    - Create a PR targeting the `1.9.X` branch.
+      Copy the following release checklist to the description of this PR to track the
+      progress.
+
+      .. code-block:: markdown
+
+        
+        * [ ] Cleanup the doc repo to free up space
+        * [ ] Set the version number in the release branch
+        * [ ] Set an upper bound on build dependencies in the release branch
+        * [ ] Generate the changelog in the release branch
+        * [ ] Check that the wheels for the release can be built successfully
+        * [ ] Merge the PR with `[cd build]` commit message to upload wheels to the staging repo
+        * [ ] Upload the wheels and source tarball to https://test.pypi.org
+        * [ ] Create tag on the main repo
+        * [ ] Confirm bot detected at https://github.com/conda-forge/scikit-learn-feedstock
+              and wait for merge
+        * [ ] Upload the wheels and source tarball to PyPI
+        * [ ] Update news and what's new date in main branch
+        * [ ] Backport news and what's new date in release branch
+        * [ ] Update symlink for stable in https://github.com/scikit-learn/scikit-learn.github.io
+        * [ ] Publish to https://github.com/scikit-learn/scikit-learn/releases
+        * [ ] Announce on mailing list and on social media platforms (LinkedIn, Bluesky, etc.)
+        * [ ] Update SECURITY.md in main branch
+
+    
+
+    - The `scikit-learn/scikit-learn.github.io` needs to be cleaned up so that ideally
+      it stays <5GB in size. Before doing this, create a new fresh fork of the existing
+      repo in your own user, to have a place with the history of the repo in case it's
+      needed. These commands will purge the history from the repo.
+
+      .. prompt:: bash
+
+        # need a non-shallow copy, and using https is much faster than ssh here
+        # note that this will be a large download size, up to 100GB (repo size limit)
+        git clone https://github.com/scikit-learn/scikit-learn.github.io.git
+        cd scikit-learn.github.io
+        git remote add write git@github.com:scikit-learn/scikit-learn.github.io.git
+        # checkout an orphan branch w/o history
+        git checkout --orphan temp_branch
+        git add -A
+        git commit -m "Initial commit after purging history"
+        git branch -D main
+        # rename current branch to main to replace it
+        git branch -m main
+        git push --force write main
+
+    - In the release branch, change the version number `__version__` in
+      `sklearn/__init__.py` to `1.9.0`.
+
+    - Still in the release branch, set or update the upper bound on the build
+      dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
+      prevent future backward incompatible releases of the dependencies to break the
+      build in the maintenance branch.
+
+      The upper bounds should match the latest already-released minor versions of the
+      dependencies and should allow future micro (bug-fix) versions. For instance, if
+      numpy 2.2.5 is the most recent version, its upper bound should be set to <2.3.0.
+
+    - In the release branch, generate the changelog for the incoming version, i.e.,
+      `doc/whats_new/1.9.rst`.
+      For a non RC release, push a commit where you:
+
+      - Generate the changelog, not keeping the fragments.
+
+        .. prompt:: bash
+
+          towncrier build --version 1.9.0
+
+      - Link the release highlights example.
+      - Add the list of contributor names. Suppose that the tag of the last release in
+        the previous major/minor version is `1.8.0`, then you can use the
+        following command to retrieve the list of contributor names:
+
+        .. prompt:: bash
+
+          git shortlog -s 1.8.0.. |
+            cut -f2- |
+            sort --ignore-case |
+            tr "\n" ";" |
+            sed "s/;/, /g;s/, $//" |
+            fold -s
+
+      Then create a PR targeting the `main` branch and cherry-pick this commit there.
+
+    - Trigger the wheel builder with the `[cd build]` commit marker. See also the
+      `workflow runs of the wheel builder
+      <https://github.com/scikit-learn/scikit-learn/actions/workflows/wheels.yml>`_.
+
+      .. prompt:: bash
+
+        git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
+
+      .. note::
+
+        The acronym CD in `[cd build]` stands for `Continuous Delivery
+        <https://en.wikipedia.org/wiki/Continuous_delivery>`_ and refers to the
+        automation used to generate the release artifacts (binary and source
+        packages). This can be seen as an extension to CI which stands for `Continuous
+        Integration <https://en.wikipedia.org/wiki/Continuous_integration>`_. The CD
+        workflow on GitHub Actions is also used to automatically create nightly builds
+        and publish packages for the development branch of scikit-learn. See also
+        :ref:`install_nightly_builds`.
+
+    - Once all the CD jobs have completed successfully in the PR, merge it with the
+      `[cd build]` marker in the commit message. This time the results will be
+      uploaded to the staging area. You should then be able to upload the generated
+      artifacts (`.tar.gz` and `.whl` files) to https://test.pypi.org/ using the "Run
+      workflow" form for the `PyPI publishing workflow
+      <https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml>`_.
+
+      .. warning::
+
+        This PR should be merged with the rebase mode instead of the usual squash mode
+        because we want to keep the history in the `1.9.X` branch close
+        to the history of the main branch which will help for future bug fix releases.
+
+        In addition if on merging, the last commit, containing the `[cd build]` marker,
+        is empty, the CD jobs won't be triggered. In this case, you can directly push
+        a commit with the marker in the `1.9.X` branch to trigger them.
+
+    - If the steps above went fine, proceed **with caution** to create a new tag for the
+      release. This should be done only when you are almost certain that the release is
+      ready, since adding a new tag to the main repository can trigger certain automated
+      processes.
+
+      .. prompt:: bash
+
+        git tag -a 1.9.0  # in the 1.9.X branch
+        git push https://github.com/scikit-learn/scikit-learn.git 1.9.0
+
+      .. warning::
+
+        Don't use the github interface for publishing the release as a way to create the
+        tag because it will automatically send notifications to all users that follow
+        the repo even though the website isn't updated and wheels aren't uploaded yet.
+
+    - Confirm that the bot has detected the tag on the conda-forge feedstock repository
+      https://github.com/conda-forge/scikit-learn-feedstock. If not, submit a PR for the
+      release, targeting the `main` branch.
+
+    - Trigger the `PyPI publishing workflow
+      <https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml>`_
+      again, but this time to upload the artifacts to the real https://pypi.org/. To do
+      so, replace `testpypi` with `pypi` in the "Run workflow" form.
+
+      **Alternatively**, it is possible to collect locally the generated binary wheel
+      packages and source tarball and upload them all to PyPI.
+
+      .. dropdown:: Uploading artifacts from local
+
+        Check out at the release tag and run the following commands.
+
+        .. prompt:: bash
+
+          rm -r dist
+          python -m pip install -U wheelhouse_uploader twine
+          python -m wheelhouse_uploader fetch \
+            --version 1.9.0 --local-folder dist scikit-learn \
+            https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
+
+        These commands will download all the binary packages accumulated in the `staging
+        area on the anaconda.org hosting service
+        <https://anaconda.org/scikit-learn-wheels-staging/scikit-learn/files>`_ and put
+        them in your local `./dist` folder. Check the contents of the `./dist` folder:
+        it should contain all the wheels along with the source tarball `.tar.gz`. Make
+        sure you do not have developer versions or older versions of the scikit-learn
+        package in that folder. Before uploading to PyPI, you can test uploading to
+        `test.pypi.org` first.
+
+        .. prompt:: bash
+
+          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+
+        Then upload everything at once to `pypi.org`.
+
+        .. prompt:: bash
+
+          twine upload dist/*
+
+    
+    - In the `main` branch, edit `doc/templates/index.html` to change the "News" section
+      in the landing page, along with the month of the release.
+      Do not forget to remove old entries (two years or three releases ago) and update
+      the "On-going development" entry.
+      Then cherry-pick it in the release branch.
+    
+
+    
+    - Update the symlink for `stable` and the `latestStable` variable in
+      `versionwarning.js` in https://github.com/scikit-learn/scikit-learn.github.io.
+
+      .. prompt:: bash
+
+        cd /tmp
+        git clone --depth 1 --no-checkout https://github.com/scikit-learn/scikit-learn.github.io.git
+        cd scikit-learn.github.io
+        echo stable > .git/info/sparse-checkout
+        git checkout main
+        rm stable
+        ln -s 1.9 stable
+        sed -i "s/latestStable = '.*/latestStable = '1.9';/" versionwarning.js
+        git add stable versionwarning.js
+        git commit -m "Update stable to point to 1.9"
+        git push origin main
+    
+
+    
+    - Publish the release at https://github.com/scikit-learn/scikit-learn/releases and
+      announce it on the mailing list and social networks. Remember to add a link to the
+      changelog in the release note. Ideally, only perform this step once the package
+      is available both on PyPI and conda-forge and once the website is up to date.
+    
+
+    
+    - Update `SECURITY.md` to reflect the latest supported version `1.9.0`.
+    
+  .. tab-item:: Bug-fix
+    :class-label: tab-4
+
+    Suppose that we are preparing the release `1.8.1`.
 
     
 
@@ -311,7 +562,6 @@ Reference Steps
         * [ ] Upload the wheels and source tarball to PyPI
         * [ ] Update news and what's new date in main branch
         * [ ] Backport news and what's new date in release branch
-        * [ ] Update symlink for stable in https://github.com/scikit-learn/scikit-learn.github.io
         * [ ] Publish to https://github.com/scikit-learn/scikit-learn/releases
         * [ ] Announce on mailing list and on social media platforms (LinkedIn, Bluesky, etc.)
         * [ ] Update SECURITY.md in main branch
@@ -340,7 +590,7 @@ Reference Steps
         git push --force write main
 
     - In the release branch, change the version number `__version__` in
-      `sklearn/__init__.py` to `1.8.0`.
+      `sklearn/__init__.py` to `1.8.1`.
 
     - Still in the release branch, set or update the upper bound on the build
       dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
@@ -359,9 +609,8 @@ Reference Steps
 
         .. prompt:: bash
 
-          towncrier build --version 1.8.0
+          towncrier build --version 1.8.1
 
-      - Link the release highlights example.
       - Add the list of contributor names. Suppose that the tag of the last release in
         the previous major/minor version is `1.7.2`, then you can use the
         following command to retrieve the list of contributor names:
@@ -420,8 +669,8 @@ Reference Steps
 
       .. prompt:: bash
 
-        git tag -a 1.8.0  # in the 1.8.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.8.0
+        git tag -a 1.8.1  # in the 1.8.X branch
+        git push https://github.com/scikit-learn/scikit-learn.git 1.8.1
 
       .. warning::
 
@@ -450,256 +699,7 @@ Reference Steps
           rm -r dist
           python -m pip install -U wheelhouse_uploader twine
           python -m wheelhouse_uploader fetch \
-            --version 1.8.0 --local-folder dist scikit-learn \
-            https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
-
-        These commands will download all the binary packages accumulated in the `staging
-        area on the anaconda.org hosting service
-        <https://anaconda.org/scikit-learn-wheels-staging/scikit-learn/files>`_ and put
-        them in your local `./dist` folder. Check the contents of the `./dist` folder:
-        it should contain all the wheels along with the source tarball `.tar.gz`. Make
-        sure you do not have developer versions or older versions of the scikit-learn
-        package in that folder. Before uploading to PyPI, you can test uploading to
-        `test.pypi.org` first.
-
-        .. prompt:: bash
-
-          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
-
-        Then upload everything at once to `pypi.org`.
-
-        .. prompt:: bash
-
-          twine upload dist/*
-
-    
-    - In the `main` branch, edit `doc/templates/index.html` to change the "News" section
-      in the landing page, along with the month of the release.
-      Do not forget to remove old entries (two years or three releases ago) and update
-      the "On-going development" entry.
-      Then cherry-pick it in the release branch.
-    
-
-    
-    - Update the symlink for `stable` and the `latestStable` variable in
-      `versionwarning.js` in https://github.com/scikit-learn/scikit-learn.github.io.
-
-      .. prompt:: bash
-
-        cd /tmp
-        git clone --depth 1 --no-checkout https://github.com/scikit-learn/scikit-learn.github.io.git
-        cd scikit-learn.github.io
-        echo stable > .git/info/sparse-checkout
-        git checkout main
-        rm stable
-        ln -s 1.8 stable
-        sed -i "s/latestStable = '.*/latestStable = '1.8';/" versionwarning.js
-        git add stable versionwarning.js
-        git commit -m "Update stable to point to 1.8"
-        git push origin main
-    
-
-    
-    - Publish the release at https://github.com/scikit-learn/scikit-learn/releases and
-      announce it on the mailing list and social networks. Remember to add a link to the
-      changelog in the release note. Ideally, only perform this step once the package
-      is available both on PyPI and conda-forge and once the website is up to date.
-    
-
-    
-    - Update `SECURITY.md` to reflect the latest supported version `1.8.0`.
-    
-  .. tab-item:: Bug-fix
-    :class-label: tab-4
-
-    Suppose that we are preparing the release `1.7.3`.
-
-    
-
-    
-    - Create a new branch from the `main` branch, then start an interactive rebase from
-      `1.7.X` to select the commits that need to be backported:
-
-      .. prompt:: bash
-
-        git rebase -i upstream/1.7.X
-
-      This will open an interactive rebase with the `git-rebase-todo` containing all the
-      latest commits on `main`. At this stage, you have to perform this interactive
-      rebase with at least someone else (to not forget something and to avoid doubts).
-
-      - Do not remove lines but drop commit by replacing `pick` with `drop`.
-      - Commits to pick for a bug-fix release are *generally* prefixed with `FIX`, `CI`,
-        and `DOC`. They should at least include all the commits of the merged PRs that
-        were milestoned for this release.
-      - Commits to `drop` for a bug-fix release are *generally* prefixed with `FEAT`,
-        `MAINT`, `ENH`, and `API`. Reasons for not including them are to prevent change
-        of behavior (which should only happen in major/minor releases).
-      - After having dropped or picked commits, **do not exit** but paste the content of
-        the `git-rebase-todo` message in the PR. This file is located at
-        `.git/rebase-merge/git-rebase-todo`.
-      - Save and exit to start the interactive rebase. Resolve merge conflicts when
-        necessary.
-    
-
-    - Create a PR targeting the `1.7.X` branch.
-      Copy the following release checklist to the description of this PR to track the
-      progress.
-
-      .. code-block:: markdown
-
-        
-        * [ ] Cleanup the doc repo to free up space
-        * [ ] Set the version number in the release branch
-        * [ ] Set an upper bound on build dependencies in the release branch
-        * [ ] Generate the changelog in the release branch
-        * [ ] Check that the wheels for the release can be built successfully
-        * [ ] Merge the PR with `[cd build]` commit message to upload wheels to the staging repo
-        * [ ] Upload the wheels and source tarball to https://test.pypi.org
-        * [ ] Create tag on the main repo
-        * [ ] Confirm bot detected at https://github.com/conda-forge/scikit-learn-feedstock
-              and wait for merge
-        * [ ] Upload the wheels and source tarball to PyPI
-        * [ ] Update news and what's new date in main branch
-        * [ ] Backport news and what's new date in release branch
-        * [ ] Publish to https://github.com/scikit-learn/scikit-learn/releases
-        * [ ] Announce on mailing list and on social media platforms (LinkedIn, Bluesky, etc.)
-        * [ ] Update SECURITY.md in main branch
-
-    
-
-    - The `scikit-learn/scikit-learn.github.io` needs to be cleaned up so that ideally
-      it stays <5GB in size. Before doing this, create a new fresh fork of the existing
-      repo in your own user, to have a place with the history of the repo in case it's
-      needed. These commands will purge the history from the repo.
-
-      .. prompt:: bash
-
-        # need a non-shallow copy, and using https is much faster than ssh here
-        # note that this will be a large download size, up to 100GB (repo size limit)
-        git clone https://github.com/scikit-learn/scikit-learn.github.io.git
-        cd scikit-learn.github.io
-        git remote add write git@github.com:scikit-learn/scikit-learn.github.io.git
-        # checkout an orphan branch w/o history
-        git checkout --orphan temp_branch
-        git add -A
-        git commit -m "Initial commit after purging history"
-        git branch -D main
-        # rename current branch to main to replace it
-        git branch -m main
-        git push --force write main
-
-    - In the release branch, change the version number `__version__` in
-      `sklearn/__init__.py` to `1.7.3`.
-
-    - Still in the release branch, set or update the upper bound on the build
-      dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
-      prevent future backward incompatible releases of the dependencies to break the
-      build in the maintenance branch.
-
-      The upper bounds should match the latest already-released minor versions of the
-      dependencies and should allow future micro (bug-fix) versions. For instance, if
-      numpy 2.2.5 is the most recent version, its upper bound should be set to <2.3.0.
-
-    - In the release branch, generate the changelog for the incoming version, i.e.,
-      `doc/whats_new/1.7.rst`.
-      For a non RC release, push a commit where you:
-
-      - Generate the changelog, not keeping the fragments.
-
-        .. prompt:: bash
-
-          towncrier build --version 1.7.3
-
-      - Add the list of contributor names. Suppose that the tag of the last release in
-        the previous major/minor version is `1.8.0`, then you can use the
-        following command to retrieve the list of contributor names:
-
-        .. prompt:: bash
-
-          git shortlog -s 1.8.0.. |
-            cut -f2- |
-            sort --ignore-case |
-            tr "\n" ";" |
-            sed "s/;/, /g;s/, $//" |
-            fold -s
-
-      Then create a PR targeting the `main` branch and cherry-pick this commit there.
-
-    - Trigger the wheel builder with the `[cd build]` commit marker. See also the
-      `workflow runs of the wheel builder
-      <https://github.com/scikit-learn/scikit-learn/actions/workflows/wheels.yml>`_.
-
-      .. prompt:: bash
-
-        git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
-
-      .. note::
-
-        The acronym CD in `[cd build]` stands for `Continuous Delivery
-        <https://en.wikipedia.org/wiki/Continuous_delivery>`_ and refers to the
-        automation used to generate the release artifacts (binary and source
-        packages). This can be seen as an extension to CI which stands for `Continuous
-        Integration <https://en.wikipedia.org/wiki/Continuous_integration>`_. The CD
-        workflow on GitHub Actions is also used to automatically create nightly builds
-        and publish packages for the development branch of scikit-learn. See also
-        :ref:`install_nightly_builds`.
-
-    - Once all the CD jobs have completed successfully in the PR, merge it with the
-      `[cd build]` marker in the commit message. This time the results will be
-      uploaded to the staging area. You should then be able to upload the generated
-      artifacts (`.tar.gz` and `.whl` files) to https://test.pypi.org/ using the "Run
-      workflow" form for the `PyPI publishing workflow
-      <https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml>`_.
-
-      .. warning::
-
-        This PR should be merged with the rebase mode instead of the usual squash mode
-        because we want to keep the history in the `1.7.X` branch close
-        to the history of the main branch which will help for future bug fix releases.
-
-        In addition if on merging, the last commit, containing the `[cd build]` marker,
-        is empty, the CD jobs won't be triggered. In this case, you can directly push
-        a commit with the marker in the `1.7.X` branch to trigger them.
-
-    - If the steps above went fine, proceed **with caution** to create a new tag for the
-      release. This should be done only when you are almost certain that the release is
-      ready, since adding a new tag to the main repository can trigger certain automated
-      processes.
-
-      .. prompt:: bash
-
-        git tag -a 1.7.3  # in the 1.7.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.7.3
-
-      .. warning::
-
-        Don't use the github interface for publishing the release as a way to create the
-        tag because it will automatically send notifications to all users that follow
-        the repo even though the website isn't updated and wheels aren't uploaded yet.
-
-    - Confirm that the bot has detected the tag on the conda-forge feedstock repository
-      https://github.com/conda-forge/scikit-learn-feedstock. If not, submit a PR for the
-      release, targeting the `main` branch.
-
-    - Trigger the `PyPI publishing workflow
-      <https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml>`_
-      again, but this time to upload the artifacts to the real https://pypi.org/. To do
-      so, replace `testpypi` with `pypi` in the "Run workflow" form.
-
-      **Alternatively**, it is possible to collect locally the generated binary wheel
-      packages and source tarball and upload them all to PyPI.
-
-      .. dropdown:: Uploading artifacts from local
-
-        Check out at the release tag and run the following commands.
-
-        .. prompt:: bash
-
-          rm -r dist
-          python -m pip install -U wheelhouse_uploader twine
-          python -m wheelhouse_uploader fetch \
-            --version 1.7.3 --local-folder dist scikit-learn \
+            --version 1.8.1 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
         These commands will download all the binary packages accumulated in the `staging
@@ -737,7 +737,7 @@ Reference Steps
     
 
     
-    - Update `SECURITY.md` to reflect the latest supported version `1.7.3`.
+    - Update `SECURITY.md` to reflect the latest supported version `1.8.1`.
     
   
 
