@@ -1,0 +1,1207 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="10. Model persistence" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/model_persistence.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Summary of model persistence methods:,,, Persistence method, Pros, Risks / Cons,,, ONNX, Serve models without a Python environment, Serving and training environments independent of one another, Mos..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Summary of model persistence methods:,,, Persistence method, Pros, Risks / Cons,,, ONNX, Serve models without a Python environment, Serving and training environments independent of one another, Mos..." />
+
+    <title>10. Model persistence &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=908dc885"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=97f0b27d"></script>
+    <script src="_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'model_persistence';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/model_persistence.html" />
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="11. Common pitfalls and recommended practices" href="common_pitfalls.html" />
+    <link rel="prev" title="9.3. Parallelism, resource management, and configuration" href="computing/parallelism.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="supervised_learning.html">1. Supervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/linear_model.html">1.1. Linear Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/lda_qda.html">1.2. Linear and Quadratic Discriminant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/kernel_ridge.html">1.3. Kernel ridge regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/svm.html">1.4. Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/sgd.html">1.5. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/neighbors.html">1.6. Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/gaussian_process.html">1.7. Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/cross_decomposition.html">1.8. Cross decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/naive_bayes.html">1.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/tree.html">1.10. Decision Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/ensemble.html">1.11. Ensembles: Gradient boosting, random forests, bagging, voting, stacking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/multiclass.html">1.12. Multiclass and multioutput algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/feature_selection.html">1.13. Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/semi_supervised.html">1.14. Semi-supervised learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/isotonic.html">1.15. Isotonic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/calibration.html">1.16. Probability calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/neural_networks_supervised.html">1.17. Neural network models (supervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="unsupervised_learning.html">2. Unsupervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/mixture.html">2.1. Gaussian mixture models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/manifold.html">2.2. Manifold learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/clustering.html">2.3. Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/biclustering.html">2.4. Biclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/decomposition.html">2.5. Decomposing signals in components (matrix factorization problems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/covariance.html">2.6. Covariance estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/outlier_detection.html">2.7. Novelty and Outlier Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/density.html">2.8. Density Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/neural_networks_unsupervised.html">2.9. Neural network models (unsupervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="model_selection.html">3. Model selection and evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/cross_validation.html">3.1. Cross-validation: evaluating estimator performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/grid_search.html">3.2. Tuning the hyper-parameters of an estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/classification_threshold.html">3.3. Tuning the decision threshold for class prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/model_evaluation.html">3.4. Metrics and scoring: quantifying the quality of predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/learning_curve.html">3.5. Validation curves: plotting scores to evaluate models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata_routing.html">4. Metadata Routing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="inspection.html">5. Inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/partial_dependence.html">5.1. Partial Dependence and Individual Conditional Expectation plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/permutation_importance.html">5.2. Permutation feature importance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="visualizations.html">6. Visualizations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="data_transforms.html">7. Dataset transformations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/compose.html">7.1. Pipelines and composite estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/feature_extraction.html">7.2. Feature extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/preprocessing.html">7.3. Preprocessing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/impute.html">7.4. Imputation of missing values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/unsupervised_reduction.html">7.5. Unsupervised dimensionality reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/random_projection.html">7.6. Random Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/kernel_approximation.html">7.7. Kernel Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/metrics.html">7.8. Pairwise metrics, Affinities and Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules/preprocessing_targets.html">7.9. Transforming the prediction target (<code class="docutils literal notranslate"><span class="pre">y</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="datasets.html">8. Dataset loading utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="datasets/toy_dataset.html">8.1. Toy datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/real_world.html">8.2. Real world datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/sample_generators.html">8.3. Generated datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets/loading_other_datasets.html">8.4. Loading other datasets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="computing.html">9. Computing with scikit-learn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="computing/scaling_strategies.html">9.1. Strategies to scale computationally: bigger data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computing/computational_performance.html">9.2. Computational Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computing/parallelism.html">9.3. Parallelism, resource management, and configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">10. Model persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common_pitfalls.html">11. Common pitfalls and recommended practices</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="dispatching.html">12. Dispatching</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="modules/array_api.html">12.1. Array API support (experimental)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="machine_learning_map.html">13. Choosing the right estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presentations.html">14. External Resources, Videos and Talks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><span class="section-number">10. </span>Model persistence</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="model-persistence">
+<span id="id1"></span><h1><span class="section-number">10. </span>Model persistence<a class="headerlink" href="#model-persistence" title="Link to this heading">#</a></h1>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-text">Summary of model persistence methods</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Persistence method</p></th>
+<th class="head"><p>Pros</p></th>
+<th class="head"><p>Risks / Cons</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#onnx-persistence"><span class="std std-ref">ONNX</span></a></p></td>
+<td><ul class="simple">
+<li><p>Serve models without a Python environment</p></li>
+<li><p>Serving and training environments independent of one another</p></li>
+<li><p>Most secure option</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Not all scikit-learn models are supported</p></li>
+<li><p>Custom estimators require more work to support</p></li>
+<li><p>Original Python object is lost and cannot be reconstructed</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skops-persistence"><span class="std std-ref">skops.io</span></a></p></td>
+<td><ul class="simple">
+<li><p>More secure than <code class="docutils literal notranslate"><span class="pre">pickle</span></code> based formats</p></li>
+<li><p>Contents can be partly validated without loading</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Not as fast as <code class="docutils literal notranslate"><span class="pre">pickle</span></code> based formats</p></li>
+<li><p>Supports less types than <code class="docutils literal notranslate"><span class="pre">pickle</span></code> based formats</p></li>
+<li><p>Requires the same environment as the training environment</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a></p></td>
+<td><ul class="simple">
+<li><p>Native to Python</p></li>
+<li><p>Can serialize most Python objects</p></li>
+<li><p>Efficient memory usage with <code class="docutils literal notranslate"><span class="pre">protocol=5</span></code></p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Loading can execute arbitrary code</p></li>
+<li><p>Requires the same environment as the training environment</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a></p></td>
+<td><ul class="simple">
+<li><p>Efficient memory usage</p></li>
+<li><p>Supports memory mapping</p></li>
+<li><p>Easy shortcuts for compression and decompression</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Pickle based format</p></li>
+<li><p>Loading can execute arbitrary code</p></li>
+<li><p>Requires the same environment as the training environment</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a></p></td>
+<td><ul class="simple">
+<li><p>Can serialize non-packaged, custom Python code</p></li>
+<li><p>Comparable loading efficiency as <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> with <code class="docutils literal notranslate"><span class="pre">protocol=5</span></code></p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Pickle based format</p></li>
+<li><p>Loading can execute arbitrary code</p></li>
+<li><p>No forward compatibility guarantees</p></li>
+<li><p>Requires the same environment as the training environment</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>After training a scikit-learn model, it is desirable to have a way to persist
+the model for future use without having to retrain. Based on your use-case,
+there are a few different ways to persist a scikit-learn model, and here we
+help you decide which one suits you best. In order to make a decision, you need
+to answer the following questions:</p>
+<ol class="arabic simple">
+<li><p>Do you need the Python object after persistence, or do you only need to
+persist in order to serve the model and get predictions out of it?</p></li>
+</ol>
+<p>If you only need to serve the model and no further investigation on the Python
+object itself is required, then <a class="reference internal" href="#onnx-persistence"><span class="std std-ref">ONNX</span></a> might be the
+best fit for you. Note that not all models are supported by ONNX.</p>
+<p>In case ONNX is not suitable for your use-case, the next question is:</p>
+<ol class="arabic simple" start="2">
+<li><p>Do you absolutely trust the source of the model, or are there any security
+concerns regarding where the persisted model comes from?</p></li>
+</ol>
+<p>If you have security concerns, then you should consider using <a class="reference internal" href="#skops-persistence"><span class="std std-ref">skops.io</span></a> which gives you back the Python object, but unlike
+<code class="docutils literal notranslate"><span class="pre">pickle</span></code> based persistence solutions, loading the persisted model doesn’t
+automatically allow arbitrary code execution. Note that this requires manual
+investigation of the persisted file, which <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#module-skops.io" title="(in skops)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skops.io</span></code></a> allows you to do.</p>
+<p>The other solutions assume you absolutely trust the source of the file to be
+loaded, as they are all susceptible to arbitrary code execution upon loading
+the persisted file since they all use the pickle protocol under the hood.</p>
+<ol class="arabic simple" start="3">
+<li><p>Do you care about the performance of loading the model, and sharing it
+between processes where a memory mapped object on disk is beneficial?</p></li>
+</ol>
+<p>If yes, then you can consider using <a class="reference internal" href="#pickle-persistence"><span class="std std-ref">joblib</span></a>. If this
+is not a major concern for you, then you can use the built-in <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>
+module.</p>
+<ol class="arabic simple" start="4">
+<li><p>Did you try <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> or <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a> and found that the model cannot
+be persisted? It can happen for instance when you have user defined
+functions in your model.</p></li>
+</ol>
+<p>If yes, then you can use <a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a> which can serialize certain objects
+which cannot be serialized by <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> or <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a>.</p>
+<section id="workflow-overview">
+<h2><span class="section-number">10.1. </span>Workflow Overview<a class="headerlink" href="#workflow-overview" title="Link to this heading">#</a></h2>
+<p>In a typical workflow, the first step is to train the model using scikit-learn
+and scikit-learn compatible libraries. Note that support for scikit-learn and
+third party estimators varies across the different persistence methods.</p>
+<section id="train-and-persist-the-model">
+<h3><span class="section-number">10.1.1. </span>Train and Persist the Model<a class="headerlink" href="#train-and-persist-the-model" title="Link to this heading">#</a></h3>
+<p>Creating an appropriate model depends on your use-case. As an example, here we
+train a <a class="reference internal" href="modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#sklearn.ensemble.HistGradientBoostingClassifier" title="sklearn.ensemble.HistGradientBoostingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.ensemble.HistGradientBoostingClassifier</span></code></a> on the iris
+dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensemble</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">datasets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">HistGradientBoostingClassifier</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">HistGradientBoostingClassifier()</span>
+</pre></div>
+</div>
+<p>Once the model is trained, you can persist it using your desired method, and
+then you can load the model in a separate environment and get predictions from
+it given input data. Here there are two major paths depending on how you
+persist and plan to serve the model:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#onnx-persistence"><span class="std std-ref">ONNX</span></a>: You need an <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> runtime and an environment
+with appropriate dependencies installed to load the model and use the runtime
+to get predictions. This environment can be minimal and does not necessarily
+even require Python to be installed to load the model and compute
+predictions. Also note that <code class="docutils literal notranslate"><span class="pre">onnxruntime</span></code> typically requires much less RAM
+than Python to compute predictions from small models.</p></li>
+<li><p><a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#module-skops.io" title="(in skops)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skops.io</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>, <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a>, <a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a>: You need a
+Python environment with the appropriate dependencies installed to load the
+model and get predictions from it. This environment should have the same
+<strong>packages</strong> and the same <strong>versions</strong> as the environment where the model was
+trained. Note that none of these methods support loading a model trained with
+a different version of scikit-learn, and possibly different versions of other
+dependencies such as <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="docutils literal notranslate"><span class="pre">scipy</span></code>. Another concern would be running
+the persisted model on a different hardware, and in most cases you should be
+able to load your persisted model on a different hardware.</p></li>
+</ul>
+</section>
+</section>
+<section id="onnx">
+<span id="onnx-persistence"></span><h2><span class="section-number">10.2. </span>ONNX<a class="headerlink" href="#onnx" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">ONNX</span></code>, or <a class="reference external" href="https://onnx.ai/">Open Neural Network Exchange</a> format is best
+suitable in use-cases where one needs to persist the model and then use the
+persisted artifact to get predictions without the need to load the Python
+object itself. It is also useful in cases where the serving environment needs
+to be lean and minimal, since the <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> runtime does not require <code class="docutils literal notranslate"><span class="pre">python</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ONNX</span></code> is a binary serialization of the model. It has been developed to improve
+the usability of the interoperable representation of data models. It aims to
+facilitate the conversion of the data models between different machine learning
+frameworks, and to improve their portability on different computing
+architectures. More details are available from the <a class="reference external" href="https://onnx.ai/get-started.html">ONNX tutorial</a>. To convert scikit-learn model to <code class="docutils literal notranslate"><span class="pre">ONNX</span></code>
+<a class="reference external" href="http://onnx.ai/sklearn-onnx/">sklearn-onnx</a> has been developed. However,
+not all scikit-learn models are supported, and it is limited to the core
+scikit-learn and does not support most third party estimators. One can write a
+custom converter for third party or custom estimators, but the documentation to
+do that is sparse and it might be challenging to do so.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="using-onnx">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Using ONNX<a class="headerlink" href="#using-onnx" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To convert the model to <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> format, you need to give the converter some
+information about the input as well, about which you can read more <a class="reference external" href="http://onnx.ai/sklearn-onnx/index.html">here</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">skl2onnx</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_onnx</span>
+<span class="n">onx</span> <span class="o">=</span> <span class="n">to_onnx</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">X</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">target_opset</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.onnx&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">onx</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
+</pre></div>
+</div>
+<p class="sd-card-text">You can load the model in Python and use the <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> runtime to get
+predictions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">onnxruntime</span><span class="w"> </span><span class="kn">import</span> <span class="n">InferenceSession</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.onnx&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">onx</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">sess</span> <span class="o">=</span> <span class="n">InferenceSession</span><span class="p">(</span><span class="n">onx</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">])</span>
+<span class="n">pred_ort</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)})[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+<section id="skops-io">
+<span id="skops-persistence"></span><h2><span class="section-number">10.3. </span><code class="docutils literal notranslate"><span class="pre">skops.io</span></code><a class="headerlink" href="#skops-io" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#module-skops.io" title="(in skops)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skops.io</span></code></a> avoids using <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> and only loads files which have types
+and references to functions which are trusted either by default or by the user.
+Therefore it provides a more secure format than <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>, <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a>,
+and <a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="using-skops">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Using skops<a class="headerlink" href="#using-skops" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The API is very similar to <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>, and you can persist your models as
+explained in the <a class="reference external" href="https://skops.readthedocs.io/en/stable/persistence.html">documentation</a> using
+<a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.dump" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.dump</span></code></a> and <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.dumps" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.dumps</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">skops.io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sio</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="s2">&quot;filename.skops&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">And you can load them back using <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.load" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.load</span></code></a> and
+<a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.loads" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.loads</span></code></a>. However, you need to specify the types which are
+trusted by you. You can get existing unknown types in a dumped object / file
+using <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.get_untrusted_types" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.get_untrusted_types</span></code></a>, and after checking its contents,
+pass it to the load function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unknown_types</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">get_untrusted_types</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s2">&quot;filename.skops&quot;</span><span class="p">)</span>
+<span class="c1"># investigate the contents of unknown_types, and only load if you trust</span>
+<span class="c1"># everything you see.</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;filename.skops&quot;</span><span class="p">,</span> <span class="n">trusted</span><span class="o">=</span><span class="n">unknown_types</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Please report issues and feature requests related to this format on the <a class="reference external" href="https://github.com/skops-dev/skops/issues">skops
+issue tracker</a>.</p>
+</div>
+</details></section>
+<section id="pickle-joblib-and-cloudpickle">
+<span id="pickle-persistence"></span><h2><span class="section-number">10.4. </span><code class="docutils literal notranslate"><span class="pre">pickle</span></code>, <code class="docutils literal notranslate"><span class="pre">joblib</span></code>, and <code class="docutils literal notranslate"><span class="pre">cloudpickle</span></code><a class="headerlink" href="#pickle-joblib-and-cloudpickle" title="Link to this heading">#</a></h2>
+<p>These three modules / packages, use the <code class="docutils literal notranslate"><span class="pre">pickle</span></code> protocol under the hood, but
+come with slight variations:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> is a module from the Python Standard Library. It can serialize
+and  deserialize any Python object, including custom Python classes and
+objects.</p></li>
+<li><p><a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a> is more efficient than <code class="docutils literal notranslate"><span class="pre">pickle</span></code> when working with large machine
+learning models or large numpy arrays.</p></li>
+<li><p><a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a> can serialize certain objects which cannot be serialized by
+<a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> or <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a>, such as user defined functions and lambda
+functions. This can happen for instance, when using a
+<a class="reference internal" href="modules/generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer" title="sklearn.preprocessing.FunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer</span></code></a> and using a custom
+function to transform the data.</p></li>
+</ul>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="using-pickle,-joblib,-or-cloudpickle">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Using <code class="docutils literal notranslate"><span class="pre">pickle</span></code>, <code class="docutils literal notranslate"><span class="pre">joblib</span></code>, or <code class="docutils literal notranslate"><span class="pre">cloudpickle</span></code><a class="headerlink" href="#using-pickle,-joblib,-or-cloudpickle" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Depending on your use-case, you can choose one of these three methods to
+persist and load your scikit-learn model, and they all follow the same API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here you can replace pickle with joblib or cloudpickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">dump</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">dump</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Using <code class="docutils literal notranslate"><span class="pre">protocol=5</span></code> is recommended to reduce memory usage and make it faster to
+store and load any large NumPy array stored as a fitted attribute in the model.
+You can alternatively pass <code class="docutils literal notranslate"><span class="pre">protocol=pickle.HIGHEST_PROTOCOL</span></code> which is
+equivalent to <code class="docutils literal notranslate"><span class="pre">protocol=5</span></code> in Python 3.8 and later (at the time of writing).</p>
+<p class="sd-card-text">And later when needed, you can load the same object from the persisted file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here you can replace pickle with joblib or cloudpickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+<section id="security-maintainability-limitations">
+<span id="persistence-limitations"></span><h2><span class="section-number">10.5. </span>Security &amp; Maintainability Limitations<a class="headerlink" href="#security-maintainability-limitations" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> (and <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">cloudpickle</span></code> by extension), has
+many documented security vulnerabilities by design and should only be used if
+the artifact, i.e. the pickle-file, is coming from a trusted and verified
+source. You should never load a pickle file from an untrusted source, similarly
+to how you should never execute code from an untrusted source.</p>
+<p>Also note that arbitrary computations can be represented using the <code class="docutils literal notranslate"><span class="pre">ONNX</span></code>
+format, and it is therefore recommended to serve models using <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> in a
+sandboxed environment to safeguard against computational and memory exploits.</p>
+<p>Also note that there are no supported ways to load a model trained with a
+different version of scikit-learn. While using <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#module-skops.io" title="(in skops)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skops.io</span></code></a>, <a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>, or <a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a>, models saved using one version of
+scikit-learn might load in other versions, however, this is entirely
+unsupported and inadvisable. It should also be kept in mind that operations
+performed on such data could give different and unexpected results, or even
+crash your Python process.</p>
+<p>In order to rebuild a similar model with future versions of scikit-learn,
+additional metadata should be saved along the pickled model:</p>
+<ul class="simple">
+<li><p>The training data, e.g. a reference to an immutable snapshot</p></li>
+<li><p>The Python source code used to generate the model</p></li>
+<li><p>The versions of scikit-learn and its dependencies</p></li>
+<li><p>The cross validation score obtained on the training data</p></li>
+</ul>
+<p>This should make it possible to check that the cross-validation score is in the
+same range as before.</p>
+<p>Aside for a few exceptions, persisted models should be portable across
+operating systems and hardware architectures assuming the same versions of
+dependencies and Python are used. If you encounter an estimator that is not
+portable, please open an issue on GitHub. Persisted models are often deployed
+in production using containers like Docker, in order to freeze the environment
+and dependencies.</p>
+<p>If you want to know more about these issues, please refer to these talks:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=9w_H5OSTO9A">Adrin Jalali: Let’s exploit pickle, and skops to the rescue! | PyData
+Amsterdam 2023</a>.</p></li>
+<li><p><a class="reference external" href="https://pyvideo.org/video/2566/pickles-are-for-delis-not-software">Alex Gaynor: Pickles are for Delis, not Software - PyCon 2014</a>.</p></li>
+</ul>
+<section id="replicating-the-training-environment-in-production">
+<span id="serving-environment"></span><h3><span class="section-number">10.5.1. </span>Replicating the training environment in production<a class="headerlink" href="#replicating-the-training-environment-in-production" title="Link to this heading">#</a></h3>
+<p>If the versions of the dependencies used may differ from training to
+production, it may result in unexpected behaviour and errors while using the
+trained model. To prevent such situations it is recommended to use the same
+dependencies and versions in both the training and production environment.
+These transitive dependencies can be pinned with the help of package management
+tools like <code class="docutils literal notranslate"><span class="pre">pip</span></code>, <code class="docutils literal notranslate"><span class="pre">mamba</span></code>, <code class="docutils literal notranslate"><span class="pre">conda</span></code>, <code class="docutils literal notranslate"><span class="pre">poetry</span></code>, <code class="docutils literal notranslate"><span class="pre">conda-lock</span></code>, <code class="docutils literal notranslate"><span class="pre">pixi</span></code>, etc.</p>
+<p>It is not always possible to load a model trained with older versions of the
+scikit-learn library and its dependencies in an updated software environment.
+Instead, you might need to retrain the model with the new versions of all
+the libraries. So when training a model, it is important to record the training
+recipe (e.g. a Python script) and training set information, and metadata about
+all the dependencies to be able to automatically reconstruct the same training
+environment for the updated software.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="inconsistentversionwarning">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">InconsistentVersionWarning<a class="headerlink" href="#inconsistentversionwarning" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">When an estimator is loaded with a scikit-learn version that is inconsistent
+with the version the estimator was pickled with, an
+<a class="reference internal" href="modules/generated/sklearn.exceptions.InconsistentVersionWarning.html#sklearn.exceptions.InconsistentVersionWarning" title="sklearn.exceptions.InconsistentVersionWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">InconsistentVersionWarning</span></code></a> is raised. This warning
+can be caught to obtain the original version the estimator was pickled with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InconsistentVersionWarning</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">InconsistentVersionWarning</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;model_from_previous_version.pickle&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">est</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">InconsistentVersionWarning</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">original_sklearn_version</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</details></section>
+<section id="serving-the-model-artifact">
+<h3><span class="section-number">10.5.2. </span>Serving the model artifact<a class="headerlink" href="#serving-the-model-artifact" title="Link to this heading">#</a></h3>
+<p>The last step after training a scikit-learn model is serving the model.
+Once the trained model is successfully loaded, it can be served to manage
+different prediction requests. This can involve deploying the model as a
+web service using containerization, or other model deployment strategies,
+according to the specifications.</p>
+</section>
+</section>
+<section id="summarizing-the-key-points">
+<h2><span class="section-number">10.6. </span>Summarizing the key points<a class="headerlink" href="#summarizing-the-key-points" title="Link to this heading">#</a></h2>
+<p>Based on the different approaches for model persistence, the key points for
+each approach can be summarized as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ONNX</span></code>: It provides a uniform format for persisting any machine learning or
+deep learning model (other than scikit-learn) and is useful for model
+inference (predictions). It can however, result in compatibility issues with
+different frameworks.</p></li>
+<li><p><a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#module-skops.io" title="(in skops)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skops.io</span></code></a>: Trained scikit-learn models can be easily shared and put
+into production using <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#module-skops.io" title="(in skops)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skops.io</span></code></a>. It is more secure compared to
+alternate approaches based on <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> because it does not load
+arbitrary code unless explicitly asked for by the user. Such code needs to be
+packaged and importable in the target Python environment.</p></li>
+<li><p><a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a>: Efficient memory mapping techniques make it faster when using
+the same persisted model in multiple Python processes when using
+<code class="docutils literal notranslate"><span class="pre">mmap_mode=&quot;r&quot;</span></code>. It also gives easy shortcuts to compress and decompress the
+persisted object without the need for extra code. However, it may trigger the
+execution of malicious code when loading a model from an untrusted source as
+any other pickle-based persistence mechanism.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>: It is native to Python and most Python objects can be
+serialized and deserialized using <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a>, including custom Python
+classes and functions as long as they are defined in a package that can be
+imported in the target environment. While <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> can be used to easily
+save and load scikit-learn models, it may trigger the execution of malicious
+code while loading a model from an untrusted source. <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> can also
+be very efficient memorywise if the model was persisted with <code class="docutils literal notranslate"><span class="pre">protocol=5</span></code> but
+it does not support memory mapping.</p></li>
+<li><p><a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a>: It has comparable loading efficiency as <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> and
+<a class="reference external" href="https://joblib.readthedocs.io/en/latest/index.html#module-joblib" title="(in joblib v1.6.dev0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">joblib</span></code></a> (without memory mapping), but offers additional flexibility to
+serialize custom Python code such as lambda expressions and interactively
+defined functions and classes. It might be a last resort to persist pipelines
+with custom Python components such as a
+<a class="reference internal" href="modules/generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer" title="sklearn.preprocessing.FunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.preprocessing.FunctionTransformer</span></code></a> that wraps a function
+defined in the training script itself or more generally outside of any
+importable Python package. Note that <a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a> offers no forward
+compatibility guarantees and you might need the same version of
+<a class="reference external" href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a> to load the persisted model along with the same version of all
+the libraries used to define the model. As the other pickle-based persistence
+mechanisms, it may trigger the execution of malicious code while loading
+a model from an untrusted source.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="computing/parallelism.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">9.3. </span>Parallelism, resource management, and configuration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="common_pitfalls.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">11. </span>Common pitfalls and recommended practices</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-overview">10.1. Workflow Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#train-and-persist-the-model">10.1.1. Train and Persist the Model</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#onnx">10.2. ONNX</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skops-io">10.3. <code class="docutils literal notranslate"><span class="pre">skops.io</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pickle-joblib-and-cloudpickle">10.4. <code class="docutils literal notranslate"><span class="pre">pickle</span></code>, <code class="docutils literal notranslate"><span class="pre">joblib</span></code>, and <code class="docutils literal notranslate"><span class="pre">cloudpickle</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#security-maintainability-limitations">10.5. Security &amp; Maintainability Limitations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#replicating-the-training-environment-in-production">10.5.1. Replicating the training environment in production</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#serving-the-model-artifact">10.5.2. Serving the model artifact</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summarizing-the-key-points">10.6. Summarizing the key points</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/model_persistence.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

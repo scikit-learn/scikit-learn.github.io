@@ -1,0 +1,34 @@
+:html_theme.sidebar_secondary.remove:
+
+
+.. _exceptions_ref:
+
+
+sklearn.exceptions
+==================
+
+.. automodule:: sklearn.exceptions
+
+
+
+
+
+
+
+
+
+
+.. autosummary::
+  :nosignatures:
+  :toctree: ../modules/generated/
+  :template: base.rst
+
+
+  ConvergenceWarning
+  DataConversionWarning
+  DataDimensionalityWarning
+  EfficiencyWarning
+  FitFailedWarning
+  InconsistentVersionWarning
+  NotFittedError
+  UndefinedMetricWarning

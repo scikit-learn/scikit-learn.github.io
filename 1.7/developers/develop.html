@@ -1,0 +1,1420 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Developing scikit-learn estimators" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/developers/develop.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Whether you are proposing an estimator for inclusion in scikit-learn, developing a separate package compatible with scikit-learn, or implementing custom components for your own projects, this chapt..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Whether you are proposing an estimator for inclusion in scikit-learn, developing a separate package compatible with scikit-learn, or implementing custom components for your own projects, this chapt..." />
+
+    <title>Developing scikit-learn estimators &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developers/develop';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/developers/develop.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Developing scikit-learn estimators</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="developing-scikit-learn-estimators">
+<span id="develop"></span><h1>Developing scikit-learn estimators<a class="headerlink" href="#developing-scikit-learn-estimators" title="Link to this heading">#</a></h1>
+<p>Whether you are proposing an estimator for inclusion in scikit-learn,
+developing a separate package compatible with scikit-learn, or
+implementing custom components for your own projects, this chapter
+details how to develop objects that safely interact with scikit-learn
+pipelines and model selection tools.</p>
+<p>This section details the public API you should use and implement for a scikit-learn
+compatible estimator. Inside scikit-learn itself, we experiment and use some private
+tools and our goal is always to make them public once they are stable enough, so that
+you can also use them in your own projects.</p>
+<section id="apis-of-scikit-learn-objects">
+<span id="api-overview"></span><h2>APIs of scikit-learn objects<a class="headerlink" href="#apis-of-scikit-learn-objects" title="Link to this heading">#</a></h2>
+<p>There are two major types of estimators. You can think of the first group as simple
+estimators, which consists of most estimators, such as
+<a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a> or
+<a class="reference internal" href="../modules/generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier" title="sklearn.ensemble.RandomForestClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomForestClassifier</span></code></a>. And the second group are
+meta-estimators, which are estimators that wrap other estimators.
+<a class="reference internal" href="../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> and <a class="reference internal" href="../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>
+are two examples of meta-estimators.</p>
+<p>Here we start with a few vocabulary terms, and then we illustrate how you can implement
+your own estimators.</p>
+<p>Elements of the scikit-learn API are described more definitively in the
+<a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary of Common Terms and API Elements</span></a>.</p>
+<section id="different-objects">
+<h3>Different objects<a class="headerlink" href="#different-objects" title="Link to this heading">#</a></h3>
+<p>The main objects in scikit-learn are (one class can implement multiple interfaces):</p>
+<dl class="field-list">
+<dt class="field-odd">Estimator<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The base object, implements a <code class="docutils literal notranslate"><span class="pre">fit</span></code> method to learn from data, either:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Predictor<span class="colon">:</span></dt>
+<dd class="field-even"><p>For supervised learning, or some unsupervised problems, implements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prediction</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Classification algorithms usually also offer a way to quantify certainty
+of a prediction, either using <code class="docutils literal notranslate"><span class="pre">decision_function</span></code> or <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">probability</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-odd">Transformer<span class="colon">:</span></dt>
+<dd class="field-odd"><p>For modifying the data in a supervised or unsupervised way (e.g. by adding, changing,
+or removing columns, but not by adding or removing rows). Implements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_data</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When fitting and transforming can be performed much more efficiently
+together than separately, implements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_data</span> <span class="o">=</span> <span class="n">transformer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Model<span class="colon">:</span></dt>
+<dd class="field-even"><p>A model that can give a <a class="reference external" href="https://en.wikipedia.org/wiki/Goodness_of_fit">goodness of fit</a> measure or a likelihood of
+unseen data, implements (higher is better):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="estimators">
+<h3>Estimators<a class="headerlink" href="#estimators" title="Link to this heading">#</a></h3>
+<p>The API has one predominant object: the estimator. An estimator is an
+object that fits a model based on some training data and is capable of
+inferring some properties on new data. It can be, for instance, a
+classifier or a regressor. All estimators implement the fit method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Out of all the methods that an estimator implements, <code class="docutils literal notranslate"><span class="pre">fit</span></code> is usually the one you
+want to implement yourself. Other methods such as <code class="docutils literal notranslate"><span class="pre">set_params</span></code>, <code class="docutils literal notranslate"><span class="pre">get_params</span></code>, etc.
+are implemented in <a class="reference internal" href="../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code></a>, which you should inherit from.
+You might need to inherit from more mixins, which we will explain later.</p>
+<section id="instantiation">
+<h4>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading">#</a></h4>
+<p>This concerns the creation of an object. The object’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method might accept
+constants as arguments that determine the estimator’s behavior (like the <code class="docutils literal notranslate"><span class="pre">alpha</span></code>
+constant in <a class="reference internal" href="../modules/generated/sklearn.linear_model.SGDClassifier.html#sklearn.linear_model.SGDClassifier" title="sklearn.linear_model.SGDClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">SGDClassifier</span></code></a>). It should not, however, take
+the actual training data as an argument, as this is left to the <code class="docutils literal notranslate"><span class="pre">fit()</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clf2</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">2.3</span><span class="p">)</span>
+<span class="n">clf3</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># WRONG!</span>
+</pre></div>
+</div>
+<p>Ideally, the arguments accepted by <code class="docutils literal notranslate"><span class="pre">__init__</span></code> should all be keyword arguments with a
+default value. In other words, a user should be able to instantiate an estimator without
+passing any arguments to it. In some cases, where there are no sane defaults for an
+argument, they can be left without a default value. In scikit-learn itself, we have
+very few places, only in some meta-estimators, where the sub-estimator(s) argument is
+a required argument.</p>
+<p>Most arguments correspond to hyperparameters describing the model or the optimisation
+problem the estimator tries to solve. Other parameters might define how the estimator
+behaves, e.g. defining the location of a cache to store some data. These initial
+arguments (or parameters) are always remembered by the estimator. Also note that they
+should not be documented under the “Attributes” section, but rather under the
+“Parameters” section for that estimator.</p>
+<p>In addition, <strong>every keyword argument accepted by</strong> <code class="docutils literal notranslate"><span class="pre">__init__</span></code> <strong>should
+correspond to an attribute on the instance</strong>. Scikit-learn relies on this to
+find the relevant attributes to set on an estimator when doing model selection.</p>
+<p>To summarize, an <code class="docutils literal notranslate"><span class="pre">__init__</span></code> should look like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param2</span> <span class="o">=</span> <span class="n">param2</span>
+</pre></div>
+</div>
+<p>There should be no logic, not even input validation, and the parameters should not be
+changed; which also means ideally they should not be mutable objects such as lists or
+dictionaries. If they’re mutable, they should be copied before being modified. The
+corresponding logic should be put where the parameters are used, typically in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.
+The following is wrong:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># WRONG: parameters should not be modified</span>
+    <span class="k">if</span> <span class="n">param1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">param2</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+    <span class="c1"># WRONG: the object&#39;s attributes should have exactly the name of</span>
+    <span class="c1"># the argument in the constructor</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param3</span> <span class="o">=</span> <span class="n">param2</span>
+</pre></div>
+</div>
+<p>The reason for postponing the validation is that if <code class="docutils literal notranslate"><span class="pre">__init__</span></code> includes input
+validation, then the same validation would have to be performed in <code class="docutils literal notranslate"><span class="pre">set_params</span></code>, which
+is used in algorithms like <a class="reference internal" href="../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>.</p>
+<p>Also it is expected that parameters with trailing <code class="docutils literal notranslate"><span class="pre">_</span></code> are <strong>not to be set
+inside the</strong> <code class="docutils literal notranslate"><span class="pre">__init__</span></code> <strong>method</strong>. More details on attributes that are not init
+arguments come shortly.</p>
+</section>
+<section id="fitting">
+<h4>Fitting<a class="headerlink" href="#fitting" title="Link to this heading">#</a></h4>
+<p>The next thing you will probably want to do is to estimate some parameters in the model.
+This is implemented in the <code class="docutils literal notranslate"><span class="pre">fit()</span></code> method, and it’s where the training happens.
+For instance, this is where you have the computation to learn or estimate coefficients
+for a linear model.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> method takes the training data as arguments, which can be one
+array in the case of unsupervised learning, or two arrays in the case
+of supervised learning. Other metadata that come with the training data, such as
+<code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>, can also be passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> as keyword arguments.</p>
+<p>Note that the model is fitted using <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>, but the object holds no
+reference to <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>. There are, however, some exceptions to this, as in
+the case of precomputed kernels where this data must be stored for use by
+the predict method.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameters</p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>array-like of shape (n_samples, n_features)</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>array-like of shape (n_samples,)</p></td>
+</tr>
+<tr class="row-even"><td><p>kwargs</p></td>
+<td><p>optional data-dependent parameters</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The number of samples, i.e. <code class="docutils literal notranslate"><span class="pre">X.shape[0]</span></code> should be the same as <code class="docutils literal notranslate"><span class="pre">y.shape[0]</span></code>. If this
+requirement is not met, an exception of type <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> should be raised.</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code> might be ignored in the case of unsupervised learning. However, to
+make it possible to use the estimator as part of a pipeline that can
+mix both supervised and unsupervised transformers, even unsupervised
+estimators need to accept a <code class="docutils literal notranslate"><span class="pre">y=None</span></code> keyword argument in
+the second position that is just ignored by the estimator.
+For the same reason, <code class="docutils literal notranslate"><span class="pre">fit_predict</span></code>, <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code>, <code class="docutils literal notranslate"><span class="pre">score</span></code>
+and <code class="docutils literal notranslate"><span class="pre">partial_fit</span></code> methods need to accept a <code class="docutils literal notranslate"><span class="pre">y</span></code> argument in
+the second place if they are implemented.</p>
+<p>The method should return the object (<code class="docutils literal notranslate"><span class="pre">self</span></code>). This pattern is useful
+to be able to implement quick one liners in an IPython session such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y_predicted</span> <span class="o">=</span> <span class="n">SGDClassifier</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Depending on the nature of the algorithm, <code class="docutils literal notranslate"><span class="pre">fit</span></code> can sometimes also accept additional
+keywords arguments. However, any parameter that can have a value assigned prior to
+having access to the data should be an <code class="docutils literal notranslate"><span class="pre">__init__</span></code> keyword argument. Ideally, <strong>fit
+parameters should be restricted to directly data dependent variables</strong>. For instance a
+Gram matrix or an affinity matrix which are precomputed from the data matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> are
+data dependent. A tolerance stopping criterion <code class="docutils literal notranslate"><span class="pre">tol</span></code> is not directly data dependent
+(although the optimal value according to some scoring function probably is).</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">fit</span></code> is called, any previous call to <code class="docutils literal notranslate"><span class="pre">fit</span></code> should be ignored. In
+general, calling <code class="docutils literal notranslate"><span class="pre">estimator.fit(X1)</span></code> and then <code class="docutils literal notranslate"><span class="pre">estimator.fit(X2)</span></code> should
+be the same as only calling <code class="docutils literal notranslate"><span class="pre">estimator.fit(X2)</span></code>. However, this may not be
+true in practice when <code class="docutils literal notranslate"><span class="pre">fit</span></code> depends on some random process, see
+<a class="reference internal" href="../glossary.html#term-random_state"><span class="xref std std-term">random_state</span></a>. Another exception to this rule is when the
+hyper-parameter <code class="docutils literal notranslate"><span class="pre">warm_start</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> for estimators that
+support it. <code class="docutils literal notranslate"><span class="pre">warm_start=True</span></code> means that the previous state of the
+trainable parameters of the estimator are reused instead of using the
+default initialization strategy.</p>
+</section>
+<section id="estimated-attributes">
+<h4>Estimated Attributes<a class="headerlink" href="#estimated-attributes" title="Link to this heading">#</a></h4>
+<p>According to scikit-learn conventions, attributes which you’d want to expose to your
+users as public attributes and have been estimated or learned from the data must always
+have a name ending with trailing underscore, for example the coefficients of some
+regression estimator would be stored in a <code class="docutils literal notranslate"><span class="pre">coef_</span></code> attribute after <code class="docutils literal notranslate"><span class="pre">fit</span></code> has been
+called. Similarly, attributes that you learn in the process and you’d like to store yet
+not expose to the user, should have a leading underscore, e.g. <code class="docutils literal notranslate"><span class="pre">_intermediate_coefs</span></code>.
+You’d need to document the first group (with a trailing underscore) as “Attributes” and
+no need to document the second group (with a leading underscore).</p>
+<p>The estimated attributes are expected to be overridden when you call <code class="docutils literal notranslate"><span class="pre">fit</span></code> a second
+time.</p>
+</section>
+<section id="universal-attributes">
+<h4>Universal attributes<a class="headerlink" href="#universal-attributes" title="Link to this heading">#</a></h4>
+<p>Estimators that expect tabular input should set a <code class="docutils literal notranslate"><span class="pre">n_features_in_</span></code>
+attribute at <code class="docutils literal notranslate"><span class="pre">fit</span></code> time to indicate the number of features that the estimator
+expects for subsequent calls to <a class="reference internal" href="../glossary.html#term-predict"><span class="xref std std-term">predict</span></a> or <a class="reference internal" href="../glossary.html#term-transform"><span class="xref std std-term">transform</span></a>.
+See <a class="reference external" href="https://scikit-learn-enhancement-proposals.readthedocs.io/en/latest/slep010/proposal.html">SLEP010</a>
+for details.</p>
+<p>Similarly, if estimators are given dataframes such as pandas or polars, they should
+set a <code class="docutils literal notranslate"><span class="pre">feature_names_in_</span></code> attribute to indicate the features names of the input data,
+detailed in <a class="reference external" href="https://scikit-learn-enhancement-proposals.readthedocs.io/en/latest/slep007/proposal.html">SLEP007</a>.
+Using <a class="reference internal" href="../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">validate_data</span></code></a> would automatically set these
+attributes for you.</p>
+</section>
+</section>
+</section>
+<section id="rolling-your-own-estimator">
+<span id="id1"></span><h2>Rolling your own estimator<a class="headerlink" href="#rolling-your-own-estimator" title="Link to this heading">#</a></h2>
+<p>If you want to implement a new estimator that is scikit-learn compatible, there are
+several internals of scikit-learn that you should be aware of in addition to
+the scikit-learn API outlined above. You can check whether your estimator
+adheres to the scikit-learn interface and standards by running
+<a class="reference internal" href="../modules/generated/sklearn.utils.estimator_checks.check_estimator.html#sklearn.utils.estimator_checks.check_estimator" title="sklearn.utils.estimator_checks.check_estimator"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_estimator</span></code></a> on an instance. The
+<a class="reference internal" href="../modules/generated/sklearn.utils.estimator_checks.parametrize_with_checks.html#sklearn.utils.estimator_checks.parametrize_with_checks" title="sklearn.utils.estimator_checks.parametrize_with_checks"><code class="xref py py-func docutils literal notranslate"><span class="pre">parametrize_with_checks</span></code></a> pytest
+decorator can also be used (see its docstring for details and possible
+interactions with <code class="docutils literal notranslate"><span class="pre">pytest</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.estimator_checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_estimator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_estimator</span><span class="p">(</span><span class="n">DecisionTreeClassifier</span><span class="p">())</span>  <span class="c1"># passes</span>
+<span class="go">[...]</span>
+</pre></div>
+</div>
+<p>The main motivation to make a class compatible to the scikit-learn estimator
+interface might be that you want to use it together with model evaluation and
+selection tools such as <a class="reference internal" href="../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>.</p>
+<p>Before detailing the required interface below, we describe two ways to achieve
+the correct interface more easily.</p>
+<aside class="topic">
+<p class="topic-title">Project template:</p>
+<p>We provide a <a class="reference external" href="https://github.com/scikit-learn-contrib/project-template/">project template</a> which helps in the
+creation of Python packages containing scikit-learn compatible estimators. It
+provides:</p>
+<ul class="simple">
+<li><p>an initial git repository with Python package directory structure</p></li>
+<li><p>a template of a scikit-learn estimator</p></li>
+<li><p>an initial test suite including use of <code class="xref py py-func docutils literal notranslate"><span class="pre">parametrize_with_checks</span></code></p></li>
+<li><p>directory structures and scripts to compile documentation and example
+galleries</p></li>
+<li><p>scripts to manage continuous integration (testing on Linux, MacOS, and Windows)</p></li>
+<li><p>instructions from getting started to publishing on <a class="reference external" href="https://pypi.org/">PyPi</a></p></li>
+</ul>
+</aside>
+<aside class="topic">
+<p class="topic-title"><a class="reference internal" href="../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.BaseEstimator</span></code></a> and mixins:</p>
+<p>We tend to use “duck typing” instead of checking for <a class="reference external" href="https://docs.python.org/3/library/functions.html#isinstance" title="(in Python v3.14)"><code class="xref py py-func docutils literal notranslate"><span class="pre">isinstance</span></code></a>, which means
+it’s technically possible to implement an estimator without inheriting from
+scikit-learn classes. However, if you don’t inherit from the right mixins, either
+there will be a large amount of boilerplate code for you to implement and keep in
+sync with scikit-learn development, or your estimator might not function the same
+way as a scikit-learn estimator. Here we only document how to develop an estimator
+using our mixins. If you’re interested in implementing your estimator without
+inheriting from scikit-learn mixins, you’d need to check our implementations.</p>
+<p>For example, below is a custom classifier, with more examples included in the
+scikit-learn-contrib <a class="reference external" href="https://github.com/scikit-learn-contrib/project-template/blob/master/skltemplate/_template.py">project template</a>.</p>
+<p>It is particularly important to notice that mixins should be “on the left” while
+the <code class="docutils literal notranslate"><span class="pre">BaseEstimator</span></code> should be “on the right” in the inheritance list for proper
+MRO.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">ClassifierMixin</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_data</span><span class="p">,</span> <span class="n">check_is_fitted</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.multiclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_labels</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">euclidean_distances</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">TemplateClassifier</span><span class="p">(</span><span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">demo_param</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">demo_param</span> <span class="o">=</span> <span class="n">demo_param</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="c1"># Check that X and y have correct shape, set n_features_in_, etc.</span>
+<span class="gp">... </span>        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">validate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="c1"># Store the classes seen during fit</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">unique_labels</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span> <span class="o">=</span> <span class="n">X</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
+<span class="gp">... </span>        <span class="c1"># Return the classifier</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="bp">self</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="c1"># Check if fit has been called</span>
+<span class="gp">... </span>        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="c1"># Input validation</span>
+<span class="gp">... </span>        <span class="n">X</span> <span class="o">=</span> <span class="n">validate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="n">closest</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">euclidean_distances</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">[</span><span class="n">closest</span><span class="p">]</span>
+</pre></div>
+</div>
+</aside>
+<p>And you can check that the above estimator passes all common checks:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.estimator_checks</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_estimator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">check_estimator</span><span class="p">(</span><span class="n">TemplateClassifier</span><span class="p">())</span>  <span class="c1"># passes            </span>
+</pre></div>
+</div>
+<section id="get-params-and-set-params">
+<h3>get_params and set_params<a class="headerlink" href="#get-params-and-set-params" title="Link to this heading">#</a></h3>
+<p>All scikit-learn estimators have <code class="docutils literal notranslate"><span class="pre">get_params</span></code> and <code class="docutils literal notranslate"><span class="pre">set_params</span></code> functions.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">get_params</span></code> function takes no arguments and returns a dict of the
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> parameters of the estimator, together with their values.</p>
+<p>It takes one keyword argument, <code class="docutils literal notranslate"><span class="pre">deep</span></code>, which receives a boolean value that determines
+whether the method should return the parameters of sub-estimators (only relevant for
+meta-estimators). The default value for <code class="docutils literal notranslate"><span class="pre">deep</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>. For instance considering
+the following estimator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subestimator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">my_extra_param</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">subestimator</span> <span class="o">=</span> <span class="n">subestimator</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">my_extra_param</span> <span class="o">=</span> <span class="n">my_extra_param</span>
+</pre></div>
+</div>
+<p>The parameter <code class="docutils literal notranslate"><span class="pre">deep</span></code> controls whether or not the parameters of the
+<code class="docutils literal notranslate"><span class="pre">subestimator</span></code> should be reported. Thus when <code class="docutils literal notranslate"><span class="pre">deep=True</span></code>, the output will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_estimator</span> <span class="o">=</span> <span class="n">MyEstimator</span><span class="p">(</span><span class="n">subestimator</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">my_estimator</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">my_extra_param -&gt; random</span>
+<span class="go">subestimator__C -&gt; 1.0</span>
+<span class="go">subestimator__class_weight -&gt; None</span>
+<span class="go">subestimator__dual -&gt; False</span>
+<span class="go">subestimator__fit_intercept -&gt; True</span>
+<span class="go">subestimator__intercept_scaling -&gt; 1</span>
+<span class="go">subestimator__l1_ratio -&gt; None</span>
+<span class="go">subestimator__max_iter -&gt; 100</span>
+<span class="go">subestimator__multi_class -&gt; deprecated</span>
+<span class="go">subestimator__n_jobs -&gt; None</span>
+<span class="go">subestimator__penalty -&gt; l2</span>
+<span class="go">subestimator__random_state -&gt; None</span>
+<span class="go">subestimator__solver -&gt; lbfgs</span>
+<span class="go">subestimator__tol -&gt; 0.0001</span>
+<span class="go">subestimator__verbose -&gt; 0</span>
+<span class="go">subestimator__warm_start -&gt; False</span>
+<span class="go">subestimator -&gt; LogisticRegression()</span>
+</pre></div>
+</div>
+<p>If the meta-estimator takes multiple sub-estimators, often, those sub-estimators have
+names (as e.g. named steps in a <a class="reference internal" href="../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> object), in which case the
+key should become <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;__C</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;__class_weight</span></code>, etc.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">deep=False</span></code>, the output will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">my_estimator</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">my_extra_param -&gt; random</span>
+<span class="go">subestimator -&gt; LogisticRegression()</span>
+</pre></div>
+</div>
+<p>On the other hand, <code class="docutils literal notranslate"><span class="pre">set_params</span></code> takes the parameters of <code class="docutils literal notranslate"><span class="pre">__init__</span></code> as keyword
+arguments, unpacks them into a dict of the form <code class="docutils literal notranslate"><span class="pre">'parameter':</span> <span class="pre">value</span></code> and sets the
+parameters of the estimator using this dict. It returns the estimator itself.</p>
+<p>The <a class="reference internal" href="../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator.set_params" title="sklearn.base.BaseEstimator.set_params"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_params</span></code></a> function is used to set parameters during
+grid search for instance.</p>
+</section>
+<section id="cloning">
+<span id="id2"></span><h3>Cloning<a class="headerlink" href="#cloning" title="Link to this heading">#</a></h3>
+<p>As already mentioned that when constructor arguments are mutable, they should be
+copied before modifying them. This also applies to constructor arguments which are
+estimators. That’s why meta-estimators such as <a class="reference internal" href="../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>
+create a copy of the given estimator before modifying it.</p>
+<p>However, in scikit-learn, when we copy an estimator, we get an unfitted estimator
+where only the constructor arguments are copied (with some exceptions, e.g. attributes
+related to certain internal machinery such as metadata routing).</p>
+<p>The function responsible for this behavior is <a class="reference internal" href="../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.base.clone"><code class="xref py py-func docutils literal notranslate"><span class="pre">clone</span></code></a>.</p>
+<p>Estimators can customize the behavior of <a class="reference internal" href="../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.base.clone"><code class="xref py py-func docutils literal notranslate"><span class="pre">base.clone</span></code></a> by overriding the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">base.BaseEstimator.__sklearn_clone__</span></code> method. <code class="docutils literal notranslate"><span class="pre">__sklearn_clone__</span></code> must return an
+instance of the estimator. <code class="docutils literal notranslate"><span class="pre">__sklearn_clone__</span></code> is useful when an estimator needs to hold
+on to some state when <a class="reference internal" href="../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.base.clone"><code class="xref py py-func docutils literal notranslate"><span class="pre">base.clone</span></code></a> is called on the estimator. For example,
+<a class="reference internal" href="../modules/generated/sklearn.frozen.FrozenEstimator.html#sklearn.frozen.FrozenEstimator" title="sklearn.frozen.FrozenEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenEstimator</span></code></a> makes use of this.</p>
+</section>
+<section id="estimator-types">
+<h3>Estimator types<a class="headerlink" href="#estimator-types" title="Link to this heading">#</a></h3>
+<p>Among simple estimators (as opposed to meta-estimators), the most common types are
+transformers, classifiers, regressors, and clustering algorithms.</p>
+<p><strong>Transformers</strong> inherit from <a class="reference internal" href="../modules/generated/sklearn.base.TransformerMixin.html#sklearn.base.TransformerMixin" title="sklearn.base.TransformerMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformerMixin</span></code></a>, and implement a <code class="docutils literal notranslate"><span class="pre">transform</span></code>
+method. These are estimators which take the input, and transform it in some way. Note
+that they should never change the number of input samples, and the output of <code class="docutils literal notranslate"><span class="pre">transform</span></code>
+should correspond to its input samples in the same given order.</p>
+<p><strong>Regressors</strong> inherit from <a class="reference internal" href="../modules/generated/sklearn.base.RegressorMixin.html#sklearn.base.RegressorMixin" title="sklearn.base.RegressorMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegressorMixin</span></code></a>, and implement a <code class="docutils literal notranslate"><span class="pre">predict</span></code> method.
+They should accept numerical <code class="docutils literal notranslate"><span class="pre">y</span></code> in their <code class="docutils literal notranslate"><span class="pre">fit</span></code> method. Regressors use
+<a class="reference internal" href="../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">r2_score</span></code></a> by default in their <a class="reference internal" href="../modules/generated/sklearn.base.RegressorMixin.html#sklearn.base.RegressorMixin.score" title="sklearn.base.RegressorMixin.score"><code class="xref py py-func docutils literal notranslate"><span class="pre">score</span></code></a> method.</p>
+<p><strong>Classifiers</strong> inherit from <a class="reference internal" href="../modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="sklearn.base.ClassifierMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClassifierMixin</span></code></a>. If it applies, classifiers can
+implement <code class="docutils literal notranslate"><span class="pre">decision_function</span></code> to return raw decision values, based on which
+<code class="docutils literal notranslate"><span class="pre">predict</span></code> can make its decision. If calculating probabilities is supported,
+classifiers can also implement <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> and <code class="docutils literal notranslate"><span class="pre">predict_log_proba</span></code>.</p>
+<p>Classifiers should accept <code class="docutils literal notranslate"><span class="pre">y</span></code> (target) arguments to <code class="docutils literal notranslate"><span class="pre">fit</span></code> that are sequences (lists,
+arrays) of either strings or integers. They should not assume that the class labels are
+a contiguous range of integers; instead, they should store a list of classes in a
+<code class="docutils literal notranslate"><span class="pre">classes_</span></code> attribute or property. The order of class labels in this attribute should
+match the order in which <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>, <code class="docutils literal notranslate"><span class="pre">predict_log_proba</span></code> and
+<code class="docutils literal notranslate"><span class="pre">decision_function</span></code> return their values. The easiest way to achieve this is to put:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.  This returns a new <code class="docutils literal notranslate"><span class="pre">y</span></code> that contains class indexes, rather than labels,
+in the range [0, <code class="docutils literal notranslate"><span class="pre">n_classes</span></code>).</p>
+<p>A classifier’s <code class="docutils literal notranslate"><span class="pre">predict</span></code> method should return arrays containing class labels from
+<code class="docutils literal notranslate"><span class="pre">classes_</span></code>. In a classifier that implements <code class="docutils literal notranslate"><span class="pre">decision_function</span></code>, this can be
+achieved with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="../api/sklearn.utils.html#module-sklearn.utils.multiclass" title="sklearn.utils.multiclass"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiclass</span></code></a> module contains useful functions for working with
+multiclass and multilabel problems.</p>
+<p><strong>Clustering algorithms</strong> inherit from <a class="reference internal" href="../modules/generated/sklearn.base.ClusterMixin.html#sklearn.base.ClusterMixin" title="sklearn.base.ClusterMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClusterMixin</span></code></a>. Ideally, they should
+accept a <code class="docutils literal notranslate"><span class="pre">y</span></code> parameter in their <code class="docutils literal notranslate"><span class="pre">fit</span></code> method, but it should be ignored. Clustering
+algorithms should set a <code class="docutils literal notranslate"><span class="pre">labels_</span></code> attribute, storing the labels assigned to each
+sample. If applicable, they can also implement a <code class="docutils literal notranslate"><span class="pre">predict</span></code> method, returning the
+labels assigned to newly given samples.</p>
+<p>If one needs to check the type of a given estimator, e.g. in a meta-estimator, one can
+check if the given object implements a <code class="docutils literal notranslate"><span class="pre">transform</span></code> method for transformers, and
+otherwise use helper functions such as <a class="reference internal" href="../modules/generated/sklearn.base.is_classifier.html#sklearn.base.is_classifier" title="sklearn.base.is_classifier"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_classifier</span></code></a> or
+<a class="reference internal" href="../modules/generated/sklearn.base.is_regressor.html#sklearn.base.is_regressor" title="sklearn.base.is_regressor"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_regressor</span></code></a>.</p>
+</section>
+<section id="estimator-tags">
+<span id="id3"></span><h3>Estimator Tags<a class="headerlink" href="#estimator-tags" title="Link to this heading">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Scikit-learn introduced estimator tags in version 0.21 as a private API and mostly
+used in tests. However, these tags expanded over time and many third party
+developers also need to use them. Therefore in version 1.6 the API for the tags was
+revamped and exposed as public API.</p>
+</div>
+<p>The estimator tags are annotations of estimators that allow programmatic inspection of
+their capabilities, such as sparse matrix support, supported output types and supported
+methods. The estimator tags are an instance of <a class="reference internal" href="../modules/generated/sklearn.utils.Tags.html#sklearn.utils.Tags" title="sklearn.utils.Tags"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tags</span></code></a> returned by
+the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sklearn_tags__</span></code>. These tags are used
+in different places, such as <a class="reference internal" href="../modules/generated/sklearn.base.is_regressor.html#sklearn.base.is_regressor" title="sklearn.base.is_regressor"><code class="xref py py-func docutils literal notranslate"><span class="pre">is_regressor</span></code></a> or the common checks run by
+<a class="reference internal" href="../modules/generated/sklearn.utils.estimator_checks.check_estimator.html#sklearn.utils.estimator_checks.check_estimator" title="sklearn.utils.estimator_checks.check_estimator"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_estimator</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.utils.estimator_checks.parametrize_with_checks.html#sklearn.utils.estimator_checks.parametrize_with_checks" title="sklearn.utils.estimator_checks.parametrize_with_checks"><code class="xref py py-func docutils literal notranslate"><span class="pre">parametrize_with_checks</span></code></a>, where tags determine
+which checks to run and what input data is appropriate. Tags can depend on estimator
+parameters or even system architecture and can in general only be determined at runtime
+and are therefore instance attributes rather than class attributes. See
+<a class="reference internal" href="../modules/generated/sklearn.utils.Tags.html#sklearn.utils.Tags" title="sklearn.utils.Tags"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tags</span></code></a> for more information about individual tags.</p>
+<p>It is unlikely that the default values for each tag will suit the needs of your specific
+estimator. You can change the default values by defining a <code class="docutils literal notranslate"><span class="pre">__sklearn_tags__()</span></code> method
+which returns the new values for your estimator’s tags. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyMultiOutputEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sklearn_tags__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__sklearn_tags__</span><span class="p">()</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">target_tags</span><span class="o">.</span><span class="n">single_output</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">non_deterministic</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">tags</span>
+</pre></div>
+</div>
+<p>You can create a new subclass of <a class="reference internal" href="../modules/generated/sklearn.utils.Tags.html#sklearn.utils.Tags" title="sklearn.utils.Tags"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tags</span></code></a> if you wish to add new
+tags to the existing set. Note that all attributes that you add in a child class need
+to have a default value. It can be of the form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">asdict</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTags</span><span class="p">(</span><span class="n">Tags</span><span class="p">):</span>
+    <span class="n">my_tag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__sklearn_tags__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tags_orig</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__sklearn_tags__</span><span class="p">()</span>
+        <span class="n">as_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">tags_orig</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">tags_orig</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">MyTags</span><span class="p">(</span><span class="o">**</span><span class="n">as_dict</span><span class="p">)</span>
+        <span class="n">tags</span><span class="o">.</span><span class="n">my_tag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">tags</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="developer-api-for-set-output">
+<span id="developer-api-set-output"></span><h2>Developer API for <code class="docutils literal notranslate"><span class="pre">set_output</span></code><a class="headerlink" href="#developer-api-for-set-output" title="Link to this heading">#</a></h2>
+<p>With
+<a class="reference external" href="https://scikit-learn-enhancement-proposals.readthedocs.io/en/latest/slep018/proposal.html">SLEP018</a>,
+scikit-learn introduces the <code class="docutils literal notranslate"><span class="pre">set_output</span></code> API for configuring transformers to
+output pandas DataFrames. The <code class="docutils literal notranslate"><span class="pre">set_output</span></code> API is automatically defined if the
+transformer defines <a class="reference internal" href="../glossary.html#term-get_feature_names_out"><span class="xref std std-term">get_feature_names_out</span></a> and subclasses
+<a class="reference internal" href="../modules/generated/sklearn.base.TransformerMixin.html#sklearn.base.TransformerMixin" title="sklearn.base.TransformerMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.TransformerMixin</span></code></a>. <a class="reference internal" href="../glossary.html#term-get_feature_names_out"><span class="xref std std-term">get_feature_names_out</span></a> is used to get the
+column names of pandas output.</p>
+<p><a class="reference internal" href="../modules/generated/sklearn.base.OneToOneFeatureMixin.html#sklearn.base.OneToOneFeatureMixin" title="sklearn.base.OneToOneFeatureMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.OneToOneFeatureMixin</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.base.ClassNamePrefixFeaturesOutMixin.html#sklearn.base.ClassNamePrefixFeaturesOutMixin" title="sklearn.base.ClassNamePrefixFeaturesOutMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.ClassNamePrefixFeaturesOutMixin</span></code></a> are helpful mixins for defining
+<a class="reference internal" href="../glossary.html#term-get_feature_names_out"><span class="xref std std-term">get_feature_names_out</span></a>. <a class="reference internal" href="../modules/generated/sklearn.base.OneToOneFeatureMixin.html#sklearn.base.OneToOneFeatureMixin" title="sklearn.base.OneToOneFeatureMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.OneToOneFeatureMixin</span></code></a> is useful when
+the transformer has a one-to-one correspondence between input features and output
+features, such as <a class="reference internal" href="../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardScaler</span></code></a>.
+<a class="reference internal" href="../modules/generated/sklearn.base.ClassNamePrefixFeaturesOutMixin.html#sklearn.base.ClassNamePrefixFeaturesOutMixin" title="sklearn.base.ClassNamePrefixFeaturesOutMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.ClassNamePrefixFeaturesOutMixin</span></code></a> is useful when the transformer
+needs to generate its own feature names out, such as <a class="reference internal" href="../modules/generated/sklearn.decomposition.PCA.html#sklearn.decomposition.PCA" title="sklearn.decomposition.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a>.</p>
+<p>You can opt-out of the <code class="docutils literal notranslate"><span class="pre">set_output</span></code> API by setting <code class="docutils literal notranslate"><span class="pre">auto_wrap_output_keys=None</span></code>
+when defining a custom subclass:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyTransformer</span><span class="p">(</span><span class="n">TransformerMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">auto_wrap_output_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">X</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_feature_names_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>The default value for <code class="docutils literal notranslate"><span class="pre">auto_wrap_output_keys</span></code> is <code class="docutils literal notranslate"><span class="pre">(&quot;transform&quot;,)</span></code>, which automatically
+wraps <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code> and <code class="docutils literal notranslate"><span class="pre">transform</span></code>. The <code class="docutils literal notranslate"><span class="pre">TransformerMixin</span></code> uses the
+<code class="docutils literal notranslate"><span class="pre">__init_subclass__</span></code> mechanism to consume <code class="docutils literal notranslate"><span class="pre">auto_wrap_output_keys</span></code> and pass all other
+keyword arguments to its super class. Super classes’ <code class="docutils literal notranslate"><span class="pre">__init_subclass__</span></code> should
+<strong>not</strong> depend on <code class="docutils literal notranslate"><span class="pre">auto_wrap_output_keys</span></code>.</p>
+<p>For transformers that return multiple arrays in <code class="docutils literal notranslate"><span class="pre">transform</span></code>, auto wrapping will
+only wrap the first array and not alter the other arrays.</p>
+<p>See <a class="reference internal" href="../auto_examples/miscellaneous/plot_set_output.html#sphx-glr-auto-examples-miscellaneous-plot-set-output-py"><span class="std std-ref">Introducing the set_output API</span></a>
+for an example on how to use the API.</p>
+</section>
+<section id="developer-api-for-check-is-fitted">
+<span id="developer-api-check-is-fitted"></span><h2>Developer API for <code class="docutils literal notranslate"><span class="pre">check_is_fitted</span></code><a class="headerlink" href="#developer-api-for-check-is-fitted" title="Link to this heading">#</a></h2>
+<p>By default <a class="reference internal" href="../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_is_fitted</span></code></a> checks if there
+are any attributes in the instance with a trailing underscore, e.g. <code class="docutils literal notranslate"><span class="pre">coef_</span></code>.
+An estimator can change the behavior by implementing a <code class="docutils literal notranslate"><span class="pre">__sklearn_is_fitted__</span></code>
+method taking no input and returning a boolean. If this method exists,
+<a class="reference internal" href="../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_is_fitted</span></code></a> simply returns its output.</p>
+<p>See <a class="reference internal" href="../auto_examples/developing_estimators/sklearn_is_fitted.html#sphx-glr-auto-examples-developing-estimators-sklearn-is-fitted-py"><span class="std std-ref">__sklearn_is_fitted__ as Developer API</span></a>
+for an example on how to use the API.</p>
+</section>
+<section id="developer-api-for-html-representation">
+<h2>Developer API for HTML representation<a class="headerlink" href="#developer-api-for-html-representation" title="Link to this heading">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The HTML representation API is experimental and the API is subject to change.</p>
+</div>
+<p>Estimators inheriting from <a class="reference internal" href="../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code></a> display
+a HTML representation of themselves in interactive programming
+environments such as Jupyter notebooks. For instance, we can display this HTML
+diagram:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span>
+
+<span class="n">BaseEstimator</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The raw HTML representation is obtained by invoking the function
+<a class="reference internal" href="../modules/generated/sklearn.utils.estimator_html_repr.html#sklearn.utils.estimator_html_repr" title="sklearn.utils.estimator_html_repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">estimator_html_repr</span></code></a> on an estimator instance.</p>
+<p>To customize the URL linking to an estimator’s documentation (i.e. when clicking on the
+“?” icon), override the <code class="docutils literal notranslate"><span class="pre">_doc_link_module</span></code> and <code class="docutils literal notranslate"><span class="pre">_doc_link_template</span></code> attributes. In
+addition, you can provide a <code class="docutils literal notranslate"><span class="pre">_doc_link_url_param_generator</span></code> method. Set
+<code class="docutils literal notranslate"><span class="pre">_doc_link_module</span></code> to the name of the (top level) module that contains your estimator.
+If the value does not match the top level module name, the HTML representation will not
+contain a link to the documentation. For scikit-learn estimators this is set to
+<code class="docutils literal notranslate"><span class="pre">&quot;sklearn&quot;</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">_doc_link_template</span></code> is used to construct the final URL. By default, it can contain
+two variables: <code class="docutils literal notranslate"><span class="pre">estimator_module</span></code> (the full name of the module containing the estimator)
+and <code class="docutils literal notranslate"><span class="pre">estimator_name</span></code> (the class name of the estimator). If you need more variables you
+should implement the <code class="docutils literal notranslate"><span class="pre">_doc_link_url_param_generator</span></code> method which should return a
+dictionary of the variables and their values. This dictionary will be used to render the
+<code class="docutils literal notranslate"><span class="pre">_doc_link_template</span></code>.</p>
+</section>
+<section id="coding-guidelines">
+<span id="id4"></span><h2>Coding guidelines<a class="headerlink" href="#coding-guidelines" title="Link to this heading">#</a></h2>
+<p>The following are some guidelines on how new code should be written for
+inclusion in scikit-learn, and which may be appropriate to adopt in external
+projects. Of course, there are special cases and there will be exceptions to
+these rules. However, following these rules when submitting new code makes
+the review easier so new code can be integrated in less time.</p>
+<p>Uniformly formatted code makes it easier to share code ownership. The
+scikit-learn project tries to closely follow the official Python guidelines
+detailed in <a class="reference external" href="https://www.python.org/dev/peps/pep-0008">PEP8</a> that
+detail how code should be formatted and indented. Please read it and
+follow it.</p>
+<p>In addition, we add the following guidelines:</p>
+<ul class="simple">
+<li><p>Use underscores to separate words in non class names: <code class="docutils literal notranslate"><span class="pre">n_samples</span></code>
+rather than <code class="docutils literal notranslate"><span class="pre">nsamples</span></code>.</p></li>
+<li><p>Avoid multiple statements on one line. Prefer a line return after
+a control flow statement (<code class="docutils literal notranslate"><span class="pre">if</span></code>/<code class="docutils literal notranslate"><span class="pre">for</span></code>).</p></li>
+<li><p>Use relative imports for references inside scikit-learn.</p></li>
+<li><p>Unit tests are an exception to the previous rule;
+they should use absolute imports, exactly as client code would.
+A corollary is that, if <code class="docutils literal notranslate"><span class="pre">sklearn.foo</span></code> exports a class or function
+that is implemented in <code class="docutils literal notranslate"><span class="pre">sklearn.foo.bar.baz</span></code>,
+the test should import it from <code class="docutils literal notranslate"><span class="pre">sklearn.foo</span></code>.</p></li>
+<li><p><strong>Please don’t use</strong> <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">*</span></code> <strong>in any case</strong>. It is considered harmful
+by the <a class="reference external" href="https://docs.python.org/3.1/howto/doanddont.html#at-module-level">official Python recommendations</a>.
+It makes the code harder to read as the origin of symbols is no
+longer explicitly referenced, but most important, it prevents
+using a static analysis tool like <a class="reference external" href="https://divmod.readthedocs.io/en/latest/products/pyflakes.html">pyflakes</a> to automatically
+find bugs in scikit-learn.</p></li>
+<li><p>Use the <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard">numpy docstring standard</a>
+in all your docstrings.</p></li>
+</ul>
+<p>A good example of code that we like can be found <a class="reference external" href="https://gist.github.com/nateGeorge/5455d2c57fb33c1ae04706f2dc4fee01">here</a>.</p>
+<section id="input-validation">
+<h3>Input validation<a class="headerlink" href="#input-validation" title="Link to this heading">#</a></h3>
+<p>The module <a class="reference internal" href="../api/sklearn.utils.html#module-sklearn.utils" title="sklearn.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.utils</span></code></a> contains various functions for doing input
+validation and conversion. Sometimes, <code class="docutils literal notranslate"><span class="pre">np.asarray</span></code> suffices for validation;
+do <em>not</em> use <code class="docutils literal notranslate"><span class="pre">np.asanyarray</span></code> or <code class="docutils literal notranslate"><span class="pre">np.atleast_2d</span></code>, since those let NumPy’s
+<code class="docutils literal notranslate"><span class="pre">np.matrix</span></code> through, which has a different API
+(e.g., <code class="docutils literal notranslate"><span class="pre">*</span></code> means dot product on <code class="docutils literal notranslate"><span class="pre">np.matrix</span></code>,
+but Hadamard product on <code class="docutils literal notranslate"><span class="pre">np.ndarray</span></code>).</p>
+<p>In other cases, be sure to call <a class="reference internal" href="../modules/generated/sklearn.utils.check_array.html#sklearn.utils.check_array" title="sklearn.utils.check_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_array</span></code></a> on any array-like argument
+passed to a scikit-learn API function. The exact parameters to use depends
+mainly on whether and which <code class="docutils literal notranslate"><span class="pre">scipy.sparse</span></code> matrices must be accepted.</p>
+<p>For more information, refer to the <a class="reference internal" href="utilities.html#developers-utils"><span class="std std-ref">Utilities for Developers</span></a> page.</p>
+</section>
+<section id="random-numbers">
+<h3>Random Numbers<a class="headerlink" href="#random-numbers" title="Link to this heading">#</a></h3>
+<p>If your code depends on a random number generator, do not use
+<code class="docutils literal notranslate"><span class="pre">numpy.random.random()</span></code> or similar routines.  To ensure
+repeatability in error checking, the routine should accept a keyword
+<code class="docutils literal notranslate"><span class="pre">random_state</span></code> and use this to construct a
+<code class="docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object.
+See <a class="reference internal" href="../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.utils.check_random_state</span></code></a> in <a class="reference internal" href="utilities.html#developers-utils"><span class="std std-ref">Utilities for Developers</span></a>.</p>
+<p>Here’s a simple example of code using some of the above guidelines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_array</span><span class="p">,</span> <span class="n">check_random_state</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">choose_random_sample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Choose a random point from X.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">        An array representing the data.</span>
+<span class="sd">    random_state : int or RandomState instance, default=0</span>
+<span class="sd">        The seed of the pseudo random number generator that selects a</span>
+<span class="sd">        random sample. Pass an int for reproducible output across multiple</span>
+<span class="sd">        function calls.</span>
+<span class="sd">        See :term:`Glossary &lt;random_state&gt;`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x : ndarray of shape (n_features,)</span>
+<span class="sd">        A random point selected from X.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If you use randomness in an estimator instead of a freestanding function,
+some additional guidelines apply.</p>
+<p>First off, the estimator should take a <code class="docutils literal notranslate"><span class="pre">random_state</span></code> argument to its
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> with a default value of <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+It should store that argument’s value, <strong>unmodified</strong>,
+in an attribute <code class="docutils literal notranslate"><span class="pre">random_state</span></code>.
+<code class="docutils literal notranslate"><span class="pre">fit</span></code> can call <code class="docutils literal notranslate"><span class="pre">check_random_state</span></code> on that attribute
+to get an actual random number generator.
+If, for some reason, randomness is needed after <code class="docutils literal notranslate"><span class="pre">fit</span></code>,
+the RNG should be stored in an attribute <code class="docutils literal notranslate"><span class="pre">random_state_</span></code>.
+The following example should make this clear:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GaussianNoise</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This estimator ignores its input and returns random Gaussian noise.</span>
+
+<span class="sd">    It also does not adhere to all scikit-learn conventions,</span>
+<span class="sd">    but showcases how to handle randomness.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="n">n_components</span>
+
+    <span class="c1"># the arguments are ignored anyway, so we make them optional</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state_</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_state_</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reason for this setup is reproducibility:
+when an estimator is <code class="docutils literal notranslate"><span class="pre">fit</span></code> twice to the same data,
+it should produce an identical model both times,
+hence the validation in <code class="docutils literal notranslate"><span class="pre">fit</span></code>, not <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
+</section>
+<section id="numerical-assertions-in-tests">
+<h3>Numerical assertions in tests<a class="headerlink" href="#numerical-assertions-in-tests" title="Link to this heading">#</a></h3>
+<p>When asserting the quasi-equality of arrays of continuous values,
+do use <code class="docutils literal notranslate"><span class="pre">sklearn.utils._testing.assert_allclose</span></code>.</p>
+<p>The relative tolerance is automatically inferred from the provided arrays
+dtypes (for float32 and float64 dtypes in particular) but you can override
+via <code class="docutils literal notranslate"><span class="pre">rtol</span></code>.</p>
+<p>When comparing arrays of zero-elements, please do provide a non-zero value for
+the absolute tolerance via <code class="docutils literal notranslate"><span class="pre">atol</span></code>.</p>
+<p>For more information, please refer to the docstring of
+<code class="docutils literal notranslate"><span class="pre">sklearn.utils._testing.assert_allclose</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#apis-of-scikit-learn-objects">APIs of scikit-learn objects</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#different-objects">Different objects</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimators">Estimators</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#instantiation">Instantiation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fitting">Fitting</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#estimated-attributes">Estimated Attributes</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#universal-attributes">Universal attributes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rolling-your-own-estimator">Rolling your own estimator</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-params-and-set-params">get_params and set_params</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloning">Cloning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimator-types">Estimator types</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimator-tags">Estimator Tags</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-api-for-set-output">Developer API for <code class="docutils literal notranslate"><span class="pre">set_output</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-api-for-check-is-fitted">Developer API for <code class="docutils literal notranslate"><span class="pre">check_is_fitted</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#developer-api-for-html-representation">Developer API for HTML representation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coding-guidelines">Coding guidelines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#input-validation">Input validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-numbers">Random Numbers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-assertions-in-tests">Numerical assertions in tests</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developers/develop.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

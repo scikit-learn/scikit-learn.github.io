@@ -1,0 +1,1247 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="1.7. Gaussian Processes" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/modules/gaussian_process.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Gaussian Processes (GP) are a nonparametric supervised learning method used to solve regression and probabilistic classification problems. The advantages of Gaussian processes are: The prediction i..." />
+<meta property="og:image" content="https://scikit-learn/stable/_images/sphx_glr_plot_gpr_noisy_targets_002.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Gaussian Processes (GP) are a nonparametric supervised learning method used to solve regression and probabilistic classification problems. The advantages of Gaussian processes are: The prediction i..." />
+
+    <title>1.7. Gaussian Processes &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/gaussian_process';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/modules/gaussian_process.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1.8. Cross decomposition" href="cross_decomposition.html" />
+    <link rel="prev" title="1.6. Nearest Neighbors" href="neighbors.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../supervised_learning.html">1. Supervised learning</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html">1.1. Linear Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lda_qda.html">1.2. Linear and Quadratic Discriminant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_ridge.html">1.3. Kernel ridge regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svm.html">1.4. Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sgd.html">1.5. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neighbors.html">1.6. Nearest Neighbors</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">1.7. Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross_decomposition.html">1.8. Cross decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naive_bayes.html">1.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">1.10. Decision Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble.html">1.11. Ensembles: Gradient boosting, random forests, bagging, voting, stacking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiclass.html">1.12. Multiclass and multioutput algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_selection.html">1.13. Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semi_supervised.html">1.14. Semi-supervised learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotonic.html">1.15. Isotonic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html">1.16. Probability calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_supervised.html">1.17. Neural network models (supervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../unsupervised_learning.html">2. Unsupervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mixture.html">2.1. Gaussian mixture models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manifold.html">2.2. Manifold learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clustering.html">2.3. Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biclustering.html">2.4. Biclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decomposition.html">2.5. Decomposing signals in components (matrix factorization problems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="covariance.html">2.6. Covariance estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier_detection.html">2.7. Novelty and Outlier Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="density.html">2.8. Density Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_unsupervised.html">2.9. Neural network models (unsupervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../model_selection.html">3. Model selection and evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="cross_validation.html">3.1. Cross-validation: evaluating estimator performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid_search.html">3.2. Tuning the hyper-parameters of an estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classification_threshold.html">3.3. Tuning the decision threshold for class prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_evaluation.html">3.4. Metrics and scoring: quantifying the quality of predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learning_curve.html">3.5. Validation curves: plotting scores to evaluate models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata_routing.html">4. Metadata Routing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../inspection.html">5. Inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="partial_dependence.html">5.1. Partial Dependence and Individual Conditional Expectation plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="permutation_importance.html">5.2. Permutation feature importance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualizations.html">6. Visualizations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../data_transforms.html">7. Dataset transformations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="compose.html">7.1. Pipelines and composite estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_extraction.html">7.2. Feature extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html">7.3. Preprocessing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impute.html">7.4. Imputation of missing values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unsupervised_reduction.html">7.5. Unsupervised dimensionality reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random_projection.html">7.6. Random Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_approximation.html">7.7. Kernel Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">7.8. Pairwise metrics, Affinities and Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing_targets.html">7.9. Transforming the prediction target (<code class="docutils literal notranslate"><span class="pre">y</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datasets.html">8. Dataset loading utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/toy_dataset.html">8.1. Toy datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/real_world.html">8.2. Real world datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/sample_generators.html">8.3. Generated datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/loading_other_datasets.html">8.4. Loading other datasets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../computing.html">9. Computing with scikit-learn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../computing/scaling_strategies.html">9.1. Strategies to scale computationally: bigger data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/computational_performance.html">9.2. Computational Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/parallelism.html">9.3. Parallelism, resource management, and configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_persistence.html">10. Model persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_pitfalls.html">11. Common pitfalls and recommended practices</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../dispatching.html">12. Dispatching</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="array_api.html">12.1. Array API support (experimental)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning_map.html">13. Choosing the right estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presentations.html">14. External Resources, Videos and Talks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../supervised_learning.html" class="nav-link"><span class="section-number">1. </span>Supervised learning</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><span class="section-number">1.7. </span>Gaussian Processes</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="gaussian-processes">
+<span id="gaussian-process"></span><h1><span class="section-number">1.7. </span>Gaussian Processes<a class="headerlink" href="#gaussian-processes" title="Link to this heading">#</a></h1>
+<p><strong>Gaussian Processes (GP)</strong> are a nonparametric supervised learning method used
+to solve <em>regression</em> and <em>probabilistic classification</em> problems.</p>
+<p>The advantages of Gaussian processes are:</p>
+<ul class="simple">
+<li><p>The prediction interpolates the observations (at least for regular
+kernels).</p></li>
+<li><p>The prediction is probabilistic (Gaussian) so that one can compute
+empirical confidence intervals and decide based on those if one should
+refit (online fitting, adaptive fitting) the prediction in some
+region of interest.</p></li>
+<li><p>Versatile: different <a class="reference internal" href="#gp-kernels"><span class="std std-ref">kernels</span></a> can be specified. Common kernels are provided, but
+it is also possible to specify custom kernels.</p></li>
+</ul>
+<p>The disadvantages of Gaussian processes include:</p>
+<ul class="simple">
+<li><p>Our implementation is not sparse, i.e., they use the whole samples/features
+information to perform the prediction.</p></li>
+<li><p>They lose efficiency in high dimensional spaces – namely when the number
+of features exceeds a few dozens.</p></li>
+</ul>
+<section id="gaussian-process-regression-gpr">
+<span id="gpr"></span><h2><span class="section-number">1.7.1. </span>Gaussian Process Regression (GPR)<a class="headerlink" href="#gaussian-process-regression-gpr" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessRegressor.html#sklearn.gaussian_process.GaussianProcessRegressor" title="sklearn.gaussian_process.GaussianProcessRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code></a> implements Gaussian processes (GP) for
+regression purposes. For this, the prior of the GP needs to be specified. GP
+will combine this prior and the likelihood function based on training samples.
+It allows to give a probabilistic approach to prediction by giving the mean and
+standard deviation as output when predicting.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_noisy_targets.html"><img alt="../_images/sphx_glr_plot_gpr_noisy_targets_002.png" src="../_images/sphx_glr_plot_gpr_noisy_targets_002.png" />
+</a>
+</figure>
+<p>The prior mean is assumed to be constant and zero (for <code class="docutils literal notranslate"><span class="pre">normalize_y=False</span></code>) or
+the training data’s mean (for <code class="docutils literal notranslate"><span class="pre">normalize_y=True</span></code>). The prior’s covariance is
+specified by passing a <a class="reference internal" href="#gp-kernels"><span class="std std-ref">kernel</span></a> object. The hyperparameters
+of the kernel are optimized when fitting the <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessRegressor.html#sklearn.gaussian_process.GaussianProcessRegressor" title="sklearn.gaussian_process.GaussianProcessRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code></a>
+by maximizing the log-marginal-likelihood (LML) based on the passed
+<code class="docutils literal notranslate"><span class="pre">optimizer</span></code>. As the LML may have multiple local optima, the optimizer can be
+started repeatedly by specifying <code class="docutils literal notranslate"><span class="pre">n_restarts_optimizer</span></code>. The first run is
+always conducted starting from the initial hyperparameter values of the kernel;
+subsequent runs are conducted from hyperparameter values that have been chosen
+randomly from the range of allowed values. If the initial hyperparameters
+should be kept fixed, <code class="docutils literal notranslate"><span class="pre">None</span></code> can be passed as optimizer.</p>
+<p>The noise level in the targets can be specified by passing it via the parameter
+<code class="docutils literal notranslate"><span class="pre">alpha</span></code>, either globally as a scalar or per datapoint. Note that a moderate
+noise level can also be helpful for dealing with numeric instabilities during
+fitting as it is effectively implemented as Tikhonov regularization, i.e., by
+adding it to the diagonal of the kernel matrix. An alternative to specifying
+the noise level explicitly is to include a
+<a class="reference internal" href="generated/sklearn.gaussian_process.kernels.WhiteKernel.html#sklearn.gaussian_process.kernels.WhiteKernel" title="sklearn.gaussian_process.kernels.WhiteKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WhiteKernel</span></code></a> component into the
+kernel, which can estimate the global noise level from the data (see example
+below). The figure below shows the effect of noisy target handled by setting
+the parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code>.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_noisy_targets.html"><img alt="../_images/sphx_glr_plot_gpr_noisy_targets_003.png" src="../_images/sphx_glr_plot_gpr_noisy_targets_003.png" />
+</a>
+</figure>
+<p>The implementation is based on Algorithm 2.1 of <a class="reference internal" href="#rw2006" id="id1"><span>[RW2006]</span></a>. In addition to
+the API of standard scikit-learn estimators, <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessRegressor.html#sklearn.gaussian_process.GaussianProcessRegressor" title="sklearn.gaussian_process.GaussianProcessRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code></a>:</p>
+<ul class="simple">
+<li><p>allows prediction without prior fitting (based on the GP prior)</p></li>
+<li><p>provides an additional method <code class="docutils literal notranslate"><span class="pre">sample_y(X)</span></code>, which evaluates samples
+drawn from the GPR (prior or posterior) at given inputs</p></li>
+<li><p>exposes a method <code class="docutils literal notranslate"><span class="pre">log_marginal_likelihood(theta)</span></code>, which can be used
+externally for other ways of selecting hyperparameters, e.g., via
+Markov chain Monte Carlo.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../auto_examples/gaussian_process/plot_gpr_noisy_targets.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-noisy-targets-py"><span class="std std-ref">Gaussian Processes regression: basic introductory example</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/gaussian_process/plot_gpr_noisy.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-noisy-py"><span class="std std-ref">Ability of Gaussian process regression (GPR) to estimate data noise-level</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/gaussian_process/plot_compare_gpr_krr.html#sphx-glr-auto-examples-gaussian-process-plot-compare-gpr-krr-py"><span class="std std-ref">Comparison of kernel ridge and Gaussian process regression</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/gaussian_process/plot_gpr_co2.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-co2-py"><span class="std std-ref">Forecasting of CO2 level on Mona Loa dataset using Gaussian process regression (GPR)</span></a></p></li>
+</ul>
+</section>
+<section id="gaussian-process-classification-gpc">
+<span id="gpc"></span><h2><span class="section-number">1.7.2. </span>Gaussian Process Classification (GPC)<a class="headerlink" href="#gaussian-process-classification-gpc" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier" title="sklearn.gaussian_process.GaussianProcessClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessClassifier</span></code></a> implements Gaussian processes (GP) for
+classification purposes, more specifically for probabilistic classification,
+where test predictions take the form of class probabilities.
+GaussianProcessClassifier places a GP prior on a latent function <span class="math notranslate nohighlight">\(f\)</span>,
+which is then squashed through a link function <span class="math notranslate nohighlight">\(\pi\)</span> to obtain the probabilistic
+classification. The latent function <span class="math notranslate nohighlight">\(f\)</span> is a so-called nuisance function,
+whose values are not observed and are not relevant by themselves.
+Its purpose is to allow a convenient formulation of the model, and <span class="math notranslate nohighlight">\(f\)</span>
+is removed (integrated out) during prediction. <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier" title="sklearn.gaussian_process.GaussianProcessClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessClassifier</span></code></a>
+implements the logistic link function, for which the integral cannot be
+computed analytically but is easily approximated in the binary case.</p>
+<p>In contrast to the regression setting, the posterior of the latent function
+<span class="math notranslate nohighlight">\(f\)</span> is not Gaussian even for a GP prior since a Gaussian likelihood is
+inappropriate for discrete class labels. Rather, a non-Gaussian likelihood
+corresponding to the logistic link function (logit) is used.
+GaussianProcessClassifier approximates the non-Gaussian posterior with a
+Gaussian based on the Laplace approximation. More details can be found in
+Chapter 3 of <a class="reference internal" href="#rw2006" id="id2"><span>[RW2006]</span></a>.</p>
+<p>The GP prior mean is assumed to be zero. The prior’s
+covariance is specified by passing a <a class="reference internal" href="#gp-kernels"><span class="std std-ref">kernel</span></a> object. The
+hyperparameters of the kernel are optimized during fitting of
+GaussianProcessRegressor by maximizing the log-marginal-likelihood (LML) based
+on the passed <code class="docutils literal notranslate"><span class="pre">optimizer</span></code>. As the LML may have multiple local optima, the
+optimizer can be started repeatedly by specifying <code class="docutils literal notranslate"><span class="pre">n_restarts_optimizer</span></code>. The
+first run is always conducted starting from the initial hyperparameter values
+of the kernel; subsequent runs are conducted from hyperparameter values
+that have been chosen randomly from the range of allowed values.
+If the initial hyperparameters should be kept fixed, <code class="docutils literal notranslate"><span class="pre">None</span></code> can be passed as
+optimizer.</p>
+<p>In some scenarios, information about the latent function <span class="math notranslate nohighlight">\(f\)</span> is desired
+(i.e. the mean <span class="math notranslate nohighlight">\(\bar{f_*}\)</span> and the variance <span class="math notranslate nohighlight">\(\text{Var}[f_*]\)</span> described
+in Eqs. (3.21) and (3.24) of <a class="reference internal" href="#rw2006" id="id3"><span>[RW2006]</span></a>). The <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier" title="sklearn.gaussian_process.GaussianProcessClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessClassifier</span></code></a>
+provides access to these quantities via the <code class="docutils literal notranslate"><span class="pre">latent_mean_and_variance</span></code> method.</p>
+<p><a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier" title="sklearn.gaussian_process.GaussianProcessClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessClassifier</span></code></a> supports multi-class classification
+by performing either one-versus-rest or one-versus-one based training and
+prediction.  In one-versus-rest, one binary Gaussian process classifier is
+fitted for each class, which is trained to separate this class from the rest.
+In “one_vs_one”, one binary Gaussian process classifier is fitted for each pair
+of classes, which is trained to separate these two classes. The predictions of
+these binary predictors are combined into multi-class predictions. See the
+section on <a class="reference internal" href="multiclass.html#multiclass"><span class="std std-ref">multi-class classification</span></a> for more details.</p>
+<p>In the case of Gaussian process classification, “one_vs_one” might be
+computationally  cheaper since it has to solve many problems involving only a
+subset of the whole training set rather than fewer problems on the whole
+dataset. Since Gaussian process classification scales cubically with the size
+of the dataset, this might be considerably faster. However, note that
+“one_vs_one” does not support predicting probability estimates but only plain
+predictions. Moreover, note that <a class="reference internal" href="generated/sklearn.gaussian_process.GaussianProcessClassifier.html#sklearn.gaussian_process.GaussianProcessClassifier" title="sklearn.gaussian_process.GaussianProcessClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianProcessClassifier</span></code></a> does not
+(yet) implement a true multi-class Laplace approximation internally, but
+as discussed above is based on solving several binary classification tasks
+internally, which are combined using one-versus-rest or one-versus-one.</p>
+</section>
+<section id="gpc-examples">
+<h2><span class="section-number">1.7.3. </span>GPC examples<a class="headerlink" href="#gpc-examples" title="Link to this heading">#</a></h2>
+<section id="probabilistic-predictions-with-gpc">
+<h3><span class="section-number">1.7.3.1. </span>Probabilistic predictions with GPC<a class="headerlink" href="#probabilistic-predictions-with-gpc" title="Link to this heading">#</a></h3>
+<p>This example illustrates the predicted probability of GPC for an RBF kernel
+with different choices of the hyperparameters. The first figure shows the
+predicted probability of GPC with arbitrarily chosen hyperparameters and with
+the hyperparameters corresponding to the maximum log-marginal-likelihood (LML).</p>
+<p>While the hyperparameters chosen by optimizing LML have a considerably larger
+LML, they perform slightly worse according to the log-loss on test data. The
+figure shows that this is because they exhibit a steep change of the class
+probabilities at the class boundaries (which is good) but have predicted
+probabilities close to 0.5 far away from the class boundaries (which is bad).
+This undesirable effect is caused by the Laplace approximation used
+internally by GPC.</p>
+<p>The second figure shows the log-marginal-likelihood for different choices of
+the kernel’s hyperparameters, highlighting the two choices of the
+hyperparameters used in the first figure by black dots.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpc.html"><img alt="../_images/sphx_glr_plot_gpc_001.png" src="../_images/sphx_glr_plot_gpc_001.png" />
+</a>
+</figure>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpc.html"><img alt="../_images/sphx_glr_plot_gpc_002.png" src="../_images/sphx_glr_plot_gpc_002.png" />
+</a>
+</figure>
+</section>
+<section id="illustration-of-gpc-on-the-xor-dataset">
+<h3><span class="section-number">1.7.3.2. </span>Illustration of GPC on the XOR dataset<a class="headerlink" href="#illustration-of-gpc-on-the-xor-dataset" title="Link to this heading">#</a></h3>
+<p>This example illustrates GPC on XOR data. Compared are a stationary, isotropic
+kernel (<a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RBF.html#sklearn.gaussian_process.kernels.RBF" title="sklearn.gaussian_process.kernels.RBF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RBF</span></code></a>) and a non-stationary kernel (<a class="reference internal" href="generated/sklearn.gaussian_process.kernels.DotProduct.html#sklearn.gaussian_process.kernels.DotProduct" title="sklearn.gaussian_process.kernels.DotProduct"><code class="xref py py-class docutils literal notranslate"><span class="pre">DotProduct</span></code></a>). On
+this particular dataset, the <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.DotProduct.html#sklearn.gaussian_process.kernels.DotProduct" title="sklearn.gaussian_process.kernels.DotProduct"><code class="xref py py-class docutils literal notranslate"><span class="pre">DotProduct</span></code></a> kernel obtains considerably
+better results because the class-boundaries are linear and coincide with the
+coordinate axes. In practice, however, stationary kernels such as <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RBF.html#sklearn.gaussian_process.kernels.RBF" title="sklearn.gaussian_process.kernels.RBF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RBF</span></code></a>
+often obtain better results.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpc_xor.html"><img alt="../_images/sphx_glr_plot_gpc_xor_001.png" src="../_images/sphx_glr_plot_gpc_xor_001.png" />
+</a>
+</figure>
+</section>
+<section id="gaussian-process-classification-gpc-on-iris-dataset">
+<h3><span class="section-number">1.7.3.3. </span>Gaussian process classification (GPC) on iris dataset<a class="headerlink" href="#gaussian-process-classification-gpc-on-iris-dataset" title="Link to this heading">#</a></h3>
+<p>This example illustrates the predicted probability of GPC for an isotropic
+and anisotropic RBF kernel on a two-dimensional version for the iris dataset.
+This illustrates the applicability of GPC to non-binary classification.
+The anisotropic RBF kernel obtains slightly higher log-marginal-likelihood by
+assigning different length-scales to the two feature dimensions.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpc_iris.html"><img alt="../_images/sphx_glr_plot_gpc_iris_001.png" src="../_images/sphx_glr_plot_gpc_iris_001.png" />
+</a>
+</figure>
+</section>
+</section>
+<section id="kernels-for-gaussian-processes">
+<span id="gp-kernels"></span><h2><span class="section-number">1.7.4. </span>Kernels for Gaussian Processes<a class="headerlink" href="#kernels-for-gaussian-processes" title="Link to this heading">#</a></h2>
+<p>Kernels (also called “covariance functions” in the context of GPs) are a crucial
+ingredient of GPs which determine the shape of prior and posterior of the GP.
+They encode the assumptions on the function being learned by defining the “similarity”
+of two datapoints combined with the assumption that similar datapoints should
+have similar target values. Two categories of kernels can be distinguished:
+stationary kernels depend only on the distance of two datapoints and not on their
+absolute values <span class="math notranslate nohighlight">\(k(x_i, x_j)= k(d(x_i, x_j))\)</span> and are thus invariant to
+translations in the input space, while non-stationary kernels
+depend also on the specific values of the datapoints. Stationary kernels can further
+be subdivided into isotropic and anisotropic kernels, where isotropic kernels are
+also invariant to rotations in the input space. For more details, we refer to
+Chapter 4 of <a class="reference internal" href="#rw2006" id="id4"><span>[RW2006]</span></a>. <a class="reference internal" href="../auto_examples/gaussian_process/plot_gpr_on_structured_data.html#sphx-glr-auto-examples-gaussian-process-plot-gpr-on-structured-data-py"><span class="std std-ref">This example</span></a>
+shows how to define a custom kernel over discrete data. For guidance on how to best
+combine different kernels, we refer to <a class="reference internal" href="#duv2014" id="id5"><span>[Duv2014]</span></a>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="gaussian-process-kernel-api">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Gaussian Process Kernel API<a class="headerlink" href="#gaussian-process-kernel-api" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The main usage of a <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Kernel.html#sklearn.gaussian_process.kernels.Kernel" title="sklearn.gaussian_process.kernels.Kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel</span></code></a> is to compute the GP’s covariance between
+datapoints. For this, the method <code class="docutils literal notranslate"><span class="pre">__call__</span></code> of the kernel can be called. This
+method can either be used to compute the “auto-covariance” of all pairs of
+datapoints in a 2d array X, or the “cross-covariance” of all combinations
+of datapoints of a 2d array X with datapoints in a 2d array Y. The following
+identity holds true for all kernels k (except for the <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.WhiteKernel.html#sklearn.gaussian_process.kernels.WhiteKernel" title="sklearn.gaussian_process.kernels.WhiteKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WhiteKernel</span></code></a>):
+<code class="docutils literal notranslate"><span class="pre">k(X)</span> <span class="pre">==</span> <span class="pre">K(X,</span> <span class="pre">Y=X)</span></code></p>
+<p class="sd-card-text">If only the diagonal of the auto-covariance is being used, the method <code class="docutils literal notranslate"><span class="pre">diag()</span></code>
+of a kernel can be called, which is more computationally efficient than the
+equivalent call to <code class="docutils literal notranslate"><span class="pre">__call__</span></code>: <code class="docutils literal notranslate"><span class="pre">np.diag(k(X,</span> <span class="pre">X))</span> <span class="pre">==</span> <span class="pre">k.diag(X)</span></code></p>
+<p class="sd-card-text">Kernels are parameterized by a vector <span class="math notranslate nohighlight">\(\theta\)</span> of hyperparameters. These
+hyperparameters can for instance control length-scales or periodicity of a
+kernel (see below). All kernels support computing analytic gradients
+of the kernel’s auto-covariance with respect to <span class="math notranslate nohighlight">\(log(\theta)\)</span> via setting
+<code class="docutils literal notranslate"><span class="pre">eval_gradient=True</span></code> in the <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method.
+That is, a <code class="docutils literal notranslate"><span class="pre">(len(X),</span> <span class="pre">len(X),</span> <span class="pre">len(theta))</span></code> array is returned where the entry
+<code class="docutils literal notranslate"><span class="pre">[i,</span> <span class="pre">j,</span> <span class="pre">l]</span></code> contains <span class="math notranslate nohighlight">\(\frac{\partial k_\theta(x_i, x_j)}{\partial log(\theta_l)}\)</span>.
+This gradient is used by the Gaussian process (both regressor and classifier)
+in computing the gradient of the log-marginal-likelihood, which in turn is used
+to determine the value of <span class="math notranslate nohighlight">\(\theta\)</span>, which maximizes the log-marginal-likelihood,
+via gradient ascent. For each hyperparameter, the initial value and the
+bounds need to be specified when creating an instance of the kernel. The
+current value of <span class="math notranslate nohighlight">\(\theta\)</span> can be get and set via the property
+<code class="docutils literal notranslate"><span class="pre">theta</span></code> of the kernel object. Moreover, the bounds of the hyperparameters can be
+accessed by the property <code class="docutils literal notranslate"><span class="pre">bounds</span></code> of the kernel. Note that both properties
+(theta and bounds) return log-transformed values of the internally used values
+since those are typically more amenable to gradient-based optimization.
+The specification of each hyperparameter is stored in the form of an instance of
+<a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Hyperparameter.html#sklearn.gaussian_process.kernels.Hyperparameter" title="sklearn.gaussian_process.kernels.Hyperparameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Hyperparameter</span></code></a> in the respective kernel. Note that a kernel using a
+hyperparameter with name “x” must have the attributes self.x and self.x_bounds.</p>
+<p class="sd-card-text">The abstract base class for all kernels is <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Kernel.html#sklearn.gaussian_process.kernels.Kernel" title="sklearn.gaussian_process.kernels.Kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel</span></code></a>. Kernel implements a
+similar interface as <a class="reference internal" href="generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEstimator</span></code></a>, providing the
+methods <code class="docutils literal notranslate"><span class="pre">get_params()</span></code>, <code class="docutils literal notranslate"><span class="pre">set_params()</span></code>, and <code class="docutils literal notranslate"><span class="pre">clone()</span></code>. This allows
+setting kernel values also via meta-estimators such as
+<a class="reference internal" href="generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> or
+<a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>. Note that due to the nested
+structure of kernels (by applying kernel operators, see below), the names of
+kernel parameters might become relatively complicated. In general, for a binary
+kernel operator, parameters of the left operand are prefixed with <code class="docutils literal notranslate"><span class="pre">k1__</span></code> and
+parameters of the right operand with <code class="docutils literal notranslate"><span class="pre">k2__</span></code>. An additional convenience method
+is <code class="docutils literal notranslate"><span class="pre">clone_with_theta(theta)</span></code>, which returns a cloned version of the kernel
+but with the hyperparameters set to <code class="docutils literal notranslate"><span class="pre">theta</span></code>. An illustrative example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process.kernels</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstantKernel</span><span class="p">,</span> <span class="n">RBF</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kernel</span> <span class="o">=</span> <span class="n">ConstantKernel</span><span class="p">(</span><span class="n">constant_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">constant_value_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span> <span class="o">*</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">length_scale_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span> <span class="o">+</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">length_scale_bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">hyperparameter</span> <span class="ow">in</span> <span class="n">kernel</span><span class="o">.</span><span class="n">hyperparameters</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">hyperparameter</span><span class="p">)</span>
+<span class="go">Hyperparameter(name=&#39;k1__k1__constant_value&#39;, value_type=&#39;numeric&#39;, bounds=array([[ 0., 10.]]), n_elements=1, fixed=False)</span>
+<span class="go">Hyperparameter(name=&#39;k1__k2__length_scale&#39;, value_type=&#39;numeric&#39;, bounds=array([[ 0., 10.]]), n_elements=1, fixed=False)</span>
+<span class="go">Hyperparameter(name=&#39;k2__length_scale&#39;, value_type=&#39;numeric&#39;, bounds=array([[ 0., 10.]]), n_elements=1, fixed=False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">params</span><span class="p">):</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+<span class="go">k1 : 1**2 * RBF(length_scale=0.5)</span>
+<span class="go">k1__k1 : 1**2</span>
+<span class="go">k1__k1__constant_value : 1.0</span>
+<span class="go">k1__k1__constant_value_bounds : (0.0, 10.0)</span>
+<span class="go">k1__k2 : RBF(length_scale=0.5)</span>
+<span class="go">k1__k2__length_scale : 0.5</span>
+<span class="go">k1__k2__length_scale_bounds : (0.0, 10.0)</span>
+<span class="go">k2 : RBF(length_scale=2)</span>
+<span class="go">k2__length_scale : 2.0</span>
+<span class="go">k2__length_scale_bounds : (0.0, 10.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">kernel</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span>  <span class="c1"># Note: log-transformed</span>
+<span class="go">[ 0.         -0.69314718  0.69314718]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">kernel</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>  <span class="c1"># Note: log-transformed</span>
+<span class="go">[[      -inf 2.30258509]</span>
+<span class="go">[      -inf 2.30258509]</span>
+<span class="go">[      -inf 2.30258509]]</span>
+</pre></div>
+</div>
+<p class="sd-card-text">All Gaussian process kernels are interoperable with <a class="reference internal" href="../api/sklearn.metrics.html#module-sklearn.metrics.pairwise" title="sklearn.metrics.pairwise"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise</span></code></a>
+and vice versa: instances of subclasses of <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Kernel.html#sklearn.gaussian_process.kernels.Kernel" title="sklearn.gaussian_process.kernels.Kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">Kernel</span></code></a> can be passed as
+<code class="docutils literal notranslate"><span class="pre">metric</span></code> to <code class="docutils literal notranslate"><span class="pre">pairwise_kernels</span></code> from <a class="reference internal" href="../api/sklearn.metrics.html#module-sklearn.metrics.pairwise" title="sklearn.metrics.pairwise"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise</span></code></a>. Moreover,
+kernel functions from pairwise can be used as GP kernels by using the wrapper
+class <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.PairwiseKernel.html#sklearn.gaussian_process.kernels.PairwiseKernel" title="sklearn.gaussian_process.kernels.PairwiseKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairwiseKernel</span></code></a>. The only caveat is that the gradient of
+the hyperparameters is not analytic but numeric and all those kernels support
+only isotropic distances. The parameter <code class="docutils literal notranslate"><span class="pre">gamma</span></code> is considered to be a
+hyperparameter and may be optimized. The other kernel parameters are set
+directly at initialization and are kept fixed.</p>
+</div>
+</details><section id="basic-kernels">
+<h3><span class="section-number">1.7.4.1. </span>Basic kernels<a class="headerlink" href="#basic-kernels" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.ConstantKernel.html#sklearn.gaussian_process.kernels.ConstantKernel" title="sklearn.gaussian_process.kernels.ConstantKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstantKernel</span></code></a> kernel can be used as part of a <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Product.html#sklearn.gaussian_process.kernels.Product" title="sklearn.gaussian_process.kernels.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a>
+kernel where it scales the magnitude of the other factor (kernel) or as part
+of a <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Sum.html#sklearn.gaussian_process.kernels.Sum" title="sklearn.gaussian_process.kernels.Sum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sum</span></code></a> kernel, where it modifies the mean of the Gaussian process.
+It depends on a parameter <span class="math notranslate nohighlight">\(constant\_value\)</span>. It is defined as:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = constant\_value \;\forall\; x_i, x_j\]</div>
+<p>The main use-case of the <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.WhiteKernel.html#sklearn.gaussian_process.kernels.WhiteKernel" title="sklearn.gaussian_process.kernels.WhiteKernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">WhiteKernel</span></code></a> kernel is as part of a
+sum-kernel where it explains the noise-component of the signal. Tuning its
+parameter <span class="math notranslate nohighlight">\(noise\_level\)</span> corresponds to estimating the noise-level.
+It is defined as:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = noise\_level \text{ if } x_i == x_j \text{ else } 0\]</div>
+</section>
+<section id="kernel-operators">
+<h3><span class="section-number">1.7.4.2. </span>Kernel operators<a class="headerlink" href="#kernel-operators" title="Link to this heading">#</a></h3>
+<p>Kernel operators take one or two base kernels and combine them into a new
+kernel. The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Sum.html#sklearn.gaussian_process.kernels.Sum" title="sklearn.gaussian_process.kernels.Sum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sum</span></code></a> kernel takes two kernels <span class="math notranslate nohighlight">\(k_1\)</span> and <span class="math notranslate nohighlight">\(k_2\)</span>
+and combines them via <span class="math notranslate nohighlight">\(k_{sum}(X, Y) = k_1(X, Y) + k_2(X, Y)\)</span>.
+The  <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Product.html#sklearn.gaussian_process.kernels.Product" title="sklearn.gaussian_process.kernels.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a> kernel takes two kernels <span class="math notranslate nohighlight">\(k_1\)</span> and <span class="math notranslate nohighlight">\(k_2\)</span>
+and combines them via <span class="math notranslate nohighlight">\(k_{product}(X, Y) = k_1(X, Y) * k_2(X, Y)\)</span>.
+The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Exponentiation.html#sklearn.gaussian_process.kernels.Exponentiation" title="sklearn.gaussian_process.kernels.Exponentiation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exponentiation</span></code></a> kernel takes one base kernel and a scalar parameter
+<span class="math notranslate nohighlight">\(p\)</span> and combines them via
+<span class="math notranslate nohighlight">\(k_{exp}(X, Y) = k(X, Y)^p\)</span>.
+Note that magic methods <code class="docutils literal notranslate"><span class="pre">__add__</span></code>, <code class="docutils literal notranslate"><span class="pre">__mul___</span></code> and <code class="docutils literal notranslate"><span class="pre">__pow__</span></code> are
+overridden on the Kernel objects, so one can use e.g. <code class="docutils literal notranslate"><span class="pre">RBF()</span> <span class="pre">+</span> <span class="pre">RBF()</span></code> as
+a shortcut for <code class="docutils literal notranslate"><span class="pre">Sum(RBF(),</span> <span class="pre">RBF())</span></code>.</p>
+</section>
+<section id="radial-basis-function-rbf-kernel">
+<h3><span class="section-number">1.7.4.3. </span>Radial basis function (RBF) kernel<a class="headerlink" href="#radial-basis-function-rbf-kernel" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RBF.html#sklearn.gaussian_process.kernels.RBF" title="sklearn.gaussian_process.kernels.RBF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RBF</span></code></a> kernel is a stationary kernel. It is also known as the “squared
+exponential” kernel. It is parameterized by a length-scale parameter <span class="math notranslate nohighlight">\(l&gt;0\)</span>, which
+can either be a scalar (isotropic variant of the kernel) or a vector with the same
+number of dimensions as the inputs <span class="math notranslate nohighlight">\(x\)</span> (anisotropic variant of the kernel).
+The kernel is given by:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \text{exp}\left(- \frac{d(x_i, x_j)^2}{2l^2} \right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(d(\cdot, \cdot)\)</span> is the Euclidean distance.
+This kernel is infinitely differentiable, which implies that GPs with this
+kernel as covariance function have mean square derivatives of all orders, and are thus
+very smooth. The prior and posterior of a GP resulting from an RBF kernel are shown in
+the following figure:</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_prior_posterior.html"><img alt="../_images/sphx_glr_plot_gpr_prior_posterior_001.png" src="../_images/sphx_glr_plot_gpr_prior_posterior_001.png" />
+</a>
+</figure>
+</section>
+<section id="matern-kernel">
+<h3><span class="section-number">1.7.4.4. </span>Matérn kernel<a class="headerlink" href="#matern-kernel" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.Matern.html#sklearn.gaussian_process.kernels.Matern" title="sklearn.gaussian_process.kernels.Matern"><code class="xref py py-class docutils literal notranslate"><span class="pre">Matern</span></code></a> kernel is a stationary kernel and a generalization of the
+<a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RBF.html#sklearn.gaussian_process.kernels.RBF" title="sklearn.gaussian_process.kernels.RBF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RBF</span></code></a> kernel. It has an additional parameter <span class="math notranslate nohighlight">\(\nu\)</span> which controls
+the smoothness of the resulting function. It is parameterized by a length-scale parameter <span class="math notranslate nohighlight">\(l&gt;0\)</span>, which can either be a scalar (isotropic variant of the kernel) or a vector with the same number of dimensions as the inputs <span class="math notranslate nohighlight">\(x\)</span> (anisotropic variant of the kernel).</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-implementation-of-matérn-kernel">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Mathematical implementation of Matérn kernel<a class="headerlink" href="#mathematical-implementation-of-matérn-kernel" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The kernel is given by:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \frac{1}{\Gamma(\nu)2^{\nu-1}}\Bigg(\frac{\sqrt{2\nu}}{l} d(x_i , x_j )\Bigg)^\nu K_\nu\Bigg(\frac{\sqrt{2\nu}}{l} d(x_i , x_j )\Bigg),\]</div>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(d(\cdot,\cdot)\)</span> is the Euclidean distance, <span class="math notranslate nohighlight">\(K_\nu(\cdot)\)</span> is a modified Bessel function and <span class="math notranslate nohighlight">\(\Gamma(\cdot)\)</span> is the gamma function.
+As <span class="math notranslate nohighlight">\(\nu\rightarrow\infty\)</span>, the Matérn kernel converges to the RBF kernel.
+When <span class="math notranslate nohighlight">\(\nu = 1/2\)</span>, the Matérn kernel becomes identical to the absolute
+exponential kernel, i.e.,</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \exp \Bigg(- \frac{1}{l} d(x_i , x_j ) \Bigg) \quad \quad \nu= \tfrac{1}{2}\]</div>
+<p class="sd-card-text">In particular, <span class="math notranslate nohighlight">\(\nu = 3/2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) =  \Bigg(1 + \frac{\sqrt{3}}{l} d(x_i , x_j )\Bigg) \exp \Bigg(-\frac{\sqrt{3}}{l} d(x_i , x_j ) \Bigg) \quad \quad \nu= \tfrac{3}{2}\]</div>
+<p class="sd-card-text">and <span class="math notranslate nohighlight">\(\nu = 5/2\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \Bigg(1 + \frac{\sqrt{5}}{l} d(x_i , x_j ) +\frac{5}{3l} d(x_i , x_j )^2 \Bigg) \exp \Bigg(-\frac{\sqrt{5}}{l} d(x_i , x_j ) \Bigg) \quad \quad \nu= \tfrac{5}{2}\]</div>
+<p class="sd-card-text">are popular choices for learning functions that are not infinitely
+differentiable (as assumed by the RBF kernel) but at least once (<span class="math notranslate nohighlight">\(\nu =
+3/2\)</span>) or twice differentiable (<span class="math notranslate nohighlight">\(\nu = 5/2\)</span>).</p>
+<p class="sd-card-text">The flexibility of controlling the smoothness of the learned function via <span class="math notranslate nohighlight">\(\nu\)</span>
+allows adapting to the properties of the true underlying functional relation.</p>
+</div>
+</details><p>The prior and posterior of a GP resulting from a Matérn kernel are shown in
+the following figure:</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_prior_posterior.html"><img alt="../_images/sphx_glr_plot_gpr_prior_posterior_005.png" src="../_images/sphx_glr_plot_gpr_prior_posterior_005.png" />
+</a>
+</figure>
+<p>See <a class="reference internal" href="#rw2006" id="id6"><span>[RW2006]</span></a>, pp84 for further details regarding the
+different variants of the Matérn kernel.</p>
+</section>
+<section id="rational-quadratic-kernel">
+<h3><span class="section-number">1.7.4.5. </span>Rational quadratic kernel<a class="headerlink" href="#rational-quadratic-kernel" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RationalQuadratic.html#sklearn.gaussian_process.kernels.RationalQuadratic" title="sklearn.gaussian_process.kernels.RationalQuadratic"><code class="xref py py-class docutils literal notranslate"><span class="pre">RationalQuadratic</span></code></a> kernel can be seen as a scale mixture (an infinite sum)
+of <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RBF.html#sklearn.gaussian_process.kernels.RBF" title="sklearn.gaussian_process.kernels.RBF"><code class="xref py py-class docutils literal notranslate"><span class="pre">RBF</span></code></a> kernels with different characteristic length-scales. It is parameterized
+by a length-scale parameter <span class="math notranslate nohighlight">\(l&gt;0\)</span> and a scale mixture parameter  <span class="math notranslate nohighlight">\(\alpha&gt;0\)</span>
+Only the isotropic variant where <span class="math notranslate nohighlight">\(l\)</span> is a scalar is supported at the moment.
+The kernel is given by:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \left(1 + \frac{d(x_i, x_j)^2}{2\alpha l^2}\right)^{-\alpha}\]</div>
+<p>The prior and posterior of a GP resulting from a <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.RationalQuadratic.html#sklearn.gaussian_process.kernels.RationalQuadratic" title="sklearn.gaussian_process.kernels.RationalQuadratic"><code class="xref py py-class docutils literal notranslate"><span class="pre">RationalQuadratic</span></code></a> kernel are shown in
+the following figure:</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_prior_posterior.html"><img alt="../_images/sphx_glr_plot_gpr_prior_posterior_002.png" src="../_images/sphx_glr_plot_gpr_prior_posterior_002.png" />
+</a>
+</figure>
+</section>
+<section id="exp-sine-squared-kernel">
+<h3><span class="section-number">1.7.4.6. </span>Exp-Sine-Squared kernel<a class="headerlink" href="#exp-sine-squared-kernel" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.ExpSineSquared.html#sklearn.gaussian_process.kernels.ExpSineSquared" title="sklearn.gaussian_process.kernels.ExpSineSquared"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExpSineSquared</span></code></a> kernel allows modeling periodic functions.
+It is parameterized by a length-scale parameter <span class="math notranslate nohighlight">\(l&gt;0\)</span> and a periodicity parameter
+<span class="math notranslate nohighlight">\(p&gt;0\)</span>. Only the isotropic variant where <span class="math notranslate nohighlight">\(l\)</span> is a scalar is supported at the moment.
+The kernel is given by:</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \text{exp}\left(- \frac{ 2\sin^2(\pi d(x_i, x_j) / p) }{ l^ 2} \right)\]</div>
+<p>The prior and posterior of a GP resulting from an ExpSineSquared kernel are shown in
+the following figure:</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_prior_posterior.html"><img alt="../_images/sphx_glr_plot_gpr_prior_posterior_003.png" src="../_images/sphx_glr_plot_gpr_prior_posterior_003.png" />
+</a>
+</figure>
+</section>
+<section id="dot-product-kernel">
+<h3><span class="section-number">1.7.4.7. </span>Dot-Product kernel<a class="headerlink" href="#dot-product-kernel" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.DotProduct.html#sklearn.gaussian_process.kernels.DotProduct" title="sklearn.gaussian_process.kernels.DotProduct"><code class="xref py py-class docutils literal notranslate"><span class="pre">DotProduct</span></code></a> kernel is non-stationary and can be obtained from linear regression
+by putting <span class="math notranslate nohighlight">\(N(0, 1)\)</span> priors on the coefficients of <span class="math notranslate nohighlight">\(x_d (d = 1, . . . , D)\)</span> and
+a prior of <span class="math notranslate nohighlight">\(N(0, \sigma_0^2)\)</span> on the bias. The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.DotProduct.html#sklearn.gaussian_process.kernels.DotProduct" title="sklearn.gaussian_process.kernels.DotProduct"><code class="xref py py-class docutils literal notranslate"><span class="pre">DotProduct</span></code></a> kernel is invariant to a rotation
+of the coordinates about the origin, but not translations.
+It is parameterized by a parameter <span class="math notranslate nohighlight">\(\sigma_0^2\)</span>. For <span class="math notranslate nohighlight">\(\sigma_0^2 = 0\)</span>, the kernel
+is called the homogeneous linear kernel, otherwise it is inhomogeneous. The kernel is given by</p>
+<div class="math notranslate nohighlight">
+\[k(x_i, x_j) = \sigma_0 ^ 2 + x_i \cdot x_j\]</div>
+<p>The <a class="reference internal" href="generated/sklearn.gaussian_process.kernels.DotProduct.html#sklearn.gaussian_process.kernels.DotProduct" title="sklearn.gaussian_process.kernels.DotProduct"><code class="xref py py-class docutils literal notranslate"><span class="pre">DotProduct</span></code></a> kernel is commonly combined with exponentiation. An example with exponent 2 is
+shown in the following figure:</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/gaussian_process/plot_gpr_prior_posterior.html"><img alt="../_images/sphx_glr_plot_gpr_prior_posterior_004.png" src="../_images/sphx_glr_plot_gpr_prior_posterior_004.png" />
+</a>
+</figure>
+</section>
+<section id="references">
+<h3><span class="section-number">1.7.4.8. </span>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h3>
+<div role="list" class="citation-list">
+<div class="citation" id="rw2006" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>RW2006<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id6">5</a>)</span>
+<p><a class="reference external" href="https://www.gaussianprocess.org/gpml/chapters/RW.pdf">Carl E. Rasmussen and Christopher K.I. Williams,
+“Gaussian Processes for Machine Learning”,
+MIT Press 2006</a></p>
+</div>
+<div class="citation" id="duv2014" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">Duv2014</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://www.cs.toronto.edu/~duvenaud/cookbook/">David Duvenaud, “The Kernel Cookbook: Advice on Covariance functions”, 2014</a></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="neighbors.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">1.6. </span>Nearest Neighbors</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="cross_decomposition.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">1.8. </span>Cross decomposition</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian-process-regression-gpr">1.7.1. Gaussian Process Regression (GPR)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian-process-classification-gpc">1.7.2. Gaussian Process Classification (GPC)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpc-examples">1.7.3. GPC examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#probabilistic-predictions-with-gpc">1.7.3.1. Probabilistic predictions with GPC</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration-of-gpc-on-the-xor-dataset">1.7.3.2. Illustration of GPC on the XOR dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gaussian-process-classification-gpc-on-iris-dataset">1.7.3.3. Gaussian process classification (GPC) on iris dataset</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernels-for-gaussian-processes">1.7.4. Kernels for Gaussian Processes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-kernels">1.7.4.1. Basic kernels</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-operators">1.7.4.2. Kernel operators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#radial-basis-function-rbf-kernel">1.7.4.3. Radial basis function (RBF) kernel</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matern-kernel">1.7.4.4. Matérn kernel</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rational-quadratic-kernel">1.7.4.5. Rational quadratic kernel</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exp-sine-squared-kernel">1.7.4.6. Exp-Sine-Squared kernel</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dot-product-kernel">1.7.4.7. Dot-Product kernel</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#references">1.7.4.8. References</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/gaussian_process.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

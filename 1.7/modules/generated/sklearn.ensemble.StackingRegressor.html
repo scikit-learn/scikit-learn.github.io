@@ -1,0 +1,1923 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="StackingRegressor" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/modules/generated/sklearn.ensemble.StackingRegressor.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Gallery examples: Combine predictors using stacking" />
+<meta property="og:image" content="https://scikit-learn/stable/_images/sphx_glr_plot_stack_predictors_thumb.png" />
+<meta property="og:image:alt" content="" />
+<meta name="description" content="Gallery examples: Combine predictors using stacking" />
+
+    <title>StackingRegressor &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/api.css?v=b0444f25" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/generated/sklearn.ensemble.StackingRegressor';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.StackingRegressor.html" />
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="VotingClassifier" href="sklearn.ensemble.VotingClassifier.html" />
+    <link rel="prev" title="StackingClassifier" href="sklearn.ensemble.StackingClassifier.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.html">sklearn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.config_context.html">config_context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.get_config.html">get_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.set_config.html">set_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.show_versions.html">show_versions</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.base.html">sklearn.base</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.BaseEstimator.html">BaseEstimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.BiclusterMixin.html">BiclusterMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.ClassNamePrefixFeaturesOutMixin.html">ClassNamePrefixFeaturesOutMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.ClassifierMixin.html">ClassifierMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.ClusterMixin.html">ClusterMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.DensityMixin.html">DensityMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.MetaEstimatorMixin.html">MetaEstimatorMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.OneToOneFeatureMixin.html">OneToOneFeatureMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.OutlierMixin.html">OutlierMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.RegressorMixin.html">RegressorMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.TransformerMixin.html">TransformerMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.clone.html">clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.is_classifier.html">is_classifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.is_clusterer.html">is_clusterer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.is_regressor.html">is_regressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.base.is_outlier_detector.html">is_outlier_detector</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.calibration.html">sklearn.calibration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.calibration.CalibratedClassifierCV.html">CalibratedClassifierCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.calibration.calibration_curve.html">calibration_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.calibration.CalibrationDisplay.html">CalibrationDisplay</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.cluster.html">sklearn.cluster</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.AffinityPropagation.html">AffinityPropagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.AgglomerativeClustering.html">AgglomerativeClustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.Birch.html">Birch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.BisectingKMeans.html">BisectingKMeans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.DBSCAN.html">DBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.FeatureAgglomeration.html">FeatureAgglomeration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.HDBSCAN.html">HDBSCAN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.KMeans.html">KMeans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.MeanShift.html">MeanShift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.MiniBatchKMeans.html">MiniBatchKMeans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.OPTICS.html">OPTICS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.SpectralBiclustering.html">SpectralBiclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.SpectralClustering.html">SpectralClustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.SpectralCoclustering.html">SpectralCoclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.affinity_propagation.html">affinity_propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.cluster_optics_dbscan.html">cluster_optics_dbscan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.cluster_optics_xi.html">cluster_optics_xi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.compute_optics_graph.html">compute_optics_graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbscan-function.html">dbscan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.estimate_bandwidth.html">estimate_bandwidth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.k_means.html">k_means</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.kmeans_plusplus.html">kmeans_plusplus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.mean_shift.html">mean_shift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.spectral_clustering.html">spectral_clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cluster.ward_tree.html">ward_tree</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.compose.html">sklearn.compose</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.compose.ColumnTransformer.html">ColumnTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.compose.TransformedTargetRegressor.html">TransformedTargetRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.compose.make_column_selector.html">make_column_selector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.compose.make_column_transformer.html">make_column_transformer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.covariance.html">sklearn.covariance</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.EllipticEnvelope.html">EllipticEnvelope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.EmpiricalCovariance.html">EmpiricalCovariance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.GraphicalLasso.html">GraphicalLasso</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.GraphicalLassoCV.html">GraphicalLassoCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.LedoitWolf.html">LedoitWolf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.MinCovDet.html">MinCovDet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.OAS.html">OAS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.ShrunkCovariance.html">ShrunkCovariance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.empirical_covariance.html">empirical_covariance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.graphical_lasso.html">graphical_lasso</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.ledoit_wolf.html">ledoit_wolf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.ledoit_wolf_shrinkage.html">ledoit_wolf_shrinkage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oas-function.html">oas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.covariance.shrunk_covariance.html">shrunk_covariance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.cross_decomposition.html">sklearn.cross_decomposition</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cross_decomposition.CCA.html">CCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cross_decomposition.PLSCanonical.html">PLSCanonical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cross_decomposition.PLSRegression.html">PLSRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.cross_decomposition.PLSSVD.html">PLSSVD</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.datasets.html">sklearn.datasets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.clear_data_home.html">clear_data_home</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.dump_svmlight_file.html">dump_svmlight_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_20newsgroups.html">fetch_20newsgroups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_20newsgroups_vectorized.html">fetch_20newsgroups_vectorized</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_california_housing.html">fetch_california_housing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_covtype.html">fetch_covtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_file.html">fetch_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_kddcup99.html">fetch_kddcup99</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_lfw_pairs.html">fetch_lfw_pairs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_lfw_people.html">fetch_lfw_people</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_olivetti_faces.html">fetch_olivetti_faces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_openml.html">fetch_openml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_rcv1.html">fetch_rcv1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.fetch_species_distributions.html">fetch_species_distributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.get_data_home.html">get_data_home</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_breast_cancer.html">load_breast_cancer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_diabetes.html">load_diabetes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_digits.html">load_digits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_files.html">load_files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_iris.html">load_iris</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_linnerud.html">load_linnerud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_sample_image.html">load_sample_image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_sample_images.html">load_sample_images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_svmlight_file.html">load_svmlight_file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_svmlight_files.html">load_svmlight_files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.load_wine.html">load_wine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_biclusters.html">make_biclusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_blobs.html">make_blobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_checkerboard.html">make_checkerboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_circles.html">make_circles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_classification.html">make_classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_friedman1.html">make_friedman1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_friedman2.html">make_friedman2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_friedman3.html">make_friedman3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_gaussian_quantiles.html">make_gaussian_quantiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_hastie_10_2.html">make_hastie_10_2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_low_rank_matrix.html">make_low_rank_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_moons.html">make_moons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_multilabel_classification.html">make_multilabel_classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_regression.html">make_regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_s_curve.html">make_s_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_sparse_coded_signal.html">make_sparse_coded_signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_sparse_spd_matrix.html">make_sparse_spd_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_sparse_uncorrelated.html">make_sparse_uncorrelated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_spd_matrix.html">make_spd_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.datasets.make_swiss_roll.html">make_swiss_roll</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.decomposition.html">sklearn.decomposition</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.DictionaryLearning.html">DictionaryLearning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.FactorAnalysis.html">FactorAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.FastICA.html">FastICA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.IncrementalPCA.html">IncrementalPCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.KernelPCA.html">KernelPCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.LatentDirichletAllocation.html">LatentDirichletAllocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.MiniBatchDictionaryLearning.html">MiniBatchDictionaryLearning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.MiniBatchNMF.html">MiniBatchNMF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.MiniBatchSparsePCA.html">MiniBatchSparsePCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.NMF.html">NMF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.PCA.html">PCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.SparseCoder.html">SparseCoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.SparsePCA.html">SparsePCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.TruncatedSVD.html">TruncatedSVD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.dict_learning.html">dict_learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.dict_learning_online.html">dict_learning_online</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fastica-function.html">fastica</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.non_negative_factorization.html">non_negative_factorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.decomposition.sparse_encode.html">sparse_encode</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.discriminant_analysis.html">sklearn.discriminant_analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">LinearDiscriminantAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis.html">QuadraticDiscriminantAnalysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.dummy.html">sklearn.dummy</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.dummy.DummyClassifier.html">DummyClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.dummy.DummyRegressor.html">DummyRegressor</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../api/sklearn.ensemble.html">sklearn.ensemble</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.AdaBoostClassifier.html">AdaBoostClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.AdaBoostRegressor.html">AdaBoostRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.BaggingClassifier.html">BaggingClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.BaggingRegressor.html">BaggingRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.ExtraTreesClassifier.html">ExtraTreesClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.ExtraTreesRegressor.html">ExtraTreesRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.GradientBoostingClassifier.html">GradientBoostingClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.GradientBoostingRegressor.html">GradientBoostingRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.HistGradientBoostingClassifier.html">HistGradientBoostingClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.HistGradientBoostingRegressor.html">HistGradientBoostingRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.IsolationForest.html">IsolationForest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.RandomForestClassifier.html">RandomForestClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.RandomForestRegressor.html">RandomForestRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.RandomTreesEmbedding.html">RandomTreesEmbedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.StackingClassifier.html">StackingClassifier</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">StackingRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.VotingClassifier.html">VotingClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.ensemble.VotingRegressor.html">VotingRegressor</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.exceptions.html">sklearn.exceptions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.ConvergenceWarning.html">ConvergenceWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.DataConversionWarning.html">DataConversionWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.DataDimensionalityWarning.html">DataDimensionalityWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.EfficiencyWarning.html">EfficiencyWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.FitFailedWarning.html">FitFailedWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.InconsistentVersionWarning.html">InconsistentVersionWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.NotFittedError.html">NotFittedError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.UndefinedMetricWarning.html">UndefinedMetricWarning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.exceptions.EstimatorCheckFailedWarning.html">EstimatorCheckFailedWarning</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.experimental.html">sklearn.experimental</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.experimental.enable_halving_search_cv.html">enable_halving_search_cv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.experimental.enable_iterative_imputer.html">enable_iterative_imputer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.feature_extraction.html">sklearn.feature_extraction</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.DictVectorizer.html">DictVectorizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.FeatureHasher.html">FeatureHasher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.image.PatchExtractor.html">PatchExtractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.image.extract_patches_2d.html">extract_patches_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.image.grid_to_graph.html">grid_to_graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.image.img_to_graph.html">img_to_graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.image.reconstruct_from_patches_2d.html">reconstruct_from_patches_2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.text.CountVectorizer.html">CountVectorizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.text.HashingVectorizer.html">HashingVectorizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.text.TfidfTransformer.html">TfidfTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_extraction.text.TfidfVectorizer.html">TfidfVectorizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.feature_selection.html">sklearn.feature_selection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.GenericUnivariateSelect.html">GenericUnivariateSelect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.RFE.html">RFE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.RFECV.html">RFECV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectFdr.html">SelectFdr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectFpr.html">SelectFpr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectFromModel.html">SelectFromModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectFwe.html">SelectFwe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectKBest.html">SelectKBest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectPercentile.html">SelectPercentile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SelectorMixin.html">SelectorMixin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.SequentialFeatureSelector.html">SequentialFeatureSelector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.VarianceThreshold.html">VarianceThreshold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.chi2.html">chi2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.f_classif.html">f_classif</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.f_regression.html">f_regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.mutual_info_classif.html">mutual_info_classif</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.mutual_info_regression.html">mutual_info_regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.feature_selection.r_regression.html">r_regression</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.frozen.html">sklearn.frozen</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.frozen.FrozenEstimator.html">FrozenEstimator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.gaussian_process.html">sklearn.gaussian_process</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.GaussianProcessClassifier.html">GaussianProcessClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.GaussianProcessRegressor.html">GaussianProcessRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.CompoundKernel.html">CompoundKernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.ConstantKernel.html">ConstantKernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.DotProduct.html">DotProduct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.ExpSineSquared.html">ExpSineSquared</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.Exponentiation.html">Exponentiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.Hyperparameter.html">Hyperparameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.Kernel.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.Matern.html">Matern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.PairwiseKernel.html">PairwiseKernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.Product.html">Product</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.RBF.html">RBF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.RationalQuadratic.html">RationalQuadratic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.Sum.html">Sum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.gaussian_process.kernels.WhiteKernel.html">WhiteKernel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.impute.html">sklearn.impute</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.impute.IterativeImputer.html">IterativeImputer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.impute.KNNImputer.html">KNNImputer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.impute.MissingIndicator.html">MissingIndicator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.impute.SimpleImputer.html">SimpleImputer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.inspection.html">sklearn.inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.inspection.partial_dependence.html">partial_dependence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.inspection.permutation_importance.html">permutation_importance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.inspection.DecisionBoundaryDisplay.html">DecisionBoundaryDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.inspection.PartialDependenceDisplay.html">PartialDependenceDisplay</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.isotonic.html">sklearn.isotonic</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.isotonic.IsotonicRegression.html">IsotonicRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.isotonic.check_increasing.html">check_increasing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.isotonic.isotonic_regression.html">isotonic_regression</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.kernel_approximation.html">sklearn.kernel_approximation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.kernel_approximation.AdditiveChi2Sampler.html">AdditiveChi2Sampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.kernel_approximation.Nystroem.html">Nystroem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.kernel_approximation.PolynomialCountSketch.html">PolynomialCountSketch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.kernel_approximation.RBFSampler.html">RBFSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.kernel_approximation.SkewedChi2Sampler.html">SkewedChi2Sampler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.kernel_ridge.html">sklearn.kernel_ridge</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.kernel_ridge.KernelRidge.html">KernelRidge</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.linear_model.html">sklearn.linear_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LogisticRegression.html">LogisticRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LogisticRegressionCV.html">LogisticRegressionCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.PassiveAggressiveClassifier.html">PassiveAggressiveClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.Perceptron.html">Perceptron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.RidgeClassifier.html">RidgeClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.RidgeClassifierCV.html">RidgeClassifierCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.SGDClassifier.html">SGDClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.SGDOneClassSVM.html">SGDOneClassSVM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LinearRegression.html">LinearRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.Ridge.html">Ridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.RidgeCV.html">RidgeCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.SGDRegressor.html">SGDRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.ElasticNet.html">ElasticNet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.ElasticNetCV.html">ElasticNetCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.Lars.html">Lars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LarsCV.html">LarsCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.Lasso.html">Lasso</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LassoCV.html">LassoCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LassoLars.html">LassoLars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LassoLarsCV.html">LassoLarsCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.LassoLarsIC.html">LassoLarsIC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.OrthogonalMatchingPursuit.html">OrthogonalMatchingPursuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.OrthogonalMatchingPursuitCV.html">OrthogonalMatchingPursuitCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.ARDRegression.html">ARDRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.BayesianRidge.html">BayesianRidge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.MultiTaskElasticNet.html">MultiTaskElasticNet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.MultiTaskElasticNetCV.html">MultiTaskElasticNetCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.MultiTaskLasso.html">MultiTaskLasso</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.MultiTaskLassoCV.html">MultiTaskLassoCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.HuberRegressor.html">HuberRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.QuantileRegressor.html">QuantileRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.RANSACRegressor.html">RANSACRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.TheilSenRegressor.html">TheilSenRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.GammaRegressor.html">GammaRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.PoissonRegressor.html">PoissonRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.TweedieRegressor.html">TweedieRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.PassiveAggressiveRegressor.html">PassiveAggressiveRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.enet_path.html">enet_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.lars_path.html">lars_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.lars_path_gram.html">lars_path_gram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.lasso_path.html">lasso_path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.orthogonal_mp.html">orthogonal_mp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.orthogonal_mp_gram.html">orthogonal_mp_gram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.linear_model.ridge_regression.html">ridge_regression</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.manifold.html">sklearn.manifold</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.Isomap.html">Isomap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.LocallyLinearEmbedding.html">LocallyLinearEmbedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.MDS.html">MDS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.SpectralEmbedding.html">SpectralEmbedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.TSNE.html">TSNE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.locally_linear_embedding.html">locally_linear_embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.smacof.html">smacof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.spectral_embedding.html">spectral_embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.manifold.trustworthiness.html">trustworthiness</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.metrics.html">sklearn.metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.check_scoring.html">check_scoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.get_scorer.html">get_scorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.get_scorer_names.html">get_scorer_names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.make_scorer.html">make_scorer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.accuracy_score.html">accuracy_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.auc.html">auc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.average_precision_score.html">average_precision_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.balanced_accuracy_score.html">balanced_accuracy_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.brier_score_loss.html">brier_score_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.class_likelihood_ratios.html">class_likelihood_ratios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.classification_report.html">classification_report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.cohen_kappa_score.html">cohen_kappa_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.confusion_matrix.html">confusion_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.d2_log_loss_score.html">d2_log_loss_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.dcg_score.html">dcg_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.det_curve.html">det_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.f1_score.html">f1_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.fbeta_score.html">fbeta_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.hamming_loss.html">hamming_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.hinge_loss.html">hinge_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.jaccard_score.html">jaccard_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.log_loss.html">log_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.matthews_corrcoef.html">matthews_corrcoef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.multilabel_confusion_matrix.html">multilabel_confusion_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.ndcg_score.html">ndcg_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.precision_recall_curve.html">precision_recall_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.precision_recall_fscore_support.html">precision_recall_fscore_support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.precision_score.html">precision_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.recall_score.html">recall_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.roc_auc_score.html">roc_auc_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.roc_curve.html">roc_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.top_k_accuracy_score.html">top_k_accuracy_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.zero_one_loss.html">zero_one_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.d2_absolute_error_score.html">d2_absolute_error_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.d2_pinball_score.html">d2_pinball_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.d2_tweedie_score.html">d2_tweedie_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.explained_variance_score.html">explained_variance_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.max_error.html">max_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_absolute_error.html">mean_absolute_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_absolute_percentage_error.html">mean_absolute_percentage_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_gamma_deviance.html">mean_gamma_deviance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_pinball_loss.html">mean_pinball_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_poisson_deviance.html">mean_poisson_deviance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_squared_error.html">mean_squared_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_squared_log_error.html">mean_squared_log_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mean_tweedie_deviance.html">mean_tweedie_deviance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.median_absolute_error.html">median_absolute_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.r2_score.html">r2_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.root_mean_squared_error.html">root_mean_squared_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.root_mean_squared_log_error.html">root_mean_squared_log_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.coverage_error.html">coverage_error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.label_ranking_average_precision_score.html">label_ranking_average_precision_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.label_ranking_loss.html">label_ranking_loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.adjusted_mutual_info_score.html">adjusted_mutual_info_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.adjusted_rand_score.html">adjusted_rand_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.calinski_harabasz_score.html">calinski_harabasz_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.cluster.contingency_matrix.html">contingency_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.cluster.pair_confusion_matrix.html">pair_confusion_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.completeness_score.html">completeness_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.davies_bouldin_score.html">davies_bouldin_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.fowlkes_mallows_score.html">fowlkes_mallows_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.homogeneity_completeness_v_measure.html">homogeneity_completeness_v_measure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.homogeneity_score.html">homogeneity_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.mutual_info_score.html">mutual_info_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.normalized_mutual_info_score.html">normalized_mutual_info_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.rand_score.html">rand_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.silhouette_samples.html">silhouette_samples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.silhouette_score.html">silhouette_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.v_measure_score.html">v_measure_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.consensus_score.html">consensus_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.DistanceMetric.html">DistanceMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.additive_chi2_kernel.html">additive_chi2_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.chi2_kernel.html">chi2_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.cosine_distances.html">cosine_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.cosine_similarity.html">cosine_similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.distance_metrics.html">distance_metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.euclidean_distances.html">euclidean_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.haversine_distances.html">haversine_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.kernel_metrics.html">kernel_metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.laplacian_kernel.html">laplacian_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.linear_kernel.html">linear_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.manhattan_distances.html">manhattan_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.nan_euclidean_distances.html">nan_euclidean_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.paired_cosine_distances.html">paired_cosine_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.paired_distances.html">paired_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.paired_euclidean_distances.html">paired_euclidean_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.paired_manhattan_distances.html">paired_manhattan_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.pairwise_kernels.html">pairwise_kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.polynomial_kernel.html">polynomial_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.rbf_kernel.html">rbf_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise.sigmoid_kernel.html">sigmoid_kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise_distances.html">pairwise_distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise_distances_argmin.html">pairwise_distances_argmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise_distances_argmin_min.html">pairwise_distances_argmin_min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.pairwise_distances_chunked.html">pairwise_distances_chunked</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.ConfusionMatrixDisplay.html">ConfusionMatrixDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.DetCurveDisplay.html">DetCurveDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.PrecisionRecallDisplay.html">PrecisionRecallDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.PredictionErrorDisplay.html">PredictionErrorDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.metrics.RocCurveDisplay.html">RocCurveDisplay</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.mixture.html">sklearn.mixture</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.mixture.BayesianGaussianMixture.html">BayesianGaussianMixture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.mixture.GaussianMixture.html">GaussianMixture</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.model_selection.html">sklearn.model_selection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.GroupKFold.html">GroupKFold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.GroupShuffleSplit.html">GroupShuffleSplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.KFold.html">KFold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.LeaveOneGroupOut.html">LeaveOneGroupOut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.LeaveOneOut.html">LeaveOneOut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.LeavePGroupsOut.html">LeavePGroupsOut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.LeavePOut.html">LeavePOut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.PredefinedSplit.html">PredefinedSplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.RepeatedKFold.html">RepeatedKFold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.RepeatedStratifiedKFold.html">RepeatedStratifiedKFold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.ShuffleSplit.html">ShuffleSplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.StratifiedGroupKFold.html">StratifiedGroupKFold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.StratifiedKFold.html">StratifiedKFold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.StratifiedShuffleSplit.html">StratifiedShuffleSplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.TimeSeriesSplit.html">TimeSeriesSplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.check_cv.html">check_cv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.train_test_split.html">train_test_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.GridSearchCV.html">GridSearchCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.HalvingGridSearchCV.html">HalvingGridSearchCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.HalvingRandomSearchCV.html">HalvingRandomSearchCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.ParameterGrid.html">ParameterGrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.ParameterSampler.html">ParameterSampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.RandomizedSearchCV.html">RandomizedSearchCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.FixedThresholdClassifier.html">FixedThresholdClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.TunedThresholdClassifierCV.html">TunedThresholdClassifierCV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.cross_val_predict.html">cross_val_predict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.cross_val_score.html">cross_val_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.cross_validate.html">cross_validate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.learning_curve.html">learning_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.permutation_test_score.html">permutation_test_score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.validation_curve.html">validation_curve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.LearningCurveDisplay.html">LearningCurveDisplay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.model_selection.ValidationCurveDisplay.html">ValidationCurveDisplay</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.multiclass.html">sklearn.multiclass</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multiclass.OneVsOneClassifier.html">OneVsOneClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multiclass.OneVsRestClassifier.html">OneVsRestClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multiclass.OutputCodeClassifier.html">OutputCodeClassifier</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.multioutput.html">sklearn.multioutput</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multioutput.ClassifierChain.html">ClassifierChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multioutput.MultiOutputClassifier.html">MultiOutputClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multioutput.MultiOutputRegressor.html">MultiOutputRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.multioutput.RegressorChain.html">RegressorChain</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.naive_bayes.html">sklearn.naive_bayes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.naive_bayes.BernoulliNB.html">BernoulliNB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.naive_bayes.CategoricalNB.html">CategoricalNB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.naive_bayes.ComplementNB.html">ComplementNB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.naive_bayes.GaussianNB.html">GaussianNB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.naive_bayes.MultinomialNB.html">MultinomialNB</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.neighbors.html">sklearn.neighbors</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.BallTree.html">BallTree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.KDTree.html">KDTree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.KNeighborsClassifier.html">KNeighborsClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.KNeighborsRegressor.html">KNeighborsRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.KNeighborsTransformer.html">KNeighborsTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.KernelDensity.html">KernelDensity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.LocalOutlierFactor.html">LocalOutlierFactor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.NearestCentroid.html">NearestCentroid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.NearestNeighbors.html">NearestNeighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.NeighborhoodComponentsAnalysis.html">NeighborhoodComponentsAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.RadiusNeighborsClassifier.html">RadiusNeighborsClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.RadiusNeighborsRegressor.html">RadiusNeighborsRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.RadiusNeighborsTransformer.html">RadiusNeighborsTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.kneighbors_graph.html">kneighbors_graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.radius_neighbors_graph.html">radius_neighbors_graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neighbors.sort_graph_by_row_values.html">sort_graph_by_row_values</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.neural_network.html">sklearn.neural_network</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neural_network.BernoulliRBM.html">BernoulliRBM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neural_network.MLPClassifier.html">MLPClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.neural_network.MLPRegressor.html">MLPRegressor</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.pipeline.html">sklearn.pipeline</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.pipeline.FeatureUnion.html">FeatureUnion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.pipeline.Pipeline.html">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.pipeline.make_pipeline.html">make_pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.pipeline.make_union.html">make_union</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.preprocessing.html">sklearn.preprocessing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.Binarizer.html">Binarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.FunctionTransformer.html">FunctionTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.KBinsDiscretizer.html">KBinsDiscretizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.KernelCenterer.html">KernelCenterer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.LabelBinarizer.html">LabelBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.LabelEncoder.html">LabelEncoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.MaxAbsScaler.html">MaxAbsScaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.MinMaxScaler.html">MinMaxScaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.MultiLabelBinarizer.html">MultiLabelBinarizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.Normalizer.html">Normalizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.OneHotEncoder.html">OneHotEncoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.OrdinalEncoder.html">OrdinalEncoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.PolynomialFeatures.html">PolynomialFeatures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.PowerTransformer.html">PowerTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.QuantileTransformer.html">QuantileTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.RobustScaler.html">RobustScaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.SplineTransformer.html">SplineTransformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.StandardScaler.html">StandardScaler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.TargetEncoder.html">TargetEncoder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.add_dummy_feature.html">add_dummy_feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.binarize.html">binarize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.label_binarize.html">label_binarize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.maxabs_scale.html">maxabs_scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.minmax_scale.html">minmax_scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.normalize.html">normalize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.power_transform.html">power_transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.quantile_transform.html">quantile_transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.robust_scale.html">robust_scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.preprocessing.scale.html">scale</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.random_projection.html">sklearn.random_projection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.random_projection.GaussianRandomProjection.html">GaussianRandomProjection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.random_projection.SparseRandomProjection.html">SparseRandomProjection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.random_projection.johnson_lindenstrauss_min_dim.html">johnson_lindenstrauss_min_dim</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.semi_supervised.html">sklearn.semi_supervised</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.semi_supervised.LabelPropagation.html">LabelPropagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.semi_supervised.LabelSpreading.html">LabelSpreading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.semi_supervised.SelfTrainingClassifier.html">SelfTrainingClassifier</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.svm.html">sklearn.svm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.LinearSVC.html">LinearSVC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.LinearSVR.html">LinearSVR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.NuSVC.html">NuSVC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.NuSVR.html">NuSVR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.OneClassSVM.html">OneClassSVM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.SVC.html">SVC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.SVR.html">SVR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.svm.l1_min_c.html">l1_min_c</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.tree.html">sklearn.tree</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.DecisionTreeClassifier.html">DecisionTreeClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.DecisionTreeRegressor.html">DecisionTreeRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.ExtraTreeClassifier.html">ExtraTreeClassifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.ExtraTreeRegressor.html">ExtraTreeRegressor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.export_graphviz.html">export_graphviz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.export_text.html">export_text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.tree.plot_tree.html">plot_tree</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/sklearn.utils.html">sklearn.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.Bunch.html">Bunch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils._safe_indexing.html">_safe_indexing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.as_float_array.html">as_float_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.assert_all_finite.html">assert_all_finite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.deprecated.html">deprecated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.estimator_html_repr.html">estimator_html_repr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.gen_batches.html">gen_batches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.gen_even_slices.html">gen_even_slices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.indexable.html">indexable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.murmurhash3_32.html">murmurhash3_32</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.resample.html">resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.safe_mask.html">safe_mask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.safe_sqr.html">safe_sqr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.shuffle.html">shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.Tags.html">Tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.InputTags.html">InputTags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.TargetTags.html">TargetTags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.ClassifierTags.html">ClassifierTags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.RegressorTags.html">RegressorTags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.TransformerTags.html">TransformerTags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.get_tags.html">get_tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.check_X_y.html">check_X_y</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.check_array.html">check_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.check_consistent_length.html">check_consistent_length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.check_random_state.html">check_random_state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.check_scalar.html">check_scalar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.validation.check_is_fitted.html">check_is_fitted</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.validation.check_memory.html">check_memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.validation.check_symmetric.html">check_symmetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.validation.column_or_1d.html">column_or_1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.validation.has_fit_parameter.html">has_fit_parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.validation.validate_data.html">validate_data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.metaestimators.available_if.html">available_if</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.class_weight.compute_class_weight.html">compute_class_weight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.class_weight.compute_sample_weight.html">compute_sample_weight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.multiclass.is_multilabel.html">is_multilabel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.multiclass.type_of_target.html">type_of_target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.multiclass.unique_labels.html">unique_labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.extmath.density.html">density</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.extmath.fast_logdet.html">fast_logdet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.extmath.randomized_range_finder.html">randomized_range_finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.extmath.randomized_svd.html">randomized_svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.extmath.safe_sparse_dot.html">safe_sparse_dot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.extmath.weighted_mode.html">weighted_mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.incr_mean_variance_axis.html">incr_mean_variance_axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.inplace_column_scale.html">inplace_column_scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.inplace_csr_column_scale.html">inplace_csr_column_scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.inplace_row_scale.html">inplace_row_scale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.inplace_swap_column.html">inplace_swap_column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.inplace_swap_row.html">inplace_swap_row</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs.mean_variance_axis.html">mean_variance_axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l1.html">inplace_csr_row_normalize_l1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l2.html">inplace_csr_row_normalize_l2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.graph.single_source_shortest_path_length.html">single_source_shortest_path_length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.random.sample_without_replacement.html">sample_without_replacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.arrayfuncs.min_pos.html">min_pos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.metadata_routing.MetadataRequest.html">MetadataRequest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.metadata_routing.MetadataRouter.html">MetadataRouter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.metadata_routing.MethodMapping.html">MethodMapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.metadata_routing.get_routing_for_object.html">get_routing_for_object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.metadata_routing.process_routing.html">process_routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.discovery.all_displays.html">all_displays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.discovery.all_estimators.html">all_estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.discovery.all_functions.html">all_functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.estimator_checks.check_estimator.html">check_estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.estimator_checks.parametrize_with_checks.html">parametrize_with_checks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.estimator_checks.estimator_checks_generator.html">estimator_checks_generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.parallel.Parallel.html">Parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sklearn.utils.parallel.delayed.html">delayed</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../api/index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../api/sklearn.ensemble.html" class="nav-link">sklearn.ensemble</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">StackingRegressor</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="stackingregressor">
+<h1>StackingRegressor<a class="headerlink" href="#stackingregressor" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklearn.ensemble.</span></span><span class="sig-name descname"><span class="pre">StackingRegressor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimators</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passthrough</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L841"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor" title="Link to this definition">#</a></dt>
+<dd><p>Stack of estimators with a final regressor.</p>
+<p>Stacked generalization consists in stacking the output of individual
+estimator and use a regressor to compute the final prediction. Stacking
+allows to use the strength of each individual estimator by using their
+output as input of a final estimator.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">estimators_</span></code> are fitted on the full <code class="docutils literal notranslate"><span class="pre">X</span></code> while <code class="docutils literal notranslate"><span class="pre">final_estimator_</span></code>
+is trained using cross-validated predictions of the base estimators using
+<code class="docutils literal notranslate"><span class="pre">cross_val_predict</span></code>.</p>
+<p>Read more in the <a class="reference internal" href="../ensemble.html#stacking"><span class="std std-ref">User Guide</span></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.22.</span></p>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>estimators</strong><span class="classifier">list of (str, estimator)</span></dt><dd><p>Base estimators which will be stacked together. Each element of the
+list is defined as a tuple of string (i.e. name) and an estimator
+instance. An estimator can be set to ‘drop’ using <code class="docutils literal notranslate"><span class="pre">set_params</span></code>.</p>
+</dd>
+<dt><strong>final_estimator</strong><span class="classifier">estimator, default=None</span></dt><dd><p>A regressor which will be used to combine the base estimators.
+The default regressor is a <a class="reference internal" href="sklearn.linear_model.RidgeCV.html#sklearn.linear_model.RidgeCV" title="sklearn.linear_model.RidgeCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RidgeCV</span></code></a>.</p>
+</dd>
+<dt><strong>cv</strong><span class="classifier">int, cross-validation generator, iterable, or “prefit”, default=None</span></dt><dd><p>Determines the cross-validation splitting strategy used in
+<code class="docutils literal notranslate"><span class="pre">cross_val_predict</span></code> to train <code class="docutils literal notranslate"><span class="pre">final_estimator</span></code>. Possible inputs for
+cv are:</p>
+<ul class="simple">
+<li><p>None, to use the default 5-fold cross validation,</p></li>
+<li><p>integer, to specify the number of folds in a (Stratified) KFold,</p></li>
+<li><p>An object to be used as a cross-validation generator,</p></li>
+<li><p>An iterable yielding train, test splits,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;prefit&quot;</span></code>, to assume the <code class="docutils literal notranslate"><span class="pre">estimators</span></code> are prefit. In this case, the
+estimators will not be refitted.</p></li>
+</ul>
+<p>For integer/None inputs, if the estimator is a classifier and y is
+either binary or multiclass,
+<a class="reference internal" href="sklearn.model_selection.StratifiedKFold.html#sklearn.model_selection.StratifiedKFold" title="sklearn.model_selection.StratifiedKFold"><code class="xref py py-class docutils literal notranslate"><span class="pre">StratifiedKFold</span></code></a> is used.
+In all other cases, <a class="reference internal" href="sklearn.model_selection.KFold.html#sklearn.model_selection.KFold" title="sklearn.model_selection.KFold"><code class="xref py py-class docutils literal notranslate"><span class="pre">KFold</span></code></a> is used.
+These splitters are instantiated with <code class="docutils literal notranslate"><span class="pre">shuffle=False</span></code> so the splits
+will be the same across calls.</p>
+<p>Refer <a class="reference internal" href="../cross_validation.html#cross-validation"><span class="std std-ref">User Guide</span></a> for the various
+cross-validation strategies that can be used here.</p>
+<p>If “prefit” is passed, it is assumed that all <code class="docutils literal notranslate"><span class="pre">estimators</span></code> have
+been fitted already. The <code class="docutils literal notranslate"><span class="pre">final_estimator_</span></code> is trained on the <code class="docutils literal notranslate"><span class="pre">estimators</span></code>
+predictions on the full training set and are <strong>not</strong> cross validated
+predictions. Please note that if the models have been trained on the same
+data to train the stacking model, there is a very high risk of overfitting.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.1: </span>The ‘prefit’ option was added in 1.1</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A larger number of split will provide no benefits if the number
+of training samples is large enough. Indeed, the training time
+will increase. <code class="docutils literal notranslate"><span class="pre">cv</span></code> is not used for model evaluation but for
+prediction.</p>
+</div>
+</dd>
+<dt><strong>n_jobs</strong><span class="classifier">int, default=None</span></dt><dd><p>The number of jobs to run in parallel for <code class="docutils literal notranslate"><span class="pre">fit</span></code> of all <code class="docutils literal notranslate"><span class="pre">estimators</span></code>.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> means 1 unless in a <code class="docutils literal notranslate"><span class="pre">joblib.parallel_backend</span></code> context. -1 means
+using all processors. See <a class="reference internal" href="../../glossary.html#term-n_jobs"><span class="xref std std-term">Glossary</span></a> for more details.</p>
+</dd>
+<dt><strong>passthrough</strong><span class="classifier">bool, default=False</span></dt><dd><p>When False, only the predictions of estimators will be used as
+training data for <code class="docutils literal notranslate"><span class="pre">final_estimator</span></code>. When True, the
+<code class="docutils literal notranslate"><span class="pre">final_estimator</span></code> is trained on the predictions as well as the
+original training data.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">int, default=0</span></dt><dd><p>Verbosity level.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>estimators_</strong><span class="classifier">list of estimators</span></dt><dd><p>The elements of the <code class="docutils literal notranslate"><span class="pre">estimators</span></code> parameter, having been fitted on the
+training data. If an estimator has been set to <code class="docutils literal notranslate"><span class="pre">'drop'</span></code>, it
+will not appear in <code class="docutils literal notranslate"><span class="pre">estimators_</span></code>. When <code class="docutils literal notranslate"><span class="pre">cv=&quot;prefit&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">estimators_</span></code>
+is set to <code class="docutils literal notranslate"><span class="pre">estimators</span></code> and is not fitted again.</p>
+</dd>
+<dt><strong>named_estimators_</strong><span class="classifier"><a class="reference internal" href="sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bunch</span></code></a></span></dt><dd><p>Attribute to access any fitted sub-estimators by name.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_features_in_</span></code><span class="classifier">int</span></dt><dd><p>Number of features seen during <a class="reference internal" href="../../glossary.html#term-fit"><span class="xref std std-term">fit</span></a>.</p>
+</dd>
+<dt><strong>feature_names_in_</strong><span class="classifier">ndarray of shape (<code class="docutils literal notranslate"><span class="pre">n_features_in_</span></code>,)</span></dt><dd><p>Names of features seen during <a class="reference internal" href="../../glossary.html#term-fit"><span class="xref std std-term">fit</span></a>. Only defined if the
+underlying estimators expose such an attribute when fit.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.0.</span></p>
+</div>
+</dd>
+<dt><strong>final_estimator_</strong><span class="classifier">estimator</span></dt><dd><p>The regressor fit on the output of <code class="docutils literal notranslate"><span class="pre">estimators_</span></code> and responsible for
+final predictions.</p>
+</dd>
+<dt><strong>stack_method_</strong><span class="classifier">list of str</span></dt><dd><p>The method used by each base estimator.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sklearn.ensemble.StackingClassifier.html#sklearn.ensemble.StackingClassifier" title="sklearn.ensemble.StackingClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StackingClassifier</span></code></a></dt><dd><p>Stack of estimators with a final classifier.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">References</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r606df7ffad02-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Wolpert, David H. “Stacked generalization.” Neural networks 5.2
+(1992): 241-259.</p>
+</div>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_diabetes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">RidgeCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearSVR</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackingRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">load_diabetes</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="n">RidgeCV</span><span class="p">()),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s1">&#39;svr&#39;</span><span class="p">,</span> <span class="n">LinearSVR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span> <span class="o">=</span> <span class="n">StackingRegressor</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">estimators</span><span class="o">=</span><span class="n">estimators</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">final_estimator</span><span class="o">=</span><span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="gp">... </span>                                          <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="go">0.3...</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L1012"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.fit" title="Link to this definition">#</a></dt>
+<dd><p>Fit the estimators.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>X</strong><span class="classifier">{array-like, sparse matrix} of shape (n_samples, n_features)</span></dt><dd><p>Training vectors, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
+<code class="docutils literal notranslate"><span class="pre">n_features</span></code> is the number of features.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples,)</span></dt><dd><p>Target values.</p>
+</dd>
+<dt><strong>**fit_params</strong><span class="classifier">dict</span></dt><dd><p>Parameters to pass to the underlying estimators.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.6: </span>Only available if <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code>, which can be
+set by using <code class="docutils literal notranslate"><span class="pre">sklearn.set_config(enable_metadata_routing=True)</span></code>.
+See <a class="reference internal" href="../../metadata_routing.html#metadata-routing"><span class="std std-ref">Metadata Routing User Guide</span></a> for
+more details.</p>
+</div>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>Returns a fitted instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fit_params</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L1061"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.fit_transform" title="Link to this definition">#</a></dt>
+<dd><p>Fit the estimators and return the predictions for X for each estimator.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>X</strong><span class="classifier">{array-like, sparse matrix} of shape (n_samples, n_features)</span></dt><dd><p>Training vectors, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
+<code class="docutils literal notranslate"><span class="pre">n_features</span></code> is the number of features.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples,)</span></dt><dd><p>Target values.</p>
+</dd>
+<dt><strong>**fit_params</strong><span class="classifier">dict</span></dt><dd><p>Parameters to pass to the underlying estimators.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.6: </span>Only available if <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code>, which can be
+set by using <code class="docutils literal notranslate"><span class="pre">sklearn.set_config(enable_metadata_routing=True)</span></code>.
+See <a class="reference internal" href="../../metadata_routing.html#metadata-routing"><span class="std std-ref">Metadata Routing User Guide</span></a> for
+more details.</p>
+</div>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y_preds</strong><span class="classifier">ndarray of shape (n_samples, n_estimators)</span></dt><dd><p>Prediction outputs for each estimator.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.get_feature_names_out">
+<span class="sig-name descname"><span class="pre">get_feature_names_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L302"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.get_feature_names_out" title="Link to this definition">#</a></dt>
+<dd><p>Get output feature names for transformation.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>input_features</strong><span class="classifier">array-like of str or None, default=None</span></dt><dd><p>Input features. The input feature names are only used when <code class="docutils literal notranslate"><span class="pre">passthrough</span></code> is
+<code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">input_features</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then <code class="docutils literal notranslate"><span class="pre">feature_names_in_</span></code> is
+used as feature names in. If <code class="docutils literal notranslate"><span class="pre">feature_names_in_</span></code> is not defined,
+then names are generated: <code class="docutils literal notranslate"><span class="pre">[x0,</span> <span class="pre">x1,</span> <span class="pre">...,</span> <span class="pre">x(n_features_in_</span> <span class="pre">-</span> <span class="pre">1)]</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">input_features</span></code> is an array-like, then <code class="docutils literal notranslate"><span class="pre">input_features</span></code> must
+match <code class="docutils literal notranslate"><span class="pre">feature_names_in_</span></code> if <code class="docutils literal notranslate"><span class="pre">feature_names_in_</span></code> is defined.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">passthrough</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, then only the names of <code class="docutils literal notranslate"><span class="pre">estimators</span></code> are used
+to generate the output feature names.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>feature_names_out</strong><span class="classifier">ndarray of str objects</span></dt><dd><p>Transformed feature names.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.get_metadata_routing">
+<span class="sig-name descname"><span class="pre">get_metadata_routing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L386"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.get_metadata_routing" title="Link to this definition">#</a></dt>
+<dd><p>Get metadata routing of this object.</p>
+<p>Please check <a class="reference internal" href="../../metadata_routing.html#metadata-routing"><span class="std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.6.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>routing</strong><span class="classifier">MetadataRouter</span></dt><dd><p>A <a class="reference internal" href="sklearn.utils.metadata_routing.MetadataRouter.html#sklearn.utils.metadata_routing.MetadataRouter" title="sklearn.utils.metadata_routing.MetadataRouter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetadataRouter</span></code></a> encapsulating
+routing information.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_base.py#L270"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.get_params" title="Link to this definition">#</a></dt>
+<dd><p>Get the parameters of an estimator from the ensemble.</p>
+<p>Returns the parameters given in the constructor as well as the
+estimators contained within the <code class="docutils literal notranslate"><span class="pre">estimators</span></code> parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>deep</strong><span class="classifier">bool, default=True</span></dt><dd><p>Setting it to True gets the various estimators and the parameters
+of the estimators as well.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>params</strong><span class="classifier">dict</span></dt><dd><p>Parameter and estimator names mapped to their values or parameter
+names mapped to their values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.named_estimators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">named_estimators</span></span><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.named_estimators" title="Link to this definition">#</a></dt>
+<dd><p>Dictionary to access any fitted sub-estimators by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bunch</span></code></a></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">predict_params</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L1092"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.predict" title="Link to this definition">#</a></dt>
+<dd><p>Predict target for X.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>X</strong><span class="classifier">{array-like, sparse matrix} of shape (n_samples, n_features)</span></dt><dd><p>Training vectors, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
+<code class="docutils literal notranslate"><span class="pre">n_features</span></code> is the number of features.</p>
+</dd>
+<dt><strong>**predict_params</strong><span class="classifier">dict of str -&gt; obj</span></dt><dd><p>Parameters to the <code class="docutils literal notranslate"><span class="pre">predict</span></code> called by the <code class="docutils literal notranslate"><span class="pre">final_estimator</span></code>. Note
+that this may be used to return uncertainties from some estimators
+with <code class="docutils literal notranslate"><span class="pre">return_std</span></code> or <code class="docutils literal notranslate"><span class="pre">return_cov</span></code>. Be aware that it will only
+account for uncertainty in the final estimator.</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=False</span></code> (default):
+Parameters directly passed to the <code class="docutils literal notranslate"><span class="pre">predict</span></code> method of the
+<code class="docutils literal notranslate"><span class="pre">final_estimator</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code>: Parameters safely routed to
+the <code class="docutils literal notranslate"><span class="pre">predict</span></code> method of the <code class="docutils literal notranslate"><span class="pre">final_estimator</span></code>. See <a class="reference internal" href="../../metadata_routing.html#metadata-routing"><span class="std std-ref">Metadata
+Routing User Guide</span></a> for more details.</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.6: </span><code class="docutils literal notranslate"><span class="pre">**predict_params</span></code> can be routed via metadata routing API.</p>
+</div>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y_pred</strong><span class="classifier">ndarray of shape (n_samples,) or (n_samples, n_output)</span></dt><dd><p>Predicted targets.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.score">
+<span class="sig-name descname"><span class="pre">score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/base.py#L595"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.score" title="Link to this definition">#</a></dt>
+<dd><p>Return <a class="reference internal" href="../model_evaluation.html#r2-score"><span class="std std-ref">coefficient of determination</span></a> on test data.</p>
+<p>The coefficient of determination, <span class="math notranslate nohighlight">\(R^2\)</span>, is defined as
+<span class="math notranslate nohighlight">\((1 - \frac{u}{v})\)</span>, where <span class="math notranslate nohighlight">\(u\)</span> is the residual
+sum of squares <code class="docutils literal notranslate"><span class="pre">((y_true</span> <span class="pre">-</span> <span class="pre">y_pred)**</span> <span class="pre">2).sum()</span></code> and <span class="math notranslate nohighlight">\(v\)</span>
+is the total sum of squares <code class="docutils literal notranslate"><span class="pre">((y_true</span> <span class="pre">-</span> <span class="pre">y_true.mean())</span> <span class="pre">**</span> <span class="pre">2).sum()</span></code>.
+The best possible score is 1.0 and it can be negative (because the
+model can be arbitrarily worse). A constant model that always predicts
+the expected value of <code class="docutils literal notranslate"><span class="pre">y</span></code>, disregarding the input features, would get
+a <span class="math notranslate nohighlight">\(R^2\)</span> score of 0.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">array-like of shape (n_samples, n_features)</span></dt><dd><p>Test samples. For some estimators this may be a precomputed
+kernel matrix or a list of generic objects instead with shape
+<code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_samples_fitted)</span></code>, where <code class="docutils literal notranslate"><span class="pre">n_samples_fitted</span></code>
+is the number of samples used in the fitting for the estimator.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples,) or (n_samples, n_outputs)</span></dt><dd><p>True values for <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p>
+</dd>
+<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,), default=None</span></dt><dd><p>Sample weights.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>score</strong><span class="classifier">float</span></dt><dd><p><span class="math notranslate nohighlight">\(R^2\)</span> of <code class="docutils literal notranslate"><span class="pre">self.predict(X)</span></code> w.r.t. <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The <span class="math notranslate nohighlight">\(R^2\)</span> score used when calling <code class="docutils literal notranslate"><span class="pre">score</span></code> on a regressor uses
+<code class="docutils literal notranslate"><span class="pre">multioutput='uniform_average'</span></code> from version 0.23 to keep consistent
+with default value of <a class="reference internal" href="sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">r2_score</span></code></a>.
+This influences the <code class="docutils literal notranslate"><span class="pre">score</span></code> method of all the multioutput
+regressors (except for
+<a class="reference internal" href="sklearn.multioutput.MultiOutputRegressor.html#sklearn.multioutput.MultiOutputRegressor" title="sklearn.multioutput.MultiOutputRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiOutputRegressor</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.set_output">
+<span class="sig-name descname"><span class="pre">set_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/utils/_set_output.py#L389"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.set_output" title="Link to this definition">#</a></dt>
+<dd><p>Set output container.</p>
+<p>See <a class="reference internal" href="../../auto_examples/miscellaneous/plot_set_output.html#sphx-glr-auto-examples-miscellaneous-plot-set-output-py"><span class="std std-ref">Introducing the set_output API</span></a>
+for an example on how to use the API.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>transform</strong><span class="classifier">{“default”, “pandas”, “polars”}, default=None</span></dt><dd><p>Configure output of <code class="docutils literal notranslate"><span class="pre">transform</span></code> and <code class="docutils literal notranslate"><span class="pre">fit_transform</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;default&quot;</span></code>: Default output format of a transformer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;pandas&quot;</span></code>: DataFrame output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;polars&quot;</span></code>: Polars output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: Transform configuration is unchanged</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.4: </span><code class="docutils literal notranslate"><span class="pre">&quot;polars&quot;</span></code> option was added.</p>
+</div>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">estimator instance</span></dt><dd><p>Estimator instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.set_params">
+<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_base.py#L245"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.set_params" title="Link to this definition">#</a></dt>
+<dd><p>Set the parameters of an estimator from the ensemble.</p>
+<p>Valid parameter keys can be listed with <code class="docutils literal notranslate"><span class="pre">get_params()</span></code>. Note that you
+can directly set the parameters of the estimators contained in
+<code class="docutils literal notranslate"><span class="pre">estimators</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**params</strong><span class="classifier">keyword arguments</span></dt><dd><p>Specific parameters using e.g.
+<code class="docutils literal notranslate"><span class="pre">set_params(parameter_name=new_value)</span></code>. In addition, to setting the
+parameters of the estimator, the individual estimator of the
+estimators can also be set, or can be removed by setting them to
+‘drop’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>Estimator instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.set_score_request">
+<span class="sig-name descname"><span class="pre">set_score_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sklearn.ensemble.StackingRegressor" title="sklearn.ensemble._stacking.StackingRegressor"><span class="pre">StackingRegressor</span></a></span></span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/utils/_metadata_requests.py#L1285"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.set_score_request" title="Link to this definition">#</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">score</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference internal" href="../../glossary.html#term-meta-estimator"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference internal" href="sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config</span></code></a>).
+Please check the <a class="reference internal" href="../../metadata_routing.html#metadata-routing"><span class="std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">score</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>sample_weight</strong><span class="classifier">str, True, False, or None,                     default=sklearn.utils.metadata_routing.UNCHANGED</span></dt><dd><p>Metadata routing for <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">object</span></dt><dd><p>The updated object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklearn.ensemble.StackingRegressor.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/1eb422d6c5/sklearn/ensemble/_stacking.py#L1045"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.ensemble.StackingRegressor.transform" title="Link to this definition">#</a></dt>
+<dd><p>Return the predictions for X for each estimator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X</strong><span class="classifier">{array-like, sparse matrix} of shape (n_samples, n_features)</span></dt><dd><p>Training vectors, where <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> is the number of samples and
+<code class="docutils literal notranslate"><span class="pre">n_features</span></code> is the number of features.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y_preds</strong><span class="classifier">ndarray of shape (n_samples, n_estimators)</span></dt><dd><p>Prediction outputs for each estimator.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="gallery-examples">
+<h2>Gallery examples<a class="headerlink" href="#gallery-examples" title="Link to this heading">#</a></h2>
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Stacking refers to a method to blend estimators. In this strategy, some estimators are individually fitted on some training data while a final estimator is trained using the stacked predictions of these base estimators."><img alt="" src="../../_images/sphx_glr_plot_stack_predictors_thumb.png" />
+<p><a class="reference internal" href="../../auto_examples/ensemble/plot_stack_predictors.html#sphx-glr-auto-examples-ensemble-plot-stack-predictors-py"><span class="std std-ref">Combine predictors using stacking</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Combine predictors using stacking</div>
+</div></div></section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sklearn.ensemble.StackingClassifier.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">StackingClassifier</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="sklearn.ensemble.VotingClassifier.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">VotingClassifier</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor"><code class="docutils literal notranslate"><span class="pre">StackingRegressor</span></code></a><ul class="nav section-nav flex-column visible">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.fit"><code class="docutils literal notranslate"><span class="pre">fit</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.fit_transform"><code class="docutils literal notranslate"><span class="pre">fit_transform</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.get_feature_names_out"><code class="docutils literal notranslate"><span class="pre">get_feature_names_out</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.get_metadata_routing"><code class="docutils literal notranslate"><span class="pre">get_metadata_routing</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.get_params"><code class="docutils literal notranslate"><span class="pre">get_params</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.named_estimators"><code class="docutils literal notranslate"><span class="pre">named_estimators</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.predict"><code class="docutils literal notranslate"><span class="pre">predict</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.score"><code class="docutils literal notranslate"><span class="pre">score</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.set_output"><code class="docutils literal notranslate"><span class="pre">set_output</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.set_params"><code class="docutils literal notranslate"><span class="pre">set_params</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.set_score_request"><code class="docutils literal notranslate"><span class="pre">set_score_request</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.ensemble.StackingRegressor.transform"><code class="docutils literal notranslate"><span class="pre">transform</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery-examples">Gallery examples</a></li>
+</ul>
+
+
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/modules/generated/sklearn.ensemble.StackingRegressor.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,910 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Utilities for Developers" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/developers/utilities.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Scikit-learn contains a number of utilities to help with development. These are located in sklearn.utils, and include tools in a number of categories. All the following functions and classes are in..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Scikit-learn contains a number of utilities to help with development. These are located in sklearn.utils, and include tools in a number of categories. All the following functions and classes are in..." />
+
+    <title>Utilities for Developers &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developers/utilities';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/developers/utilities.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Utilities for Developers</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="utilities-for-developers">
+<span id="developers-utils"></span><h1>Utilities for Developers<a class="headerlink" href="#utilities-for-developers" title="Link to this heading">#</a></h1>
+<p>Scikit-learn contains a number of utilities to help with development.  These are
+located in <a class="reference internal" href="../api/sklearn.utils.html#module-sklearn.utils" title="sklearn.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.utils</span></code></a>, and include tools in a number of categories.
+All the following functions and classes are in the module <a class="reference internal" href="../api/sklearn.utils.html#module-sklearn.utils" title="sklearn.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.utils</span></code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These utilities are meant to be used internally within the scikit-learn
+package.  They are not guaranteed to be stable between versions of
+scikit-learn.  Backports, in particular, will be removed as the scikit-learn
+dependencies evolve.</p>
+</div>
+<section id="validation-tools">
+<h2>Validation Tools<a class="headerlink" href="#validation-tools" title="Link to this heading">#</a></h2>
+<p>These are tools used to check and validate input.  When you write a function
+which accepts arrays, matrices, or sparse matrices as arguments, the following
+should be used when applicable.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.assert_all_finite.html#sklearn.utils.assert_all_finite" title="sklearn.utils.assert_all_finite"><code class="xref py py-func docutils literal notranslate"><span class="pre">assert_all_finite</span></code></a>: Throw an error if array contains NaNs or Infs.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.as_float_array.html#sklearn.utils.as_float_array" title="sklearn.utils.as_float_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">as_float_array</span></code></a>: convert input to an array of floats.  If a sparse
+matrix is passed, a sparse matrix will be returned.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.check_array.html#sklearn.utils.check_array" title="sklearn.utils.check_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_array</span></code></a>: check that input is a 2D array, raise error on sparse
+matrices. Allowed sparse matrix formats can be given optionally, as well as
+allowing 1D or N-dimensional arrays. Calls <a class="reference internal" href="../modules/generated/sklearn.utils.assert_all_finite.html#sklearn.utils.assert_all_finite" title="sklearn.utils.assert_all_finite"><code class="xref py py-func docutils literal notranslate"><span class="pre">assert_all_finite</span></code></a> by
+default.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.check_X_y.html#sklearn.utils.check_X_y" title="sklearn.utils.check_X_y"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_X_y</span></code></a>: check that X and y have consistent length, calls
+check_array on X, and column_or_1d on y. For multilabel classification or
+multitarget regression, specify multi_output=True, in which case check_array
+will be called on y.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.indexable.html#sklearn.utils.indexable" title="sklearn.utils.indexable"><code class="xref py py-func docutils literal notranslate"><span class="pre">indexable</span></code></a>: check that all input arrays have consistent length and can
+be sliced or indexed using safe_index.  This is used to validate input for
+cross-validation.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.validation.check_memory.html#sklearn.utils.validation.check_memory" title="sklearn.utils.validation.check_memory"><code class="xref py py-func docutils literal notranslate"><span class="pre">validation.check_memory</span></code></a> checks that input is <code class="docutils literal notranslate"><span class="pre">joblib.Memory</span></code>-like,
+which means that it can be converted into a
+<code class="docutils literal notranslate"><span class="pre">sklearn.utils.Memory</span></code> instance (typically a str denoting
+the <code class="docutils literal notranslate"><span class="pre">cachedir</span></code>) or has the same interface.</p></li>
+</ul>
+<p>If your code relies on a random number generator, it should never use
+functions like <code class="docutils literal notranslate"><span class="pre">numpy.random.random</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.random.normal</span></code>.  This
+approach can lead to repeatability issues in unit tests.  Instead, a
+<code class="docutils literal notranslate"><span class="pre">numpy.random.RandomState</span></code> object should be used, which is built from
+a <code class="docutils literal notranslate"><span class="pre">random_state</span></code> argument passed to the class or function.  The function
+<a class="reference internal" href="../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_random_state</span></code></a>, below, can then be used to create a random
+number generator object.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_random_state</span></code></a>: create a <code class="docutils literal notranslate"><span class="pre">np.random.RandomState</span></code> object from
+a parameter <code class="docutils literal notranslate"><span class="pre">random_state</span></code>.</p>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">random_state</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">np.random</span></code>, then a
+randomly-initialized <code class="docutils literal notranslate"><span class="pre">RandomState</span></code> object is returned.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">random_state</span></code> is an integer, then it is used to seed a new
+<code class="docutils literal notranslate"><span class="pre">RandomState</span></code> object.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">random_state</span></code> is a <code class="docutils literal notranslate"><span class="pre">RandomState</span></code> object, then it is passed through.</p></li>
+</ul>
+</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_random_state</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random_state</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">array([0.5488135 , 0.71518937, 0.60276338, 0.54488318])</span>
+</pre></div>
+</div>
+<p>When developing your own scikit-learn compatible estimator, the following
+helpers are available.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><code class="xref py py-func docutils literal notranslate"><span class="pre">validation.check_is_fitted</span></code></a>: check that the estimator has been fitted
+before calling <code class="docutils literal notranslate"><span class="pre">transform</span></code>, <code class="docutils literal notranslate"><span class="pre">predict</span></code>, or similar methods. This helper
+allows to raise a standardized error message across estimator.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.validation.has_fit_parameter.html#sklearn.utils.validation.has_fit_parameter" title="sklearn.utils.validation.has_fit_parameter"><code class="xref py py-func docutils literal notranslate"><span class="pre">validation.has_fit_parameter</span></code></a>: check that a given parameter is
+supported in the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method of a given estimator.</p></li>
+</ul>
+</section>
+<section id="efficient-linear-algebra-array-operations">
+<h2>Efficient Linear Algebra &amp; Array Operations<a class="headerlink" href="#efficient-linear-algebra-array-operations" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.extmath.randomized_range_finder.html#sklearn.utils.extmath.randomized_range_finder" title="sklearn.utils.extmath.randomized_range_finder"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.randomized_range_finder</span></code></a>: construct an orthonormal matrix
+whose range approximates the range of the input.  This is used in
+<a class="reference internal" href="../modules/generated/sklearn.utils.extmath.randomized_svd.html#sklearn.utils.extmath.randomized_svd" title="sklearn.utils.extmath.randomized_svd"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.randomized_svd</span></code></a>, below.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.extmath.randomized_svd.html#sklearn.utils.extmath.randomized_svd" title="sklearn.utils.extmath.randomized_svd"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.randomized_svd</span></code></a>: compute the k-truncated randomized SVD.
+This algorithm finds the exact truncated singular values decomposition
+using randomization to speed up the computations. It is particularly
+fast on large matrices on which you wish to extract only a small
+number of components.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arrayfuncs.cholesky_delete</span></code>:
+(used in <a class="reference internal" href="../modules/generated/sklearn.linear_model.lars_path.html#sklearn.linear_model.lars_path" title="sklearn.linear_model.lars_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">lars_path</span></code></a>)  Remove an
+item from a cholesky factorization.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.arrayfuncs.min_pos.html#sklearn.utils.arrayfuncs.min_pos" title="sklearn.utils.arrayfuncs.min_pos"><code class="xref py py-func docutils literal notranslate"><span class="pre">arrayfuncs.min_pos</span></code></a>: (used in <code class="docutils literal notranslate"><span class="pre">sklearn.linear_model.least_angle</span></code>)
+Find the minimum of the positive values within an array.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.extmath.fast_logdet.html#sklearn.utils.extmath.fast_logdet" title="sklearn.utils.extmath.fast_logdet"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.fast_logdet</span></code></a>: efficiently compute the log of the determinant
+of a matrix.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.extmath.density.html#sklearn.utils.extmath.density" title="sklearn.utils.extmath.density"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.density</span></code></a>: efficiently compute the density of a sparse vector</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.extmath.safe_sparse_dot.html#sklearn.utils.extmath.safe_sparse_dot" title="sklearn.utils.extmath.safe_sparse_dot"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.safe_sparse_dot</span></code></a>: dot product which will correctly handle
+<code class="docutils literal notranslate"><span class="pre">scipy.sparse</span></code> inputs.  If the inputs are dense, it is equivalent to
+<code class="docutils literal notranslate"><span class="pre">numpy.dot</span></code>.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.extmath.weighted_mode.html#sklearn.utils.extmath.weighted_mode" title="sklearn.utils.extmath.weighted_mode"><code class="xref py py-func docutils literal notranslate"><span class="pre">extmath.weighted_mode</span></code></a>: an extension of <code class="docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code> which
+allows each item to have a real-valued weight.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.resample.html#sklearn.utils.resample" title="sklearn.utils.resample"><code class="xref py py-func docutils literal notranslate"><span class="pre">resample</span></code></a>: Resample arrays or sparse matrices in a consistent way.
+used in <a class="reference internal" href="../modules/generated/sklearn.utils.shuffle.html#sklearn.utils.shuffle" title="sklearn.utils.shuffle"><code class="xref py py-func docutils literal notranslate"><span class="pre">shuffle</span></code></a>, below.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.shuffle.html#sklearn.utils.shuffle" title="sklearn.utils.shuffle"><code class="xref py py-func docutils literal notranslate"><span class="pre">shuffle</span></code></a>: Shuffle arrays or sparse matrices in a consistent way.
+Used in <a class="reference internal" href="../modules/generated/sklearn.cluster.k_means.html#sklearn.cluster.k_means" title="sklearn.cluster.k_means"><code class="xref py py-func docutils literal notranslate"><span class="pre">k_means</span></code></a>.</p></li>
+</ul>
+</section>
+<section id="efficient-random-sampling">
+<h2>Efficient Random Sampling<a class="headerlink" href="#efficient-random-sampling" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.random.sample_without_replacement.html#sklearn.utils.random.sample_without_replacement" title="sklearn.utils.random.sample_without_replacement"><code class="xref py py-func docutils literal notranslate"><span class="pre">random.sample_without_replacement</span></code></a>: implements efficient algorithms
+for sampling <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> integers from a population of size <code class="docutils literal notranslate"><span class="pre">n_population</span></code>
+without replacement.</p></li>
+</ul>
+</section>
+<section id="efficient-routines-for-sparse-matrices">
+<h2>Efficient Routines for Sparse Matrices<a class="headerlink" href="#efficient-routines-for-sparse-matrices" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">sklearn.utils.sparsefuncs</span></code> cython module hosts compiled extensions to
+efficiently process <code class="docutils literal notranslate"><span class="pre">scipy.sparse</span></code> data.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.sparsefuncs.mean_variance_axis.html#sklearn.utils.sparsefuncs.mean_variance_axis" title="sklearn.utils.sparsefuncs.mean_variance_axis"><code class="xref py py-func docutils literal notranslate"><span class="pre">sparsefuncs.mean_variance_axis</span></code></a>: compute the means and
+variances along a specified axis of a CSR matrix.
+Used for normalizing the tolerance stopping criterion in
+<a class="reference internal" href="../modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans" title="sklearn.cluster.KMeans"><code class="xref py py-class docutils literal notranslate"><span class="pre">KMeans</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l1.html#sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l1" title="sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l1"><code class="xref py py-func docutils literal notranslate"><span class="pre">sparsefuncs_fast.inplace_csr_row_normalize_l1</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l2.html#sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l2" title="sklearn.utils.sparsefuncs_fast.inplace_csr_row_normalize_l2"><code class="xref py py-func docutils literal notranslate"><span class="pre">sparsefuncs_fast.inplace_csr_row_normalize_l2</span></code></a>: can be used to normalize
+individual sparse samples to unit L1 or L2 norm as done in
+<a class="reference internal" href="../modules/generated/sklearn.preprocessing.Normalizer.html#sklearn.preprocessing.Normalizer" title="sklearn.preprocessing.Normalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Normalizer</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.sparsefuncs.inplace_csr_column_scale.html#sklearn.utils.sparsefuncs.inplace_csr_column_scale" title="sklearn.utils.sparsefuncs.inplace_csr_column_scale"><code class="xref py py-func docutils literal notranslate"><span class="pre">sparsefuncs.inplace_csr_column_scale</span></code></a>: can be used to multiply the
+columns of a CSR matrix by a constant scale (one scale per column).
+Used for scaling features to unit standard deviation in
+<a class="reference internal" href="../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardScaler</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.neighbors.sort_graph_by_row_values.html#sklearn.neighbors.sort_graph_by_row_values" title="sklearn.neighbors.sort_graph_by_row_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">sort_graph_by_row_values</span></code></a>: can be used to sort a
+CSR sparse matrix such that each row is stored with increasing values. This
+is useful to improve efficiency when using precomputed sparse distance
+matrices in estimators relying on nearest neighbors graph.</p></li>
+</ul>
+</section>
+<section id="graph-routines">
+<h2>Graph Routines<a class="headerlink" href="#graph-routines" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.graph.single_source_shortest_path_length.html#sklearn.utils.graph.single_source_shortest_path_length" title="sklearn.utils.graph.single_source_shortest_path_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">graph.single_source_shortest_path_length</span></code></a>:
+(not currently used in scikit-learn)
+Return the shortest path from a single source
+to all connected nodes on a graph.  Code is adapted from <a class="reference external" href="https://networkx.github.io/">networkx</a>.
+If this is ever needed again, it would be far faster to use a single
+iteration of Dijkstra’s algorithm from <code class="docutils literal notranslate"><span class="pre">graph_shortest_path</span></code>.</p></li>
+</ul>
+</section>
+<section id="testing-functions">
+<h2>Testing Functions<a class="headerlink" href="#testing-functions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.discovery.all_estimators.html#sklearn.utils.discovery.all_estimators" title="sklearn.utils.discovery.all_estimators"><code class="xref py py-func docutils literal notranslate"><span class="pre">discovery.all_estimators</span></code></a> : returns a list of all estimators in
+scikit-learn to test for consistent behavior and interfaces.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.discovery.all_displays.html#sklearn.utils.discovery.all_displays" title="sklearn.utils.discovery.all_displays"><code class="xref py py-func docutils literal notranslate"><span class="pre">discovery.all_displays</span></code></a> : returns a list of all displays (related to
+plotting API) in scikit-learn to test for consistent behavior and interfaces.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.discovery.all_functions.html#sklearn.utils.discovery.all_functions" title="sklearn.utils.discovery.all_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">discovery.all_functions</span></code></a> : returns a list of all functions in
+scikit-learn to test for consistent behavior and interfaces.</p></li>
+</ul>
+</section>
+<section id="multiclass-and-multilabel-utility-function">
+<h2>Multiclass and multilabel utility function<a class="headerlink" href="#multiclass-and-multilabel-utility-function" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.multiclass.is_multilabel.html#sklearn.utils.multiclass.is_multilabel" title="sklearn.utils.multiclass.is_multilabel"><code class="xref py py-func docutils literal notranslate"><span class="pre">multiclass.is_multilabel</span></code></a>: Helper function to check if the task
+is a multi-label classification one.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.multiclass.unique_labels.html#sklearn.utils.multiclass.unique_labels" title="sklearn.utils.multiclass.unique_labels"><code class="xref py py-func docutils literal notranslate"><span class="pre">multiclass.unique_labels</span></code></a>: Helper function to extract an ordered
+array of unique labels from different formats of target.</p></li>
+</ul>
+</section>
+<section id="helper-functions">
+<h2>Helper Functions<a class="headerlink" href="#helper-functions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.gen_even_slices.html#sklearn.utils.gen_even_slices" title="sklearn.utils.gen_even_slices"><code class="xref py py-class docutils literal notranslate"><span class="pre">gen_even_slices</span></code></a>: generator to create <code class="docutils literal notranslate"><span class="pre">n</span></code>-packs of slices going up
+to <code class="docutils literal notranslate"><span class="pre">n</span></code>.  Used in <a class="reference internal" href="../modules/generated/sklearn.decomposition.dict_learning.html#sklearn.decomposition.dict_learning" title="sklearn.decomposition.dict_learning"><code class="xref py py-func docutils literal notranslate"><span class="pre">dict_learning</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.cluster.k_means.html#sklearn.cluster.k_means" title="sklearn.cluster.k_means"><code class="xref py py-func docutils literal notranslate"><span class="pre">k_means</span></code></a>.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.gen_batches.html#sklearn.utils.gen_batches" title="sklearn.utils.gen_batches"><code class="xref py py-class docutils literal notranslate"><span class="pre">gen_batches</span></code></a>: generator to create slices containing batch size elements
+from 0 to <code class="docutils literal notranslate"><span class="pre">n</span></code></p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.safe_mask.html#sklearn.utils.safe_mask" title="sklearn.utils.safe_mask"><code class="xref py py-func docutils literal notranslate"><span class="pre">safe_mask</span></code></a>: Helper function to convert a mask to the format expected
+by the numpy array or scipy sparse matrix on which to use it (sparse
+matrices support integer indices only while numpy arrays support both
+boolean masks and integer indices).</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.safe_sqr.html#sklearn.utils.safe_sqr" title="sklearn.utils.safe_sqr"><code class="xref py py-func docutils literal notranslate"><span class="pre">safe_sqr</span></code></a>: Helper function for unified squaring (<code class="docutils literal notranslate"><span class="pre">**2</span></code>) of
+array-likes, matrices and sparse matrices.</p></li>
+</ul>
+</section>
+<section id="hash-functions">
+<h2>Hash Functions<a class="headerlink" href="#hash-functions" title="Link to this heading">#</a></h2>
+<ul>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.murmurhash3_32.html#sklearn.utils.murmurhash3_32" title="sklearn.utils.murmurhash3_32"><code class="xref py py-func docutils literal notranslate"><span class="pre">murmurhash3_32</span></code></a> provides a python wrapper for the
+<code class="docutils literal notranslate"><span class="pre">MurmurHash3_x86_32</span></code> C++ non cryptographic hash function. This hash
+function is suitable for implementing lookup tables, Bloom filters,
+Count Min Sketch, feature hashing and implicitly defined sparse
+random projections:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">murmurhash3_32</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">murmurhash3_32</span><span class="p">(</span><span class="s2">&quot;some feature&quot;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">384616559</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">murmurhash3_32</span><span class="p">(</span><span class="s2">&quot;some feature&quot;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3910350737</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">sklearn.utils.murmurhash</span></code> module can also be “cimported” from
+other cython modules so as to benefit from the high performance of
+MurmurHash while skipping the overhead of the Python interpreter.</p>
+</li>
+</ul>
+</section>
+<section id="warnings-and-exceptions">
+<h2>Warnings and Exceptions<a class="headerlink" href="#warnings-and-exceptions" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.utils.deprecated.html#sklearn.utils.deprecated" title="sklearn.utils.deprecated"><code class="xref py py-class docutils literal notranslate"><span class="pre">deprecated</span></code></a>: Decorator to mark a function or class as deprecated.</p></li>
+<li><p><a class="reference internal" href="../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvergenceWarning</span></code></a>: Custom warning to catch
+convergence problems. Used in <code class="docutils literal notranslate"><span class="pre">sklearn.covariance.graphical_lasso</span></code>.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-tools">Validation Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#efficient-linear-algebra-array-operations">Efficient Linear Algebra &amp; Array Operations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#efficient-random-sampling">Efficient Random Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#efficient-routines-for-sparse-matrices">Efficient Routines for Sparse Matrices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#graph-routines">Graph Routines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-functions">Testing Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multiclass-and-multilabel-utility-function">Multiclass and multilabel utility function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-functions">Helper Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hash-functions">Hash Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warnings-and-exceptions">Warnings and Exceptions</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developers/utilities.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>
