@@ -33,6 +33,30 @@ Version 1.9.dev0
 
 **December 2025**
 
+Support for Array API
+---------------------
+
+Additional estimators and functions have been updated to include support for all
+`Array API <https://data-apis.org/array-api/latest/>`_ compliant inputs.
+
+See :ref:`array_api` for more details.
+
+- |Feature| :func:`sklearn.metrics.d2_absolute_error_score` and
+  :func:`sklearn.metrics.d2_pinball_score` now support array API compatible inputs.
+  By :user:`Virgil Chan <virchan>`. :pr:`31671`
+
+:mod:`sklearn.metrics`
+----------------------
+
+- |Fix| :func:`metrics.d2_pinball_score` and :func:`metrics.d2_absolute_error_score` now
+  always use the `"averaged_inverted_cdf"` quantile method, both with and
+  without sample weights. Previously, the `"linear"` quantile method was used only
+  for the unweighted case leading the surprising discrepancies when comparing the
+  results with unit weights. Note that all quantile interpolation methods are
+  asymptotically equivalent in the large sample limit, but this fix can cause score
+  value changes on small evaluation sets (without weights).
+  By :user:`Virgil Chan <virchan>`. :pr:`31671`
+
 .. rubric:: Code and documentation contributors
 
 Thanks to everyone who has contributed to the maintenance and improvement of
