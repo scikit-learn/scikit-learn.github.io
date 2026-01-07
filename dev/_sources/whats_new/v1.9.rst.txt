@@ -31,7 +31,7 @@ Version 1.9
 Version 1.9.dev0
 ================
 
-**December 2025**
+**January 2026**
 
 Changes impacting many modules
 ------------------------------
@@ -40,6 +40,11 @@ Changes impacting many modules
   :class:`compose.ColumnTransformer` now raise a clearer
   error message when an estimator class is passed instead of an instance.
   By :user:`Anne Beyer <AnneBeyer>` :pr:`32888`
+
+- |Fix| Some parameter descriptions in the HTML representation of estimators
+  were not properly escaped, which could lead to malformed HTML if the
+  description contains characters like `<` or `>`.
+  By :user:`Olivier Grisel <ogrisel>`. :pr:`32942`
 
 Support for Array API
 ---------------------
@@ -53,12 +58,41 @@ See :ref:`array_api` for more details.
   :func:`sklearn.metrics.d2_pinball_score` now support array API compatible inputs.
   By :user:`Virgil Chan <virchan>`. :pr:`31671`
 
+- |Enhancement| :class:`kernel_approximation.Nystroem` now supports array API compatible inputs.
+  By :user:`Emily Chen <EmilyXinyi>` :pr:`29661`
+
+- |Fix| Fixed a bug that would cause Cython-based estimators to fail when fit on
+  NumPy inputs when setting `sklearn.set_config(array_api_dispatch=True)`. By
+  :user:`Olivier Grisel <ogrisel>`. :pr:`32846`
+
 - |Fix| Fixes how `pos_label` is inferred when `pos_label` is set to `None`, in
   :func:`sklearn.metrics.brier_score_loss` and
   :func:`sklearn.metrics.d2_brier_score`. By :user:`Lucy Liu <lucyleeow>`. :pr:`32923`
 
+:mod:`sklearn.compose`
+----------------------
+
+- |Fix| The dotted line for :class:`compose.ColumnTransformer` in its HTML display
+  now includes only its elements. The behaviour when a remainder is used,
+  has also been corrected.
+  By :user:`Dea María Léon <deamarialeon>` :pr:`32713`
+
 :mod:`sklearn.linear_model`
 ---------------------------
+
+- |Enhancement| :class:`linear_model.ElasticNet`, :class:`linear_model.ElasticNetCV` and
+  :func:`linear_model.enet_path`
+  now are able to fit Ridge regression, i.e. setting `l1_ratio=0`.
+  Before this PR, the stopping criterion was a formulation of the dual gap that breaks
+  down for `l1_ratio=0`. Now, an alternative dual gap formulation is used for this
+  setting. This reduces the noise of raised warnings.
+  By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`32845`
+
+- |Fix| :class:`linear_model.LassoCV` and :class:`linear_model.ElasticNetCV` now
+  take the `positive` parameter into account to compute the maximum `alpha` parameter,
+  where all coefficients are zero. This impacts the search grid for the
+  internally tuned `alpha` hyper-parameter stored in the attribute `alphas_`.
+  By :user:`Junteng Li <JasonLiJT>` :pr:`32768`
 
 - |Fix| Correct the formulation of `alpha` within :class:`linear_model.SGDOneClassSVM`.
   The corrected value is `alpha = nu` instead of `alpha = nu / 2`.
