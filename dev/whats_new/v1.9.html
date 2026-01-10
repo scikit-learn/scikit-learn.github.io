@@ -693,6 +693,24 @@ has also been corrected.
 By <a class="reference external" href="https://github.com/deamarialeon">Dea María Léon</a> <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32713">#32713</a></p></li>
 </ul>
 </section>
+<section id="sklearn-ensemble">
+<h3><a class="reference internal" href="../api/sklearn.ensemble.html#module-sklearn.ensemble" title="sklearn.ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.ensemble</span></code></a><a class="headerlink" href="#sklearn-ensemble" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  Both <a class="reference internal" href="../modules/generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor" title="sklearn.ensemble.GradientBoostingRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.GradientBoostingRegressor</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.ensemble.GradientBoostingClassifier.html#sklearn.ensemble.GradientBoostingClassifier" title="sklearn.ensemble.GradientBoostingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.GradientBoostingClassifier</span></code></a> with the default
+<code class="docutils literal notranslate"><span class="pre">&quot;friedman_mse&quot;</span></code> criterion were computing impurity values with an incorrect scaling,
+leading to unexpected trees in some cases. The implementation now uses
+<code class="docutils literal notranslate"><span class="pre">&quot;squared_error&quot;</span></code>, which is exactly equivalent to <code class="docutils literal notranslate"><span class="pre">&quot;friedman_mse&quot;</span></code> up to
+floating-point error discrepancies but computes correct impurity values.
+By <a class="reference external" href="https://github.com/cakedev0">Arthur Lacote</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32708">#32708</a></p></li>
+<li><p><span class="raw-html"><span class="badge text-bg-warning">API Change</span></span>  The <code class="docutils literal notranslate"><span class="pre">criterion</span></code> parameter is now deprecated for classes
+<a class="reference internal" href="../modules/generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor" title="sklearn.ensemble.GradientBoostingRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.GradientBoostingRegressor</span></code></a>
+and <a class="reference internal" href="../modules/generated/sklearn.ensemble.GradientBoostingClassifier.html#sklearn.ensemble.GradientBoostingClassifier" title="sklearn.ensemble.GradientBoostingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.GradientBoostingClassifier</span></code></a>, as both options
+(<code class="docutils literal notranslate"><span class="pre">&quot;friedman_mse&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;squared_error&quot;</span></code>) were producing the same results,
+up to floating-point rounding discrepancies and a bug in <code class="docutils literal notranslate"><span class="pre">&quot;friedman_mse&quot;</span></code>.
+By <a class="reference external" href="https://github.com/cakedev0">Arthur Lacote</a> <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32708">#32708</a></p></li>
+</ul>
+</section>
 <section id="sklearn-linear-model">
 <h3><a class="reference internal" href="../api/sklearn.linear_model.html#module-sklearn.linear_model" title="sklearn.linear_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.linear_model</span></code></a><a class="headerlink" href="#sklearn-linear-model" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -733,6 +751,20 @@ By <a class="reference external" href="https://github.com/virchan">Virgil Chan</
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  Raise more informative error when fitting <code class="xref py py-class docutils literal notranslate"><span class="pre">NuSVR</span></code> with all zero sample weights.
 By <a class="reference external" href="https://github.com/lucyleeow">Lucy Liu</a> and <a class="reference external" href="https://github.com/j-hendricks">John Hendricks</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32212">#32212</a></p></li>
+</ul>
+</section>
+<section id="sklearn-tree">
+<h3><a class="reference internal" href="../api/sklearn.tree.html#module-sklearn.tree" title="sklearn.tree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.tree</span></code></a><a class="headerlink" href="#sklearn-tree" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-warning">API Change</span></span>  <code class="docutils literal notranslate"><span class="pre">criterion=&quot;friedman_mse&quot;</span></code> is now deprecated. This criterion was intended for
+gradient boosting but was incorrectly implemented in scikit-learn’s trees and
+was actually behaving identically to <code class="docutils literal notranslate"><span class="pre">criterion=&quot;squared_error&quot;</span></code>. Use
+<code class="docutils literal notranslate"><span class="pre">criterion=&quot;squared_error&quot;</span></code> instead. This affects:
+- <a class="reference internal" href="../modules/generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor" title="sklearn.tree.DecisionTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">tree.DecisionTreeRegressor</span></code></a>
+- <a class="reference internal" href="../modules/generated/sklearn.tree.ExtraTreeRegressor.html#sklearn.tree.ExtraTreeRegressor" title="sklearn.tree.ExtraTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">tree.ExtraTreeRegressor</span></code></a>
+- <a class="reference internal" href="../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.RandomForestRegressor</span></code></a>
+- <a class="reference internal" href="../modules/generated/sklearn.ensemble.ExtraTreesRegressor.html#sklearn.ensemble.ExtraTreesRegressor" title="sklearn.ensemble.ExtraTreesRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.ExtraTreesRegressor</span></code></a>
+By <a class="reference external" href="https://github.com/cakedev0">Arthur Lacote</a> <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32708">#32708</a></p></li>
 </ul>
 </section>
 <section id="sklearn-utils">
@@ -808,9 +840,11 @@ the project since version 1.8, including:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-impacting-many-modules">Changes impacting many modules</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#support-for-array-api">Support for Array API</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-compose"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.compose</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.ensemble</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-linear-model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.linear_model</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-metrics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.metrics</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-svm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.svm</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-tree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.tree</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.utils</span></code></a></li>
 </ul>
 </li>
