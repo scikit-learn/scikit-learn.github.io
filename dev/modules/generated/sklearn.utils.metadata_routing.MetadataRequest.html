@@ -1309,12 +1309,14 @@
 <h1>MetadataRequest<a class="headerlink" href="#metadatarequest" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sklearn.utils.metadata_routing.MetadataRequest">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklearn.utils.metadata_routing.</span></span><span class="sig-name descname"><span class="pre">MetadataRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/e96804eeb/sklearn/utils/_metadata_requests.py#L560"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.MetadataRequest" title="Link to this definition">#</a></dt>
-<dd><p>Contains the metadata request info of a consumer.</p>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklearn.utils.metadata_routing.</span></span><span class="sig-name descname"><span class="pre">MetadataRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/fdb20acfa/sklearn/utils/_metadata_requests.py#L560"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.MetadataRequest" title="Link to this definition">#</a></dt>
+<dd><p>Container for storing metadata request info and an associated consumer (<code class="docutils literal notranslate"><span class="pre">owner</span></code>).</p>
 <p>Instances of <code class="docutils literal notranslate"><span class="pre">MethodMetadataRequest</span></code> are used in this class for each
-available method under <code class="docutils literal notranslate"><span class="pre">metadatarequest.{method}</span></code>.</p>
-<p>Consumer-only classes such as simple estimators return a serialized
-version of this class as the output of <code class="docutils literal notranslate"><span class="pre">get_metadata_routing()</span></code>.</p>
+available method under <code class="docutils literal notranslate"><span class="pre">MetadataRequest(owner=obj).{method}</span></code>.</p>
+<p>Every <a class="reference internal" href="../../glossary.html#term-consumer"><span class="xref std std-term">consumer</span></a> in scikit-learn has a <code class="docutils literal notranslate"><span class="pre">_metadata_request</span></code> attribute that is a
+<code class="docutils literal notranslate"><span class="pre">MetadataRequest</span></code>.</p>
+<p>Read more on developing custom estimators that can route metadata in the
+<a class="reference internal" href="../../auto_examples/miscellaneous/plot_metadata_routing.html#sphx-glr-auto-examples-miscellaneous-plot-metadata-routing-py"><span class="std std-ref">Metadata Routing Developing Guide</span></a>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.3.</span></p>
 </div>
@@ -1326,9 +1328,24 @@ version of this class as the output of <code class="docutils literal notranslate
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_config</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.metadata_routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetadataRequest</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">MetadataRequest</span><span class="p">(</span><span class="n">owner</span><span class="o">=</span><span class="s2">&quot;any_object&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">fit</span><span class="o">.</span><span class="n">add_request</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="s2">&quot;sample_weight&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">{&#39;sample_weight&#39;: True}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">add_request</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="s2">&quot;sample_weight&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">{&#39;sample_weight&#39;: False}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="go">{&#39;fit&#39;: {&#39;sample_weight&#39;: True}, &#39;score&#39;: {&#39;sample_weight&#39;: False}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="sklearn.utils.metadata_routing.MetadataRequest.consumes">
-<span class="sig-name descname"><span class="pre">consumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/e96804eeb/sklearn/utils/_metadata_requests.py#L591"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.MetadataRequest.consumes" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">consumes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/fdb20acfa/sklearn/utils/_metadata_requests.py#L610"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.MetadataRequest.consumes" title="Link to this definition">#</a></dt>
 <dd><p>Return params consumed as metadata in a <a class="reference internal" href="../../glossary.html#term-consumer"><span class="xref std std-term">consumer</span></a>.</p>
 <p>This method returns the subset of given <code class="docutils literal notranslate"><span class="pre">params</span></code> that are consumed by the
 given <code class="docutils literal notranslate"><span class="pre">method</span></code>. It can be used to check if parameters are used as metadata in

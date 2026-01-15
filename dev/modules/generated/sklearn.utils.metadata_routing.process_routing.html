@@ -11,10 +11,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://scikit-learn/stable/modules/generated/sklearn.utils.metadata_routing.process_routing.html" />
 <meta property="og:site_name" content="scikit-learn" />
-<meta property="og:description" content="Gallery examples: Metadata Routing" />
+<meta property="og:description" content="Gallery examples: Developing Estimators Compliant with Metadata Routing" />
 <meta property="og:image" content="https://scikit-learn/stable/_images/sphx_glr_plot_metadata_routing_thumb.png" />
 <meta property="og:image:alt" content="" />
-<meta name="description" content="Gallery examples: Metadata Routing" />
+<meta name="description" content="Gallery examples: Developing Estimators Compliant with Metadata Routing" />
 
     <title>process_routing &#8212; scikit-learn 1.9.dev0 documentation</title>
   
@@ -1311,7 +1311,7 @@
 <h1>process_routing<a class="headerlink" href="#process-routing" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sklearn.utils.metadata_routing.process_routing">
-<span class="sig-prename descclassname"><span class="pre">sklearn.utils.metadata_routing.</span></span><span class="sig-name descname"><span class="pre">process_routing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_method</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/e96804eeb/sklearn/utils/_metadata_requests.py#L1575"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.process_routing" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sklearn.utils.metadata_routing.</span></span><span class="sig-name descname"><span class="pre">process_routing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_method</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/fdb20acfa/sklearn/utils/_metadata_requests.py#L1652"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.process_routing" title="Link to this definition">#</a></dt>
 <dd><p>Validate and route metadata.</p>
 <p>This function is used inside a <a class="reference internal" href="../../glossary.html#term-router"><span class="xref std std-term">router</span></a>’s method, e.g. <a class="reference internal" href="../../glossary.html#term-fit"><span class="xref std std-term">fit</span></a>,
 to validate the metadata and handle the routing.</p>
@@ -1319,9 +1319,19 @@ to validate the metadata and handle the routing.</p>
 <code class="docutils literal notranslate"><span class="pre">fit(self,</span> <span class="pre">X,</span> <span class="pre">y,</span> <span class="pre">sample_weight=None,</span> <span class="pre">**fit_params)</span></code>,
 a call to this function would be:
 <code class="docutils literal notranslate"><span class="pre">process_routing(self,</span> <span class="pre">&quot;fit&quot;,</span> <span class="pre">sample_weight=sample_weight,</span> <span class="pre">**fit_params)</span></code>.</p>
+<p>Internally, the function uses the router’s <code class="docutils literal notranslate"><span class="pre">MetadataRouter</span></code> object (as
+returned by a call to its <code class="docutils literal notranslate"><span class="pre">get_metadata_routing</span></code> method) to validate
+per method that the routed metadata had been requested by the underlying
+estimator, and extracts a mapping of the given metadata to the requested
+metadata based on the routing information defined by the <code class="docutils literal notranslate"><span class="pre">MetadataRouter</span></code>.</p>
 <p>Note that if routing is not enabled and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> is empty, then it
 returns an empty routing where <code class="docutils literal notranslate"><span class="pre">process_routing(...).ANYTHING.ANY_METHOD</span></code>
 is always an empty dictionary.</p>
+<p>The output of this function is a <a class="reference internal" href="sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bunch</span></code></a> that has a key for
+each consuming object and those hold keys for their consuming methods, which then
+contain keys for the metadata which should be routed to them.</p>
+<p>Read more on developing custom estimators that can route metadata in the
+<a class="reference internal" href="../../auto_examples/miscellaneous/plot_metadata_routing.html#sphx-glr-auto-examples-miscellaneous-plot-metadata-routing-py"><span class="std std-ref">Metadata Routing Developing Guide</span></a>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.3.</span></p>
 </div>
@@ -1339,23 +1349,37 @@ is always an empty dictionary.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>routed_params</strong><span class="classifier">Bunch</span></dt><dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Bunch</span></code> of the form <code class="docutils literal notranslate"><span class="pre">{&quot;object_name&quot;:</span> <span class="pre">{&quot;method_name&quot;:</span>
-<span class="pre">{metadata:</span> <span class="pre">value}}}</span></code> which can be used to pass the required metadata to
-A <a class="reference internal" href="sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bunch</span></code></a> of the form <code class="docutils literal notranslate"><span class="pre">{&quot;object_name&quot;:</span> <span class="pre">{&quot;method_name&quot;:</span>
-<span class="pre">{metadata:</span> <span class="pre">value}}}</span></code> which can be used to pass the required metadata to
-corresponding methods or corresponding child objects. The object names
-are those defined in <code class="docutils literal notranslate"><span class="pre">obj.get_metadata_routing()</span></code>.</p>
+<dt><strong>routed_params</strong><span class="classifier">Bunch</span></dt><dd><p>A <a class="reference internal" href="sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bunch</span></code></a> of the form <code class="docutils literal notranslate"><span class="pre">{&quot;object_name&quot;:</span>
+<span class="pre">{&quot;method_name&quot;:</span> <span class="pre">{metadata:</span> <span class="pre">value}}}</span></code> which can be used to pass the
+required metadata to corresponding methods or corresponding child objects.
+The object names are those defined in <code class="docutils literal notranslate"><span class="pre">obj.get_metadata_routing()</span></code>.</p>
 </dd>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_config</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.metadata_routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">process_routing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectFromModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">process_routing</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">SelectFromModel</span><span class="p">(</span><span class="n">Ridge</span><span class="p">()</span><span class="o">.</span><span class="n">set_fit_request</span><span class="p">(</span><span class="n">sample_weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="s2">&quot;fit&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">sample_weight</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">{&#39;estimator&#39;: {&#39;fit&#39;: {&#39;sample_weight&#39;: array([1, 1, 2])}}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <section id="gallery-examples">
 <h2>Gallery examples<a class="headerlink" href="#gallery-examples" title="Link to this heading">#</a></h2>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This document shows how you can use the metadata routing mechanism &lt;metadata_routing&gt; in scikit-learn to route metadata to the estimators, scorers, and CV splitters consuming them."><img alt="" src="../../_images/sphx_glr_plot_metadata_routing_thumb.png" />
-<p><a class="reference internal" href="../../auto_examples/miscellaneous/plot_metadata_routing.html"><span class="doc">Metadata Routing</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Metadata Routing</div>
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This document shows how you can use the metadata routing mechanism &lt;metadata_routing&gt; in scikit-learn to build estimators that route metadata to other estimators, scorers, and CV splitters, that can consume metadata."><img alt="" src="../../_images/sphx_glr_plot_metadata_routing_thumb.png" />
+<p><a class="reference internal" href="../../auto_examples/miscellaneous/plot_metadata_routing.html"><span class="doc">Developing Estimators Compliant with Metadata Routing</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Developing Estimators Compliant with Metadata Routing</div>
 </div></div></section>
 </section>
 

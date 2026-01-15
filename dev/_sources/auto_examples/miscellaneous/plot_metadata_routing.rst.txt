@@ -18,24 +18,24 @@
 .. _sphx_glr_auto_examples_miscellaneous_plot_metadata_routing.py:
 
 
-================
-Metadata Routing
-================
+=====================================================
+Developing Estimators Compliant with Metadata Routing
+=====================================================
 
 .. currentmodule:: sklearn
 
 This document shows how you can use the :ref:`metadata routing mechanism
-<metadata_routing>` in scikit-learn to route metadata to the estimators,
-scorers, and CV splitters consuming them.
+<metadata_routing>` in scikit-learn to build estimators that route metadata
+to other estimators, scorers, and CV splitters, that can consume :term:`metadata`.
 
 To better understand the following document, we need to introduce two concepts:
-routers and consumers. A router is an object which forwards some given data and
-metadata to other objects. In most cases, a router is a :term:`meta-estimator`,
-i.e. an estimator which takes another estimator as a parameter. A function such
-as :func:`sklearn.model_selection.cross_validate` which takes an estimator as a
-parameter and forwards data and metadata, is also a router.
+:term:`routers <router>` and :term:`consumers <consumer>`. A :term:`router` is an object
+which forwards some given data and metadata to other objects. In most cases, a router is
+a :term:`meta-estimator`, i.e. an estimator which takes another estimator as a
+parameter. A function such as :func:`sklearn.model_selection.cross_validate` which takes
+an estimator as a parameter and forwards data and metadata, is also a router.
 
-A consumer, on the other hand, is an object which accepts and uses some given
+A :term:`consumer`, on the other hand, is an object which accepts and uses some given
 metadata. For instance, an estimator taking into account ``sample_weight`` in
 its :term:`fit` method is a consumer of ``sample_weight``.
 
@@ -60,7 +60,7 @@ First a few imports and some random data for the rest of the script.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 34-67
+.. GENERATED FROM PYTHON SOURCE LINES 34-66
 
 .. code-block:: Python
 
@@ -84,7 +84,6 @@ First a few imports and some random data for the rest of the script.
     from sklearn.utils.metadata_routing import (
         MetadataRouter,
         MethodMapping,
-        get_routing_for_object,
         process_routing,
     )
     from sklearn.utils.validation import check_is_fitted
@@ -104,11 +103,11 @@ First a few imports and some random data for the rest of the script.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 68-69
+.. GENERATED FROM PYTHON SOURCE LINES 67-68
 
 Metadata routing is only available if explicitly enabled:
 
-.. GENERATED FROM PYTHON SOURCE LINES 69-72
+.. GENERATED FROM PYTHON SOURCE LINES 68-71
 
 .. code-block:: Python
 
@@ -122,11 +121,11 @@ Metadata routing is only available if explicitly enabled:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 73-74
+.. GENERATED FROM PYTHON SOURCE LINES 72-73
 
 This utility function is a dummy to check if a metadata is passed:
 
-.. GENERATED FROM PYTHON SOURCE LINES 74-84
+.. GENERATED FROM PYTHON SOURCE LINES 73-83
 
 .. code-block:: Python
 
@@ -147,11 +146,11 @@ This utility function is a dummy to check if a metadata is passed:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 85-86
+.. GENERATED FROM PYTHON SOURCE LINES 84-85
 
 A utility function to nicely print the routing information of an object:
 
-.. GENERATED FROM PYTHON SOURCE LINES 86-90
+.. GENERATED FROM PYTHON SOURCE LINES 85-89
 
 .. code-block:: Python
 
@@ -166,16 +165,16 @@ A utility function to nicely print the routing information of an object:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 91-97
+.. GENERATED FROM PYTHON SOURCE LINES 90-96
 
 Consuming Estimator
 -------------------
 Here we demonstrate how an estimator can expose the required API to support
 metadata routing as a consumer. Imagine a simple classifier accepting
-``sample_weight`` as a metadata on its ``fit`` and ``groups`` in its
+``sample_weight`` as a metadata in its ``fit`` and ``groups`` in its
 ``predict`` method:
 
-.. GENERATED FROM PYTHON SOURCE LINES 97-112
+.. GENERATED FROM PYTHON SOURCE LINES 96-111
 
 .. code-block:: Python
 
@@ -201,7 +200,7 @@ metadata routing as a consumer. Imagine a simple classifier accepting
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 113-123
+.. GENERATED FROM PYTHON SOURCE LINES 112-122
 
 The above estimator now has all it needs to consume metadata. This is
 accomplished by some magic done in :class:`~base.BaseEstimator`. There are
@@ -214,7 +213,7 @@ now three methods exposed by the above class: ``set_fit_request``,
 
 By default, no metadata is requested, which we can see as:
 
-.. GENERATED FROM PYTHON SOURCE LINES 123-126
+.. GENERATED FROM PYTHON SOURCE LINES 122-125
 
 .. code-block:: Python
 
@@ -236,7 +235,7 @@ By default, no metadata is requested, which we can see as:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 127-133
+.. GENERATED FROM PYTHON SOURCE LINES 126-132
 
 The above output means that ``sample_weight`` and ``groups`` are not
 requested by `ExampleClassifier`, and if a router is given those metadata, it
@@ -245,7 +244,7 @@ required or not. The same is true for ``sample_weight`` in the ``score``
 method, which is inherited from :class:`~base.ClassifierMixin`. In order to
 explicitly set request values for those metadata, we can use these methods:
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-142
+.. GENERATED FROM PYTHON SOURCE LINES 132-141
 
 .. code-block:: Python
 
@@ -273,7 +272,7 @@ explicitly set request values for those metadata, we can use these methods:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 143-149
+.. GENERATED FROM PYTHON SOURCE LINES 142-163
 
 .. note ::
     Please note that as long as the above estimator is not used in a
@@ -282,31 +281,22 @@ explicitly set request values for those metadata, we can use these methods:
     validate or route given metadata. A simple usage of the above estimator
     would work as expected.
 
-.. GENERATED FROM PYTHON SOURCE LINES 149-154
+    .. code-block:: python
 
-.. code-block:: Python
+        est = ExampleClassifier()
+        est.fit(X, y, sample_weight=my_weights)
+        est.predict(X[:3, :], groups=my_groups)
 
+    Out:
 
-    est = ExampleClassifier()
-    est.fit(X, y, sample_weight=my_weights)
-    est.predict(X[:3, :], groups=my_groups)
+    .. code-block:: python-console
 
+        Received sample_weight of length = 100 in ExampleClassifier.
+        Received groups of length = 100 in ExampleClassifier.
 
+        array([1., 1., 1.])
 
-
-
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    Received sample_weight of length = 100 in ExampleClassifier.
-    Received groups of length = 100 in ExampleClassifier.
-
-    array([1., 1., 1.])
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 155-160
+.. GENERATED FROM PYTHON SOURCE LINES 165-177
 
 Routing Meta-Estimator
 ----------------------
@@ -314,7 +304,14 @@ Now, we show how to design a meta-estimator to be a router. As a simplified
 example, here is a meta-estimator, which doesn't do much other than routing
 the metadata.
 
-.. GENERATED FROM PYTHON SOURCE LINES 160-214
+To make the meta-estimator a router, you only need to:
+
+- define its `get_metadata_routing` method, which returns a `MetadataRouter`
+  instance in charge of configuring the metadata routing.
+- use `process_routing` inside its methods (`fit`, `predict`, ...) to  properly
+  route the metadata from the meta-estimator to its sub-estimator.
+
+.. GENERATED FROM PYTHON SOURCE LINES 177-216
 
 .. code-block:: Python
 
@@ -327,7 +324,7 @@ the metadata.
         def get_metadata_routing(self):
             # This method defines the routing for this meta-estimator.
             # In order to do so, a `MetadataRouter` instance is created, and the
-            # routing is added to it. More explanations follow below.
+            # routing is added to it.
             router = MetadataRouter(owner=self).add(
                 estimator=self.estimator,
                 method_mapping=MethodMapping()
@@ -338,37 +335,22 @@ the metadata.
             return router
 
         def fit(self, X, y, **fit_params):
-            # `get_routing_for_object` returns a copy of the `MetadataRouter`
-            # constructed by the above `get_metadata_routing` method, that is
-            # internally called.
-            request_router = get_routing_for_object(self)
-            # Meta-estimators are responsible for validating the given metadata.
-            # `method` refers to the parent's method, i.e. `fit` in this example.
-            request_router.validate_metadata(params=fit_params, method="fit")
-            # `MetadataRouter.route_params` maps the given metadata to the metadata
-            # required by the underlying estimator based on the routing information
-            # defined by the MetadataRouter. The output of type `Bunch` has a key
-            # for each consuming object and those hold keys for their consuming
-            # methods, which then contain key for the metadata which should be
-            # routed to them.
-            routed_params = request_router.route_params(params=fit_params, caller="fit")
-
+            # Get information on all the metadata that should be routed from here to
+            # consuming methods.
+            routed_params = process_routing(self, "fit", **fit_params)
             # A sub-estimator is fitted and its classes are attributed to the
-            # meta-estimator.
+            # meta-estimator. Since we call the sub-estimator's fit method, we pass the
+            # the metadata stored in `routed_params.estimator.fit`.
             self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
             self.classes_ = self.estimator_.classes_
             return self
 
         def predict(self, X, **predict_params):
             check_is_fitted(self)
-            # As in `fit`, we get a copy of the object's MetadataRouter,
-            request_router = get_routing_for_object(self)
-            # then we validate the given metadata,
-            request_router.validate_metadata(params=predict_params, method="predict")
-            # and then prepare the input to the underlying `predict` method.
-            routed_params = request_router.route_params(
-                params=predict_params, caller="predict"
-            )
+            # As in `fit`, we get information on all the metadata that should be routed and
+            # pass the metadata that is stored in `routed_params.estimator.predict` to the
+            # sub-estimator's predict method.
+            routed_params = process_routing(self, "predict", **predict_params)
             return self.estimator_.predict(X, **routed_params.estimator.predict)
 
 
@@ -379,27 +361,23 @@ the metadata.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 215-232
+.. GENERATED FROM PYTHON SOURCE LINES 217-225
 
 Let's break down different parts of the above code.
 
-First, the :meth:`~utils.metadata_routing.get_routing_for_object` takes our
-meta-estimator (``self``) and returns a
-:class:`~utils.metadata_routing.MetadataRouter` or, a
-:class:`~utils.metadata_routing.MetadataRequest` if the object is a consumer,
-based on the output of the estimator's ``get_metadata_routing`` method.
-
-Then in each method, we use the ``route_params`` method to construct a
-dictionary of the form ``{"object_name": {"method_name": {"metadata":
+In each method, we use the ``process_routing`` function to construct a
+:class:`~utils.Bunch` of the form ``{"object_name": {"method_name": {"metadata":
 value}}}`` to pass to the underlying estimator's method. The ``object_name``
-(``estimator`` in the above ``routed_params.estimator.fit`` example) is the
-same as the one added in the ``get_metadata_routing``. ``validate_metadata``
-makes sure all given metadata are requested to avoid silent bugs.
+(``estimator`` in ``routed_params.estimator.fit``) is the same as the `estimator`
+added in the ``get_metadata_routing``. ``process_routing`` also validates the input
+metadata: it makes sure all given metadata are requested to avoid silent bugs.
+
+.. GENERATED FROM PYTHON SOURCE LINES 227-229
 
 Next, we illustrate the different behaviors and notably the type of errors
 raised.
 
-.. GENERATED FROM PYTHON SOURCE LINES 232-238
+.. GENERATED FROM PYTHON SOURCE LINES 229-235
 
 .. code-block:: Python
 
@@ -989,7 +967,7 @@ raised.
         height: 14px;
         cursor: pointer;
     }
-    </style><body><div id="sk-container-id-53" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>MetaClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-216" type="checkbox" ><label for="sk-estimator-id-216" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MetaClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+    </style><body><div id="sk-container-id-44" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>MetaClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-172" type="checkbox" ><label for="sk-estimator-id-172" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MetaClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1009,7 +987,7 @@ raised.
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-217" type="checkbox" ><label for="sk-estimator-id-217" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-218" type="checkbox" ><label for="sk-estimator-id-218" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-173" type="checkbox" ><label for="sk-estimator-id-173" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-174" type="checkbox" ><label for="sk-estimator-id-174" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1135,19 +1113,19 @@ raised.
         }
     }
 
-    forceTheme('sk-container-id-53');</script></body>
+    forceTheme('sk-container-id-44');</script></body>
     </div>
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 239-243
+.. GENERATED FROM PYTHON SOURCE LINES 236-240
 
 Note that the above example is calling our utility function
 `check_metadata()` via the `ExampleClassifier`. It checks that
 ``sample_weight`` is correctly passed to it. If it is not, like in the
 following example, it would print that ``sample_weight`` is ``None``:
 
-.. GENERATED FROM PYTHON SOURCE LINES 243-246
+.. GENERATED FROM PYTHON SOURCE LINES 240-243
 
 .. code-block:: Python
 
@@ -1734,7 +1712,7 @@ following example, it would print that ``sample_weight`` is ``None``:
         height: 14px;
         cursor: pointer;
     }
-    </style><body><div id="sk-container-id-54" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>MetaClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-219" type="checkbox" ><label for="sk-estimator-id-219" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MetaClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+    </style><body><div id="sk-container-id-45" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>MetaClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-175" type="checkbox" ><label for="sk-estimator-id-175" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MetaClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1754,7 +1732,7 @@ following example, it would print that ``sample_weight`` is ``None``:
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-220" type="checkbox" ><label for="sk-estimator-id-220" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-221" type="checkbox" ><label for="sk-estimator-id-221" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-176" type="checkbox" ><label for="sk-estimator-id-176" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-177" type="checkbox" ><label for="sk-estimator-id-177" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1880,16 +1858,16 @@ following example, it would print that ``sample_weight`` is ``None``:
         }
     }
 
-    forceTheme('sk-container-id-54');</script></body>
+    forceTheme('sk-container-id-45');</script></body>
     </div>
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 247-248
+.. GENERATED FROM PYTHON SOURCE LINES 244-245
 
 If we pass an unknown metadata, an error is raised:
 
-.. GENERATED FROM PYTHON SOURCE LINES 248-253
+.. GENERATED FROM PYTHON SOURCE LINES 245-250
 
 .. code-block:: Python
 
@@ -1911,11 +1889,11 @@ If we pass an unknown metadata, an error is raised:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 254-255
+.. GENERATED FROM PYTHON SOURCE LINES 251-252
 
 And if we pass a metadata which is not explicitly requested:
 
-.. GENERATED FROM PYTHON SOURCE LINES 255-260
+.. GENERATED FROM PYTHON SOURCE LINES 252-257
 
 .. code-block:: Python
 
@@ -1938,11 +1916,11 @@ And if we pass a metadata which is not explicitly requested:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 261-262
+.. GENERATED FROM PYTHON SOURCE LINES 258-259
 
 Also, if we explicitly set it as not requested, but it is provided:
 
-.. GENERATED FROM PYTHON SOURCE LINES 262-272
+.. GENERATED FROM PYTHON SOURCE LINES 259-269
 
 .. code-block:: Python
 
@@ -1970,7 +1948,7 @@ Also, if we explicitly set it as not requested, but it is provided:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 273-283
+.. GENERATED FROM PYTHON SOURCE LINES 270-280
 
 Another concept to introduce is **aliased metadata**. This is when an
 estimator requests a metadata with a different variable name than the default
@@ -1983,7 +1961,7 @@ meta-estimator, but the meta-estimator understands that
 ``aliased_sample_weight`` is an alias for ``sample_weight``, and passes it as
 ``sample_weight`` to the underlying estimator:
 
-.. GENERATED FROM PYTHON SOURCE LINES 283-288
+.. GENERATED FROM PYTHON SOURCE LINES 280-285
 
 .. code-block:: Python
 
@@ -2572,7 +2550,7 @@ meta-estimator, but the meta-estimator understands that
         height: 14px;
         cursor: pointer;
     }
-    </style><body><div id="sk-container-id-55" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>MetaClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-222" type="checkbox" ><label for="sk-estimator-id-222" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MetaClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+    </style><body><div id="sk-container-id-46" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>MetaClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-178" type="checkbox" ><label for="sk-estimator-id-178" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MetaClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -2592,7 +2570,7 @@ meta-estimator, but the meta-estimator understands that
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-223" type="checkbox" ><label for="sk-estimator-id-223" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-224" type="checkbox" ><label for="sk-estimator-id-224" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-179" type="checkbox" ><label for="sk-estimator-id-179" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-180" type="checkbox" ><label for="sk-estimator-id-180" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -2718,17 +2696,17 @@ meta-estimator, but the meta-estimator understands that
         }
     }
 
-    forceTheme('sk-container-id-55');</script></body>
+    forceTheme('sk-container-id-46');</script></body>
     </div>
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 289-291
+.. GENERATED FROM PYTHON SOURCE LINES 286-288
 
 Passing ``sample_weight`` here will fail since it is requested with an
 alias and ``sample_weight`` with that name is not requested:
 
-.. GENERATED FROM PYTHON SOURCE LINES 291-296
+.. GENERATED FROM PYTHON SOURCE LINES 288-293
 
 .. code-block:: Python
 
@@ -2750,7 +2728,7 @@ alias and ``sample_weight`` with that name is not requested:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 297-306
+.. GENERATED FROM PYTHON SOURCE LINES 294-303
 
 This leads us to the ``get_metadata_routing``. The way routing works in
 scikit-learn is that consumers request what they need, and routers pass that
@@ -2762,7 +2740,7 @@ the complete tree of requested metadata by all nested objects and their
 corresponding method routings, i.e. which method of a sub-estimator is used
 in which method of a meta-estimator:
 
-.. GENERATED FROM PYTHON SOURCE LINES 306-309
+.. GENERATED FROM PYTHON SOURCE LINES 303-306
 
 .. code-block:: Python
 
@@ -2787,7 +2765,7 @@ in which method of a meta-estimator:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 310-318
+.. GENERATED FROM PYTHON SOURCE LINES 307-315
 
 As you can see, the only metadata requested for method ``fit`` is
 ``"sample_weight"`` with ``"aliased_sample_weight"`` as the alias. The
@@ -2798,7 +2776,7 @@ the routing object which would create the output we need for our
 In order to understand how aliases work in meta-estimators, imagine our
 meta-estimator inside another one:
 
-.. GENERATED FROM PYTHON SOURCE LINES 318-323
+.. GENERATED FROM PYTHON SOURCE LINES 315-320
 
 .. code-block:: Python
 
@@ -2820,7 +2798,7 @@ meta-estimator inside another one:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 324-338
+.. GENERATED FROM PYTHON SOURCE LINES 321-335
 
 In the above example, this is how the ``fit`` method of `meta_meta_est`
 will call their sub-estimator's ``fit`` methods::
@@ -2837,7 +2815,7 @@ will call their sub-estimator's ``fit`` methods::
             self.estimator_.fit(X, y, sample_weight=aliased_sample_weight):
                 ...
 
-.. GENERATED FROM PYTHON SOURCE LINES 340-347
+.. GENERATED FROM PYTHON SOURCE LINES 337-344
 
 Consuming and routing Meta-Estimator
 ------------------------------------
@@ -2847,7 +2825,7 @@ in its own methods. This meta-estimator is a consumer and a router at the
 same time. Implementing one is very similar to what we had before, but with a
 few tweaks.
 
-.. GENERATED FROM PYTHON SOURCE LINES 347-402
+.. GENERATED FROM PYTHON SOURCE LINES 344-389
 
 .. code-block:: Python
 
@@ -2885,24 +2863,14 @@ few tweaks.
             # We add `sample_weight` to the `fit_params` dictionary.
             if sample_weight is not None:
                 fit_params["sample_weight"] = sample_weight
-
-            request_router = get_routing_for_object(self)
-            request_router.validate_metadata(params=fit_params, method="fit")
-            routed_params = request_router.route_params(params=fit_params, caller="fit")
+            routed_params = process_routing(self, "fit", **fit_params)
             self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
             self.classes_ = self.estimator_.classes_
             return self
 
         def predict(self, X, **predict_params):
             check_is_fitted(self)
-            # As in `fit`, we get a copy of the object's MetadataRouter,
-            request_router = get_routing_for_object(self)
-            # we validate the given metadata,
-            request_router.validate_metadata(params=predict_params, method="predict")
-            # and then prepare the input to the underlying ``predict`` method.
-            routed_params = request_router.route_params(
-                params=predict_params, caller="predict"
-            )
+            routed_params = process_routing(self, "predict", **predict_params)
             return self.estimator_.predict(X, **routed_params.estimator.predict)
 
 
@@ -2913,7 +2881,7 @@ few tweaks.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 403-415
+.. GENERATED FROM PYTHON SOURCE LINES 390-402
 
 The key parts where the above meta-estimator differs from our previous
 meta-estimator is accepting ``sample_weight`` explicitly in ``fit`` and
@@ -2928,11 +2896,11 @@ In ``get_metadata_routing``, we add ``self`` to the routing using
 ``$self_request`` key to the routing info as illustrated below. Now let's
 look at some examples:
 
-.. GENERATED FROM PYTHON SOURCE LINES 417-418
+.. GENERATED FROM PYTHON SOURCE LINES 404-405
 
 - No metadata requested
 
-.. GENERATED FROM PYTHON SOURCE LINES 418-422
+.. GENERATED FROM PYTHON SOURCE LINES 405-409
 
 .. code-block:: Python
 
@@ -2960,11 +2928,11 @@ look at some examples:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 423-424
+.. GENERATED FROM PYTHON SOURCE LINES 410-411
 
 - ``sample_weight`` requested by sub-estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 424-429
+.. GENERATED FROM PYTHON SOURCE LINES 411-416
 
 .. code-block:: Python
 
@@ -2993,11 +2961,11 @@ look at some examples:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 430-431
+.. GENERATED FROM PYTHON SOURCE LINES 417-418
 
 - ``sample_weight`` requested by meta-estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 431-436
+.. GENERATED FROM PYTHON SOURCE LINES 418-423
 
 .. code-block:: Python
 
@@ -3026,14 +2994,14 @@ look at some examples:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 437-441
+.. GENERATED FROM PYTHON SOURCE LINES 424-428
 
 Note the difference in the requested metadata representations above.
 
 - We can also alias the metadata to pass different values to the fit methods
   of the meta- and the sub-estimator:
 
-.. GENERATED FROM PYTHON SOURCE LINES 441-447
+.. GENERATED FROM PYTHON SOURCE LINES 428-434
 
 .. code-block:: Python
 
@@ -3063,13 +3031,13 @@ Note the difference in the requested metadata representations above.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 448-451
+.. GENERATED FROM PYTHON SOURCE LINES 435-438
 
 However, ``fit`` of the meta-estimator only needs the alias for the
 sub-estimator and addresses their own sample weight as `sample_weight`, since
 it doesn't validate and route its own required metadata:
 
-.. GENERATED FROM PYTHON SOURCE LINES 451-453
+.. GENERATED FROM PYTHON SOURCE LINES 438-440
 
 .. code-block:: Python
 
@@ -3656,7 +3624,7 @@ it doesn't validate and route its own required metadata:
         height: 14px;
         cursor: pointer;
     }
-    </style><body><div id="sk-container-id-56" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>RouterConsumerClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-225" type="checkbox" ><label for="sk-estimator-id-225" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>RouterConsumerClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+    </style><body><div id="sk-container-id-47" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>RouterConsumerClassifier(estimator=ExampleClassifier())</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-181" type="checkbox" ><label for="sk-estimator-id-181" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>RouterConsumerClassifier</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -3676,7 +3644,7 @@ it doesn't validate and route its own required metadata:
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-226" type="checkbox" ><label for="sk-estimator-id-226" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-227" type="checkbox" ><label for="sk-estimator-id-227" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-182" type="checkbox" ><label for="sk-estimator-id-182" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>ExampleClassifier()</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-183" type="checkbox" ><label for="sk-estimator-id-183" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>ExampleClassifier</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -3802,19 +3770,19 @@ it doesn't validate and route its own required metadata:
         }
     }
 
-    forceTheme('sk-container-id-56');</script></body>
+    forceTheme('sk-container-id-47');</script></body>
     </div>
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 454-458
+.. GENERATED FROM PYTHON SOURCE LINES 441-445
 
 - Alias only on the sub-estimator:
 
 This is useful when we don't want the meta-estimator to use the metadata, but
 the sub-estimator should.
 
-.. GENERATED FROM PYTHON SOURCE LINES 458-462
+.. GENERATED FROM PYTHON SOURCE LINES 445-449
 
 .. code-block:: Python
 
@@ -3842,13 +3810,13 @@ the sub-estimator should.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 463-466
+.. GENERATED FROM PYTHON SOURCE LINES 450-453
 
 The meta-estimator cannot use `aliased_sample_weight`, because it expects
 it passed as `sample_weight`. This would apply even if
 `set_fit_request(sample_weight=True)` was set on it.
 
-.. GENERATED FROM PYTHON SOURCE LINES 468-477
+.. GENERATED FROM PYTHON SOURCE LINES 455-464
 
 Simple Pipeline
 ---------------
@@ -3860,7 +3828,7 @@ transformed data. Upon `predict`, it applies the transformer's `transform`
 before predicting with the classifier's `predict` method on the transformed
 new data.
 
-.. GENERATED FROM PYTHON SOURCE LINES 477-534
+.. GENERATED FROM PYTHON SOURCE LINES 464-521
 
 .. code-block:: Python
 
@@ -3928,7 +3896,7 @@ new data.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 535-551
+.. GENERATED FROM PYTHON SOURCE LINES 522-538
 
 Note the usage of :class:`~utils.metadata_routing.MethodMapping` to
 declare which methods of the child estimator (callee) are used in which
@@ -3947,7 +3915,7 @@ against it.
 
 In order to test the above pipeline, let's add an example transformer.
 
-.. GENERATED FROM PYTHON SOURCE LINES 551-566
+.. GENERATED FROM PYTHON SOURCE LINES 538-553
 
 .. code-block:: Python
 
@@ -3973,7 +3941,7 @@ In order to test the above pipeline, let's add an example transformer.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 567-576
+.. GENERATED FROM PYTHON SOURCE LINES 554-563
 
 Note that in the above example, we have implemented ``fit_transform`` which
 calls ``fit`` and ``transform`` with the appropriate metadata. This is only
@@ -3985,7 +3953,7 @@ Now we can test our pipeline, and see if metadata is correctly passed around.
 This example uses our `SimplePipeline`, our `ExampleTransformer`, and our
 `RouterConsumerClassifier` which uses our `ExampleClassifier`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 576-597
+.. GENERATED FROM PYTHON SOURCE LINES 563-584
 
 .. code-block:: Python
 
@@ -4029,7 +3997,7 @@ This example uses our `SimplePipeline`, our `ExampleTransformer`, and our
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 598-605
+.. GENERATED FROM PYTHON SOURCE LINES 585-592
 
 Deprecation / Default Value Change
 ----------------------------------
@@ -4039,7 +4007,7 @@ sub-estimator, or a consumer starts consuming a metadata which it wasn't in
 an older release. In this case, a warning should be raised for a while, to
 let users know the behavior is changed from previous versions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 605-623
+.. GENERATED FROM PYTHON SOURCE LINES 592-610
 
 .. code-block:: Python
 
@@ -4068,12 +4036,12 @@ let users know the behavior is changed from previous versions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 624-626
+.. GENERATED FROM PYTHON SOURCE LINES 611-613
 
 As explained above, this is a valid usage if `my_weights` aren't supposed
 to be passed as `sample_weight` to `MetaRegressor`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 626-631
+.. GENERATED FROM PYTHON SOURCE LINES 613-618
 
 .. code-block:: Python
 
@@ -4089,12 +4057,12 @@ to be passed as `sample_weight` to `MetaRegressor`:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 632-634
+.. GENERATED FROM PYTHON SOURCE LINES 619-621
 
 Now imagine we further develop ``MetaRegressor`` and it now also *consumes*
 ``sample_weight``:
 
-.. GENERATED FROM PYTHON SOURCE LINES 634-663
+.. GENERATED FROM PYTHON SOURCE LINES 621-650
 
 .. code-block:: Python
 
@@ -4134,13 +4102,13 @@ Now imagine we further develop ``MetaRegressor`` and it now also *consumes*
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 664-667
+.. GENERATED FROM PYTHON SOURCE LINES 651-654
 
 The above implementation is almost the same as ``MetaRegressor``, and
 because of the default request value defined in ``__metadata_request__fit``
 there is a warning raised when fitted.
 
-.. GENERATED FROM PYTHON SOURCE LINES 667-676
+.. GENERATED FROM PYTHON SOURCE LINES 654-663
 
 .. code-block:: Python
 
@@ -4167,12 +4135,12 @@ there is a warning raised when fitted.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 677-679
+.. GENERATED FROM PYTHON SOURCE LINES 664-666
 
 When an estimator consumes a metadata which it didn't consume before, the
 following pattern can be used to warn the users about it.
 
-.. GENERATED FROM PYTHON SOURCE LINES 679-697
+.. GENERATED FROM PYTHON SOURCE LINES 666-684
 
 .. code-block:: Python
 
@@ -4208,11 +4176,11 @@ following pattern can be used to warn the users about it.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 698-699
+.. GENERATED FROM PYTHON SOURCE LINES 685-686
 
 At the end we disable the configuration flag for metadata routing:
 
-.. GENERATED FROM PYTHON SOURCE LINES 699-702
+.. GENERATED FROM PYTHON SOURCE LINES 686-689
 
 .. code-block:: Python
 
@@ -4226,7 +4194,7 @@ At the end we disable the configuration flag for metadata routing:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 703-720
+.. GENERATED FROM PYTHON SOURCE LINES 690-707
 
 Third Party Development and scikit-learn Dependency
 ---------------------------------------------------
@@ -4249,7 +4217,7 @@ need to modify your code at all:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.055 seconds)
+   **Total running time of the script:** (0 minutes 0.046 seconds)
 
 
 .. _sphx_glr_download_auto_examples_miscellaneous_plot_metadata_routing.py:

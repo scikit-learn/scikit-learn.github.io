@@ -11,10 +11,8 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://scikit-learn/stable/modules/generated/sklearn.utils.metadata_routing.get_routing_for_object.html" />
 <meta property="og:site_name" content="scikit-learn" />
-<meta property="og:description" content="Gallery examples: Metadata Routing" />
-<meta property="og:image" content="https://scikit-learn/stable/_images/sphx_glr_plot_metadata_routing_thumb.png" />
-<meta property="og:image:alt" content="" />
-<meta name="description" content="Gallery examples: Metadata Routing" />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-notext.png" />
+<meta property="og:image:alt" content="scikit-learn" />
 
     <title>get_routing_for_object &#8212; scikit-learn 1.9.dev0 documentation</title>
   
@@ -1311,12 +1309,12 @@
 <h1>get_routing_for_object<a class="headerlink" href="#get-routing-for-object" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sklearn.utils.metadata_routing.get_routing_for_object">
-<span class="sig-prename descclassname"><span class="pre">sklearn.utils.metadata_routing.</span></span><span class="sig-name descname"><span class="pre">get_routing_for_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/e96804eeb/sklearn/utils/_metadata_requests.py#L1181"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.get_routing_for_object" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sklearn.utils.metadata_routing.</span></span><span class="sig-name descname"><span class="pre">get_routing_for_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/fdb20acfa/sklearn/utils/_metadata_requests.py#L1238"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.utils.metadata_routing.get_routing_for_object" title="Link to this definition">#</a></dt>
 <dd><p>Get a <code class="docutils literal notranslate"><span class="pre">Metadata{Router,</span> <span class="pre">Request}</span></code> instance from the given object.</p>
 <p>This function returns a
 <a class="reference internal" href="sklearn.utils.metadata_routing.MetadataRouter.html#sklearn.utils.metadata_routing.MetadataRouter" title="sklearn.utils.metadata_routing.MetadataRouter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetadataRouter</span></code></a> or a
 <a class="reference internal" href="sklearn.utils.metadata_routing.MetadataRequest.html#sklearn.utils.metadata_routing.MetadataRequest" title="sklearn.utils.metadata_routing.MetadataRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">MetadataRequest</span></code></a> from the given input.</p>
-<p>This function always returns a copy or an instance constructed from the
+<p>This function always returns a copy or a new instance constructed from the
 input, such that changing the output of this function will not change the
 original object.</p>
 <div class="versionadded">
@@ -1355,14 +1353,28 @@ the given object.</p>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegressionCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.metadata_routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_routing_for_object</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span>
+<span class="gp">... </span>      <span class="p">[(</span><span class="s2">&quot;scaler&quot;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">()),</span> <span class="p">(</span><span class="s2">&quot;lr_cv&quot;</span><span class="p">,</span> <span class="n">LogisticRegressionCV</span><span class="p">())]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">Pipeline(steps=[(&#39;scaler&#39;, StandardScaler()), (&#39;lr_cv&#39;, LogisticRegressionCV())])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">get_routing_for_object</span><span class="p">(</span><span class="n">pipe</span><span class="p">))</span>
+<span class="go">&lt;class &#39;sklearn.utils._metadata_requests.MetadataRouter&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">get_routing_for_object</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">scaler</span><span class="p">))</span>
+<span class="go">&lt;class &#39;sklearn.utils._metadata_requests.MetadataRequest&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">get_routing_for_object</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">lr_cv</span><span class="p">))</span>
+<span class="go">&lt;class &#39;sklearn.utils._metadata_requests.MetadataRouter&#39;&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<section id="gallery-examples">
-<h2>Gallery examples<a class="headerlink" href="#gallery-examples" title="Link to this heading">#</a></h2>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This document shows how you can use the metadata routing mechanism &lt;metadata_routing&gt; in scikit-learn to route metadata to the estimators, scorers, and CV splitters consuming them."><img alt="" src="../../_images/sphx_glr_plot_metadata_routing_thumb.png" />
-<p><a class="reference internal" href="../../auto_examples/miscellaneous/plot_metadata_routing.html"><span class="doc">Metadata Routing</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Metadata Routing</div>
-</div></div></section>
 </section>
 
 
@@ -1418,7 +1430,6 @@ the given object.</p>
     
 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.utils.metadata_routing.get_routing_for_object"><code class="docutils literal notranslate"><span class="pre">get_routing_for_object</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery-examples">Gallery examples</a></li>
 </ul>
 
 
