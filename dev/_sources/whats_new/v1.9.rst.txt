@@ -185,6 +185,16 @@ See :ref:`array_api` for more details.
 :mod:`sklearn.tree`
 -------------------
 
+- |Fix| Fixed feature-wise NaN detection in trees.
+  Features could be seen as NaN-free for some edge-case patterns, which led to
+  not considering splits with NaNs assigned to the left node for those features.
+  This affects:
+  - :class:`tree.DecisionTreeRegressor`
+  - :class:`tree.ExtraTreeRegressor`
+  - :class:`ensemble.RandomForestRegressor`
+  - :class:`ensemble.ExtraTreesRegressor`
+  By :user:`Arthur Lacote <cakedev0>` :pr:`32193`
+
 - |API| `criterion="friedman_mse"` is now deprecated. This criterion was intended for
   gradient boosting but was incorrectly implemented in scikit-learn's trees and
   was actually behaving identically to `criterion="squared_error"`. Use
