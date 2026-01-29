@@ -112,14 +112,14 @@ the classifier in regions where it is not certain of its prediction.
 
 
     classifiers = {
-        "Logistic regression\n(C=0.01)": LogisticRegression(C=0.1),
-        "Logistic regression\n(C=1)": LogisticRegression(C=100),
+        "Logistic regression\n(C=0.1)": LogisticRegression(C=0.1),
+        "Logistic regression\n(C=100)": LogisticRegression(C=100),
         "Gaussian Process": GaussianProcessClassifier(kernel=1.0 * RBF([1.0, 1.0])),
         "Logistic regression\n(RBF features)": make_pipeline(
             Nystroem(kernel="rbf", gamma=5e-1, n_components=50, random_state=1),
             LogisticRegression(C=10),
         ),
-        "Gradient Boosting": HistGradientBoostingClassifier(),
+        "Gradient Boosting": HistGradientBoostingClassifier(random_state=42),
         "Logistic regression\n(binned features)": make_pipeline(
             KBinsDiscretizer(n_bins=5, quantile_method="averaged_inverted_cdf"),
             PolynomialFeatures(interaction_only=True),
@@ -147,7 +147,7 @@ Plotting the decision boundaries
 For each classifier, we plot the per-class probabilities on the first three
 columns and the probabilities of the most likely class on the last column.
 
-.. GENERATED FROM PYTHON SOURCE LINES 92-195
+.. GENERATED FROM PYTHON SOURCE LINES 92-196
 
 .. code-block:: Python
 
@@ -198,7 +198,7 @@ columns and the probabilities of the most likely class on the last column.
                 cmap="Blues",
                 levels=levels,
             )
-            axes[classifier_idx, label].set_title(f"Class {label}")
+            axes[classifier_idx, label].set_title(f"Class {iris.target_names[label]}")
             # plot data predicted to belong to given class
             mask_y_pred = y_pred == label
             axes[classifier_idx, label].scatter(
@@ -219,7 +219,8 @@ columns and the probabilities of the most likely class on the last column.
         )
         for label in y_unique:
             mask_label = y_test == label
-            axes[classifier_idx, 3].scatter(
+            max_col = len(y_unique)
+            axes[classifier_idx, max_col].scatter(
                 X_test[mask_label, 0],
                 X_test[mask_label, 1],
                 c=max_class_disp.multiclass_colors_[[label], :],
@@ -258,7 +259,7 @@ columns and the probabilities of the most likely class on the last column.
 
 
 .. image-sg:: /auto_examples/classification/images/sphx_glr_plot_classification_probability_001.png
-   :alt: Class 0, Class 1, Class 2, Max class, Class 0, Class 1, Class 2, Max class, Class 0, Class 1, Class 2, Max class, Class 0, Class 1, Class 2, Max class, Class 0, Class 1, Class 2, Max class, Class 0, Class 1, Class 2, Max class, Class 0, Class 1, Class 2, Max class, Probability, Probability class 0, Probability class 1, Probability class 2
+   :alt: Class setosa, Class versicolor, Class virginica, Max class, Class setosa, Class versicolor, Class virginica, Max class, Class setosa, Class versicolor, Class virginica, Max class, Class setosa, Class versicolor, Class virginica, Max class, Class setosa, Class versicolor, Class virginica, Max class, Class setosa, Class versicolor, Class virginica, Max class, Class setosa, Class versicolor, Class virginica, Max class, Probability, Probability class 0, Probability class 1, Probability class 2
    :srcset: /auto_examples/classification/images/sphx_glr_plot_classification_probability_001.png
    :class: sphx-glr-single-img
 
@@ -266,12 +267,12 @@ columns and the probabilities of the most likely class on the last column.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 196-198
+.. GENERATED FROM PYTHON SOURCE LINES 197-199
 
 Quantitative evaluation
 -----------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 198-201
+.. GENERATED FROM PYTHON SOURCE LINES 199-202
 
 .. code-block:: Python
 
@@ -313,14 +314,14 @@ Quantitative evaluation
       <tbody>
         <tr>
           <th>0</th>
-          <td>Logistic regression (C=0.01)</td>
+          <td>Logistic regression (C=0.1)</td>
           <td>0.83</td>
           <td>0.92</td>
           <td>0.71</td>
         </tr>
         <tr>
           <th>1</th>
-          <td>Logistic regression (C=1)</td>
+          <td>Logistic regression (C=100)</td>
           <td>0.81</td>
           <td>0.93</td>
           <td>0.36</td>
@@ -367,7 +368,7 @@ Quantitative evaluation
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-241
+.. GENERATED FROM PYTHON SOURCE LINES 203-242
 
 Analysis
 --------
@@ -412,7 +413,7 @@ necessarily the case for other datasets.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 2.920 seconds)
+   **Total running time of the script:** (0 minutes 2.317 seconds)
 
 
 .. _sphx_glr_download_auto_examples_classification_plot_classification_probability.py:
