@@ -41,7 +41,7 @@ choice for the regularization parameter C was not the best.
 In real life applications this parameter is usually chosen
 using :ref:`grid_search`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 26-73
+.. GENERATED FROM PYTHON SOURCE LINES 26-74
 
 .. code-block:: Python
 
@@ -52,7 +52,8 @@ using :ref:`grid_search`.
     import matplotlib.pyplot as plt
     import numpy as np
 
-    from sklearn import datasets, svm
+    from sklearn import datasets
+    from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import ConfusionMatrixDisplay
     from sklearn.model_selection import train_test_split
 
@@ -67,7 +68,7 @@ using :ref:`grid_search`.
 
     # Run classifier, using a model that is too regularized (C too low) to see
     # the impact on the results
-    classifier = svm.SVC(kernel="linear", C=0.01).fit(X_train, y_train)
+    classifier = LogisticRegression(C=0.01).fit(X_train, y_train)
 
     np.set_printoptions(precision=2)
 
@@ -119,17 +120,17 @@ using :ref:`grid_search`.
 
     Confusion matrix, without normalization
     [[13  0  0]
-     [ 0 10  6]
+     [ 0  3 13]
      [ 0  0  9]]
     Normalized confusion matrix
     [[1.   0.   0.  ]
-     [0.   0.62 0.38]
+     [0.   0.19 0.81]
      [0.   0.   1.  ]]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 74-87
+.. GENERATED FROM PYTHON SOURCE LINES 75-88
 
 Binary Classification
 =====================
@@ -145,7 +146,7 @@ This is fundamental for binary classification
 metrics like :func:`~sklearn.metrics.roc_auc_score` and
 :func:`~sklearn.metrics.det_curve`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 87-125
+.. GENERATED FROM PYTHON SOURCE LINES 88-126
 
 .. code-block:: Python
 
@@ -166,7 +167,7 @@ metrics like :func:`~sklearn.metrics.roc_auc_score` and
         X, y, test_size=0.3, random_state=42
     )
 
-    classifier = svm.SVC(kernel="linear", C=0.01, probability=True)
+    classifier = LogisticRegression(C=0.01)
     classifier.fit(X_train, y_train)
 
     y_score = classifier.predict_proba(X_test)[:, 1]
@@ -202,7 +203,7 @@ metrics like :func:`~sklearn.metrics.roc_auc_score` and
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.239 seconds)
+   **Total running time of the script:** (0 minutes 0.231 seconds)
 
 
 .. _sphx_glr_download_auto_examples_model_selection_plot_confusion_matrix.py:
