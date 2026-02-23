@@ -93,6 +93,10 @@ See :ref:`array_api` for more details.
 - |Enhancement| :class:`kernel_approximation.Nystroem` now supports array API compatible inputs.
   By :user:`Emily Chen <EmilyXinyi>` :pr:`29661`
 
+- |Enhancement| :class:`linear_model.RidgeCV` now accepts array API compliant arrays
+  with `gcv_mode` set to `auto` or `eigen`.
+  By :user:`Antoine Baker <antoinebaker>` :pr:`33020`
+
 - |Fix| Fixed a bug that would cause Cython-based estimators to fail when fit on
   NumPy inputs when setting `sklearn.set_config(array_api_dispatch=True)`. By
   :user:`Olivier Grisel <ogrisel>`. :pr:`32846`
@@ -239,6 +243,17 @@ more details.
   This also affects :class:`linear_model.ElasticNetCV`, :class:`linear_model.LassoCV`,
   :class:`linear_model.MultiTaskElasticNetCV` and :class:`linear_model.MultiTaskLassoCV`.
   By :user:`Albert Dorador <adc-trust-ai>` :pr:`33014`
+
+- |Fix| The leave-one out errors and model parameters estimated in
+  :class:`linear_model.RidgeCV` and :class:`linear_model.RidgeClassifierCV` when
+  `cv=None` are now numerically stable in the small `alpha` regime. The default
+  `auto` option is now equivalent to `eigen` and picks the cheaper option:
+  eigendecomposition of the covariance matrix when `n_features <= n_samples`,
+  respectively of the Gram matrix when `n_samples > n_features`. When
+  `store_cv_results=True` and `X` is an integer array, the `cv_results_`
+  attribute was wrongly coerced to the integer dtype of `X`, it now always has a
+  float dtype.
+  By :user:`Antoine Baker <antoinebaker>` :pr:`33020`
 
 - |Fix| Fixed a bug in :class:`linear_model.SGDClassifier` for multiclass settings where
   large negative values of :method:`decision_function` could lead to NaN values. In
