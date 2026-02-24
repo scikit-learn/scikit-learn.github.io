@@ -1311,7 +1311,7 @@
 <h1>PrecisionRecallDisplay<a class="headerlink" href="#precisionrecalldisplay" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sklearn.metrics.PrecisionRecallDisplay">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sklearn.metrics.</span></span><span class="sig-name descname"><span class="pre">PrecisionRecallDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recall</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">average_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prevalence_pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deprecated'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/361a8e1cc/sklearn/metrics/_plot/precision_recall_curve.py#L16"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sklearn.metrics.</span></span><span class="sig-name descname"><span class="pre">PrecisionRecallDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recall</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">average_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prevalence_pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimator_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deprecated'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/212083d1a/sklearn/metrics/_plot/precision_recall_curve.py#L22"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay" title="Link to this definition">#</a></dt>
 <dd><p>Precision Recall visualization.</p>
 <p>It is recommended to use
 <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_estimator</span></code></a> or
@@ -1325,15 +1325,39 @@ Evaluation Guide</span></a>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>precision</strong><span class="classifier">ndarray</span></dt><dd><p>Precision values.</p>
+<dt><strong>precision</strong><span class="classifier">ndarray or list of ndarrays</span></dt><dd><p>Precision values. Each ndarray should contain values for a single curve.
+If plotting multiple curves, list should be of same length as <code class="docutils literal notranslate"><span class="pre">recall</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>Now accepts a list for plotting multiple curves.</p>
+</div>
 </dd>
-<dt><strong>recall</strong><span class="classifier">ndarray</span></dt><dd><p>Recall values.</p>
+<dt><strong>recall</strong><span class="classifier">ndarray or list of ndarrays</span></dt><dd><p>Recall values. Each ndarray should contain values for a single curve.
+If plotting multiple curves, list should be of same length as <code class="docutils literal notranslate"><span class="pre">precision</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>Now accepts a list for plotting multiple curves.</p>
+</div>
 </dd>
-<dt><strong>average_precision</strong><span class="classifier">float, default=None</span></dt><dd><p>Average precision. If None, the average precision is not shown.</p>
+<dt><strong>average_precision</strong><span class="classifier">float or list of floats, default=None</span></dt><dd><p>Average precision, used for labeling each curve in the legend.
+If plotting multiple curves, should be a list of the same length as <code class="docutils literal notranslate"><span class="pre">precision</span></code>
+and <code class="docutils literal notranslate"><span class="pre">recall</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, average precision values are not shown in the legend.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>Now accepts a list for plotting multiple curves.</p>
+</div>
 </dd>
-<dt><strong>name</strong><span class="classifier">str, default=None</span></dt><dd><p>Name of estimator. If None, then the estimator name is not shown.</p>
+<dt><strong>name</strong><span class="classifier">str or list of str, default=None</span></dt><dd><p>Name for labeling legend entries. The number of legend entries is determined
+by the <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> passed to <code class="docutils literal notranslate"><span class="pre">plot</span></code>, and is not affected by <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+<p>If a string is provided, it will be used to either label the single legend
+entry or if there are multiple legend entries, label each individual curve
+with the same name.</p>
+<p>If a list is provided, it will be used to label each curve individually.
+Passing a list will raise an error if <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> is not a list to avoid
+labeling individual curves that have the same appearance.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, no name is shown in the legend.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.8: </span><code class="docutils literal notranslate"><span class="pre">estimator_name</span></code> was deprecated in favor of <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span><code class="docutils literal notranslate"><span class="pre">name</span></code> can now take a list of str for multiple curves.</p>
 </div>
 </dd>
 <dt><strong>pos_label</strong><span class="classifier">int, float, bool or str, default=None</span></dt><dd><p>The class considered the positive class when precision and recall metrics
@@ -1342,11 +1366,14 @@ computed. If not <code class="docutils literal notranslate"><span class="pre">No
 <p><span class="versionmodified added">Added in version 0.24.</span></p>
 </div>
 </dd>
-<dt><strong>prevalence_pos_label</strong><span class="classifier">float, default=None</span></dt><dd><p>The prevalence of the positive label. It is used for plotting the
-chance level line. If None, the chance level line will not be plotted
+<dt><strong>prevalence_pos_label</strong><span class="classifier">float or list of floats, default=None</span></dt><dd><p>The prevalence of the positive label. It is used for plotting the
+chance level lines. If None, no chance level line will be plotted
 even if <code class="docutils literal notranslate"><span class="pre">plot_chance_level</span></code> is set to True when plotting.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>May now be list of floats for when multiple curves plotted.</p>
 </div>
 </dd>
 <dt><strong>estimator_name</strong><span class="classifier">str, default=None</span></dt><dd><p>Name of estimator. If None, the estimator name is not shown.</p>
@@ -1359,11 +1386,19 @@ instead.</p>
 </dd>
 <dt class="field-even">Attributes<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>line_</strong><span class="classifier">matplotlib Artist</span></dt><dd><p>Precision recall curve.</p>
+<dt><strong>line_</strong><span class="classifier">matplotlib Artist or list of Artists</span></dt><dd><p>Precision recall curve(s).</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>This attribute can now be a list of Artists, for when multiple curves
+are plotted.</p>
+</div>
 </dd>
-<dt><strong>chance_level_</strong><span class="classifier">matplotlib Artist or None</span></dt><dd><p>The chance level line. It is <code class="docutils literal notranslate"><span class="pre">None</span></code> if the chance level is not plotted.</p>
+<dt><strong>chance_level_</strong><span class="classifier">matplotlib Artist or list of Artists or None</span></dt><dd><p>Chance level line(s). It is <code class="docutils literal notranslate"><span class="pre">None</span></code> if the chance level is not plotted.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>This attribute can now be a list of Artists, for when multiple curves
+are plotted.</p>
 </div>
 </dd>
 <dt><strong>ax_</strong><span class="classifier">matplotlib Axes</span></dt><dd><p>Axes with precision recall curve.</p>
@@ -1389,10 +1424,10 @@ instead.</p>
 scikit-learn is computed without any interpolation. To be consistent with
 this metric, the precision-recall curve is plotted without any
 interpolation as well (step-wise style).</p>
-<p>You can change this style by passing the keyword argument
-<code class="docutils literal notranslate"><span class="pre">drawstyle=&quot;default&quot;</span></code> in <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.plot" title="sklearn.metrics.PrecisionRecallDisplay.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot</span></code></a>, <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_estimator</span></code></a>, or
-<a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="sklearn.metrics.PrecisionRecallDisplay.from_predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_predictions</span></code></a>. However, the curve will not be strictly
-consistent with the reported average precision.</p>
+<p>To enable interpolation, pass <code class="docutils literal notranslate"><span class="pre">curve_kwargs={&quot;drawstyle&quot;:</span> <span class="pre">&quot;default&quot;}</span></code> to
+meth:<code class="docutils literal notranslate"><span class="pre">plot</span></code>, <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_estimator</span></code></a>, or <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="sklearn.metrics.PrecisionRecallDisplay.from_predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_predictions</span></code></a>.
+However, the curve will not be strictly consistent with the reported
+average precision.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
@@ -1418,8 +1453,116 @@ consistent with the reported average precision.</p>
 <img alt="../../_images/sklearn-metrics-PrecisionRecallDisplay-1.png" class="plot-directive" src="../../_images/sklearn-metrics-PrecisionRecallDisplay-1.png" />
 </figure>
 <dl class="py method">
+<dt class="sig sig-object py" id="sklearn.metrics.PrecisionRecallDisplay.from_cv_results">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_cv_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cv_results</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_intermediate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/212083d1a/sklearn/metrics/_plot/precision_recall_curve.py#L738"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.from_cv_results" title="Link to this definition">#</a></dt>
+<dd><p>Plot multi-fold precision-recall curves given cross-validation results.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.9.</span></p>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>cv_results</strong><span class="classifier">dict</span></dt><dd><p>Dictionary as returned by <a class="reference internal" href="sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_validate</span></code></a>
+using <code class="docutils literal notranslate"><span class="pre">return_estimator=True</span></code> and <code class="docutils literal notranslate"><span class="pre">return_indices=True</span></code> (i.e., dictionary
+should contain the keys “estimator” and “indices”).</p>
+</dd>
+<dt><strong>X</strong><span class="classifier">{array-like, sparse matrix} of shape (n_samples, n_features)</span></dt><dd><p>Input values.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">array-like of shape (n_samples,)</span></dt><dd><p>Target values.</p>
+</dd>
+<dt><strong>sample_weight</strong><span class="classifier">array-like of shape (n_samples,), default=None</span></dt><dd><p>Sample weights.</p>
+</dd>
+<dt><strong>drop_intermediate</strong><span class="classifier">bool, default=True</span></dt><dd><p>Whether to drop some suboptimal thresholds which would not appear
+on a plotted precision-recall curve. This is useful in order to
+create lighter precision-recall curves.</p>
+</dd>
+<dt><strong>response_method</strong><span class="classifier">{‘predict_proba’, ‘decision_function’, ‘auto’}                 default=’auto’</span></dt><dd><p>Specifies whether to use <a class="reference internal" href="../../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> or
+<a class="reference internal" href="../../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a> as the target response. If set to ‘auto’,
+<a class="reference internal" href="../../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> is tried first and if it does not exist
+<a class="reference internal" href="../../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a> is tried next.</p>
+</dd>
+<dt><strong>pos_label</strong><span class="classifier">int, float, bool or str, default=None</span></dt><dd><p>The class considered as the positive class when computing the precision
+and recall metrics. By default, <code class="docutils literal notranslate"><span class="pre">estimators.classes_[1]</span></code> is considered
+as the positive class.</p>
+</dd>
+<dt><strong>name</strong><span class="classifier">str or list of str, default=None</span></dt><dd><p>Name for labeling legend entries. The number of legend entries
+is determined by <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code>, and is not affected by <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+<p>If a string is provided, it will be used to either label the single legend
+entry or if there are multiple legend entries, label each individual curve
+with the same name.</p>
+<p>If a list is provided, it will be used to label each curve individually.
+Passing a list will raise an error if <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> is not a list to avoid
+labeling individual curves that have the same appearance.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, no name is shown in the legend.</p>
+</dd>
+<dt><strong>ax</strong><span class="classifier">matplotlib axes, default=None</span></dt><dd><p>Axes object to plot on. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a new figure and axes is
+created.</p>
+</dd>
+<dt><strong>curve_kwargs</strong><span class="classifier">dict or list of dict, default=None</span></dt><dd><p>Dictionary with keywords passed to the matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code> function
+to draw the individual precision-recall curves. If a list is provided, the
+parameters are applied to the precision-recall curves of each CV fold
+sequentially. If a single dictionary is provided, the same
+parameters are applied to all precision-recall curves.</p>
+</dd>
+<dt><strong>plot_chance_level</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether to plot the chance level lines.</p>
+</dd>
+<dt><strong>chance_level_kwargs</strong><span class="classifier">dict, default=None</span></dt><dd><p>Keyword arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code> for rendering
+the chance level lines.</p>
+</dd>
+<dt><strong>despine</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether to remove the top and right spines from the plot.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>display</strong><span class="classifier"><a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay" title="sklearn.metrics.PrecisionRecallDisplay"><code class="xref py py-class docutils literal notranslate"><span class="pre">PrecisionRecallDisplay</span></code></a></span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="sklearn.metrics.PrecisionRecallDisplay.from_predictions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrecisionRecallDisplay.from_predictions</span></code></a></dt><dd><p>Plot precision-recall curve using estimated probabilities or output of decision function.</p>
+</dd>
+<dt><a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PrecisionRecallDisplay.from_estimator</span></code></a></dt><dd><p>Plot precision-recall curve using an estimator.</p>
+</dd>
+<dt><a class="reference internal" href="sklearn.metrics.precision_recall_curve.html#sklearn.metrics.precision_recall_curve" title="sklearn.metrics.precision_recall_curve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">precision_recall_curve</span></code></a></dt><dd><p>Compute precision-recall pairs for different probability thresholds.</p>
+</dd>
+<dt><a class="reference internal" href="sklearn.metrics.average_precision_score.html#sklearn.metrics.average_precision_score" title="sklearn.metrics.average_precision_score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average_precision_score</span></code></a></dt><dd><p>Compute average precision (AP) from prediction scores.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The average precision (cf. <a class="reference internal" href="sklearn.metrics.average_precision_score.html#sklearn.metrics.average_precision_score" title="sklearn.metrics.average_precision_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">average_precision_score</span></code></a>)
+in scikit-learn is computed without any interpolation. To be consistent
+with this metric, the precision-recall curve is plotted without any
+interpolation as well (step-wise style).</p>
+<p>To enable interpolation, pass <code class="docutils literal notranslate"><span class="pre">curve_kwargs={&quot;drawstyle&quot;:</span> <span class="pre">&quot;default&quot;}</span></code>.
+However, the curve will not be strictly consistent with the reported
+average precision.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">PrecisionRecallDisplay</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_validate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clf</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv_results</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">clf</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">return_estimator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_indices</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PrecisionRecallDisplay</span><span class="o">.</span><span class="n">from_cv_results</span><span class="p">(</span><span class="n">cv_results</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">&lt;...&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="../../_images/sklearn-metrics-PrecisionRecallDisplay-2.png" class="plot-directive" src="../../_images/sklearn-metrics-PrecisionRecallDisplay-2.png" />
+</figure>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sklearn.metrics.PrecisionRecallDisplay.from_estimator">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_intermediate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/361a8e1cc/sklearn/metrics/_plot/precision_recall_curve.py#L275"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_intermediate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/212083d1a/sklearn/metrics/_plot/precision_recall_curve.py#L407"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="Link to this definition">#</a></dt>
 <dd><p>Plot precision-recall curve given an estimator and some data.</p>
 <p>For general information regarding <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> visualization tools, see
 the <a class="reference internal" href="../../visualizations.html#visualizations"><span class="std std-ref">Visualization Guide</span></a>.
@@ -1457,6 +1600,11 @@ is considered as the positive class.</p>
 </dd>
 <dt><strong>ax</strong><span class="classifier">matplotlib axes, default=None</span></dt><dd><p>Axes object to plot on. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a new figure and axes is created.</p>
 </dd>
+<dt><strong>curve_kwargs</strong><span class="classifier">dict, default=None</span></dt><dd><p>Keywords arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code> function.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.9.</span></p>
+</div>
+</dd>
 <dt><strong>plot_chance_level</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether to plot the chance level. The chance level is the prevalence
 of the positive label computed from the data passed during
 <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_estimator</span></code></a> or <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="sklearn.metrics.PrecisionRecallDisplay.from_predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_predictions</span></code></a> call.</p>
@@ -1476,6 +1624,10 @@ the chance level line.</p>
 </div>
 </dd>
 <dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.9: </span>kwargs is deprecated and will be removed in 1.11. Pass matplotlib
+arguments to <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> as a dictionary instead.</p>
+</div>
 </dd>
 </dl>
 </dd>
@@ -1497,9 +1649,9 @@ the chance level line.</p>
 in scikit-learn is computed without any interpolation. To be consistent
 with this metric, the precision-recall curve is plotted without any
 interpolation as well (step-wise style).</p>
-<p>You can change this style by passing the keyword argument
-<code class="docutils literal notranslate"><span class="pre">drawstyle=&quot;default&quot;</span></code>. However, the curve will not be strictly
-consistent with the reported average precision.</p>
+<p>To enable interpolation, pass <code class="docutils literal notranslate"><span class="pre">curve_kwargs={&quot;drawstyle&quot;:</span> <span class="pre">&quot;default&quot;}</span></code>.
+However, the curve will not be strictly consistent with the reported
+average precision.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
@@ -1519,13 +1671,13 @@ consistent with the reported average precision.</p>
 </pre></div>
 </div>
 <figure class="align-default">
-<img alt="../../_images/sklearn-metrics-PrecisionRecallDisplay-2.png" class="plot-directive" src="../../_images/sklearn-metrics-PrecisionRecallDisplay-2.png" />
+<img alt="../../_images/sklearn-metrics-PrecisionRecallDisplay-3.png" class="plot-directive" src="../../_images/sklearn-metrics-PrecisionRecallDisplay-3.png" />
 </figure>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sklearn.metrics.PrecisionRecallDisplay.from_predictions">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_intermediate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deprecated'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/361a8e1cc/sklearn/metrics/_plot/precision_recall_curve.py#L422"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_predictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_intermediate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deprecated'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/212083d1a/sklearn/metrics/_plot/precision_recall_curve.py#L565"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="Link to this definition">#</a></dt>
 <dd><p>Plot precision-recall curve given binary class predictions.</p>
 <p>For general information regarding <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> visualization tools, see
 the <a class="reference internal" href="../../visualizations.html#visualizations"><span class="std std-ref">Visualization Guide</span></a>.
@@ -1560,6 +1712,11 @@ will be raised.</p>
 </dd>
 <dt><strong>ax</strong><span class="classifier">matplotlib axes, default=None</span></dt><dd><p>Axes object to plot on. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a new figure and axes is created.</p>
 </dd>
+<dt><strong>curve_kwargs</strong><span class="classifier">dict, default=None</span></dt><dd><p>Keywords arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code> function.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.9.</span></p>
+</div>
+</dd>
 <dt><strong>plot_chance_level</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether to plot the chance level. The chance level is the prevalence
 of the positive label computed from the data passed during
 <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator" title="sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_estimator</span></code></a> or <a class="reference internal" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions" title="sklearn.metrics.PrecisionRecallDisplay.from_predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_predictions</span></code></a> call.</p>
@@ -1585,6 +1742,10 @@ the chance level line.</p>
 </div>
 </dd>
 <dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.9: </span>kwargs is deprecated and will be removed in 1.11. Pass matplotlib
+arguments to <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> as a dictionary instead.</p>
+</div>
 </dd>
 </dl>
 </dd>
@@ -1606,9 +1767,9 @@ the chance level line.</p>
 in scikit-learn is computed without any interpolation. To be consistent
 with this metric, the precision-recall curve is plotted without any
 interpolation as well (step-wise style).</p>
-<p>You can change this style by passing the keyword argument
-<code class="docutils literal notranslate"><span class="pre">drawstyle=&quot;default&quot;</span></code>. However, the curve will not be strictly
-consistent with the reported average precision.</p>
+<p>To enable interpolation, pass <code class="docutils literal notranslate"><span class="pre">curve_kwargs={&quot;drawstyle&quot;:</span> <span class="pre">&quot;default&quot;}</span></code>.
+However, the curve will not be strictly consistent with the reported
+average precision.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
@@ -1629,23 +1790,45 @@ consistent with the reported average precision.</p>
 </pre></div>
 </div>
 <figure class="align-default">
-<img alt="../../_images/sklearn-metrics-PrecisionRecallDisplay-3.png" class="plot-directive" src="../../_images/sklearn-metrics-PrecisionRecallDisplay-3.png" />
+<img alt="../../_images/sklearn-metrics-PrecisionRecallDisplay-4.png" class="plot-directive" src="../../_images/sklearn-metrics-PrecisionRecallDisplay-4.png" />
 </figure>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sklearn.metrics.PrecisionRecallDisplay.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/361a8e1cc/sklearn/metrics/_plot/precision_recall_curve.py#L144"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.plot" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_chance_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chance_level_kw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">despine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/212083d1a/sklearn/metrics/_plot/precision_recall_curve.py#L210"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.metrics.PrecisionRecallDisplay.plot" title="Link to this definition">#</a></dt>
 <dd><p>Plot visualization.</p>
-<p>Extra keyword arguments will be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>ax</strong><span class="classifier">Matplotlib Axes, default=None</span></dt><dd><p>Axes object to plot on. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a new figure and axes is
 created.</p>
 </dd>
-<dt><strong>name</strong><span class="classifier">str, default=None</span></dt><dd><p>Name of precision recall curve for labeling. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, use
-<code class="docutils literal notranslate"><span class="pre">name</span></code> if not <code class="docutils literal notranslate"><span class="pre">None</span></code>, otherwise no labeling is shown.</p>
+<dt><strong>name</strong><span class="classifier">str or list of str, default=None</span></dt><dd><p>Name for labeling legend entries. The number of legend entries
+is determined by <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code>, and is not affected by <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+<p>If a string is provided, it will be used to either label the single legend
+entry or if there are multiple legend entries, label each individual curve
+with the same name.</p>
+<p>If a list is provided, it will be used to label each curve individually.
+Passing a list will raise an error if <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> is not a list to avoid
+labeling individual curves that have the same appearance.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, set to <code class="docutils literal notranslate"><span class="pre">name</span></code> provided at <code class="docutils literal notranslate"><span class="pre">PrecisionRecallDisplay</span></code>
+initialization. If still <code class="docutils literal notranslate"><span class="pre">None</span></code>, no name is shown in the legend.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span>Now accepts a list for plotting multiple curves.</p>
+</div>
+</dd>
+<dt><strong>curve_kwargs</strong><span class="classifier">dict or list of dict, default=None</span></dt><dd><p>Keywords arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code> function
+to draw individual precision-recall curves. For single curve plotting, this
+should be a dictionary. For multi-curve plotting, if a list is provided,
+the parameters are applied to each precision-recall curve
+sequentially and a legend entry is added for each curve.
+If a single dictionary is provided, the same parameters are applied
+to all curves and a single legend entry for all curves is added,
+labeled with the mean average precision.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.9.</span></p>
+</div>
 </dd>
 <dt><strong>plot_chance_level</strong><span class="classifier">bool, default=False</span></dt><dd><p>Whether to plot the chance level. The chance level is the prevalence
 of the positive label computed from the data passed during
@@ -1666,6 +1849,10 @@ the chance level line.</p>
 </div>
 </dd>
 <dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments to be passed to matplotlib’s <code class="docutils literal notranslate"><span class="pre">plot</span></code>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.9: </span>kwargs is deprecated and will be removed in 1.11. Pass matplotlib
+arguments to <code class="docutils literal notranslate"><span class="pre">curve_kwargs</span></code> as a dictionary instead.</p>
+</div>
 </dd>
 </dl>
 </dd>
@@ -1681,9 +1868,9 @@ the chance level line.</p>
 in scikit-learn is computed without any interpolation. To be consistent
 with this metric, the precision-recall curve is plotted without any
 interpolation as well (step-wise style).</p>
-<p>You can change this style by passing the keyword argument
-<code class="docutils literal notranslate"><span class="pre">drawstyle=&quot;default&quot;</span></code>. However, the curve will not be strictly
-consistent with the reported average precision.</p>
+<p>To enable interpolation, pass <code class="docutils literal notranslate"><span class="pre">curve_kwargs={&quot;drawstyle&quot;:</span> <span class="pre">&quot;default&quot;}</span></code>.
+However, the curve will not be strictly consistent with the reported
+average precision.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1755,6 +1942,7 @@ consistent with the reported average precision.</p>
     
 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.metrics.PrecisionRecallDisplay"><code class="docutils literal notranslate"><span class="pre">PrecisionRecallDisplay</span></code></a><ul class="nav section-nav flex-column visible">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.metrics.PrecisionRecallDisplay.from_cv_results"><code class="docutils literal notranslate"><span class="pre">from_cv_results</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.metrics.PrecisionRecallDisplay.from_estimator"><code class="docutils literal notranslate"><span class="pre">from_estimator</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.metrics.PrecisionRecallDisplay.from_predictions"><code class="docutils literal notranslate"><span class="pre">from_predictions</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn.metrics.PrecisionRecallDisplay.plot"><code class="docutils literal notranslate"><span class="pre">plot</span></code></a></li>

@@ -756,7 +756,7 @@ we will first scale the data using a
     }
     </style><body><div id="sk-container-id-66" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;standardscaler&#x27;, StandardScaler()),
                     (&#x27;linearsvc&#x27;,
-                     LinearSVC(random_state=RandomState(MT19937) at 0x7F7DA9B8CC40))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-254" type="checkbox" ><label for="sk-estimator-id-254" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+                     LinearSVC(random_state=RandomState(MT19937) at 0x7F012F81D040))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-254" type="checkbox" ><label for="sk-estimator-id-254" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -931,7 +931,7 @@ we will first scale the data using a
                 random_state: int, RandomState instance or None, default=None<br><br>Controls the pseudo random number generation for shuffling the data for<br>the dual coordinate descent (if ``dual=True``). When ``dual=False`` the<br>underlying implementation of :class:`LinearSVC` is not random and<br>``random_state`` has no effect on the results.<br>Pass an int for reproducible output across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.</span>
             </a>
         </td>
-                <td class="value">RandomState(M...0x7F7DA9B8CC40</td>
+                <td class="value">RandomState(M...0x7F012F81D040</td>
             </tr>
     
 
@@ -1267,22 +1267,31 @@ we will first scale the data using a
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 135-147
+.. GENERATED FROM PYTHON SOURCE LINES 135-156
 
 Plot the Precision-Recall curve
 ...............................
 
 To plot the precision-recall curve, you should use
-:class:`~sklearn.metrics.PrecisionRecallDisplay`. Indeed, there is two
-methods available depending if you already computed the predictions of the
-classifier or not.
+:class:`~sklearn.metrics.PrecisionRecallDisplay`. There are three
+methods available:
+
+* for plotting a single curve:
+
+  * :func:`~sklearn.metrics.PrecisionRecallDisplay.from_estimator` for when you
+    have not computed the predictions
+  * :func:`~sklearn.metrics.PrecisionRecallDisplay.from_predictions` for when
+    you already have the predictions
+
+* for plotting multiple curves using cross-validation results:
+  :func:`~sklearn.metrics.PrecisionRecallDisplay.from_cv_results`
 
 Let's first plot the precision-recall curve without the classifier
 predictions. We use
 :func:`~sklearn.metrics.PrecisionRecallDisplay.from_estimator` that
 computes the predictions for us before plotting the curve.
 
-.. GENERATED FROM PYTHON SOURCE LINES 147-154
+.. GENERATED FROM PYTHON SOURCE LINES 156-163
 
 .. code-block:: Python
 
@@ -1305,13 +1314,13 @@ computes the predictions for us before plotting the curve.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 155-158
+.. GENERATED FROM PYTHON SOURCE LINES 164-167
 
 If we already got the estimated probabilities or scores for
 our model, then we can use
 :func:`~sklearn.metrics.PrecisionRecallDisplay.from_predictions`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 158-165
+.. GENERATED FROM PYTHON SOURCE LINES 167-174
 
 .. code-block:: Python
 
@@ -1334,7 +1343,39 @@ our model, then we can use
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-177
+.. GENERATED FROM PYTHON SOURCE LINES 175-178
+
+The :func:`~sklearn.metrics.PrecisionRecallDisplay.from_cv_results` takes the
+cross-validation results from :func:`~sklearn.model_selection.cross_validate`
+and plots a precision-recall curve for each fold.
+
+.. GENERATED FROM PYTHON SOURCE LINES 178-188
+
+.. code-block:: Python
+
+
+    from sklearn.model_selection import cross_validate
+
+    classifier = make_pipeline(StandardScaler(), LinearSVC(random_state=random_state))
+    cv_results = cross_validate(
+        classifier, X_train, y_train, return_estimator=True, return_indices=True
+    )
+    display = PrecisionRecallDisplay.from_cv_results(cv_results, X_train, y_train)
+    _ = display.ax_.set_title("Cross-validation Precision-Recall curves")
+
+
+
+
+.. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_003.png
+   :alt: Cross-validation Precision-Recall curves
+   :srcset: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_003.png
+   :class: sphx-glr-single-img
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 189-200
 
 In multi-label settings
 -----------------------
@@ -1348,7 +1389,7 @@ Create multi-label data, fit, and predict
 We create a multi-label dataset, to illustrate the precision-recall in
 multi-label settings.
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-189
+.. GENERATED FROM PYTHON SOURCE LINES 200-212
 
 .. code-block:: Python
 
@@ -1371,12 +1412,12 @@ multi-label settings.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 190-192
+.. GENERATED FROM PYTHON SOURCE LINES 213-215
 
 We use :class:`~sklearn.multiclass.OneVsRestClassifier` for multi-label
 prediction.
 
-.. GENERATED FROM PYTHON SOURCE LINES 192-201
+.. GENERATED FROM PYTHON SOURCE LINES 215-224
 
 .. code-block:: Python
 
@@ -1396,12 +1437,12 @@ prediction.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-204
+.. GENERATED FROM PYTHON SOURCE LINES 225-227
 
 The average precision score in multi-label settings
 ...................................................
 
-.. GENERATED FROM PYTHON SOURCE LINES 204-220
+.. GENERATED FROM PYTHON SOURCE LINES 227-243
 
 .. code-block:: Python
 
@@ -1428,12 +1469,12 @@ The average precision score in multi-label settings
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 221-223
+.. GENERATED FROM PYTHON SOURCE LINES 244-246
 
 Plot the micro-averaged Precision-Recall curve
 ..............................................
 
-.. GENERATED FROM PYTHON SOURCE LINES 223-234
+.. GENERATED FROM PYTHON SOURCE LINES 246-257
 
 .. code-block:: Python
 
@@ -1451,21 +1492,21 @@ Plot the micro-averaged Precision-Recall curve
 
 
 
-.. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_003.png
+.. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_004.png
    :alt: Micro-averaged over all classes
-   :srcset: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_003.png
+   :srcset: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_004.png
    :class: sphx-glr-single-img
 
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 235-237
+.. GENERATED FROM PYTHON SOURCE LINES 258-260
 
 Plot Precision-Recall curve for each class and iso-f1 curves
 ............................................................
 
-.. GENERATED FROM PYTHON SOURCE LINES 237-280
+.. GENERATED FROM PYTHON SOURCE LINES 260-308
 
 .. code-block:: Python
 
@@ -1491,7 +1532,9 @@ Plot Precision-Recall curve for each class and iso-f1 curves
         precision=precision["micro"],
         average_precision=average_precision["micro"],
     )
-    display.plot(ax=ax, name="Micro-average precision-recall", color="gold")
+    display.plot(
+        ax=ax, name="Micro-average precision-recall", curve_kwargs={"color": "gold"}
+    )
 
     for i, color in zip(range(n_classes), colors):
         display = PrecisionRecallDisplay(
@@ -1500,7 +1543,10 @@ Plot Precision-Recall curve for each class and iso-f1 curves
             average_precision=average_precision[i],
         )
         display.plot(
-            ax=ax, name=f"Precision-recall for class {i}", color=color, despine=True
+            ax=ax,
+            name=f"Precision-recall for class {i}",
+            curve_kwargs={"color": color},
+            despine=True,
         )
 
     # add the legend for the iso-f1 curves
@@ -1515,9 +1561,9 @@ Plot Precision-Recall curve for each class and iso-f1 curves
 
 
 
-.. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_004.png
+.. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_005.png
    :alt: Extension of Precision-Recall curve to multi-class
-   :srcset: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_004.png
+   :srcset: /auto_examples/model_selection/images/sphx_glr_plot_precision_recall_005.png
    :class: sphx-glr-single-img
 
 
@@ -1527,7 +1573,7 @@ Plot Precision-Recall curve for each class and iso-f1 curves
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.364 seconds)
+   **Total running time of the script:** (0 minutes 0.389 seconds)
 
 
 .. _sphx_glr_download_auto_examples_model_selection_plot_precision_recall.py:
