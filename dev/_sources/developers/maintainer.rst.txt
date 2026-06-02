@@ -52,29 +52,29 @@ Reference Steps
   .. tab-item:: Major/Minor RC
     :class-label: tab-4
 
-    Suppose that we are preparing the release `1.9.0rc1`.
+    Suppose that we are preparing the release `1.10.0rc1`.
 
     
     The first RC ideally counts as a **feature freeze**. Each coming release candidate
     and the final release afterwards should include only minor documentation changes
     and bug fixes. Any major enhancement or new feature should be excluded.
 
-    - Create the release branch `1.9.X` directly in the main repository,
+    - Create the release branch `1.10.X` directly in the main repository,
       where `X` is really the letter X, **not a placeholder**. The development for the
-      final and subsequent bug-fix releases of `1.9` should also happen
+      final and subsequent bug-fix releases of `1.10` should also happen
       under this branch with different tags.
 
       .. prompt:: bash
 
         git fetch upstream main
         git checkout upstream/main
-        git checkout -b 1.9.X
-        git push --set-upstream upstream 1.9.X
+        git checkout -b 1.10.X
+        git push --set-upstream upstream 1.10.X
     
 
     
 
-    - Create a PR targeting the `1.9.X` branch.
+    - Create a PR targeting the `1.10.X` branch.
       Copy the following release checklist to the description of this PR to track the
       progress.
 
@@ -109,7 +109,7 @@ Reference Steps
     
 
     - In the release branch, change the version number `__version__` in
-      `sklearn/__init__.py` to `1.9.0rc1`.
+      `sklearn/__init__.py` to `1.10.0rc1`.
 
     - Still in the release branch, set or update the upper bound on the build
       dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
@@ -121,14 +121,14 @@ Reference Steps
       numpy 2.2.5 is the most recent version, its upper bound should be set to <2.3.0.
 
     - In the release branch, generate the changelog for the incoming version, i.e.,
-      `doc/whats_new/1.9.rst`.
+      `doc/whats_new/1.10.rst`.
       During the RC period we want to keep the fragments when we generate the changelog
       because we'll generate it again for the final release, including the changes that
       may happen in between:
 
       .. prompt:: bash
 
-        towncrier build --keep --version 1.9.0
+        towncrier build --keep --version 1.10.0
 
     - Trigger the wheel builder with the `[cd build]` commit marker. See also the
       `workflow runs of the wheel builder
@@ -159,12 +159,12 @@ Reference Steps
       .. warning::
 
         This PR should be merged with the rebase mode instead of the usual squash mode
-        because we want to keep the history in the `1.9.X` branch close
+        because we want to keep the history in the `1.10.X` branch close
         to the history of the main branch which will help for future bug fix releases.
 
         In addition if on merging, the last commit, containing the `[cd build]` marker,
         is empty, the CD jobs won't be triggered. In this case, you can directly push
-        a commit with the marker in the `1.9.X` branch to trigger them.
+        a commit with the marker in the `1.10.X` branch to trigger them.
 
     - If the steps above went fine, proceed **with caution** to create a new tag for the
       release. This should be done only when you are almost certain that the release is
@@ -173,8 +173,8 @@ Reference Steps
 
       .. prompt:: bash
 
-        git tag -a 1.9.0rc1  # in the 1.9.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.9.0rc1
+        git tag -a 1.10.0rc1  # in the 1.10.X branch
+        git push https://github.com/scikit-learn/scikit-learn.git 1.10.0rc1
 
       .. warning::
 
@@ -207,7 +207,7 @@ Reference Steps
           rm -r dist
           python -m pip install -U wheelhouse_uploader twine
           python -m wheelhouse_uploader fetch \
-            --version 1.9.0rc1 --local-folder dist scikit-learn \
+            --version 1.10.0rc1 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
         These commands will download all the binary packages accumulated in the `staging
@@ -239,17 +239,17 @@ Reference Steps
   .. tab-item:: Major/Minor Final
     :class-label: tab-4
 
-    Suppose that we are preparing the release `1.9.0`.
+    Suppose that we are preparing the release `1.10.0`.
 
     
 
     
     - Create a new branch from the `main` branch, then start an interactive rebase from
-      `1.9.X` to select the commits that need to be backported:
+      `1.10.X` to select the commits that need to be backported:
 
       .. prompt:: bash
 
-        git rebase -i upstream/1.9.X
+        git rebase -i upstream/1.10.X
 
       This will open an interactive rebase with the `git-rebase-todo` containing all the
       latest commits on `main`. At this stage, you have to perform this interactive
@@ -269,7 +269,7 @@ Reference Steps
         necessary.
     
 
-    - Create a PR targeting the `1.9.X` branch.
+    - Create a PR targeting the `1.10.X` branch.
       Copy the following release checklist to the description of this PR to track the
       progress.
 
@@ -297,7 +297,7 @@ Reference Steps
     
 
     - In the release branch, change the version number `__version__` in
-      `sklearn/__init__.py` to `1.9.0`.
+      `sklearn/__init__.py` to `1.10.0`.
 
     - Still in the release branch, set or update the upper bound on the build
       dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
@@ -309,23 +309,23 @@ Reference Steps
       numpy 2.2.5 is the most recent version, its upper bound should be set to <2.3.0.
 
     - In the release branch, generate the changelog for the incoming version, i.e.,
-      `doc/whats_new/1.9.rst`.
+      `doc/whats_new/1.10.rst`.
       For a non RC release, push a commit where you:
 
       - Generate the changelog, not keeping the fragments.
 
         .. prompt:: bash
 
-          towncrier build --version 1.9.0
+          towncrier build --version 1.10.0
 
       - Link the release highlights example.
       - Add the list of contributor names. Suppose that the tag of the last release in
-        the previous major/minor version is `1.8.0`, then you can use the
+        the previous major/minor version is `1.9.0`, then you can use the
         following command to retrieve the list of contributor names:
 
         .. prompt:: bash
 
-          git shortlog -s 1.8.0.. |
+          git shortlog -s 1.9.0.. |
             cut -f2- |
             sort --ignore-case |
             tr "\n" ";" |
@@ -363,12 +363,12 @@ Reference Steps
       .. warning::
 
         This PR should be merged with the rebase mode instead of the usual squash mode
-        because we want to keep the history in the `1.9.X` branch close
+        because we want to keep the history in the `1.10.X` branch close
         to the history of the main branch which will help for future bug fix releases.
 
         In addition if on merging, the last commit, containing the `[cd build]` marker,
         is empty, the CD jobs won't be triggered. In this case, you can directly push
-        a commit with the marker in the `1.9.X` branch to trigger them.
+        a commit with the marker in the `1.10.X` branch to trigger them.
 
     - If the steps above went fine, proceed **with caution** to create a new tag for the
       release. This should be done only when you are almost certain that the release is
@@ -377,8 +377,8 @@ Reference Steps
 
       .. prompt:: bash
 
-        git tag -a 1.9.0  # in the 1.9.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.9.0
+        git tag -a 1.10.0  # in the 1.10.X branch
+        git push https://github.com/scikit-learn/scikit-learn.git 1.10.0
 
       .. warning::
 
@@ -407,7 +407,7 @@ Reference Steps
           rm -r dist
           python -m pip install -U wheelhouse_uploader twine
           python -m wheelhouse_uploader fetch \
-            --version 1.9.0 --local-folder dist scikit-learn \
+            --version 1.10.0 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
         These commands will download all the binary packages accumulated in the `staging
@@ -470,10 +470,10 @@ Reference Steps
         echo stable > .git/info/sparse-checkout
         git checkout main
         rm stable
-        ln -s 1.9 stable
-        sed -i "s/latestStable = '.*/latestStable = '1.9';/" versionwarning.js
+        ln -s 1.10 stable
+        sed -i "s/latestStable = '.*/latestStable = '1.10';/" versionwarning.js
         git add stable versionwarning.js
-        git commit -m "Update stable to point to 1.9"
+        git commit -m "Update stable to point to 1.10"
         git push origin main
     
 
@@ -485,22 +485,22 @@ Reference Steps
     
 
     
-    - Update `SECURITY.md` to reflect the latest supported version `1.9.0`.
+    - Update `SECURITY.md` to reflect the latest supported version `1.10.0`.
     
   .. tab-item:: Bug-fix
     :class-label: tab-4
 
-    Suppose that we are preparing the release `1.8.1`.
+    Suppose that we are preparing the release `1.9.1`.
 
     
 
     
     - Create a new branch from the `main` branch, then start an interactive rebase from
-      `1.8.X` to select the commits that need to be backported:
+      `1.9.X` to select the commits that need to be backported:
 
       .. prompt:: bash
 
-        git rebase -i upstream/1.8.X
+        git rebase -i upstream/1.9.X
 
       This will open an interactive rebase with the `git-rebase-todo` containing all the
       latest commits on `main`. At this stage, you have to perform this interactive
@@ -520,7 +520,7 @@ Reference Steps
         necessary.
     
 
-    - Create a PR targeting the `1.8.X` branch.
+    - Create a PR targeting the `1.9.X` branch.
       Copy the following release checklist to the description of this PR to track the
       progress.
 
@@ -546,7 +546,7 @@ Reference Steps
     
 
     - In the release branch, change the version number `__version__` in
-      `sklearn/__init__.py` to `1.8.1`.
+      `sklearn/__init__.py` to `1.9.1`.
 
     - Still in the release branch, set or update the upper bound on the build
       dependencies in the `[build-system]` section of `pyproject.toml`. The goal is to
@@ -558,22 +558,22 @@ Reference Steps
       numpy 2.2.5 is the most recent version, its upper bound should be set to <2.3.0.
 
     - In the release branch, generate the changelog for the incoming version, i.e.,
-      `doc/whats_new/1.8.rst`.
+      `doc/whats_new/1.9.rst`.
       For a non RC release, push a commit where you:
 
       - Generate the changelog, not keeping the fragments.
 
         .. prompt:: bash
 
-          towncrier build --version 1.8.1
+          towncrier build --version 1.9.1
 
       - Add the list of contributor names. Suppose that the tag of the last release in
-        the previous major/minor version is `1.9.0`, then you can use the
+        the previous major/minor version is `1.8.0`, then you can use the
         following command to retrieve the list of contributor names:
 
         .. prompt:: bash
 
-          git shortlog -s 1.9.0.. |
+          git shortlog -s 1.8.0.. |
             cut -f2- |
             sort --ignore-case |
             tr "\n" ";" |
@@ -611,12 +611,12 @@ Reference Steps
       .. warning::
 
         This PR should be merged with the rebase mode instead of the usual squash mode
-        because we want to keep the history in the `1.8.X` branch close
+        because we want to keep the history in the `1.9.X` branch close
         to the history of the main branch which will help for future bug fix releases.
 
         In addition if on merging, the last commit, containing the `[cd build]` marker,
         is empty, the CD jobs won't be triggered. In this case, you can directly push
-        a commit with the marker in the `1.8.X` branch to trigger them.
+        a commit with the marker in the `1.9.X` branch to trigger them.
 
     - If the steps above went fine, proceed **with caution** to create a new tag for the
       release. This should be done only when you are almost certain that the release is
@@ -625,8 +625,8 @@ Reference Steps
 
       .. prompt:: bash
 
-        git tag -a 1.8.1  # in the 1.8.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.8.1
+        git tag -a 1.9.1  # in the 1.9.X branch
+        git push https://github.com/scikit-learn/scikit-learn.git 1.9.1
 
       .. warning::
 
@@ -655,7 +655,7 @@ Reference Steps
           rm -r dist
           python -m pip install -U wheelhouse_uploader twine
           python -m wheelhouse_uploader fetch \
-            --version 1.8.1 --local-folder dist scikit-learn \
+            --version 1.9.1 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
         These commands will download all the binary packages accumulated in the `staging
@@ -693,7 +693,7 @@ Reference Steps
     
 
     
-    - Update `SECURITY.md` to reflect the latest supported version `1.8.1`.
+    - Update `SECURITY.md` to reflect the latest supported version `1.9.1`.
     
   
 
