@@ -1,0 +1,1596 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="3.2. Tuning the hyper-parameters of an estimator" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/modules/grid_search.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Hyper-parameters are parameters that are not directly learnt within estimators. In scikit-learn they are passed as arguments to the constructor of the estimator classes. Typical examples include C,..." />
+<meta property="og:image" content="https://scikit-learn/stable/_images/sphx_glr_plot_successive_halving_iterations_001.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Hyper-parameters are parameters that are not directly learnt within estimators. In scikit-learn they are passed as arguments to the constructor of the estimator classes. Typical examples include C,..." />
+
+    <title>3.2. Tuning the hyper-parameters of an estimator &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/grid_search';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/modules/grid_search.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.3. Tuning the decision threshold for class prediction" href="classification_threshold.html" />
+    <link rel="prev" title="3.1. Cross-validation: evaluating estimator performance" href="cross_validation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../supervised_learning.html">1. Supervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html">1.1. Linear Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lda_qda.html">1.2. Linear and Quadratic Discriminant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_ridge.html">1.3. Kernel ridge regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svm.html">1.4. Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sgd.html">1.5. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neighbors.html">1.6. Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_process.html">1.7. Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross_decomposition.html">1.8. Cross decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naive_bayes.html">1.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">1.10. Decision Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble.html">1.11. Ensembles: Gradient boosting, random forests, bagging, voting, stacking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiclass.html">1.12. Multiclass and multioutput algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_selection.html">1.13. Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semi_supervised.html">1.14. Semi-supervised learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotonic.html">1.15. Isotonic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html">1.16. Probability calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_supervised.html">1.17. Neural network models (supervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../unsupervised_learning.html">2. Unsupervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mixture.html">2.1. Gaussian mixture models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manifold.html">2.2. Manifold learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clustering.html">2.3. Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biclustering.html">2.4. Biclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decomposition.html">2.5. Decomposing signals in components (matrix factorization problems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="covariance.html">2.6. Covariance estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier_detection.html">2.7. Novelty and Outlier Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="density.html">2.8. Density Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_unsupervised.html">2.9. Neural network models (unsupervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../model_selection.html">3. Model selection and evaluation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cross_validation.html">3.1. Cross-validation: evaluating estimator performance</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">3.2. Tuning the hyper-parameters of an estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classification_threshold.html">3.3. Tuning the decision threshold for class prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_evaluation.html">3.4. Metrics and scoring: quantifying the quality of predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learning_curve.html">3.5. Validation curves: plotting scores to evaluate models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata_routing.html">4. Metadata Routing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../inspection.html">5. Inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="partial_dependence.html">5.1. Partial Dependence and Individual Conditional Expectation plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="permutation_importance.html">5.2. Permutation feature importance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualizations.html">6. Visualizations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../data_transforms.html">7. Dataset transformations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="compose.html">7.1. Pipelines and composite estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_extraction.html">7.2. Feature extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html">7.3. Preprocessing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impute.html">7.4. Imputation of missing values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unsupervised_reduction.html">7.5. Unsupervised dimensionality reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random_projection.html">7.6. Random Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_approximation.html">7.7. Kernel Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">7.8. Pairwise metrics, Affinities and Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing_targets.html">7.9. Transforming the prediction target (<code class="docutils literal notranslate"><span class="pre">y</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datasets.html">8. Dataset loading utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/toy_dataset.html">8.1. Toy datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/real_world.html">8.2. Real world datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/sample_generators.html">8.3. Generated datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/loading_other_datasets.html">8.4. Loading other datasets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../computing.html">9. Computing with scikit-learn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../computing/scaling_strategies.html">9.1. Strategies to scale computationally: bigger data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/computational_performance.html">9.2. Computational Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/parallelism.html">9.3. Parallelism, resource management, and configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_persistence.html">10. Model persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_pitfalls.html">11. Common pitfalls and recommended practices</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../dispatching.html">12. Dispatching</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="array_api.html">12.1. Array API support (experimental)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning_map.html">13. Choosing the right estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presentations.html">14. External Resources, Videos and Talks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../model_selection.html" class="nav-link"><span class="section-number">3. </span>Model selection and evaluation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><span class="section-number">3.2. </span>Tuning the hyper-parameters of an estimator</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="tuning-the-hyper-parameters-of-an-estimator">
+<span id="grid-search"></span><h1><span class="section-number">3.2. </span>Tuning the hyper-parameters of an estimator<a class="headerlink" href="#tuning-the-hyper-parameters-of-an-estimator" title="Link to this heading">#</a></h1>
+<p>Hyper-parameters are parameters that are not directly learnt within estimators.
+In scikit-learn they are passed as arguments to the constructor of the
+estimator classes. Typical examples include <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">kernel</span></code> and <code class="docutils literal notranslate"><span class="pre">gamma</span></code>
+for Support Vector Classifier, <code class="docutils literal notranslate"><span class="pre">alpha</span></code> for Lasso, etc.</p>
+<p>It is possible and recommended to search the hyper-parameter space for the
+best <a class="reference internal" href="cross_validation.html#cross-validation"><span class="std std-ref">cross validation</span></a> score.</p>
+<p>Any parameter provided when constructing an estimator may be optimized in this
+manner. Specifically, to find the names and current values for all parameters
+for a given estimator, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A search consists of:</p>
+<ul class="simple">
+<li><p>an estimator (regressor or classifier such as <code class="docutils literal notranslate"><span class="pre">sklearn.svm.SVC()</span></code>);</p></li>
+<li><p>a parameter space;</p></li>
+<li><p>a method for searching or sampling candidates;</p></li>
+<li><p>a cross-validation scheme; and</p></li>
+<li><p>a <a class="reference internal" href="#gridsearch-scoring"><span class="std std-ref">score function</span></a>.</p></li>
+</ul>
+<p>Two generic approaches to parameter search are provided in
+scikit-learn: for given values, <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> exhaustively considers
+all parameter combinations, while <a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a> can sample a
+given number of candidates from a parameter space with a specified
+distribution. Both these tools have successive halving counterparts
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a>, which can be
+much faster at finding a good parameter combination.</p>
+<p>After describing these tools we detail <a class="reference internal" href="#grid-search-tips"><span class="std std-ref">best practices</span></a> applicable to these approaches. Some models allow for
+specialized, efficient parameter search strategies, outlined in
+<a class="reference internal" href="#alternative-cv"><span class="std std-ref">Alternatives to brute force parameter search</span></a>.</p>
+<p>Note that it is common that a small subset of those parameters can have a large
+impact on the predictive or computation performance of the model while others
+can be left to their default values. It is recommended to read the docstring of
+the estimator class to get a finer understanding of their expected behavior,
+possibly by reading the enclosed reference to the literature.</p>
+<section id="exhaustive-grid-search">
+<h2><span class="section-number">3.2.1. </span>Exhaustive Grid Search<a class="headerlink" href="#exhaustive-grid-search" title="Link to this heading">#</a></h2>
+<p>The grid search provided by <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> exhaustively generates
+candidates from a grid of parameter values specified with the <code class="docutils literal notranslate"><span class="pre">param_grid</span></code>
+parameter. For instance, the following <code class="docutils literal notranslate"><span class="pre">param_grid</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">]},</span>
+  <span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">],</span> <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">]},</span>
+ <span class="p">]</span>
+</pre></div>
+</div>
+<p>specifies that two grids should be explored: one with a linear kernel and
+C values in [1, 10, 100, 1000], and the second one with an RBF kernel,
+and the cross-product of C values ranging in [1, 10, 100, 1000] and gamma
+values in [0.001, 0.0001].</p>
+<p>The <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> instance implements the usual estimator API: when
+“fitting” it on a dataset all the possible combinations of parameter values are
+evaluated and the best combination is retained.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="../auto_examples/model_selection/plot_nested_cross_validation_iris.html#sphx-glr-auto-examples-model-selection-plot-nested-cross-validation-iris-py"><span class="std std-ref">Nested versus non-nested cross-validation</span></a>
+for an example of Grid Search within a cross validation loop on the iris
+dataset. This is the best practice for evaluating the performance of a
+model with grid search.</p></li>
+<li><p>See <a class="reference internal" href="../auto_examples/model_selection/plot_grid_search_text_feature_extraction.html#sphx-glr-auto-examples-model-selection-plot-grid-search-text-feature-extraction-py"><span class="std std-ref">Sample pipeline for text feature extraction and evaluation</span></a> for an example
+of Grid Search coupling parameters from a text documents feature
+extractor (n-gram count vectorizer and TF-IDF transformer) with a
+classifier (here a linear SVM trained with SGD with either elastic
+net or L2 penalty) using a <a class="reference internal" href="generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> instance.</p></li>
+</ul>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="advanced-examples">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Advanced examples<a class="headerlink" href="#advanced-examples" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text">See <a class="reference internal" href="../auto_examples/model_selection/plot_nested_cross_validation_iris.html#sphx-glr-auto-examples-model-selection-plot-nested-cross-validation-iris-py"><span class="std std-ref">Nested versus non-nested cross-validation</span></a>
+for an example of Grid Search within a cross validation loop on the iris
+dataset. This is the best practice for evaluating the performance of a
+model with grid search.</p></li>
+<li><p class="sd-card-text">See <a class="reference internal" href="../auto_examples/model_selection/plot_multi_metric_evaluation.html#sphx-glr-auto-examples-model-selection-plot-multi-metric-evaluation-py"><span class="std std-ref">Demonstration of multi-metric evaluation on cross_val_score and GridSearchCV</span></a>
+for an example of <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> being used to evaluate multiple
+metrics simultaneously.</p></li>
+<li><p class="sd-card-text">See <a class="reference internal" href="../auto_examples/model_selection/plot_grid_search_refit_callable.html#sphx-glr-auto-examples-model-selection-plot-grid-search-refit-callable-py"><span class="std std-ref">Balance model complexity and cross-validated score</span></a>
+for an example of using <code class="docutils literal notranslate"><span class="pre">refit=callable</span></code> interface in
+<a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>. The example shows how this interface adds a certain
+amount of flexibility in identifying the “best” estimator. This interface
+can also be used in multiple metrics evaluation.</p></li>
+<li><p class="sd-card-text">See <a class="reference internal" href="../auto_examples/model_selection/plot_grid_search_stats.html#sphx-glr-auto-examples-model-selection-plot-grid-search-stats-py"><span class="std std-ref">Statistical comparison of models using grid search</span></a>
+for an example of how to do a statistical comparison on the outputs of
+<a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>.</p></li>
+</ul>
+</div>
+</details></section>
+<section id="randomized-parameter-optimization">
+<span id="randomized-parameter-search"></span><h2><span class="section-number">3.2.2. </span>Randomized Parameter Optimization<a class="headerlink" href="#randomized-parameter-optimization" title="Link to this heading">#</a></h2>
+<p>While using a grid of parameter settings is currently the most widely used
+method for parameter optimization, other search methods have more
+favorable properties.
+<a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a> implements a randomized search over parameters,
+where each setting is sampled from a distribution over possible parameter values.
+This has two main benefits over an exhaustive search:</p>
+<ul class="simple">
+<li><p>A budget can be chosen independent of the number of parameters and possible values.</p></li>
+<li><p>Adding parameters that do not influence the performance does not decrease efficiency.</p></li>
+</ul>
+<p>Specifying how parameters should be sampled is done using a dictionary, very
+similar to specifying parameters for <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>. Additionally,
+a computation budget, being the number of sampled candidates or sampling
+iterations, is specified using the <code class="docutils literal notranslate"><span class="pre">n_iter</span></code> parameter.
+For each parameter, either a distribution over possible values or a list of
+discrete choices (which will be sampled uniformly) can be specified:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">expon</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">expon</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">.1</span><span class="p">),</span>
+  <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">],</span> <span class="s1">&#39;class_weight&#39;</span><span class="p">:[</span><span class="s1">&#39;balanced&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>This example uses the <code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> module, which contains many useful
+distributions for sampling parameters, such as <code class="docutils literal notranslate"><span class="pre">expon</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code>,
+<code class="docutils literal notranslate"><span class="pre">uniform</span></code>, <code class="docutils literal notranslate"><span class="pre">loguniform</span></code> or <code class="docutils literal notranslate"><span class="pre">randint</span></code>.</p>
+<p>In principle, any function can be passed that provides a <code class="docutils literal notranslate"><span class="pre">rvs</span></code> (random
+variate sample) method to sample a value. A call to the <code class="docutils literal notranslate"><span class="pre">rvs</span></code> function should
+provide independent random samples from possible parameter values on
+consecutive calls.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The distributions in <code class="docutils literal notranslate"><span class="pre">scipy.stats</span></code> prior to version scipy 0.16
+do not allow specifying a random state. Instead, they use the global
+numpy random state, that can be seeded via <code class="docutils literal notranslate"><span class="pre">np.random.seed</span></code> or set
+using <code class="docutils literal notranslate"><span class="pre">np.random.set_state</span></code>. However, beginning scikit-learn 0.18,
+the <a class="reference internal" href="../api/sklearn.model_selection.html#module-sklearn.model_selection" title="sklearn.model_selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.model_selection</span></code></a> module sets the random state provided
+by the user if scipy &gt;= 0.16 is also available.</p>
+</div>
+<p>For continuous parameters, such as <code class="docutils literal notranslate"><span class="pre">C</span></code> above, it is important to specify
+a continuous distribution to take full advantage of the randomization. This way,
+increasing <code class="docutils literal notranslate"><span class="pre">n_iter</span></code> will always lead to a finer search.</p>
+<p>A continuous log-uniform random variable is the continuous version of
+a log-spaced parameter. For example to specify the equivalent of <code class="docutils literal notranslate"><span class="pre">C</span></code> from above,
+<code class="docutils literal notranslate"><span class="pre">loguniform(1,</span> <span class="pre">100)</span></code> can be used instead of <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">10,</span> <span class="pre">100]</span></code>.</p>
+<p>Mirroring the example above in grid search, we can specify a continuous random
+variable that is log-uniformly distributed between <code class="docutils literal notranslate"><span class="pre">1e0</span></code> and <code class="docutils literal notranslate"><span class="pre">1e3</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.fixes</span><span class="w"> </span><span class="kn">import</span> <span class="n">loguniform</span>
+<span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="n">loguniform</span><span class="p">(</span><span class="mf">1e0</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">),</span>
+ <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="n">loguniform</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">),</span>
+ <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rbf&#39;</span><span class="p">],</span>
+ <span class="s1">&#39;class_weight&#39;</span><span class="p">:[</span><span class="s1">&#39;balanced&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../auto_examples/model_selection/plot_randomized_search.html#sphx-glr-auto-examples-model-selection-plot-randomized-search-py"><span class="std std-ref">Comparing randomized search and grid search for hyperparameter estimation</span></a> compares the usage and efficiency
+of randomized search and grid search.</p></li>
+</ul>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Bergstra, J. and Bengio, Y.,
+Random search for hyper-parameter optimization,
+The Journal of Machine Learning Research (2012)</p></li>
+</ul>
+</section>
+<section id="searching-for-optimal-parameters-with-successive-halving">
+<span id="successive-halving-user-guide"></span><h2><span class="section-number">3.2.3. </span>Searching for optimal parameters with successive halving<a class="headerlink" href="#searching-for-optimal-parameters-with-successive-halving" title="Link to this heading">#</a></h2>
+<p>Scikit-learn also provides the <a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> and
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> estimators that can be used to
+search a parameter space using successive halving <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. Successive
+halving (SH) is like a tournament among candidate parameter combinations.
+SH is an iterative selection process where all candidates (the
+parameter combinations) are evaluated with a small amount of resources at
+the first iteration. Only some of these candidates are selected for the next
+iteration, which will be allocated more resources. For parameter tuning, the
+resource is typically the number of training samples, but it can also be an
+arbitrary numeric parameter such as <code class="docutils literal notranslate"><span class="pre">n_estimators</span></code> in a random forest.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The resource increase chosen should be large enough so that a large improvement
+in scores is obtained when taking into account statistical significance.</p>
+</div>
+<p>As illustrated in the figure below, only a subset of candidates
+‘survive’ until the last iteration. These are the candidates that have
+consistently ranked among the top-scoring candidates across all iterations.
+Each iteration is allocated an increasing amount of resources per candidate,
+here the number of samples.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/model_selection/plot_successive_halving_iterations.html"><img alt="../_images/sphx_glr_plot_successive_halving_iterations_001.png" src="../_images/sphx_glr_plot_successive_halving_iterations_001.png" />
+</a>
+</figure>
+<p>We here briefly describe the main parameters, but each parameter and their
+interactions are described more in detail in the dropdown section below. The
+<code class="docutils literal notranslate"><span class="pre">factor</span></code> (&gt; 1) parameter controls the rate at which the resources grow, and
+the rate at which the number of candidates decreases. In each iteration, the
+number of resources per candidate is multiplied by <code class="docutils literal notranslate"><span class="pre">factor</span></code> and the number
+of candidates is divided by the same factor. Along with <code class="docutils literal notranslate"><span class="pre">resource</span></code> and
+<code class="docutils literal notranslate"><span class="pre">min_resources</span></code>, <code class="docutils literal notranslate"><span class="pre">factor</span></code> is the most important parameter to control the
+search in our implementation, though a value of 3 usually works well.
+<code class="docutils literal notranslate"><span class="pre">factor</span></code> effectively controls the number of iterations in
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> and the number of candidates (by default) and
+iterations in <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a>. <code class="docutils literal notranslate"><span class="pre">aggressive_elimination=True</span></code>
+can also be used if the number of available resources is small. More control
+is available through tuning the <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> parameter.</p>
+<p>These estimators are still <strong>experimental</strong>: their predictions
+and their API might change without any deprecation cycle. To use them, you
+need to explicitly import <code class="docutils literal notranslate"><span class="pre">enable_halving_search_cv</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.experimental</span><span class="w"> </span><span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  <span class="c1"># noqa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">HalvingGridSearchCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">HalvingRandomSearchCV</span>
+</pre></div>
+</div>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../auto_examples/model_selection/plot_successive_halving_heatmap.html#sphx-glr-auto-examples-model-selection-plot-successive-halving-heatmap-py"><span class="std std-ref">Comparison between grid search and successive halving</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/model_selection/plot_successive_halving_iterations.html#sphx-glr-auto-examples-model-selection-plot-successive-halving-iterations-py"><span class="std std-ref">Successive Halving Iterations</span></a></p></li>
+</ul>
+<p>The sections below dive into technical aspects of successive halving.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="choosing-min_resources-and-the-number-of-candidates">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Choosing <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> and the number of candidates<a class="headerlink" href="#choosing-min_resources-and-the-number-of-candidates" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Beside <code class="docutils literal notranslate"><span class="pre">factor</span></code>, the two main parameters that influence the behaviour of a
+successive halving search are the <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> parameter, and the
+number of candidates (or parameter combinations) that are evaluated.
+<code class="docutils literal notranslate"><span class="pre">min_resources</span></code> is the amount of resources allocated at the first
+iteration for each candidate. The number of candidates is specified directly
+in <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a>, and is determined from the <code class="docutils literal notranslate"><span class="pre">param_grid</span></code>
+parameter of <a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a>.</p>
+<p class="sd-card-text">Consider a case where the resource is the number of samples, and where we
+have 1000 samples. In theory, with <code class="docutils literal notranslate"><span class="pre">min_resources=10</span></code> and <code class="docutils literal notranslate"><span class="pre">factor=2</span></code>, we
+are able to run <strong>at most</strong> 7 iterations with the following number of
+samples: <code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">20,</span> <span class="pre">40,</span> <span class="pre">80,</span> <span class="pre">160,</span> <span class="pre">320,</span> <span class="pre">640]</span></code>.</p>
+<p class="sd-card-text">But depending on the number of candidates, we might run less than 7
+iterations: if we start with a <strong>small</strong> number of candidates, the last
+iteration might use less than 640 samples, which means not using all the
+available resources (samples). For example if we start with 5 candidates, we
+only need 2 iterations: 5 candidates for the first iteration, then
+<code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">//</span> <span class="pre">2</span> <span class="pre">=</span> <span class="pre">2</span></code> candidates at the second iteration, after which we know which
+candidate performs the best (so we don’t need a third one). We would only be
+using at most 20 samples which is a waste since we have 1000 samples at our
+disposal. On the other hand, if we start with a <strong>high</strong> number of
+candidates, we might end up with a lot of candidates at the last iteration,
+which may not always be ideal: it means that many candidates will run with
+the full resources, basically reducing the procedure to standard search.</p>
+<p class="sd-card-text">In the case of <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a>, the number of candidates is set
+by default such that the last iteration uses as much of the available
+resources as possible. For <a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a>, the number of
+candidates is determined by the <code class="docutils literal notranslate"><span class="pre">param_grid</span></code> parameter. Changing the value of
+<code class="docutils literal notranslate"><span class="pre">min_resources</span></code> will impact the number of possible iterations, and as a
+result will also have an effect on the ideal number of candidates.</p>
+<p class="sd-card-text">Another consideration when choosing <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> is whether or not it
+is easy to discriminate between good and bad candidates with a small amount
+of resources. For example, if you need a lot of samples to distinguish
+between good and bad parameters, a high <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> is recommended. On
+the other hand if the distinction is clear even with a small amount of
+samples, then a small <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> may be preferable since it would
+speed up the computation.</p>
+<p class="sd-card-text">Notice in the example above that the last iteration does not use the maximum
+amount of resources available: 1000 samples are available, yet only 640 are
+used, at most. By default, both <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> and
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> try to use as many resources as possible in the
+last iteration, with the constraint that this amount of resources must be a
+multiple of both <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> and <code class="docutils literal notranslate"><span class="pre">factor</span></code> (this constraint will be clear
+in the next section). <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> achieves this by
+sampling the right amount of candidates, while <a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a>
+achieves this by properly setting <code class="docutils literal notranslate"><span class="pre">min_resources</span></code>.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="amount-of-resource-and-number-of-candidates-at-each-iteration">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Amount of resource and number of candidates at each iteration<a class="headerlink" href="#amount-of-resource-and-number-of-candidates-at-each-iteration" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">At any iteration <code class="docutils literal notranslate"><span class="pre">i</span></code>, each candidate is allocated a given amount of resources
+which we denote <code class="docutils literal notranslate"><span class="pre">n_resources_i</span></code>. This quantity is controlled by the
+parameters <code class="docutils literal notranslate"><span class="pre">factor</span></code> and <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> as follows (<code class="docutils literal notranslate"><span class="pre">factor</span></code> is strictly
+greater than 1):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n_resources_i</span> <span class="o">=</span> <span class="n">factor</span><span class="o">**</span><span class="n">i</span> <span class="o">*</span> <span class="n">min_resources</span><span class="p">,</span>
+</pre></div>
+</div>
+<p class="sd-card-text">or equivalently:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n_resources_</span><span class="p">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="n">n_resources_i</span> <span class="o">*</span> <span class="n">factor</span>
+</pre></div>
+</div>
+<p class="sd-card-text">where <code class="docutils literal notranslate"><span class="pre">min_resources</span> <span class="pre">==</span> <span class="pre">n_resources_0</span></code> is the amount of resources used at
+the first iteration. <code class="docutils literal notranslate"><span class="pre">factor</span></code> also defines the proportions of candidates
+that will be selected for the next iteration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n_candidates_i</span> <span class="o">=</span> <span class="n">n_candidates</span> <span class="o">//</span> <span class="p">(</span><span class="n">factor</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">or equivalently:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n_candidates_0</span> <span class="o">=</span> <span class="n">n_candidates</span>
+<span class="n">n_candidates_</span><span class="p">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="n">n_candidates_i</span> <span class="o">//</span> <span class="n">factor</span>
+</pre></div>
+</div>
+<p class="sd-card-text">So in the first iteration, we use <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> resources
+<code class="docutils literal notranslate"><span class="pre">n_candidates</span></code> times. In the second iteration, we use <code class="docutils literal notranslate"><span class="pre">min_resources</span> <span class="pre">*</span>
+<span class="pre">factor</span></code> resources <code class="docutils literal notranslate"><span class="pre">n_candidates</span> <span class="pre">//</span> <span class="pre">factor</span></code> times. The third again
+multiplies the resources per candidate and divides the number of candidates.
+This process stops when the maximum amount of resource per candidate is
+reached, or when we have identified the best candidate. The best candidate
+is identified at the iteration that is evaluating <code class="docutils literal notranslate"><span class="pre">factor</span></code> or less candidates
+(see just below for an explanation).</p>
+<p class="sd-card-text">Here is an example with <code class="docutils literal notranslate"><span class="pre">min_resources=3</span></code> and <code class="docutils literal notranslate"><span class="pre">factor=2</span></code>, starting with
+70 candidates:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">n_resources_i</span></code></p></th>
+<th class="head"><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">n_candidates_i</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text">3 (=min_resources)</p></td>
+<td><p class="sd-card-text">70 (=n_candidates)</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">3 * 2 = 6</p></td>
+<td><p class="sd-card-text">70 // 2 = 35</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">6 * 2 = 12</p></td>
+<td><p class="sd-card-text">35 // 2 = 17</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">12 * 2 = 24</p></td>
+<td><p class="sd-card-text">17 // 2 = 8</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">24 * 2 = 48</p></td>
+<td><p class="sd-card-text">8 // 2 = 4</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">48 * 2 = 96</p></td>
+<td><p class="sd-card-text">4 // 2 = 2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text">We can note that:</p>
+<ul class="simple">
+<li><p class="sd-card-text">the process stops at the first iteration which evaluates <code class="docutils literal notranslate"><span class="pre">factor=2</span></code>
+candidates: the best candidate is the best out of these 2 candidates. It
+is not necessary to run an additional iteration, since it would only
+evaluate one candidate (namely the best one, which we have already
+identified). For this reason, in general, we want the last iteration to
+run at most <code class="docutils literal notranslate"><span class="pre">factor</span></code> candidates. If the last iteration evaluates more
+than <code class="docutils literal notranslate"><span class="pre">factor</span></code> candidates, then this last iteration reduces to a regular
+search (as in <a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a> or <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>).</p></li>
+<li><p class="sd-card-text">each <code class="docutils literal notranslate"><span class="pre">n_resources_i</span></code> is a multiple of both <code class="docutils literal notranslate"><span class="pre">factor</span></code> and
+<code class="docutils literal notranslate"><span class="pre">min_resources</span></code> (which is confirmed by its definition above).</p></li>
+</ul>
+<p class="sd-card-text">The amount of resources that is used at each iteration can be found in the
+<code class="docutils literal notranslate"><span class="pre">n_resources_</span></code> attribute.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="choosing-a-resource">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Choosing a resource<a class="headerlink" href="#choosing-a-resource" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">By default, the resource is defined in terms of number of samples. That is,
+each iteration will use an increasing amount of samples to train on. You can
+however manually specify a parameter to use as the resource with the
+<code class="docutils literal notranslate"><span class="pre">resource</span></code> parameter. Here is an example where the resource is defined in
+terms of the number of estimators of a random forest:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.experimental</span><span class="w"> </span><span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  <span class="c1"># noqa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">HalvingGridSearchCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+<span class="gp">... </span>              <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span> <span class="o">=</span> <span class="n">HalvingGridSearchCV</span><span class="p">(</span><span class="n">base_estimator</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">max_resources</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">best_estimator_</span>
+<span class="go">RandomForestClassifier(max_depth=5, n_estimators=24, random_state=0)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Note that it is not possible to budget on a parameter that is part of the
+parameter grid.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="exhausting-the-available-resources">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Exhausting the available resources<a class="headerlink" href="#exhausting-the-available-resources" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">As mentioned above, the number of resources that is used at each iteration
+depends on the <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> parameter.
+If you have a lot of resources available but start with a low number of
+resources, some of them might be wasted (i.e. not used):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.experimental</span><span class="w"> </span><span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  <span class="c1"># noqa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">HalvingGridSearchCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">),</span>
+<span class="gp">... </span>             <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="s1">&#39;scale&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span> <span class="o">=</span> <span class="n">HalvingGridSearchCV</span><span class="p">(</span><span class="n">base_estimator</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_resources</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">n_resources_</span>
+<span class="go">[20, 40, 80]</span>
+</pre></div>
+</div>
+<p class="sd-card-text">The search process will only use 80 resources at most, while our maximum
+amount of available resources is <code class="docutils literal notranslate"><span class="pre">n_samples=1000</span></code>. Here, we have
+<code class="docutils literal notranslate"><span class="pre">min_resources</span> <span class="pre">=</span> <span class="pre">r_0</span> <span class="pre">=</span> <span class="pre">20</span></code>.</p>
+<p class="sd-card-text">For <a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a>, by default, the <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> parameter
+is set to ‘exhaust’. This means that <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> is automatically set
+such that the last iteration can use as many resources as possible, within
+the <code class="docutils literal notranslate"><span class="pre">max_resources</span></code> limit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span> <span class="o">=</span> <span class="n">HalvingGridSearchCV</span><span class="p">(</span><span class="n">base_estimator</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_resources</span><span class="o">=</span><span class="s1">&#39;exhaust&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">n_resources_</span>
+<span class="go">[250, 500, 1000]</span>
+</pre></div>
+</div>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">min_resources</span></code> was here automatically set to 250, which results in the last
+iteration using all the resources. The exact value that is used depends on
+the number of candidate parameters, on <code class="docutils literal notranslate"><span class="pre">max_resources</span></code> and on <code class="docutils literal notranslate"><span class="pre">factor</span></code>.</p>
+<p class="sd-card-text">For <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a>, exhausting the resources can be done in 2
+ways:</p>
+<ul class="simple">
+<li><p class="sd-card-text">by setting <code class="docutils literal notranslate"><span class="pre">min_resources='exhaust'</span></code>, just like for
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a>;</p></li>
+<li><p class="sd-card-text">by setting <code class="docutils literal notranslate"><span class="pre">n_candidates='exhaust'</span></code>.</p></li>
+</ul>
+<p class="sd-card-text">Both options are mutually exclusive: using <code class="docutils literal notranslate"><span class="pre">min_resources='exhaust'</span></code> requires
+knowing the number of candidates, and symmetrically <code class="docutils literal notranslate"><span class="pre">n_candidates='exhaust'</span></code>
+requires knowing <code class="docutils literal notranslate"><span class="pre">min_resources</span></code>.</p>
+<p class="sd-card-text">In general, exhausting the total number of resources leads to a better final
+candidate parameter, and is slightly more time-intensive.</p>
+</div>
+</details><section id="aggressive-elimination-of-candidates">
+<span id="aggressive-elimination"></span><h3><span class="section-number">3.2.3.1. </span>Aggressive elimination of candidates<a class="headerlink" href="#aggressive-elimination-of-candidates" title="Link to this heading">#</a></h3>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">aggressive_elimination</span></code> parameter, you can force the search
+process to end up with less than <code class="docutils literal notranslate"><span class="pre">factor</span></code> candidates at the last
+iteration.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="code-example-of-aggressive-elimination">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Code example of aggressive elimination<a class="headerlink" href="#code-example-of-aggressive-elimination" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Ideally, we want the last iteration to evaluate <code class="docutils literal notranslate"><span class="pre">factor</span></code> candidates. We
+then just have to pick the best one. When the number of available resources is
+small with respect to the number of candidates, the last iteration may have to
+evaluate more than <code class="docutils literal notranslate"><span class="pre">factor</span></code> candidates:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.experimental</span><span class="w"> </span><span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  <span class="c1"># noqa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">HalvingGridSearchCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">),</span>
+<span class="gp">... </span>              <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="s1">&#39;scale&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span> <span class="o">=</span> <span class="n">HalvingGridSearchCV</span><span class="p">(</span><span class="n">base_estimator</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_resources</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+<span class="gp">... </span>                         <span class="n">aggressive_elimination</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">n_resources_</span>
+<span class="go">[20, 40]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">n_candidates_</span>
+<span class="go">[6, 3]</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Since we cannot use more than <code class="docutils literal notranslate"><span class="pre">max_resources=40</span></code> resources, the process
+has to stop at the second iteration which evaluates more than <code class="docutils literal notranslate"><span class="pre">factor=2</span></code>
+candidates.</p>
+<p class="sd-card-text">When using <code class="docutils literal notranslate"><span class="pre">aggressive_elimination</span></code>, the process will eliminate as many
+candidates as necessary using <code class="docutils literal notranslate"><span class="pre">min_resources</span></code> resources:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span> <span class="o">=</span> <span class="n">HalvingGridSearchCV</span><span class="p">(</span><span class="n">base_estimator</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="n">factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="n">max_resources</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="n">aggressive_elimination</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">n_resources_</span>
+<span class="go">[20, 20, 40]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sh</span><span class="o">.</span><span class="n">n_candidates_</span>
+<span class="go">[6, 3, 2]</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Notice that we end with 2 candidates at the last iteration since we have
+eliminated enough candidates during the first iterations, using <code class="docutils literal notranslate"><span class="pre">n_resources</span> <span class="pre">=</span>
+<span class="pre">min_resources</span> <span class="pre">=</span> <span class="pre">20</span></code>.</p>
+</div>
+</details></section>
+<section id="analyzing-results-with-the-cv-results-attribute">
+<span id="successive-halving-cv-results"></span><h3><span class="section-number">3.2.3.2. </span>Analyzing results with the <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute<a class="headerlink" href="#analyzing-results-with-the-cv-results-attribute" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute contains useful information for analyzing the
+results of a search. It can be converted to a pandas dataframe with <code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">=</span>
+<span class="pre">pd.DataFrame(est.cv_results_)</span></code>. The <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute of
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> is similar
+to that of <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a>, with
+additional information related to the successive halving process.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="example-of-a-(truncated)-output-dataframe:">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example of a (truncated) output dataframe:<a class="headerlink" href="#example-of-a-(truncated)-output-dataframe:" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p class="sd-card-text">iter</p></th>
+<th class="head"><p class="sd-card-text">n_resources</p></th>
+<th class="head"><p class="sd-card-text">mean_test_score</p></th>
+<th class="head"><p class="sd-card-text">params</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text">0</p></td>
+<td><p class="sd-card-text">0</p></td>
+<td><p class="sd-card-text">125</p></td>
+<td><p class="sd-card-text">0.983667</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘log_loss’, ‘max_depth’: None, ‘max_features’: 9, ‘min_samples_split’: 5}</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">1</p></td>
+<td><p class="sd-card-text">0</p></td>
+<td><p class="sd-card-text">125</p></td>
+<td><p class="sd-card-text">0.983667</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘gini’, ‘max_depth’: None, ‘max_features’: 8, ‘min_samples_split’: 7}</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">2</p></td>
+<td><p class="sd-card-text">0</p></td>
+<td><p class="sd-card-text">125</p></td>
+<td><p class="sd-card-text">0.983667</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘gini’, ‘max_depth’: None, ‘max_features’: 10, ‘min_samples_split’: 10}</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">3</p></td>
+<td><p class="sd-card-text">0</p></td>
+<td><p class="sd-card-text">125</p></td>
+<td><p class="sd-card-text">0.983667</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘log_loss’, ‘max_depth’: None, ‘max_features’: 6, ‘min_samples_split’: 6}</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">…</p></td>
+<td><p class="sd-card-text">…</p></td>
+<td><p class="sd-card-text">…</p></td>
+<td><p class="sd-card-text">…</p></td>
+<td><p class="sd-card-text">…</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">15</p></td>
+<td><p class="sd-card-text">2</p></td>
+<td><p class="sd-card-text">500</p></td>
+<td><p class="sd-card-text">0.951958</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘log_loss’, ‘max_depth’: None, ‘max_features’: 9, ‘min_samples_split’: 10}</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">16</p></td>
+<td><p class="sd-card-text">2</p></td>
+<td><p class="sd-card-text">500</p></td>
+<td><p class="sd-card-text">0.947958</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘gini’, ‘max_depth’: None, ‘max_features’: 10, ‘min_samples_split’: 10}</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">17</p></td>
+<td><p class="sd-card-text">2</p></td>
+<td><p class="sd-card-text">500</p></td>
+<td><p class="sd-card-text">0.951958</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘gini’, ‘max_depth’: None, ‘max_features’: 10, ‘min_samples_split’: 4}</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">18</p></td>
+<td><p class="sd-card-text">3</p></td>
+<td><p class="sd-card-text">1000</p></td>
+<td><p class="sd-card-text">0.961009</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘log_loss’, ‘max_depth’: None, ‘max_features’: 9, ‘min_samples_split’: 10}</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">19</p></td>
+<td><p class="sd-card-text">3</p></td>
+<td><p class="sd-card-text">1000</p></td>
+<td><p class="sd-card-text">0.955989</p></td>
+<td><p class="sd-card-text">{‘criterion’: ‘gini’, ‘max_depth’: None, ‘max_features’: 10, ‘min_samples_split’: 4}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text">Each row corresponds to a given parameter combination (a candidate) and a given
+iteration. The iteration is given by the <code class="docutils literal notranslate"><span class="pre">iter</span></code> column. The <code class="docutils literal notranslate"><span class="pre">n_resources</span></code>
+column tells you how many resources were used.</p>
+<p class="sd-card-text">In the example above, the best parameter combination is <code class="docutils literal notranslate"><span class="pre">{'criterion':</span>
+<span class="pre">'log_loss',</span> <span class="pre">'max_depth':</span> <span class="pre">None,</span> <span class="pre">'max_features':</span> <span class="pre">9,</span> <span class="pre">'min_samples_split':</span> <span class="pre">10}</span></code>
+since it has reached the last iteration (3) with the highest score:
+0.96.</p>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p class="sd-card-text">K. Jamieson, A. Talwalkar,
+<a class="reference external" href="http://proceedings.mlr.press/v51/jamieson16.html">Non-stochastic Best Arm Identification and Hyperparameter
+Optimization</a>, in
+proc. of Machine Learning Research, 2016.</p>
+</aside>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p class="sd-card-text">L. Li, K. Jamieson, G. DeSalvo, A. Rostamizadeh, A. Talwalkar,
+<a class="reference external" href="https://arxiv.org/abs/1603.06560">Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization</a>, in Machine Learning Research 18, 2018.</p>
+</aside>
+</aside>
+</div>
+</details></section>
+</section>
+<section id="tips-for-parameter-search">
+<span id="grid-search-tips"></span><h2><span class="section-number">3.2.4. </span>Tips for parameter search<a class="headerlink" href="#tips-for-parameter-search" title="Link to this heading">#</a></h2>
+<section id="specifying-an-objective-metric">
+<span id="gridsearch-scoring"></span><h3><span class="section-number">3.2.4.1. </span>Specifying an objective metric<a class="headerlink" href="#specifying-an-objective-metric" title="Link to this heading">#</a></h3>
+<p>By default, parameter search uses the <code class="docutils literal notranslate"><span class="pre">score</span></code> function of the estimator to
+evaluate a parameter setting. These are the
+<a class="reference internal" href="generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score" title="sklearn.metrics.accuracy_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.accuracy_score</span></code></a> for classification and
+<a class="reference internal" href="generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.r2_score</span></code></a> for regression.  For some applications, other
+scoring functions are better suited (for example in unbalanced classification,
+the accuracy score is often uninformative), see <a class="reference internal" href="model_evaluation.html#which-scoring-function"><span class="std std-ref">Which scoring function should I use?</span></a>
+for some guidance. An alternative scoring function can be specified via the
+<code class="docutils literal notranslate"><span class="pre">scoring</span></code> parameter of most parameter search tools, see
+<a class="reference internal" href="model_evaluation.html#scoring-parameter"><span class="std std-ref">The scoring parameter: defining model evaluation rules</span></a> for more details.</p>
+</section>
+<section id="specifying-multiple-metrics-for-evaluation">
+<span id="multimetric-grid-search"></span><h3><span class="section-number">3.2.4.2. </span>Specifying multiple metrics for evaluation<a class="headerlink" href="#specifying-multiple-metrics-for-evaluation" title="Link to this heading">#</a></h3>
+<p><a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a> allow specifying
+multiple metrics for the <code class="docutils literal notranslate"><span class="pre">scoring</span></code> parameter.</p>
+<p>Multimetric scoring can either be specified as a list of strings of predefined
+scores names or a dict mapping the scorer name to the scorer function and/or
+the predefined scorer name(s). See <a class="reference internal" href="model_evaluation.html#multimetric-scoring"><span class="std std-ref">Using multiple metric evaluation</span></a> for more details.</p>
+<p>When specifying multiple metrics, the <code class="docutils literal notranslate"><span class="pre">refit</span></code> parameter must be set to the
+metric (string) for which the <code class="docutils literal notranslate"><span class="pre">best_params_</span></code> will be found and used to build
+the <code class="docutils literal notranslate"><span class="pre">best_estimator_</span></code> on the whole dataset. If the search should not be
+refit, set <code class="docutils literal notranslate"><span class="pre">refit=False</span></code>. Leaving refit to the default value <code class="docutils literal notranslate"><span class="pre">None</span></code> will
+result in an error when using multiple metrics.</p>
+<p>See <a class="reference internal" href="../auto_examples/model_selection/plot_multi_metric_evaluation.html#sphx-glr-auto-examples-model-selection-plot-multi-metric-evaluation-py"><span class="std std-ref">Demonstration of multi-metric evaluation on cross_val_score and GridSearchCV</span></a>
+for an example usage.</p>
+<p><a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> do not support
+multimetric scoring.</p>
+</section>
+<section id="composite-estimators-and-parameter-spaces">
+<span id="composite-grid-search"></span><h3><span class="section-number">3.2.4.3. </span>Composite estimators and parameter spaces<a class="headerlink" href="#composite-estimators-and-parameter-spaces" title="Link to this heading">#</a></h3>
+<p><a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a> allow searching over
+parameters of composite or nested estimators such as
+<a class="reference internal" href="generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>,
+<a class="reference internal" href="generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ColumnTransformer</span></code></a>,
+<a class="reference internal" href="generated/sklearn.ensemble.VotingClassifier.html#sklearn.ensemble.VotingClassifier" title="sklearn.ensemble.VotingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">VotingClassifier</span></code></a> or
+<a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> using a dedicated
+<code class="docutils literal notranslate"><span class="pre">&lt;estimator&gt;__&lt;parameter&gt;</span></code> syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalibratedClassifierCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_moons</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_moons</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calibrated_forest</span> <span class="o">=</span> <span class="n">CalibratedClassifierCV</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">estimator</span><span class="o">=</span><span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;estimator__max_depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">calibrated_forest</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="go">GridSearchCV(cv=5,</span>
+<span class="go">             estimator=CalibratedClassifierCV(estimator=RandomForestClassifier(n_estimators=10)),</span>
+<span class="go">             param_grid={&#39;estimator__max_depth&#39;: [2, 4, 6, 8]})</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">&lt;estimator&gt;</span></code> is the parameter name of the nested estimator,
+in this case <code class="docutils literal notranslate"><span class="pre">estimator</span></code>.
+If the meta-estimator is constructed as a collection of estimators as in
+<code class="docutils literal notranslate"><span class="pre">pipeline.Pipeline</span></code>, then <code class="docutils literal notranslate"><span class="pre">&lt;estimator&gt;</span></code> refers to the name of the estimator,
+see <a class="reference internal" href="compose.html#pipeline-nested-parameters"><span class="std std-ref">Access to nested parameters</span></a>. In practice, there can be several
+levels of nesting:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectKBest</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+<span class="gp">... </span>   <span class="p">(</span><span class="s1">&#39;select&#39;</span><span class="p">,</span> <span class="n">SelectKBest</span><span class="p">()),</span>
+<span class="gp">... </span>   <span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">calibrated_forest</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;select__k&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>   <span class="s1">&#39;model__estimator__max_depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please refer to <a class="reference internal" href="compose.html#pipeline"><span class="std std-ref">Pipeline: chaining estimators</span></a> for performing parameter searches over
+pipelines.</p>
+</section>
+<section id="model-selection-development-and-evaluation">
+<h3><span class="section-number">3.2.4.4. </span>Model selection: development and evaluation<a class="headerlink" href="#model-selection-development-and-evaluation" title="Link to this heading">#</a></h3>
+<p>Model selection by evaluating various parameter settings can be seen as a way
+to use the labeled data to “train” the parameters of the grid.</p>
+<p>When evaluating the resulting model it is important to do it on
+held-out samples that were not seen during the grid search process:
+it is recommended to split the data into a <strong>development set</strong> (to
+be fed to the <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> instance) and an <strong>evaluation set</strong>
+to compute performance metrics.</p>
+<p>This can be done by using the <a class="reference internal" href="generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><code class="xref py py-func docutils literal notranslate"><span class="pre">train_test_split</span></code></a>
+utility function.</p>
+</section>
+<section id="parallelism">
+<h3><span class="section-number">3.2.4.5. </span>Parallelism<a class="headerlink" href="#parallelism" title="Link to this heading">#</a></h3>
+<p>The parameter search tools evaluate each parameter combination on each data
+fold independently. Computations can be run in parallel by using the keyword
+<code class="docutils literal notranslate"><span class="pre">n_jobs=-1</span></code>. See function signature for more details, and also the Glossary
+entry for <a class="reference internal" href="../glossary.html#term-n_jobs"><span class="xref std std-term">n_jobs</span></a>.</p>
+</section>
+<section id="robustness-to-failure">
+<h3><span class="section-number">3.2.4.6. </span>Robustness to failure<a class="headerlink" href="#robustness-to-failure" title="Link to this heading">#</a></h3>
+<p>Some parameter settings may result in a failure to <code class="docutils literal notranslate"><span class="pre">fit</span></code> one or more folds of
+the data. By default, the score for those settings will be <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>. This can
+be controlled by setting <code class="docutils literal notranslate"><span class="pre">error_score=&quot;raise&quot;</span></code> to raise an exception if one fit
+fails, or for example <code class="docutils literal notranslate"><span class="pre">error_score=0</span></code> to set another value for the score of
+failing parameter combinations.</p>
+</section>
+</section>
+<section id="alternatives-to-brute-force-parameter-search">
+<span id="alternative-cv"></span><h2><span class="section-number">3.2.5. </span>Alternatives to brute force parameter search<a class="headerlink" href="#alternatives-to-brute-force-parameter-search" title="Link to this heading">#</a></h2>
+<section id="model-specific-cross-validation">
+<h3><span class="section-number">3.2.5.1. </span>Model specific cross-validation<a class="headerlink" href="#model-specific-cross-validation" title="Link to this heading">#</a></h3>
+<p>Some models can fit data for a range of values of some parameter almost
+as efficiently as fitting the estimator for a single value of the
+parameter. This feature can be leveraged to perform a more efficient
+cross-validation used for model selection of this parameter.</p>
+<p>The most common parameter amenable to this strategy is the parameter
+encoding the strength of the regularizer. In this case we say that we
+compute the <strong>regularization path</strong> of the estimator.</p>
+<p>Here is the list of such models:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.linear_model.ElasticNetCV.html#sklearn.linear_model.ElasticNetCV" title="sklearn.linear_model.ElasticNetCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.ElasticNetCV</span></code></a>(*[, l1_ratio, ...])</p></td>
+<td><p>Elastic Net model with iterative fitting along a regularization path.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.linear_model.LarsCV.html#sklearn.linear_model.LarsCV" title="sklearn.linear_model.LarsCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.LarsCV</span></code></a>(*[, fit_intercept, ...])</p></td>
+<td><p>Cross-validated Least Angle Regression model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.linear_model.LassoCV.html#sklearn.linear_model.LassoCV" title="sklearn.linear_model.LassoCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.LassoCV</span></code></a>(*[, eps, n_alphas, ...])</p></td>
+<td><p>Lasso linear model with iterative fitting along a regularization path.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.linear_model.LassoLarsCV.html#sklearn.linear_model.LassoLarsCV" title="sklearn.linear_model.LassoLarsCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.LassoLarsCV</span></code></a>(*[, fit_intercept, ...])</p></td>
+<td><p>Cross-validated Lasso, using the LARS algorithm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.LogisticRegressionCV</span></code></a>(*[, Cs, ...])</p></td>
+<td><p>Logistic Regression CV (aka logit, MaxEnt) classifier.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.linear_model.MultiTaskElasticNetCV.html#sklearn.linear_model.MultiTaskElasticNetCV" title="sklearn.linear_model.MultiTaskElasticNetCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.MultiTaskElasticNetCV</span></code></a>(*[, ...])</p></td>
+<td><p>Multi-task L1/L2 ElasticNet with built-in cross-validation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLassoCV.html#sklearn.linear_model.MultiTaskLassoCV" title="sklearn.linear_model.MultiTaskLassoCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.MultiTaskLassoCV</span></code></a>(*[, eps, ...])</p></td>
+<td><p>Multi-task Lasso model trained with L1/L2 mixed-norm as regularizer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.linear_model.OrthogonalMatchingPursuitCV.html#sklearn.linear_model.OrthogonalMatchingPursuitCV" title="sklearn.linear_model.OrthogonalMatchingPursuitCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.OrthogonalMatchingPursuitCV</span></code></a>(*)</p></td>
+<td><p>Cross-validated Orthogonal Matching Pursuit model (OMP).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.linear_model.RidgeCV.html#sklearn.linear_model.RidgeCV" title="sklearn.linear_model.RidgeCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.RidgeCV</span></code></a>([alphas, ...])</p></td>
+<td><p>Ridge regression with built-in cross-validation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.linear_model.RidgeClassifierCV.html#sklearn.linear_model.RidgeClassifierCV" title="sklearn.linear_model.RidgeClassifierCV"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.RidgeClassifierCV</span></code></a>([alphas, ...])</p></td>
+<td><p>Ridge classifier with built-in cross-validation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="information-criterion">
+<h3><span class="section-number">3.2.5.2. </span>Information Criterion<a class="headerlink" href="#information-criterion" title="Link to this heading">#</a></h3>
+<p>Some models can offer an information-theoretic closed-form formula of the
+optimal estimate of the regularization parameter by computing a single
+regularization path (instead of several when using cross-validation).</p>
+<p>Here is the list of models benefiting from the Akaike Information
+Criterion (AIC) or the Bayesian Information Criterion (BIC) for automated
+model selection:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.linear_model.LassoLarsIC.html#sklearn.linear_model.LassoLarsIC" title="sklearn.linear_model.LassoLarsIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">linear_model.LassoLarsIC</span></code></a>([criterion, ...])</p></td>
+<td><p>Lasso model fit with Lars using BIC or AIC for model selection.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="out-of-bag-estimates">
+<span id="out-of-bag"></span><h3><span class="section-number">3.2.5.3. </span>Out of Bag Estimates<a class="headerlink" href="#out-of-bag-estimates" title="Link to this heading">#</a></h3>
+<p>When using ensemble methods based upon bagging, i.e. generating new
+training sets using sampling with replacement, part of the training set
+remains unused.  For each classifier in the ensemble, a different part
+of the training set is left out.</p>
+<p>This left out portion can be used to estimate the generalization error
+without having to rely on a separate validation set.  This estimate
+comes “for free” as no additional data is needed and can be used for
+model selection.</p>
+<p>This is currently implemented in the following classes:</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier" title="sklearn.ensemble.RandomForestClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble.RandomForestClassifier</span></code></a>([...])</p></td>
+<td><p>A random forest classifier.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble.RandomForestRegressor</span></code></a>([...])</p></td>
+<td><p>A random forest regressor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.ensemble.ExtraTreesClassifier.html#sklearn.ensemble.ExtraTreesClassifier" title="sklearn.ensemble.ExtraTreesClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble.ExtraTreesClassifier</span></code></a>([...])</p></td>
+<td><p>An extra-trees classifier.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.ensemble.ExtraTreesRegressor.html#sklearn.ensemble.ExtraTreesRegressor" title="sklearn.ensemble.ExtraTreesRegressor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble.ExtraTreesRegressor</span></code></a>([n_estimators, ...])</p></td>
+<td><p>An extra-trees regressor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sklearn.ensemble.GradientBoostingClassifier.html#sklearn.ensemble.GradientBoostingClassifier" title="sklearn.ensemble.GradientBoostingClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble.GradientBoostingClassifier</span></code></a>(*[, ...])</p></td>
+<td><p>Gradient Boosting for classification.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sklearn.ensemble.GradientBoostingRegressor.html#sklearn.ensemble.GradientBoostingRegressor" title="sklearn.ensemble.GradientBoostingRegressor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensemble.GradientBoostingRegressor</span></code></a>(*[, ...])</p></td>
+<td><p>Gradient Boosting for regression.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cross_validation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">3.1. </span>Cross-validation: evaluating estimator performance</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="classification_threshold.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">3.3. </span>Tuning the decision threshold for class prediction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exhaustive-grid-search">3.2.1. Exhaustive Grid Search</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#randomized-parameter-optimization">3.2.2. Randomized Parameter Optimization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-for-optimal-parameters-with-successive-halving">3.2.3. Searching for optimal parameters with successive halving</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggressive-elimination-of-candidates">3.2.3.1. Aggressive elimination of candidates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analyzing-results-with-the-cv-results-attribute">3.2.3.2. Analyzing results with the <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tips-for-parameter-search">3.2.4. Tips for parameter search</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specifying-an-objective-metric">3.2.4.1. Specifying an objective metric</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specifying-multiple-metrics-for-evaluation">3.2.4.2. Specifying multiple metrics for evaluation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composite-estimators-and-parameter-spaces">3.2.4.3. Composite estimators and parameter spaces</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-selection-development-and-evaluation">3.2.4.4. Model selection: development and evaluation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelism">3.2.4.5. Parallelism</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robustness-to-failure">3.2.4.6. Robustness to failure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternatives-to-brute-force-parameter-search">3.2.5. Alternatives to brute force parameter search</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-specific-cross-validation">3.2.5.1. Model specific cross-validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#information-criterion">3.2.5.2. Information Criterion</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#out-of-bag-estimates">3.2.5.3. Out of Bag Estimates</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/grid_search.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

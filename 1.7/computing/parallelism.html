@@ -1,0 +1,1100 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="9.3. Parallelism, resource management, and configuration" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/computing/parallelism.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Parallelism: Some scikit-learn estimators and utilities parallelize costly operations using multiple CPU cores. Depending on the type of estimator and sometimes the values of the constructor parame..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Parallelism: Some scikit-learn estimators and utilities parallelize costly operations using multiple CPU cores. Depending on the type of estimator and sometimes the values of the constructor parame..." />
+
+    <title>9.3. Parallelism, resource management, and configuration &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'computing/parallelism';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/computing/parallelism.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="10. Model persistence" href="../model_persistence.html" />
+    <link rel="prev" title="9.2. Computational Performance" href="computational_performance.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../supervised_learning.html">1. Supervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/linear_model.html">1.1. Linear Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/lda_qda.html">1.2. Linear and Quadratic Discriminant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/kernel_ridge.html">1.3. Kernel ridge regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/svm.html">1.4. Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/sgd.html">1.5. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/neighbors.html">1.6. Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/gaussian_process.html">1.7. Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/cross_decomposition.html">1.8. Cross decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/naive_bayes.html">1.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/tree.html">1.10. Decision Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/ensemble.html">1.11. Ensembles: Gradient boosting, random forests, bagging, voting, stacking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/multiclass.html">1.12. Multiclass and multioutput algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/feature_selection.html">1.13. Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/semi_supervised.html">1.14. Semi-supervised learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/isotonic.html">1.15. Isotonic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/calibration.html">1.16. Probability calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/neural_networks_supervised.html">1.17. Neural network models (supervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../unsupervised_learning.html">2. Unsupervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/mixture.html">2.1. Gaussian mixture models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/manifold.html">2.2. Manifold learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/clustering.html">2.3. Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/biclustering.html">2.4. Biclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/decomposition.html">2.5. Decomposing signals in components (matrix factorization problems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/covariance.html">2.6. Covariance estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/outlier_detection.html">2.7. Novelty and Outlier Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/density.html">2.8. Density Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/neural_networks_unsupervised.html">2.9. Neural network models (unsupervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../model_selection.html">3. Model selection and evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/cross_validation.html">3.1. Cross-validation: evaluating estimator performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/grid_search.html">3.2. Tuning the hyper-parameters of an estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/classification_threshold.html">3.3. Tuning the decision threshold for class prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/model_evaluation.html">3.4. Metrics and scoring: quantifying the quality of predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/learning_curve.html">3.5. Validation curves: plotting scores to evaluate models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata_routing.html">4. Metadata Routing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../inspection.html">5. Inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/partial_dependence.html">5.1. Partial Dependence and Individual Conditional Expectation plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/permutation_importance.html">5.2. Permutation feature importance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualizations.html">6. Visualizations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../data_transforms.html">7. Dataset transformations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/compose.html">7.1. Pipelines and composite estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/feature_extraction.html">7.2. Feature extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/preprocessing.html">7.3. Preprocessing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/impute.html">7.4. Imputation of missing values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/unsupervised_reduction.html">7.5. Unsupervised dimensionality reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/random_projection.html">7.6. Random Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/kernel_approximation.html">7.7. Kernel Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/metrics.html">7.8. Pairwise metrics, Affinities and Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../modules/preprocessing_targets.html">7.9. Transforming the prediction target (<code class="docutils literal notranslate"><span class="pre">y</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datasets.html">8. Dataset loading utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/toy_dataset.html">8.1. Toy datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/real_world.html">8.2. Real world datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/sample_generators.html">8.3. Generated datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/loading_other_datasets.html">8.4. Loading other datasets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../computing.html">9. Computing with scikit-learn</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scaling_strategies.html">9.1. Strategies to scale computationally: bigger data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computational_performance.html">9.2. Computational Performance</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">9.3. Parallelism, resource management, and configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_persistence.html">10. Model persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_pitfalls.html">11. Common pitfalls and recommended practices</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../dispatching.html">12. Dispatching</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/array_api.html">12.1. Array API support (experimental)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning_map.html">13. Choosing the right estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presentations.html">14. External Resources, Videos and Talks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../computing.html" class="nav-link"><span class="section-number">9. </span>Computing with scikit-learn</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><span class="section-number">9.3. </span>Parallelism, resource management, and configuration</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="parallelism-resource-management-and-configuration">
+<h1><span class="section-number">9.3. </span>Parallelism, resource management, and configuration<a class="headerlink" href="#parallelism-resource-management-and-configuration" title="Link to this heading">#</a></h1>
+<section id="parallelism">
+<span id="id1"></span><h2><span class="section-number">9.3.1. </span>Parallelism<a class="headerlink" href="#parallelism" title="Link to this heading">#</a></h2>
+<p>Some scikit-learn estimators and utilities parallelize costly operations
+using multiple CPU cores.</p>
+<p>Depending on the type of estimator and sometimes the values of the
+constructor parameters, this is either done:</p>
+<ul class="simple">
+<li><p>with higher-level parallelism via <a class="reference external" href="https://joblib.readthedocs.io/en/latest/">joblib</a>.</p></li>
+<li><p>with lower-level parallelism via OpenMP, used in C or Cython code.</p></li>
+<li><p>with lower-level parallelism via BLAS, used by NumPy and SciPy for generic operations
+on arrays.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> parameters of estimators always controls the amount of parallelism
+managed by joblib (processes or threads depending on the joblib backend).
+The thread-level parallelism managed by OpenMP in scikit-learn’s own Cython code
+or by BLAS &amp; LAPACK libraries used by NumPy and SciPy operations used in scikit-learn
+is always controlled by environment variables or <code class="docutils literal notranslate"><span class="pre">threadpoolctl</span></code> as explained below.
+Note that some estimators can leverage all three kinds of parallelism at different
+points of their training and prediction methods.</p>
+<p>We describe these 3 types of parallelism in the following subsections in more details.</p>
+<section id="higher-level-parallelism-with-joblib">
+<h3><span class="section-number">9.3.1.1. </span>Higher-level parallelism with joblib<a class="headerlink" href="#higher-level-parallelism-with-joblib" title="Link to this heading">#</a></h3>
+<p>When the underlying implementation uses joblib, the number of workers
+(threads or processes) that are spawned in parallel can be controlled via the
+<code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> parameter.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Where (and how) parallelization happens in the estimators using joblib by
+specifying <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> is currently poorly documented.
+Please help us by improving our docs and tackle <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/issues/14228">issue 14228</a>!</p>
+</div>
+<p>Joblib is able to support both multi-processing and multi-threading. Whether
+joblib chooses to spawn a thread or a process depends on the <strong>backend</strong>
+that it’s using.</p>
+<p>scikit-learn generally relies on the <code class="docutils literal notranslate"><span class="pre">loky</span></code> backend, which is joblib’s
+default backend. Loky is a multi-processing backend. When doing
+multi-processing, in order to avoid duplicating the memory in each process
+(which isn’t reasonable with big datasets), joblib will create a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.memmap.html">memmap</a>
+that all processes can share, when the data is bigger than 1MB.</p>
+<p>In some specific cases (when the code that is run in parallel releases the
+GIL), scikit-learn will indicate to <code class="docutils literal notranslate"><span class="pre">joblib</span></code> that a multi-threading
+backend is preferable.</p>
+<p>As a user, you may control the backend that joblib will use (regardless of
+what scikit-learn recommends) by using a context manager:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">parallel_backend</span>
+
+<span class="k">with</span> <span class="n">parallel_backend</span><span class="p">(</span><span class="s1">&#39;threading&#39;</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># Your scikit-learn code here</span>
+</pre></div>
+</div>
+<p>Please refer to the <a class="reference external" href="https://joblib.readthedocs.io/en/latest/parallel.html#thread-based-parallelism-vs-process-based-parallelism">joblib’s docs</a>
+for more details.</p>
+<p>In practice, whether parallelism is helpful at improving runtime depends on
+many factors. It is usually a good idea to experiment rather than assuming
+that increasing the number of workers is always a good thing. In some cases
+it can be highly detrimental to performance to run multiple copies of some
+estimators or functions in parallel (see <a class="reference internal" href="#oversubscription"><span class="std std-ref">oversubscription</span></a> below).</p>
+</section>
+<section id="lower-level-parallelism-with-openmp">
+<h3><span class="section-number">9.3.1.2. </span>Lower-level parallelism with OpenMP<a class="headerlink" href="#lower-level-parallelism-with-openmp" title="Link to this heading">#</a></h3>
+<p>OpenMP is used to parallelize code written in Cython or C, relying on
+multi-threading exclusively. By default, the implementations using OpenMP
+will use as many threads as possible, i.e. as many threads as logical cores.</p>
+<p>You can control the exact number of threads that are used either:</p>
+<ul>
+<li><p>via the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable, for instance when:
+running a python script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1"><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">4</span><span class="w"> </span>python<span class="w"> </span>my_script.py</span>
+</pre></div></div></li>
+<li><p>or via <code class="docutils literal notranslate"><span class="pre">threadpoolctl</span></code> as explained by <a class="reference external" href="https://github.com/joblib/threadpoolctl/#setting-the-maximum-size-of-thread-pools">this piece of documentation</a>.</p></li>
+</ul>
+</section>
+<section id="parallel-numpy-and-scipy-routines-from-numerical-libraries">
+<h3><span class="section-number">9.3.1.3. </span>Parallel NumPy and SciPy routines from numerical libraries<a class="headerlink" href="#parallel-numpy-and-scipy-routines-from-numerical-libraries" title="Link to this heading">#</a></h3>
+<p>scikit-learn relies heavily on NumPy and SciPy, which internally call
+multi-threaded linear algebra routines (BLAS &amp; LAPACK) implemented in libraries
+such as MKL, OpenBLAS or BLIS.</p>
+<p>You can control the exact number of threads used by BLAS for each library
+using environment variables, namely:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code> sets the number of threads MKL uses,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OPENBLAS_NUM_THREADS</span></code> sets the number of threads OpenBLAS uses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BLIS_NUM_THREADS</span></code> sets the number of threads BLIS uses</p></li>
+</ul>
+<p>Note that BLAS &amp; LAPACK implementations can also be impacted by
+<code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>. To check whether this is the case in your environment,
+you can inspect how the number of threads effectively used by those libraries
+is affected when running the following command in a bash or zsh terminal
+for different values of <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">2</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>threadpoolctl<span class="w"> </span>-i<span class="w"> </span>numpy<span class="w"> </span>scipy</span>
+</pre></div></div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>At the time of writing (2022), NumPy and SciPy packages which are
+distributed on pypi.org (i.e. the ones installed via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>)
+and on the conda-forge channel (i.e. the ones installed via
+<code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">--channel</span> <span class="pre">conda-forge</span></code>) are linked with OpenBLAS, while
+NumPy and SciPy packages shipped on the <code class="docutils literal notranslate"><span class="pre">defaults</span></code> conda
+channel from Anaconda.org (i.e. the ones installed via <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span></code>)
+are linked by default with MKL.</p>
+</div>
+</section>
+<section id="oversubscription-spawning-too-many-threads">
+<span id="oversubscription"></span><h3><span class="section-number">9.3.1.4. </span>Oversubscription: spawning too many threads<a class="headerlink" href="#oversubscription-spawning-too-many-threads" title="Link to this heading">#</a></h3>
+<p>It is generally recommended to avoid using significantly more processes or
+threads than the number of CPUs on a machine. Over-subscription happens when
+a program is running too many threads at the same time.</p>
+<p>Suppose you have a machine with 8 CPUs. Consider a case where you’re running
+a <a class="reference internal" href="../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> (parallelized with joblib)
+with <code class="docutils literal notranslate"><span class="pre">n_jobs=8</span></code> over a
+<a class="reference internal" href="../modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#sklearn.ensemble.HistGradientBoostingClassifier" title="sklearn.ensemble.HistGradientBoostingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistGradientBoostingClassifier</span></code></a> (parallelized with
+OpenMP). Each instance of
+<a class="reference internal" href="../modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#sklearn.ensemble.HistGradientBoostingClassifier" title="sklearn.ensemble.HistGradientBoostingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistGradientBoostingClassifier</span></code></a> will spawn 8 threads
+(since you have 8 CPUs). That’s a total of <code class="docutils literal notranslate"><span class="pre">8</span> <span class="pre">*</span> <span class="pre">8</span> <span class="pre">=</span> <span class="pre">64</span></code> threads, which
+leads to oversubscription of threads for physical CPU resources and thus
+to scheduling overhead.</p>
+<p>Oversubscription can arise in the exact same fashion with parallelized
+routines from MKL, OpenBLAS or BLIS that are nested in joblib calls.</p>
+<p>Starting from <code class="docutils literal notranslate"><span class="pre">joblib</span> <span class="pre">&gt;=</span> <span class="pre">0.14</span></code>, when the <code class="docutils literal notranslate"><span class="pre">loky</span></code> backend is used (which
+is the default), joblib will tell its child <strong>processes</strong> to limit the
+number of threads they can use, so as to avoid oversubscription. In practice
+the heuristic that joblib uses is to tell the processes to use <code class="docutils literal notranslate"><span class="pre">max_threads</span>
+<span class="pre">=</span> <span class="pre">n_cpus</span> <span class="pre">//</span> <span class="pre">n_jobs</span></code>, via their corresponding environment variable. Back to
+our example from above, since the joblib backend of
+<a class="reference internal" href="../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> is <code class="docutils literal notranslate"><span class="pre">loky</span></code>, each process will
+only be able to use 1 thread instead of 8, thus mitigating the
+oversubscription issue.</p>
+<p>Note that:</p>
+<ul class="simple">
+<li><p>Manually setting one of the environment variables (<code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>,
+<code class="docutils literal notranslate"><span class="pre">MKL_NUM_THREADS</span></code>, <code class="docutils literal notranslate"><span class="pre">OPENBLAS_NUM_THREADS</span></code>, or <code class="docutils literal notranslate"><span class="pre">BLIS_NUM_THREADS</span></code>)
+will take precedence over what joblib tries to do. The total number of
+threads will be <code class="docutils literal notranslate"><span class="pre">n_jobs</span> <span class="pre">*</span> <span class="pre">&lt;LIB&gt;_NUM_THREADS</span></code>. Note that setting this
+limit will also impact your computations in the main process, which will
+only use <code class="docutils literal notranslate"><span class="pre">&lt;LIB&gt;_NUM_THREADS</span></code>. Joblib exposes a context manager for
+finer control over the number of threads in its workers (see joblib docs
+linked below).</p></li>
+<li><p>When joblib is configured to use the <code class="docutils literal notranslate"><span class="pre">threading</span></code> backend, there is no
+mechanism to avoid oversubscriptions when calling into parallel native
+libraries in the joblib-managed threads.</p></li>
+<li><p>All scikit-learn estimators that explicitly rely on OpenMP in their Cython code
+always use <code class="docutils literal notranslate"><span class="pre">threadpoolctl</span></code> internally to automatically adapt the numbers of
+threads used by OpenMP and potentially nested BLAS calls so as to avoid
+oversubscription.</p></li>
+</ul>
+<p>You will find additional details about joblib mitigation of oversubscription
+in <a class="reference external" href="https://joblib.readthedocs.io/en/latest/parallel.html#avoiding-over-subscription-of-cpu-resources">joblib documentation</a>.</p>
+<p>You will find additional details about parallelism in numerical python libraries
+in <a class="reference external" href="https://thomasjpfan.github.io/parallelism-python-libraries-design/">this document from Thomas J. Fan</a>.</p>
+</section>
+</section>
+<section id="configuration-switches">
+<h2><span class="section-number">9.3.2. </span>Configuration switches<a class="headerlink" href="#configuration-switches" title="Link to this heading">#</a></h2>
+<section id="python-api">
+<h3><span class="section-number">9.3.2.1. </span>Python API<a class="headerlink" href="#python-api" title="Link to this heading">#</a></h3>
+<p><a class="reference internal" href="../modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config</span></code></a> and <a class="reference internal" href="../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.config_context</span></code></a> can be used to change
+parameters of the configuration which control aspect of parallelism.</p>
+</section>
+<section id="environment-variables">
+<span id="environment-variable"></span><h3><span class="section-number">9.3.2.2. </span>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading">#</a></h3>
+<p>These environment variables should be set before importing scikit-learn.</p>
+<section id="sklearn-assume-finite">
+<h4><span class="section-number">9.3.2.2.1. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_ASSUME_FINITE</span></code><a class="headerlink" href="#sklearn-assume-finite" title="Link to this heading">#</a></h4>
+<p>Sets the default value for the <code class="docutils literal notranslate"><span class="pre">assume_finite</span></code> argument of
+<a class="reference internal" href="../modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config</span></code></a>.</p>
+</section>
+<section id="sklearn-working-memory">
+<h4><span class="section-number">9.3.2.2.2. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_WORKING_MEMORY</span></code><a class="headerlink" href="#sklearn-working-memory" title="Link to this heading">#</a></h4>
+<p>Sets the default value for the <code class="docutils literal notranslate"><span class="pre">working_memory</span></code> argument of
+<a class="reference internal" href="../modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config</span></code></a>.</p>
+</section>
+<section id="sklearn-seed">
+<h4><span class="section-number">9.3.2.2.3. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_SEED</span></code><a class="headerlink" href="#sklearn-seed" title="Link to this heading">#</a></h4>
+<p>Sets the seed of the global random generator when running the tests, for
+reproducibility.</p>
+<p>Note that scikit-learn tests are expected to run deterministically with
+explicit seeding of their own independent RNG instances instead of relying on
+the numpy or Python standard library RNG singletons to make sure that test
+results are independent of the test execution order. However some tests might
+forget to use explicit seeding and this variable is a way to control the initial
+state of the aforementioned singletons.</p>
+</section>
+<section id="sklearn-tests-global-random-seed">
+<h4><span class="section-number">9.3.2.2.4. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED</span></code><a class="headerlink" href="#sklearn-tests-global-random-seed" title="Link to this heading">#</a></h4>
+<p>Controls the seeding of the random number generator used in tests that rely on
+the <code class="docutils literal notranslate"><span class="pre">global_random_seed</span></code> fixture.</p>
+<p>All tests that use this fixture accept the contract that they should
+deterministically pass for any seed value from 0 to 99 included.</p>
+<p>In nightly CI builds, the <code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED</span></code> environment
+variable is drawn randomly in the above range and all fixtured tests will run
+for that specific seed. The goal is to ensure that, over time, our CI will run
+all tests with different seeds while keeping the test duration of a single run
+of the full test suite limited. This will check that the assertions of tests
+written to use this fixture are not dependent on a specific seed value.</p>
+<p>The range of admissible seed values is limited to [0, 99] because it is often
+not possible to write a test that can work for any possible seed and we want to
+avoid having tests that randomly fail on the CI.</p>
+<p>Valid values for <code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED=&quot;42&quot;</span></code>: run tests with a fixed seed of 42</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED=&quot;40-42&quot;</span></code>: run the tests with all seeds
+between 40 and 42 included</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED=&quot;all&quot;</span></code>: run the tests with all seeds
+between 0 and 99 included. This can take a long time: only use for individual
+tests, not the full test suite!</p></li>
+</ul>
+<p>If the variable is not set, then 42 is used as the global seed in a
+deterministic manner. This ensures that, by default, the scikit-learn test
+suite is as deterministic as possible to avoid disrupting our friendly
+third-party package maintainers. Similarly, this variable should not be set in
+the CI config of pull-requests to make sure that our friendly contributors are
+not the first people to encounter a seed-sensitivity regression in a test
+unrelated to the changes of their own PR. Only the scikit-learn maintainers who
+watch the results of the nightly builds are expected to be annoyed by this.</p>
+<p>When writing a new test function that uses this fixture, please use the
+following command to make sure that it passes deterministically for all
+admissible seeds on your local machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">SKLEARN_TESTS_GLOBAL_RANDOM_SEED</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="w"> </span>pytest<span class="w"> </span>-v<span class="w"> </span>-k<span class="w"> </span>test_your_test_name</span>
+</pre></div></div></section>
+<section id="sklearn-skip-network-tests">
+<h4><span class="section-number">9.3.2.2.5. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_SKIP_NETWORK_TESTS</span></code><a class="headerlink" href="#sklearn-skip-network-tests" title="Link to this heading">#</a></h4>
+<p>When this environment variable is set to a non zero value, the tests that need
+network access are skipped. When this environment variable is not set then
+network tests are skipped.</p>
+</section>
+<section id="sklearn-run-float32-tests">
+<h4><span class="section-number">9.3.2.2.6. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_RUN_FLOAT32_TESTS</span></code><a class="headerlink" href="#sklearn-run-float32-tests" title="Link to this heading">#</a></h4>
+<p>When this environment variable is set to ‘1’, the tests using the
+<code class="docutils literal notranslate"><span class="pre">global_dtype</span></code> fixture are also run on float32 data.
+When this environment variable is not set, the tests are only run on
+float64 data.</p>
+</section>
+<section id="sklearn-enable-debug-cython-directives">
+<h4><span class="section-number">9.3.2.2.7. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_ENABLE_DEBUG_CYTHON_DIRECTIVES</span></code><a class="headerlink" href="#sklearn-enable-debug-cython-directives" title="Link to this heading">#</a></h4>
+<p>When this environment variable is set to a non zero value, the <code class="docutils literal notranslate"><span class="pre">Cython</span></code>
+derivative, <code class="docutils literal notranslate"><span class="pre">boundscheck</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. This is useful for finding
+segfaults.</p>
+</section>
+<section id="sklearn-build-enable-debug-symbols">
+<h4><span class="section-number">9.3.2.2.8. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_BUILD_ENABLE_DEBUG_SYMBOLS</span></code><a class="headerlink" href="#sklearn-build-enable-debug-symbols" title="Link to this heading">#</a></h4>
+<p>When this environment variable is set to a non zero value, the debug symbols
+will be included in the compiled C extensions. Only debug symbols for POSIX
+systems are configured.</p>
+</section>
+<section id="sklearn-pairwise-dist-chunk-size">
+<h4><span class="section-number">9.3.2.2.9. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_PAIRWISE_DIST_CHUNK_SIZE</span></code><a class="headerlink" href="#sklearn-pairwise-dist-chunk-size" title="Link to this heading">#</a></h4>
+<p>This sets the size of chunk to be used by the underlying <code class="docutils literal notranslate"><span class="pre">PairwiseDistancesReductions</span></code>
+implementations. The default value is <code class="docutils literal notranslate"><span class="pre">256</span></code> which has been showed to be adequate on
+most machines.</p>
+<p>Users looking for the best performance might want to tune this variable using
+powers of 2 so as to get the best parallelism behavior for their hardware,
+especially with respect to their caches’ sizes.</p>
+</section>
+<section id="sklearn-warnings-as-errors">
+<h4><span class="section-number">9.3.2.2.10. </span><code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS</span></code><a class="headerlink" href="#sklearn-warnings-as-errors" title="Link to this heading">#</a></h4>
+<p>This environment variable is used to turn warnings into errors in tests and
+documentation build.</p>
+<p>Some CI (Continuous Integration) builds set <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS=1</span></code>, for
+example to make sure that we catch deprecation warnings from our dependencies
+and that we adapt our code.</p>
+<p>To locally run with the same “warnings as errors” setting as in these CI builds
+you can set <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS=1</span></code>.</p>
+<p>By default, warnings are not turned into errors. This is the case if
+<code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS</span></code> is unset, or <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS=0</span></code>.</p>
+<p>This environment variable uses specific warning filters to ignore some warnings,
+since sometimes warnings originate from third-party libraries and there is not
+much we can do about it. You can see the warning filters in the
+<code class="docutils literal notranslate"><span class="pre">_get_warnings_filters_info_list</span></code> function in <code class="docutils literal notranslate"><span class="pre">sklearn/utils/_testing.py</span></code>.</p>
+<p>Note that for documentation build, <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNING_AS_ERRORS=1</span></code> is checking
+that the documentation build, in particular running examples, does not produce
+any warnings. This is different from the <code class="docutils literal notranslate"><span class="pre">-W</span></code> <code class="docutils literal notranslate"><span class="pre">sphinx-build</span></code> argument that
+catches syntax warnings in the rst files.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="computational_performance.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">9.2. </span>Computational Performance</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../model_persistence.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">10. </span>Model persistence</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallelism">9.3.1. Parallelism</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-level-parallelism-with-joblib">9.3.1.1. Higher-level parallelism with joblib</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lower-level-parallelism-with-openmp">9.3.1.2. Lower-level parallelism with OpenMP</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-numpy-and-scipy-routines-from-numerical-libraries">9.3.1.3. Parallel NumPy and SciPy routines from numerical libraries</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#oversubscription-spawning-too-many-threads">9.3.1.4. Oversubscription: spawning too many threads</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-switches">9.3.2. Configuration switches</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-api">9.3.2.1. Python API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-variables">9.3.2.2. Environment variables</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-assume-finite">9.3.2.2.1. <code class="docutils literal notranslate"><span class="pre">SKLEARN_ASSUME_FINITE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-working-memory">9.3.2.2.2. <code class="docutils literal notranslate"><span class="pre">SKLEARN_WORKING_MEMORY</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-seed">9.3.2.2.3. <code class="docutils literal notranslate"><span class="pre">SKLEARN_SEED</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-tests-global-random-seed">9.3.2.2.4. <code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-skip-network-tests">9.3.2.2.5. <code class="docutils literal notranslate"><span class="pre">SKLEARN_SKIP_NETWORK_TESTS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-run-float32-tests">9.3.2.2.6. <code class="docutils literal notranslate"><span class="pre">SKLEARN_RUN_FLOAT32_TESTS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-enable-debug-cython-directives">9.3.2.2.7. <code class="docutils literal notranslate"><span class="pre">SKLEARN_ENABLE_DEBUG_CYTHON_DIRECTIVES</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-build-enable-debug-symbols">9.3.2.2.8. <code class="docutils literal notranslate"><span class="pre">SKLEARN_BUILD_ENABLE_DEBUG_SYMBOLS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-pairwise-dist-chunk-size">9.3.2.2.9. <code class="docutils literal notranslate"><span class="pre">SKLEARN_PAIRWISE_DIST_CHUNK_SIZE</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-warnings-as-errors">9.3.2.2.10. <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/computing/parallelism.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

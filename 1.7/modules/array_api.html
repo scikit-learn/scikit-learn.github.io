@@ -1,0 +1,1108 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="12.1. Array API support (experimental)" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/modules/array_api.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="The Array API specification defines a standard API for all array manipulation libraries with a NumPy-like API. Scikit-learn vendors pinned copies of array-api-compat and array-api-extra. Scikit-lea..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="The Array API specification defines a standard API for all array manipulation libraries with a NumPy-like API. Scikit-learn vendors pinned copies of array-api-compat and array-api-extra. Scikit-lea..." />
+
+    <title>12.1. Array API support (experimental) &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/array_api';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/modules/array_api.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="13. Choosing the right estimator" href="../machine_learning_map.html" />
+    <link rel="prev" title="12. Dispatching" href="../dispatching.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../supervised_learning.html">1. Supervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html">1.1. Linear Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lda_qda.html">1.2. Linear and Quadratic Discriminant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_ridge.html">1.3. Kernel ridge regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svm.html">1.4. Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sgd.html">1.5. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neighbors.html">1.6. Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_process.html">1.7. Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross_decomposition.html">1.8. Cross decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naive_bayes.html">1.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">1.10. Decision Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble.html">1.11. Ensembles: Gradient boosting, random forests, bagging, voting, stacking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiclass.html">1.12. Multiclass and multioutput algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_selection.html">1.13. Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semi_supervised.html">1.14. Semi-supervised learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotonic.html">1.15. Isotonic regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calibration.html">1.16. Probability calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_supervised.html">1.17. Neural network models (supervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../unsupervised_learning.html">2. Unsupervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mixture.html">2.1. Gaussian mixture models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manifold.html">2.2. Manifold learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clustering.html">2.3. Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biclustering.html">2.4. Biclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decomposition.html">2.5. Decomposing signals in components (matrix factorization problems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="covariance.html">2.6. Covariance estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier_detection.html">2.7. Novelty and Outlier Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="density.html">2.8. Density Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_unsupervised.html">2.9. Neural network models (unsupervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../model_selection.html">3. Model selection and evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="cross_validation.html">3.1. Cross-validation: evaluating estimator performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid_search.html">3.2. Tuning the hyper-parameters of an estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classification_threshold.html">3.3. Tuning the decision threshold for class prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_evaluation.html">3.4. Metrics and scoring: quantifying the quality of predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learning_curve.html">3.5. Validation curves: plotting scores to evaluate models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata_routing.html">4. Metadata Routing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../inspection.html">5. Inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="partial_dependence.html">5.1. Partial Dependence and Individual Conditional Expectation plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="permutation_importance.html">5.2. Permutation feature importance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualizations.html">6. Visualizations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../data_transforms.html">7. Dataset transformations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="compose.html">7.1. Pipelines and composite estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_extraction.html">7.2. Feature extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html">7.3. Preprocessing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impute.html">7.4. Imputation of missing values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unsupervised_reduction.html">7.5. Unsupervised dimensionality reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random_projection.html">7.6. Random Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_approximation.html">7.7. Kernel Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">7.8. Pairwise metrics, Affinities and Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing_targets.html">7.9. Transforming the prediction target (<code class="docutils literal notranslate"><span class="pre">y</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datasets.html">8. Dataset loading utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/toy_dataset.html">8.1. Toy datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/real_world.html">8.2. Real world datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/sample_generators.html">8.3. Generated datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/loading_other_datasets.html">8.4. Loading other datasets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../computing.html">9. Computing with scikit-learn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../computing/scaling_strategies.html">9.1. Strategies to scale computationally: bigger data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/computational_performance.html">9.2. Computational Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/parallelism.html">9.3. Parallelism, resource management, and configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_persistence.html">10. Model persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_pitfalls.html">11. Common pitfalls and recommended practices</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../dispatching.html">12. Dispatching</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">12.1. Array API support (experimental)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning_map.html">13. Choosing the right estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presentations.html">14. External Resources, Videos and Talks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../dispatching.html" class="nav-link"><span class="section-number">12. </span>Dispatching</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><span class="section-number">12.1. </span>Array API support (experimental)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="array-api-support-experimental">
+<span id="array-api"></span><h1><span class="section-number">12.1. </span>Array API support (experimental)<a class="headerlink" href="#array-api-support-experimental" title="Link to this heading">#</a></h1>
+<p>The <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API</a> specification defines
+a standard API for all array manipulation libraries with a NumPy-like API.
+Scikit-learn vendors pinned copies of
+<a class="reference external" href="https://github.com/data-apis/array-api-compat">array-api-compat</a>
+and <a class="reference external" href="https://github.com/data-apis/array-api-extra">array-api-extra</a>.</p>
+<p>Scikit-learn’s support for the array API standard requires the environment variable
+<code class="docutils literal notranslate"><span class="pre">SCIPY_ARRAY_API</span></code> to be set to <code class="docutils literal notranslate"><span class="pre">1</span></code> before importing <code class="docutils literal notranslate"><span class="pre">scipy</span></code> and <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1"><span class="nb">export</span><span class="w"> </span><span class="nv">SCIPY_ARRAY_API</span><span class="o">=</span><span class="m">1</span></span>
+</pre></div></div><p>Please note that this environment variable is intended for temporary use.
+For more details, refer to SciPy’s <a class="reference external" href="https://docs.scipy.org/doc/scipy/dev/api-dev/array_api.html#using-array-api-standard-support">Array API documentation</a>.</p>
+<p>Some scikit-learn estimators that primarily rely on NumPy (as opposed to using
+Cython) to implement the algorithmic logic of their <code class="docutils literal notranslate"><span class="pre">fit</span></code>, <code class="docutils literal notranslate"><span class="pre">predict</span></code> or
+<code class="docutils literal notranslate"><span class="pre">transform</span></code> methods can be configured to accept any Array API compatible input
+data structures and automatically dispatch operations to the underlying namespace
+instead of relying on NumPy.</p>
+<p>At this stage, this support is <strong>considered experimental</strong> and must be enabled
+explicitly by the <code class="docutils literal notranslate"><span class="pre">array_api_dispatch</span></code> configuration. See below for details.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, only <code class="docutils literal notranslate"><span class="pre">array-api-strict</span></code>, <code class="docutils literal notranslate"><span class="pre">cupy</span></code>, and <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code> are known to work
+with scikit-learn’s estimators.</p>
+</div>
+<p>The following video provides an overview of the standard’s design principles
+and how it facilitates interoperability between array libraries:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.youtube.com/watch?v=c_s8tr1AizA">Scikit-learn on GPUs with Array API</a>
+by <a class="reference external" href="https://github.com/thomasjpfan">Thomas Fan</a> at PyData NYC 2023.</p></li>
+</ul>
+<section id="example-usage">
+<h2><span class="section-number">12.1.1. </span>Example usage<a class="headerlink" href="#example-usage" title="Link to this heading">#</a></h2>
+<p>The configuration <code class="docutils literal notranslate"><span class="pre">array_api_dispatch=True</span></code> needs to be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> to enable array
+API support. We recommend setting this configuration globally to ensure consistent
+behaviour and prevent accidental mixing of array namespaces.
+Note that we set it with <a class="reference internal" href="generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a> below to avoid having to call
+<code class="xref py py-func docutils literal notranslate"><span class="pre">set_config(array_api_dispatch=False)</span></code> at the end of every code snippet
+that uses the array API.
+The example code snippet below demonstrates how to use <a class="reference external" href="https://cupy.dev/">CuPy</a> to run
+<a class="reference internal" href="generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html#sklearn.discriminant_analysis.LinearDiscriminantAnalysis" title="sklearn.discriminant_analysis.LinearDiscriminantAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearDiscriminantAnalysis</span></code></a> on a GPU:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_classification</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">config_context</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.discriminant_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearDiscriminantAnalysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">cupy</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_np</span><span class="p">,</span> <span class="n">y_np</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_cu</span> <span class="o">=</span> <span class="n">cupy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X_np</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_cu</span> <span class="o">=</span> <span class="n">cupy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_np</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_cu</span><span class="o">.</span><span class="n">device</span>
+<span class="go">&lt;CUDA Device 0&gt;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">config_context</span><span class="p">(</span><span class="n">array_api_dispatch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">lda</span> <span class="o">=</span> <span class="n">LinearDiscriminantAnalysis</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">X_trans</span> <span class="o">=</span> <span class="n">lda</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_cu</span><span class="p">,</span> <span class="n">y_cu</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_trans</span><span class="o">.</span><span class="n">device</span>
+<span class="go">&lt;CUDA Device 0&gt;</span>
+</pre></div>
+</div>
+<p>After the model is trained, fitted attributes that are arrays will also be
+from the same Array API namespace as the training data. For example, if CuPy’s
+Array API namespace was used for training, then fitted attributes will be on the
+GPU. We provide an experimental <code class="docutils literal notranslate"><span class="pre">_estimator_with_converted_arrays</span></code> utility that
+transfers an estimator attributes from Array API to a ndarray:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils._array_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">_estimator_with_converted_arrays</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cupy_to_ndarray</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">array</span> <span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lda_np</span> <span class="o">=</span> <span class="n">_estimator_with_converted_arrays</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span> <span class="n">cupy_to_ndarray</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_trans</span> <span class="o">=</span> <span class="n">lda_np</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_np</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">X_trans</span><span class="p">)</span>
+<span class="go">&lt;class &#39;numpy.ndarray&#39;&gt;</span>
+</pre></div>
+</div>
+<section id="pytorch-support">
+<h3><span class="section-number">12.1.1.1. </span>PyTorch Support<a class="headerlink" href="#pytorch-support" title="Link to this heading">#</a></h3>
+<p>PyTorch Tensors can also be passed directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X_np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">config_context</span><span class="p">(</span><span class="n">array_api_dispatch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">lda</span> <span class="o">=</span> <span class="n">LinearDiscriminantAnalysis</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">X_trans</span> <span class="o">=</span> <span class="n">lda</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_torch</span><span class="p">,</span> <span class="n">y_torch</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">X_trans</span><span class="p">)</span>
+<span class="go">&lt;class &#39;torch.Tensor&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_trans</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;cuda&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="support-for-array-api-compatible-inputs">
+<span id="array-api-supported"></span><h2><span class="section-number">12.1.2. </span>Support for <code class="docutils literal notranslate"><span class="pre">Array</span> <span class="pre">API</span></code>-compatible inputs<a class="headerlink" href="#support-for-array-api-compatible-inputs" title="Link to this heading">#</a></h2>
+<p>Estimators and other tools in scikit-learn that support Array API compatible inputs.</p>
+<section id="estimators">
+<h3><span class="section-number">12.1.2.1. </span>Estimators<a class="headerlink" href="#estimators" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/sklearn.decomposition.PCA.html#sklearn.decomposition.PCA" title="sklearn.decomposition.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">decomposition.PCA</span></code></a> (with <code class="docutils literal notranslate"><span class="pre">svd_solver=&quot;full&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">svd_solver=&quot;randomized&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">power_iteration_normalizer=&quot;QR&quot;</span></code>)</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.Ridge</span></code></a> (with <code class="docutils literal notranslate"><span class="pre">solver=&quot;svd&quot;</span></code>)</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html#sklearn.discriminant_analysis.LinearDiscriminantAnalysis" title="sklearn.discriminant_analysis.LinearDiscriminantAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">discriminant_analysis.LinearDiscriminantAnalysis</span></code></a> (with <code class="docutils literal notranslate"><span class="pre">solver=&quot;svd&quot;</span></code>)</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.Binarizer.html#sklearn.preprocessing.Binarizer" title="sklearn.preprocessing.Binarizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.Binarizer</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.KernelCenterer.html#sklearn.preprocessing.KernelCenterer" title="sklearn.preprocessing.KernelCenterer"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.KernelCenterer</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.LabelEncoder.html#sklearn.preprocessing.LabelEncoder" title="sklearn.preprocessing.LabelEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.LabelEncoder</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.MaxAbsScaler.html#sklearn.preprocessing.MaxAbsScaler" title="sklearn.preprocessing.MaxAbsScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.MaxAbsScaler</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.MinMaxScaler.html#sklearn.preprocessing.MinMaxScaler" title="sklearn.preprocessing.MinMaxScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.MinMaxScaler</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.Normalizer.html#sklearn.preprocessing.Normalizer" title="sklearn.preprocessing.Normalizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.Normalizer</span></code></a></p></li>
+</ul>
+</section>
+<section id="meta-estimators">
+<h3><span class="section-number">12.1.2.2. </span>Meta-estimators<a class="headerlink" href="#meta-estimators" title="Link to this heading">#</a></h3>
+<p>Meta-estimators that accept Array API inputs conditioned on the fact that the
+base estimator also does:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">model_selection.GridSearchCV</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">model_selection.RandomizedSearchCV</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">model_selection.HalvingGridSearchCV</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">model_selection.HalvingRandomSearchCV</span></code></a></p></li>
+</ul>
+</section>
+<section id="metrics">
+<h3><span class="section-number">12.1.2.3. </span>Metrics<a class="headerlink" href="#metrics" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.cluster.entropy</span></code></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score" title="sklearn.metrics.accuracy_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.accuracy_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.d2_tweedie_score.html#sklearn.metrics.d2_tweedie_score" title="sklearn.metrics.d2_tweedie_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.d2_tweedie_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.explained_variance_score.html#sklearn.metrics.explained_variance_score" title="sklearn.metrics.explained_variance_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.explained_variance_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score" title="sklearn.metrics.f1_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.f1_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.fbeta_score.html#sklearn.metrics.fbeta_score" title="sklearn.metrics.fbeta_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.fbeta_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.hamming_loss.html#sklearn.metrics.hamming_loss" title="sklearn.metrics.hamming_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.hamming_loss</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.jaccard_score.html#sklearn.metrics.jaccard_score" title="sklearn.metrics.jaccard_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.jaccard_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.max_error.html#sklearn.metrics.max_error" title="sklearn.metrics.max_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.max_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_absolute_error.html#sklearn.metrics.mean_absolute_error" title="sklearn.metrics.mean_absolute_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_absolute_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_absolute_percentage_error.html#sklearn.metrics.mean_absolute_percentage_error" title="sklearn.metrics.mean_absolute_percentage_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_absolute_percentage_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_gamma_deviance.html#sklearn.metrics.mean_gamma_deviance" title="sklearn.metrics.mean_gamma_deviance"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_gamma_deviance</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_pinball_loss.html#sklearn.metrics.mean_pinball_loss" title="sklearn.metrics.mean_pinball_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_pinball_loss</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_poisson_deviance.html#sklearn.metrics.mean_poisson_deviance" title="sklearn.metrics.mean_poisson_deviance"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_poisson_deviance</span></code></a> (requires <a class="reference external" href="https://docs.scipy.org/doc/scipy/dev/api-dev/array_api.html#using-array-api-standard-support">enabling array API support for SciPy</a>)</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_squared_error.html#sklearn.metrics.mean_squared_error" title="sklearn.metrics.mean_squared_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_squared_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_squared_log_error.html#sklearn.metrics.mean_squared_log_error" title="sklearn.metrics.mean_squared_log_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_squared_log_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.mean_tweedie_deviance.html#sklearn.metrics.mean_tweedie_deviance" title="sklearn.metrics.mean_tweedie_deviance"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.mean_tweedie_deviance</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.multilabel_confusion_matrix.html#sklearn.metrics.multilabel_confusion_matrix" title="sklearn.metrics.multilabel_confusion_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.multilabel_confusion_matrix</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.additive_chi2_kernel.html#sklearn.metrics.pairwise.additive_chi2_kernel" title="sklearn.metrics.pairwise.additive_chi2_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.additive_chi2_kernel</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.chi2_kernel.html#sklearn.metrics.pairwise.chi2_kernel" title="sklearn.metrics.pairwise.chi2_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.chi2_kernel</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.cosine_similarity.html#sklearn.metrics.pairwise.cosine_similarity" title="sklearn.metrics.pairwise.cosine_similarity"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.cosine_similarity</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.cosine_distances.html#sklearn.metrics.pairwise.cosine_distances" title="sklearn.metrics.pairwise.cosine_distances"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.cosine_distances</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.pairwise.euclidean_distances"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.euclidean_distances</span></code></a> (see <a class="reference internal" href="#device-support-for-float64"><span class="std std-ref">Note on device support for float64</span></a>)</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.linear_kernel.html#sklearn.metrics.pairwise.linear_kernel" title="sklearn.metrics.pairwise.linear_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.linear_kernel</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.paired_cosine_distances.html#sklearn.metrics.pairwise.paired_cosine_distances" title="sklearn.metrics.pairwise.paired_cosine_distances"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.paired_cosine_distances</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.paired_euclidean_distances.html#sklearn.metrics.pairwise.paired_euclidean_distances" title="sklearn.metrics.pairwise.paired_euclidean_distances"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.paired_euclidean_distances</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.polynomial_kernel.html#sklearn.metrics.pairwise.polynomial_kernel" title="sklearn.metrics.pairwise.polynomial_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.polynomial_kernel</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.rbf_kernel.html#sklearn.metrics.pairwise.rbf_kernel" title="sklearn.metrics.pairwise.rbf_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.rbf_kernel</span></code></a> (see <a class="reference internal" href="#device-support-for-float64"><span class="std std-ref">Note on device support for float64</span></a>)</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.pairwise.sigmoid_kernel.html#sklearn.metrics.pairwise.sigmoid_kernel" title="sklearn.metrics.pairwise.sigmoid_kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.pairwise.sigmoid_kernel</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.precision_score.html#sklearn.metrics.precision_score" title="sklearn.metrics.precision_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.precision_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.precision_recall_fscore_support.html#sklearn.metrics.precision_recall_fscore_support" title="sklearn.metrics.precision_recall_fscore_support"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.precision_recall_fscore_support</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.r2_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score" title="sklearn.metrics.recall_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.recall_score</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.root_mean_squared_error.html#sklearn.metrics.root_mean_squared_error" title="sklearn.metrics.root_mean_squared_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.root_mean_squared_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.root_mean_squared_log_error.html#sklearn.metrics.root_mean_squared_log_error" title="sklearn.metrics.root_mean_squared_log_error"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.root_mean_squared_log_error</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.metrics.zero_one_loss.html#sklearn.metrics.zero_one_loss" title="sklearn.metrics.zero_one_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.zero_one_loss</span></code></a></p></li>
+</ul>
+</section>
+<section id="tools">
+<h3><span class="section-number">12.1.2.4. </span>Tools<a class="headerlink" href="#tools" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><code class="xref py py-func docutils literal notranslate"><span class="pre">model_selection.train_test_split</span></code></a></p></li>
+<li><p><a class="reference internal" href="generated/sklearn.utils.check_consistent_length.html#sklearn.utils.check_consistent_length" title="sklearn.utils.check_consistent_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_consistent_length</span></code></a></p></li>
+</ul>
+<p>Coverage is expected to grow over time. Please follow the dedicated <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/issues/22352">meta-issue on GitHub</a> to track progress.</p>
+</section>
+</section>
+<section id="input-and-output-array-type-handling">
+<h2><span class="section-number">12.1.3. </span>Input and output array type handling<a class="headerlink" href="#input-and-output-array-type-handling" title="Link to this heading">#</a></h2>
+<p>Estimators and scoring functions are able to accept input arrays
+from different array libraries and/or devices. When a mixed set of input arrays is
+passed, scikit-learn converts arrays as needed to make them all consistent.</p>
+<p>For estimators, the rule is <strong>“everything follows</strong> <code class="docutils literal notranslate"><span class="pre">X</span></code> <strong>“</strong> - mixed array inputs are
+converted so that they all match the array library and device of <code class="docutils literal notranslate"><span class="pre">X</span></code>.
+For scoring functions the rule is <strong>“everything follows</strong> <code class="docutils literal notranslate"><span class="pre">y_pred</span></code> <strong>“</strong> - mixed array
+inputs are converted so that they all match the array library and device of <code class="docutils literal notranslate"><span class="pre">y_pred</span></code>.</p>
+<p>When a function or method has been called with array API compatible inputs, the
+convention is to return arrays from the same array library and on the same
+device as the input data.</p>
+<section id="id2">
+<h3><span class="section-number">12.1.3.1. </span>Estimators<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>When an estimator is fitted with an array API compatible <code class="docutils literal notranslate"><span class="pre">X</span></code>, all other
+array inputs, including constructor arguments, (e.g., <code class="docutils literal notranslate"><span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>)
+will be converted to match the array library and device of <code class="docutils literal notranslate"><span class="pre">X</span></code>, if they do not already.
+This behaviour enables switching from processing on the CPU to processing
+on the GPU at any point within a pipeline.</p>
+<p>This allows estimators to accept mixed input types, enabling <code class="docutils literal notranslate"><span class="pre">X</span></code> to be moved
+to a different device within a pipeline, without explicitly moving <code class="docutils literal notranslate"><span class="pre">y</span></code>.
+Note that scikit-learn pipelines do not allow transformation of <code class="docutils literal notranslate"><span class="pre">y</span></code> (to avoid
+<a class="reference internal" href="../common_pitfalls.html#data-leakage"><span class="std std-ref">leakage</span></a>).</p>
+<p>Take for example a pipeline where <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> both start on CPU, and go through
+the following three steps:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.TargetEncoder.html#sklearn.preprocessing.TargetEncoder" title="sklearn.preprocessing.TargetEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetEncoder</span></code></a>, which will transform categorial
+<code class="docutils literal notranslate"><span class="pre">X</span></code> but also requires <code class="docutils literal notranslate"><span class="pre">y</span></code>, meaning both <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> need to be on CPU.</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer" title="sklearn.preprocessing.FunctionTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionTransformer(func=partial(torch.asarray,</span> <span class="pre">device=&quot;cuda&quot;))</span></code></a>,
+which moves <code class="docutils literal notranslate"><span class="pre">X</span></code> to GPU, to improve performance in the next step.</p></li>
+<li><p><a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a>, whose performance can be improved when
+passed arrays on a GPU, as they can handle large matrix operations very efficiently.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">X</span></code> initially contains categorical string data (thus needs to be on CPU), which is
+target encoded to numerical values in <a class="reference internal" href="generated/sklearn.preprocessing.TargetEncoder.html#sklearn.preprocessing.TargetEncoder" title="sklearn.preprocessing.TargetEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">TargetEncoder</span></code></a>.
+<code class="docutils literal notranslate"><span class="pre">X</span></code> is then explicitly moved to GPU to improve the performance of
+<a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a>. <code class="docutils literal notranslate"><span class="pre">y</span></code> cannot be transformed by the pipeline
+(recall scikit-learn pipelines do not allow transformation of <code class="docutils literal notranslate"><span class="pre">y</span></code>) but as
+<a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a> is able to accept mixed input types,
+this is not a problem and the pipeline is able to be run.</p>
+<p>The fitted attributes of an estimator fitted with an array API compatible <code class="docutils literal notranslate"><span class="pre">X</span></code>, will
+be arrays from the same library as the input and stored on the same device.
+The <code class="docutils literal notranslate"><span class="pre">predict</span></code> and <code class="docutils literal notranslate"><span class="pre">transform</span></code> method subsequently expect
+inputs from the same array library and device as the data passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code>
+method.</p>
+</section>
+<section id="scoring-functions">
+<h3><span class="section-number">12.1.3.2. </span>Scoring functions<a class="headerlink" href="#scoring-functions" title="Link to this heading">#</a></h3>
+<p>When an array API compatible <code class="docutils literal notranslate"><span class="pre">y_pred</span></code> is passed to a scoring function,
+all other array inputs (e.g., <code class="docutils literal notranslate"><span class="pre">y_true</span></code>, <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>) will be converted
+to match the array library and device of <code class="docutils literal notranslate"><span class="pre">y_pred</span></code>, if they do not already.
+This allows scoring functions to accept mixed input types, enabling them to be
+used within a <a class="reference internal" href="../glossary.html#term-meta-estimator"><span class="xref std std-term">meta-estimator</span></a> (or function that accepts estimators), with a
+pipeline that moves input arrays between devices (e.g., CPU to GPU).</p>
+<p>For example, to be able to use the pipeline described above within e.g.,
+<a class="reference internal" href="generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_validate</span></code></a> or
+<a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>, the scoring function internally
+called needs to be able to accept mixed input types.</p>
+<p>The output type of scoring functions depends on the number of output values.
+When a scoring function returns a scalar value, it will return a Python
+scalar (typically a <code class="docutils literal notranslate"><span class="pre">float</span></code> instance) instead of an array scalar value.
+For scoring functions that support <a class="reference internal" href="../glossary.html#term-multiclass"><span class="xref std std-term">multiclass</span></a> or <a class="reference internal" href="../glossary.html#term-multioutput"><span class="xref std std-term">multioutput</span></a>,
+an array from the same array library and device as <code class="docutils literal notranslate"><span class="pre">y_pred</span></code> will be returned when
+multiple values need to be output.</p>
+</section>
+</section>
+<section id="common-estimator-checks">
+<h2><span class="section-number">12.1.4. </span>Common estimator checks<a class="headerlink" href="#common-estimator-checks" title="Link to this heading">#</a></h2>
+<p>Add the <code class="docutils literal notranslate"><span class="pre">array_api_support</span></code> tag to an estimator’s set of tags to indicate that
+it supports the array API. This will enable dedicated checks as part of the
+common tests to verify that the estimators’ results are the same when using
+vanilla NumPy and array API inputs.</p>
+<p>To run these checks you need to install
+<a class="reference external" href="https://data-apis.org/array-api-strict/">array-api-strict</a> in your
+test environment. This allows you to run checks without having a
+GPU. To run the full set of checks you also need to install
+<a class="reference external" href="https://pytorch.org/">PyTorch</a>, <a class="reference external" href="https://cupy.dev/">CuPy</a> and have
+a GPU. Checks that can not be executed or have missing dependencies will be
+automatically skipped. Therefore it’s important to run the tests with the
+<code class="docutils literal notranslate"><span class="pre">-v</span></code> flag to see which checks are skipped:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>array-api-strict<span class="w">  </span><span class="c1"># and other libraries as needed</span></span>
+<span class="prompt1">pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;array_api&quot;</span><span class="w"> </span>-v</span>
+</pre></div></div><p>Running the scikit-learn tests against <code class="docutils literal notranslate"><span class="pre">array-api-strict</span></code> should help reveal
+most code problems related to handling multiple device inputs via the use of
+simulated non-CPU devices. This allows for fast iterative development and debugging of
+array API related code.</p>
+<p>However, to ensure full handling of PyTorch or CuPy inputs allocated on actual GPU
+devices, it is necessary to run the tests against those libraries and hardware.
+This can either be achieved by using
+<a class="reference external" href="https://gist.github.com/EdAbati/ff3bdc06bafeb92452b3740686cc8d7c">Google Colab</a>
+or leveraging our CI infrastructure on pull requests (manually triggered by maintainers
+for cost reasons).</p>
+<section id="note-on-mps-device-support">
+<span id="mps-support"></span><h3><span class="section-number">12.1.4.1. </span>Note on MPS device support<a class="headerlink" href="#note-on-mps-device-support" title="Link to this heading">#</a></h3>
+<p>On macOS, PyTorch can use the Metal Performance Shaders (MPS) to access
+hardware accelerators (e.g. the internal GPU component of the M1 or M2 chips).
+However, the MPS device support for PyTorch is incomplete at the time of
+writing. See the following github issue for more details:</p>
+<ul class="simple">
+<li><p><a class="github reference external" href="https://github.com/pytorch/pytorch/issues/77764">pytorch/pytorch#77764</a></p></li>
+</ul>
+<p>To enable the MPS support in PyTorch, set the environment variable
+<code class="docutils literal notranslate"><span class="pre">PYTORCH_ENABLE_MPS_FALLBACK=1</span></code> before running the tests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTORCH_ENABLE_MPS_FALLBACK</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;array_api&quot;</span><span class="w"> </span>-v</span>
+</pre></div></div><p>At the time of writing all scikit-learn tests should pass, however, the
+computational speed is not necessarily better than with the CPU device.</p>
+</section>
+<section id="note-on-device-support-for-float64">
+<span id="device-support-for-float64"></span><h3><span class="section-number">12.1.4.2. </span>Note on device support for <code class="docutils literal notranslate"><span class="pre">float64</span></code><a class="headerlink" href="#note-on-device-support-for-float64" title="Link to this heading">#</a></h3>
+<p>Certain operations within scikit-learn will automatically perform operations
+on floating-point values with <code class="docutils literal notranslate"><span class="pre">float64</span></code> precision to prevent overflows and ensure
+correctness (e.g., <a class="reference internal" href="generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.pairwise.euclidean_distances"><code class="xref py py-func docutils literal notranslate"><span class="pre">metrics.pairwise.euclidean_distances</span></code></a>). However,
+certain combinations of array namespaces and devices, such as <code class="docutils literal notranslate"><span class="pre">PyTorch</span> <span class="pre">on</span> <span class="pre">MPS</span></code>
+(see <a class="reference internal" href="#mps-support"><span class="std std-ref">Note on MPS device support</span></a>) do not support the <code class="docutils literal notranslate"><span class="pre">float64</span></code> data type. In these cases,
+scikit-learn will revert to using the <code class="docutils literal notranslate"><span class="pre">float32</span></code> data type instead. This can result in
+different behavior (typically numerically unstable results) compared to not using array
+API dispatching or using a device with <code class="docutils literal notranslate"><span class="pre">float64</span></code> support.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../dispatching.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">12. </span>Dispatching</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../machine_learning_map.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">13. </span>Choosing the right estimator</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-usage">12.1.1. Example usage</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-support">12.1.1.1. PyTorch Support</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#support-for-array-api-compatible-inputs">12.1.2. Support for <code class="docutils literal notranslate"><span class="pre">Array</span> <span class="pre">API</span></code>-compatible inputs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimators">12.1.2.1. Estimators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#meta-estimators">12.1.2.2. Meta-estimators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics">12.1.2.3. Metrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tools">12.1.2.4. Tools</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#input-and-output-array-type-handling">12.1.3. Input and output array type handling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">12.1.3.1. Estimators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scoring-functions">12.1.3.2. Scoring functions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-estimator-checks">12.1.4. Common estimator checks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#note-on-mps-device-support">12.1.4.1. Note on MPS device support</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#note-on-device-support-for-float64">12.1.4.2. Note on device support for <code class="docutils literal notranslate"><span class="pre">float64</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/array_api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

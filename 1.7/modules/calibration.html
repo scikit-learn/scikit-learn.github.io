@@ -1,0 +1,1094 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="1.16. Probability calibration" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/modules/calibration.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="When performing classification you often want not only to predict the class label, but also obtain a probability of the respective label. This probability gives you some kind of confidence on the p..." />
+<meta property="og:image" content="https://scikit-learn/stable/_images/sphx_glr_plot_compare_calibration_001.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="When performing classification you often want not only to predict the class label, but also obtain a probability of the respective label. This probability gives you some kind of confidence on the p..." />
+
+    <title>1.16. Probability calibration &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/calibration';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/modules/calibration.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1.17. Neural network models (supervised)" href="neural_networks_supervised.html" />
+    <link rel="prev" title="1.15. Isotonic regression" href="isotonic.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../supervised_learning.html">1. Supervised learning</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="linear_model.html">1.1. Linear Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lda_qda.html">1.2. Linear and Quadratic Discriminant Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_ridge.html">1.3. Kernel ridge regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svm.html">1.4. Support Vector Machines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sgd.html">1.5. Stochastic Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neighbors.html">1.6. Nearest Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_process.html">1.7. Gaussian Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross_decomposition.html">1.8. Cross decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="naive_bayes.html">1.9. Naive Bayes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tree.html">1.10. Decision Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensemble.html">1.11. Ensembles: Gradient boosting, random forests, bagging, voting, stacking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiclass.html">1.12. Multiclass and multioutput algorithms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_selection.html">1.13. Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="semi_supervised.html">1.14. Semi-supervised learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotonic.html">1.15. Isotonic regression</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">1.16. Probability calibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_supervised.html">1.17. Neural network models (supervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../unsupervised_learning.html">2. Unsupervised learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="mixture.html">2.1. Gaussian mixture models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manifold.html">2.2. Manifold learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clustering.html">2.3. Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="biclustering.html">2.4. Biclustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decomposition.html">2.5. Decomposing signals in components (matrix factorization problems)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="covariance.html">2.6. Covariance estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outlier_detection.html">2.7. Novelty and Outlier Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="density.html">2.8. Density Estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_networks_unsupervised.html">2.9. Neural network models (unsupervised)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../model_selection.html">3. Model selection and evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="cross_validation.html">3.1. Cross-validation: evaluating estimator performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grid_search.html">3.2. Tuning the hyper-parameters of an estimator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classification_threshold.html">3.3. Tuning the decision threshold for class prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_evaluation.html">3.4. Metrics and scoring: quantifying the quality of predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="learning_curve.html">3.5. Validation curves: plotting scores to evaluate models</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata_routing.html">4. Metadata Routing</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../inspection.html">5. Inspection</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="partial_dependence.html">5.1. Partial Dependence and Individual Conditional Expectation plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="permutation_importance.html">5.2. Permutation feature importance</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualizations.html">6. Visualizations</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../data_transforms.html">7. Dataset transformations</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="compose.html">7.1. Pipelines and composite estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_extraction.html">7.2. Feature extraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing.html">7.3. Preprocessing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="impute.html">7.4. Imputation of missing values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unsupervised_reduction.html">7.5. Unsupervised dimensionality reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random_projection.html">7.6. Random Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kernel_approximation.html">7.7. Kernel Approximation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">7.8. Pairwise metrics, Affinities and Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocessing_targets.html">7.9. Transforming the prediction target (<code class="docutils literal notranslate"><span class="pre">y</span></code>)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../datasets.html">8. Dataset loading utilities</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/toy_dataset.html">8.1. Toy datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/real_world.html">8.2. Real world datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/sample_generators.html">8.3. Generated datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../datasets/loading_other_datasets.html">8.4. Loading other datasets</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../computing.html">9. Computing with scikit-learn</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../computing/scaling_strategies.html">9.1. Strategies to scale computationally: bigger data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/computational_performance.html">9.2. Computational Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../computing/parallelism.html">9.3. Parallelism, resource management, and configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../model_persistence.html">10. Model persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common_pitfalls.html">11. Common pitfalls and recommended practices</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../dispatching.html">12. Dispatching</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="array_api.html">12.1. Array API support (experimental)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../machine_learning_map.html">13. Choosing the right estimator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presentations.html">14. External Resources, Videos and Talks</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../supervised_learning.html" class="nav-link"><span class="section-number">1. </span>Supervised learning</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><span class="section-number">1.16. </span>Probability calibration</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="probability-calibration">
+<span id="calibration"></span><h1><span class="section-number">1.16. </span>Probability calibration<a class="headerlink" href="#probability-calibration" title="Link to this heading">#</a></h1>
+<p>When performing classification you often want not only to predict the class
+label, but also obtain a probability of the respective label. This probability
+gives you some kind of confidence on the prediction. Some models can give you
+poor estimates of the class probabilities and some even do not support
+probability prediction (e.g., some instances of
+<a class="reference internal" href="generated/sklearn.linear_model.SGDClassifier.html#sklearn.linear_model.SGDClassifier" title="sklearn.linear_model.SGDClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">SGDClassifier</span></code></a>).
+The calibration module allows you to better calibrate
+the probabilities of a given model, or to add support for probability
+prediction.</p>
+<p>Well calibrated classifiers are probabilistic classifiers for which the output
+of the <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> method can be directly interpreted as a confidence
+level.
+For instance, a well calibrated (binary) classifier should classify the samples such
+that among the samples to which it gave a <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> value close to, say,
+0.8, approximately 80% actually belong to the positive class.</p>
+<p>Before we show how to re-calibrate a classifier, we first need a way to detect how
+good a classifier is calibrated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Strictly proper scoring rules for probabilistic predictions like
+<a class="reference internal" href="generated/sklearn.metrics.brier_score_loss.html#sklearn.metrics.brier_score_loss" title="sklearn.metrics.brier_score_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.brier_score_loss</span></code></a> and
+<a class="reference internal" href="generated/sklearn.metrics.log_loss.html#sklearn.metrics.log_loss" title="sklearn.metrics.log_loss"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.metrics.log_loss</span></code></a> assess calibration (reliability) and
+discriminative power (resolution) of a model, as well as the randomness of the data
+(uncertainty) at the same time. This follows from the well-known Brier score
+decomposition of Murphy <a class="footnote-reference brackets" href="#id12" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. As it is not clear which term dominates, the score is
+of limited use for assessing calibration alone (unless one computes each term of
+the decomposition). A lower Brier loss, for instance, does not necessarily
+mean a better calibrated model, it could also mean a worse calibrated model with much
+more discriminatory power, e.g. using many more features.</p>
+</div>
+<section id="calibration-curves">
+<span id="calibration-curve"></span><h2><span class="section-number">1.16.1. </span>Calibration curves<a class="headerlink" href="#calibration-curves" title="Link to this heading">#</a></h2>
+<p>Calibration curves, also referred to as <em>reliability diagrams</em> (Wilks 1995 <a class="footnote-reference brackets" href="#id13" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>),
+compare how well the probabilistic predictions of a binary classifier are calibrated.
+It plots the frequency of the positive label (to be more precise, an estimation of the
+<em>conditional event probability</em> <span class="math notranslate nohighlight">\(P(Y=1|\text{predict_proba})\)</span>) on the y-axis
+against the predicted probability <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> of a model on the x-axis.
+The tricky part is to get values for the y-axis.
+In scikit-learn, this is accomplished by binning the predictions such that the x-axis
+represents the average predicted probability in each bin.
+The y-axis is then the <em>fraction of positives</em> given the predictions of that bin, i.e.
+the proportion of samples whose class is the positive class (in each bin).</p>
+<p>The top calibration curve plot is created with
+<a class="reference internal" href="generated/sklearn.calibration.CalibrationDisplay.html#sklearn.calibration.CalibrationDisplay.from_estimator" title="sklearn.calibration.CalibrationDisplay.from_estimator"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalibrationDisplay.from_estimator</span></code></a>, which uses <a class="reference internal" href="generated/sklearn.calibration.calibration_curve.html#sklearn.calibration.calibration_curve" title="sklearn.calibration.calibration_curve"><code class="xref py py-func docutils literal notranslate"><span class="pre">calibration_curve</span></code></a> to
+calculate the per bin average predicted probabilities and fraction of positives.
+<a class="reference internal" href="generated/sklearn.calibration.CalibrationDisplay.html#sklearn.calibration.CalibrationDisplay.from_estimator" title="sklearn.calibration.CalibrationDisplay.from_estimator"><code class="xref py py-func docutils literal notranslate"><span class="pre">CalibrationDisplay.from_estimator</span></code></a>
+takes as input a fitted classifier, which is used to calculate the predicted
+probabilities. The classifier thus must have <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> method. For
+the few classifiers that do not have a <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> method, it is
+possible to use <a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> to calibrate the classifier
+outputs to probabilities.</p>
+<p>The bottom histogram gives some insight into the behavior of each classifier
+by showing the number of samples in each predicted probability bin.</p>
+<figure class="align-center">
+<a class="reference external image-reference" href="../auto_examples/calibration/plot_compare_calibration.html"><img alt="../_images/sphx_glr_plot_compare_calibration_001.png" src="../_images/sphx_glr_plot_compare_calibration_001.png" />
+</a>
+</figure>
+<p><a class="reference internal" href="generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a> is more likely to return well calibrated predictions by itself as it has a
+canonical link function for its loss, i.e. the logit-link for the <a class="reference internal" href="model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>.
+In the unpenalized case, this leads to the so-called <strong>balance property</strong>, see <a class="footnote-reference brackets" href="#id19" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a> and <a class="reference internal" href="linear_model.html#logistic-regression"><span class="std std-ref">Logistic regression</span></a>.
+In the plot above, data is generated according to a linear mechanism, which is
+consistent with the <a class="reference internal" href="generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a> model (the model is ‘well specified’),
+and the value of the regularization parameter <code class="docutils literal notranslate"><span class="pre">C</span></code> is tuned to be
+appropriate (neither too strong nor too low). As a consequence, this model returns
+accurate predictions from its <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code> method.
+In contrast to that, the other shown models return biased probabilities; with
+different biases per model.</p>
+<p><a class="reference internal" href="generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a> (Naive Bayes) tends to push probabilities to 0 or 1 (note the counts
+in the histograms). This is mainly because it makes the assumption that
+features are conditionally independent given the class, which is not the
+case in this dataset which contains 2 redundant features.</p>
+<p><a class="reference internal" href="generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier" title="sklearn.ensemble.RandomForestClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomForestClassifier</span></code></a> shows the opposite behavior: the histograms
+show peaks at probabilities approximately 0.2 and 0.9, while probabilities
+close to 0 or 1 are very rare. An explanation for this is given by
+Niculescu-Mizil and Caruana <a class="footnote-reference brackets" href="#id14" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>: “Methods such as bagging and random
+forests that average predictions from a base set of models can have
+difficulty making predictions near 0 and 1 because variance in the
+underlying base models will bias predictions that should be near zero or one
+away from these values. Because predictions are restricted to the interval
+[0,1], errors caused by variance tend to be one-sided near zero and one. For
+example, if a model should predict <span class="math notranslate nohighlight">\(p = 0\)</span> for a case, the only way bagging
+can achieve this is if all bagged trees predict zero. If we add noise to the
+trees that bagging is averaging over, this noise will cause some trees to
+predict values larger than 0 for this case, thus moving the average
+prediction of the bagged ensemble away from 0. We observe this effect most
+strongly with random forests because the base-level trees trained with
+random forests have relatively high variance due to feature subsetting.” As
+a result, the calibration curve shows a characteristic sigmoid shape, indicating that
+the classifier could trust its “intuition” more and return probabilities closer
+to 0 or 1 typically.</p>
+<p><a class="reference internal" href="generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a> (SVC) shows an even more sigmoid curve than the random forest, which
+is typical for maximum-margin methods (compare Niculescu-Mizil and Caruana <a class="footnote-reference brackets" href="#id14" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>), which
+focus on difficult to classify samples that are close to the decision boundary (the
+support vectors).</p>
+</section>
+<section id="calibrating-a-classifier">
+<h2><span class="section-number">1.16.2. </span>Calibrating a classifier<a class="headerlink" href="#calibrating-a-classifier" title="Link to this heading">#</a></h2>
+<p>Calibrating a classifier consists of fitting a regressor (called a
+<em>calibrator</em>) that maps the output of the classifier (as given by
+<a class="reference internal" href="../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a> or <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a>) to a calibrated probability
+in [0, 1]. Denoting the output of the classifier for a given sample by <span class="math notranslate nohighlight">\(f_i\)</span>,
+the calibrator tries to predict the conditional event probability
+<span class="math notranslate nohighlight">\(P(y_i = 1 | f_i)\)</span>.</p>
+<p>Ideally, the calibrator is fit on a dataset independent of the training data used to
+fit the classifier in the first place.
+This is because performance of the classifier on its training data would be
+better than for novel data. Using the classifier output of training data
+to fit the calibrator would thus result in a biased calibrator that maps to
+probabilities closer to 0 and 1 than it should.</p>
+</section>
+<section id="usage">
+<h2><span class="section-number">1.16.3. </span>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> class is used to calibrate a classifier.</p>
+<p><a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> uses a cross-validation approach to ensure
+unbiased data is always used to fit the calibrator. The data is split into <span class="math notranslate nohighlight">\(k\)</span>
+<code class="docutils literal notranslate"><span class="pre">(train_set,</span> <span class="pre">test_set)</span></code> couples (as determined by <code class="docutils literal notranslate"><span class="pre">cv</span></code>). When <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code>
+(default), the following procedure is repeated independently for each
+cross-validation split:</p>
+<ol class="arabic simple">
+<li><p>a clone of <code class="docutils literal notranslate"><span class="pre">base_estimator</span></code> is trained on the train subset</p></li>
+<li><p>the trained <code class="docutils literal notranslate"><span class="pre">base_estimator</span></code> makes predictions on the test subset</p></li>
+<li><p>the predictions are used to fit a calibrator (either a sigmoid or isotonic
+regressor) (when the data is multiclass, a calibrator is fit for every class)</p></li>
+</ol>
+<p>This results in an
+ensemble of <span class="math notranslate nohighlight">\(k\)</span> <code class="docutils literal notranslate"><span class="pre">(classifier,</span> <span class="pre">calibrator)</span></code> couples where each calibrator maps
+the output of its corresponding classifier into [0, 1]. Each couple is exposed
+in the <code class="docutils literal notranslate"><span class="pre">calibrated_classifiers_</span></code> attribute, where each entry is a calibrated
+classifier with a <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> method that outputs calibrated
+probabilities. The output of <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> for the main
+<a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> instance corresponds to the average of the
+predicted probabilities of the <span class="math notranslate nohighlight">\(k\)</span> estimators in the <code class="docutils literal notranslate"><span class="pre">calibrated_classifiers_</span></code>
+list. The output of <a class="reference internal" href="../glossary.html#term-predict"><span class="xref std std-term">predict</span></a> is the class that has the highest
+probability.</p>
+<p>It is important to choose <code class="docutils literal notranslate"><span class="pre">cv</span></code> carefully when using <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code>.
+All classes should be present in both train and test subsets for every split.
+When a class is absent in the train subset, the predicted probability for that
+class will default to 0 for the <code class="docutils literal notranslate"><span class="pre">(classifier,</span> <span class="pre">calibrator)</span></code> couple of that split.
+This skews the <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> as it averages across all couples.
+When a class is absent in the test subset, the calibrator for that class
+(within the <code class="docutils literal notranslate"><span class="pre">(classifier,</span> <span class="pre">calibrator)</span></code> couple of that split) is
+fit on data with no positive class. This results in ineffective calibration.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">ensemble=False</span></code>, cross-validation is used to obtain ‘unbiased’
+predictions for all the data, via
+<a class="reference internal" href="generated/sklearn.model_selection.cross_val_predict.html#sklearn.model_selection.cross_val_predict" title="sklearn.model_selection.cross_val_predict"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_val_predict</span></code></a>.
+These unbiased predictions are then used to train the calibrator. The attribute
+<code class="docutils literal notranslate"><span class="pre">calibrated_classifiers_</span></code> consists of only one <code class="docutils literal notranslate"><span class="pre">(classifier,</span> <span class="pre">calibrator)</span></code>
+couple where the classifier is the <code class="docutils literal notranslate"><span class="pre">base_estimator</span></code> trained on all the data.
+In this case the output of <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> for
+<a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> is the predicted probabilities obtained
+from the single <code class="docutils literal notranslate"><span class="pre">(classifier,</span> <span class="pre">calibrator)</span></code> couple.</p>
+<p>The main advantage of <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> is to benefit from the traditional
+ensembling effect (similar to <a class="reference internal" href="ensemble.html#bagging"><span class="std std-ref">Bagging meta-estimator</span></a>). The resulting ensemble should
+both be well calibrated and slightly more accurate than with <code class="docutils literal notranslate"><span class="pre">ensemble=False</span></code>.
+The main advantage of using <code class="docutils literal notranslate"><span class="pre">ensemble=False</span></code> is computational: it reduces the
+overall fit time by training only a single base classifier and calibrator
+pair, decreases the final model size and increases prediction speed.</p>
+<p>Alternatively an already fitted classifier can be calibrated by using a
+<a class="reference internal" href="generated/sklearn.frozen.FrozenEstimator.html#sklearn.frozen.FrozenEstimator" title="sklearn.frozen.FrozenEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenEstimator</span></code></a> as
+<code class="docutils literal notranslate"><span class="pre">CalibratedClassifierCV(estimator=FrozenEstimator(estimator))</span></code>.
+It is up to the user to make sure that the data used for fitting the classifier
+is disjoint from the data used for fitting the regressor.</p>
+<p><a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> supports the use of two regression techniques
+for calibration via the <code class="docutils literal notranslate"><span class="pre">method</span></code> parameter: <code class="docutils literal notranslate"><span class="pre">&quot;sigmoid&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;isotonic&quot;</span></code>.</p>
+<section id="sigmoid">
+<span id="sigmoid-regressor"></span><h3><span class="section-number">1.16.3.1. </span>Sigmoid<a class="headerlink" href="#sigmoid" title="Link to this heading">#</a></h3>
+<p>The sigmoid regressor, <code class="docutils literal notranslate"><span class="pre">method=&quot;sigmoid&quot;</span></code> is based on Platt’s logistic model <a class="footnote-reference brackets" href="#id15" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[p(y_i = 1 | f_i) = \frac{1}{1 + \exp(A f_i + B)} \,,\]</div>
+<p>where <span class="math notranslate nohighlight">\(y_i\)</span> is the true label of sample <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(f_i\)</span>
+is the output of the un-calibrated classifier for sample <span class="math notranslate nohighlight">\(i\)</span>. <span class="math notranslate nohighlight">\(A\)</span>
+and <span class="math notranslate nohighlight">\(B\)</span> are real numbers to be determined when fitting the regressor via
+maximum likelihood.</p>
+<p>The sigmoid method assumes the <a class="reference internal" href="#calibration-curve"><span class="std std-ref">calibration curve</span></a>
+can be corrected by applying a sigmoid function to the raw predictions. This
+assumption has been empirically justified in the case of <a class="reference internal" href="svm.html#svm"><span class="std std-ref">Support Vector Machines</span></a> with
+common kernel functions on various benchmark datasets in section 2.1 of Platt
+1999 <a class="footnote-reference brackets" href="#id15" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> but does not necessarily hold in general. Additionally, the
+logistic model works best if the calibration error is symmetrical, meaning
+the classifier output for each binary class is normally distributed with
+the same variance <a class="footnote-reference brackets" href="#id18" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>. This can be a problem for highly imbalanced
+classification problems, where outputs do not have equal variance.</p>
+<p>In general this method is most effective for small sample sizes or when the
+un-calibrated model is under-confident and has similar calibration errors for both
+high and low outputs.</p>
+</section>
+<section id="isotonic">
+<h3><span class="section-number">1.16.3.2. </span>Isotonic<a class="headerlink" href="#isotonic" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">method=&quot;isotonic&quot;</span></code> fits a non-parametric isotonic regressor, which outputs
+a step-wise non-decreasing function, see <a class="reference internal" href="../api/sklearn.isotonic.html#module-sklearn.isotonic" title="sklearn.isotonic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.isotonic</span></code></a>. It minimizes:</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i=1}^{n} (y_i - \hat{f}_i)^2\]</div>
+<p>subject to <span class="math notranslate nohighlight">\(\hat{f}_i \geq \hat{f}_j\)</span> whenever
+<span class="math notranslate nohighlight">\(f_i \geq f_j\)</span>. <span class="math notranslate nohighlight">\(y_i\)</span> is the true
+label of sample <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(\hat{f}_i\)</span> is the output of the
+calibrated classifier for sample <span class="math notranslate nohighlight">\(i\)</span> (i.e., the calibrated probability).
+This method is more general when compared to <code class="docutils literal notranslate"><span class="pre">'sigmoid'</span></code> as the only restriction
+is that the mapping function is monotonically increasing. It is thus more
+powerful as it can correct any monotonic distortion of the un-calibrated model.
+However, it is more prone to overfitting, especially on small datasets <a class="footnote-reference brackets" href="#id17" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</p>
+<p>Overall, <code class="docutils literal notranslate"><span class="pre">'isotonic'</span></code> will perform as well as or better than <code class="docutils literal notranslate"><span class="pre">'sigmoid'</span></code> when
+there is enough data (greater than ~ 1000 samples) to avoid overfitting <a class="footnote-reference brackets" href="#id14" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Impact on ranking metrics like AUC</p>
+<p>It is generally expected that calibration does not affect ranking metrics such as
+ROC-AUC. However, these metrics might differ after calibration when using
+<code class="docutils literal notranslate"><span class="pre">method=&quot;isotonic&quot;</span></code> since isotonic regression introduces ties in the predicted
+probabilities. This can be seen as within the uncertainty of the model predictions.
+In case, you strictly want to keep the ranking and thus AUC scores, use
+<code class="docutils literal notranslate"><span class="pre">method=&quot;sigmoid&quot;</span></code> which is a strictly monotonic transformation and thus keeps
+the ranking.</p>
+</div>
+</section>
+<section id="multiclass-support">
+<h3><span class="section-number">1.16.3.3. </span>Multiclass support<a class="headerlink" href="#multiclass-support" title="Link to this heading">#</a></h3>
+<p>Both isotonic and sigmoid regressors only
+support 1-dimensional data (e.g., binary classification output) but are
+extended for multiclass classification if the <code class="docutils literal notranslate"><span class="pre">base_estimator</span></code> supports
+multiclass predictions. For multiclass predictions,
+<a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> calibrates for
+each class separately in a <a class="reference internal" href="multiclass.html#ovr-classification"><span class="std std-ref">OneVsRestClassifier</span></a> fashion <a class="footnote-reference brackets" href="#id16" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>. When
+predicting
+probabilities, the calibrated probabilities for each class
+are predicted separately. As those probabilities do not necessarily sum to
+one, a postprocessing is performed to normalize them.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../auto_examples/calibration/plot_calibration_curve.html#sphx-glr-auto-examples-calibration-plot-calibration-curve-py"><span class="std std-ref">Probability Calibration curves</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/calibration/plot_calibration_multiclass.html#sphx-glr-auto-examples-calibration-plot-calibration-multiclass-py"><span class="std std-ref">Probability Calibration for 3-class classification</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/calibration/plot_calibration.html#sphx-glr-auto-examples-calibration-plot-calibration-py"><span class="std std-ref">Probability calibration of classifiers</span></a></p></li>
+<li><p><a class="reference internal" href="../auto_examples/calibration/plot_compare_calibration.html#sphx-glr-auto-examples-calibration-plot-compare-calibration-py"><span class="std std-ref">Comparison of Calibration of Classifiers</span></a></p></li>
+</ul>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id12" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Allan H. Murphy (1973).
+<a class="reference external" href="https://doi.org/10.1175/1520-0450(1973)012%3C0595:ANVPOT%3E2.0.CO;2">“A New Vector Partition of the Probability Score”</a>
+Journal of Applied Meteorology and Climatology</p>
+</aside>
+<aside class="footnote brackets" id="id13" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://doi.org/10.1175/1520-0434(1990)005%3C0640:OTCOFP%3E2.0.CO;2">On the combination of forecast probabilities for
+consecutive precipitation periods.</a>
+Wea. Forecasting, 5, 640–650., Wilks, D. S., 1990a</p>
+</aside>
+<aside class="footnote brackets" id="id14" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id5">2</a>,<a role="doc-backlink" href="#id10">3</a>)</span>
+<p><a class="reference external" href="https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf">Predicting Good Probabilities with Supervised Learning</a>,
+A. Niculescu-Mizil &amp; R. Caruana, ICML 2005</p>
+</aside>
+<aside class="footnote brackets" id="id15" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id6">1</a>,<a role="doc-backlink" href="#id7">2</a>)</span>
+<p><a class="reference external" href="https://www.cs.colorado.edu/~mozer/Teaching/syllabi/6622/papers/Platt1999.pdf">Probabilistic Outputs for Support Vector Machines and Comparisons
+to Regularized Likelihood Methods.</a>
+J. Platt, (1999)</p>
+</aside>
+<aside class="footnote brackets" id="id16" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id11">5</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://dl.acm.org/doi/pdf/10.1145/775047.775151">Transforming Classifier Scores into Accurate Multiclass
+Probability Estimates.</a>
+B. Zadrozny &amp; C. Elkan, (KDD 2002)</p>
+</aside>
+<aside class="footnote brackets" id="id17" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">6</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4180410/">Predicting accurate probabilities with a ranking loss.</a>
+Menon AK, Jiang XJ, Vembu S, Elkan C, Ohno-Machado L.
+Proc Int Conf Mach Learn. 2012;2012:703-710</p>
+</aside>
+<aside class="footnote brackets" id="id18" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">7</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://projecteuclid.org/euclid.ejs/1513306867">Beyond sigmoids: How to obtain well-calibrated probabilities from
+binary classifiers with beta calibration</a>
+Kull, M., Silva Filho, T. M., &amp; Flach, P. (2017).</p>
+</aside>
+<aside class="footnote brackets" id="id19" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">8</a><span class="fn-bracket">]</span></span>
+<p>Mario V. Wüthrich, Michael Merz (2023).
+<a class="reference external" href="https://doi.org/10.1007/978-3-031-12409-9">“Statistical Foundations of Actuarial Learning and its Applications”</a>
+Springer Actuarial</p>
+</aside>
+</aside>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="isotonic.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">1.15. </span>Isotonic regression</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="neural_networks_supervised.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">1.17. </span>Neural network models (supervised)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-curves">1.16.1. Calibration curves</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calibrating-a-classifier">1.16.2. Calibrating a classifier</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">1.16.3. Usage</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sigmoid">1.16.3.1. Sigmoid</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#isotonic">1.16.3.2. Isotonic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multiclass-support">1.16.3.3. Multiclass support</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules/calibration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,999 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Developers’ Tips and Tricks" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/developers/tips.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="Productivity and sanity-preserving tips: In this section we gather some useful advice and tools that may increase your quality-of-life when reviewing pull requests, running unit tests, and so forth..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="Productivity and sanity-preserving tips: In this section we gather some useful advice and tools that may increase your quality-of-life when reviewing pull requests, running unit tests, and so forth..." />
+
+    <title>Developers’ Tips and Tricks &#8212; scikit-learn 1.7.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=b0ea68f0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=908dc885"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developers/tips';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/scripts/dropdown.js?v=d6825577"></script>
+    <script src="../_static/scripts/version-switcher.js?v=a6dd8357"></script>
+    <script src="../_static/scripts/sg_plotly_resize.js?v=2167d4db"></script>
+    <link rel="canonical" href="https://scikit-learn.org/stable/developers/tips.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.7" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-light" alt="scikit-learn homepage"/>
+    <img src="../_static/scikit-learn-logo-small.png" class="logo__image only-dark pst-js-only" alt="scikit-learn homepage"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../install.html">
+    Install
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../auto_examples/index.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://blog.scikit-learn.org/">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../whats_new.html">
+    Release History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    Glossary
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://scikit-learn.org/dev/developers/index.html">
+    Development
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../faq.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../support.html">
+    Support
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../related_projects.html">
+    Related Projects
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../roadmap.html">
+    Roadmap
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../governance.html">
+    Governance
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../about.html">
+    About us
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/scikit-learn/scikit-learn" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Developers’ Tips and Tricks</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="developers-tips-and-tricks">
+<span id="developers-tips"></span><h1>Developers’ Tips and Tricks<a class="headerlink" href="#developers-tips-and-tricks" title="Link to this heading">#</a></h1>
+<section id="productivity-and-sanity-preserving-tips">
+<h2>Productivity and sanity-preserving tips<a class="headerlink" href="#productivity-and-sanity-preserving-tips" title="Link to this heading">#</a></h2>
+<p>In this section we gather some useful advice and tools that may increase your
+quality-of-life when reviewing pull requests, running unit tests, and so forth.
+Some of these tricks consist of userscripts that require a browser extension
+such as <a class="reference external" href="https://tampermonkey.net/">TamperMonkey</a> or <a class="reference external" href="https://www.greasespot.net/">GreaseMonkey</a>; to set up userscripts you must have
+one of these extensions installed, enabled and running.  We provide userscripts
+as GitHub gists; to install them, click on the “Raw” button on the gist page.</p>
+<section id="folding-and-unfolding-outdated-diffs-on-pull-requests">
+<h3>Folding and unfolding outdated diffs on pull requests<a class="headerlink" href="#folding-and-unfolding-outdated-diffs-on-pull-requests" title="Link to this heading">#</a></h3>
+<p>GitHub hides discussions on PRs when the corresponding lines of code have been
+changed in the meantime. This <a class="reference external" href="https://raw.githubusercontent.com/lesteve/userscripts/master/github-expand-all.user.js">userscript</a>
+provides a shortcut (Control-Alt-P at the time of writing but look at the code
+to be sure) to unfold all such hidden discussions at once, so you can catch up.</p>
+</section>
+<section id="checking-out-pull-requests-as-remote-tracking-branches">
+<h3>Checking out pull requests as remote-tracking branches<a class="headerlink" href="#checking-out-pull-requests-as-remote-tracking-branches" title="Link to this heading">#</a></h3>
+<p>In your local fork, add to your <code class="docutils literal notranslate"><span class="pre">.git/config</span></code>, under the <code class="docutils literal notranslate"><span class="pre">[remote</span>
+<span class="pre">&quot;upstream&quot;]</span></code> heading, the line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fetch</span> <span class="o">=</span> <span class="o">+</span><span class="n">refs</span><span class="o">/</span><span class="n">pull</span><span class="o">/*/</span><span class="n">head</span><span class="p">:</span><span class="n">refs</span><span class="o">/</span><span class="n">remotes</span><span class="o">/</span><span class="n">upstream</span><span class="o">/</span><span class="n">pr</span><span class="o">/*</span>
+</pre></div>
+</div>
+<p>You may then use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">pr/PR_NUMBER</span></code> to navigate to the code of the
+pull-request with the given number. (<a class="reference external" href="https://gist.github.com/piscisaureus/3342247">Read more in this gist.</a>)</p>
+</section>
+<section id="display-code-coverage-in-pull-requests">
+<h3>Display code coverage in pull requests<a class="headerlink" href="#display-code-coverage-in-pull-requests" title="Link to this heading">#</a></h3>
+<p>To overlay the code coverage reports generated by the CodeCov continuous
+integration, consider <a class="reference external" href="https://github.com/codecov/browser-extension">this browser extension</a>. The coverage of each line
+will be displayed as a color background behind the line number.</p>
+</section>
+<section id="useful-pytest-aliases-and-flags">
+<span id="pytest-tips"></span><h3>Useful pytest aliases and flags<a class="headerlink" href="#useful-pytest-aliases-and-flags" title="Link to this heading">#</a></h3>
+<p>The full test suite takes fairly long to run. For faster iterations,
+it is possible to select a subset of tests using pytest selectors.
+In particular, one can run a <a class="reference external" href="https://docs.pytest.org/en/latest/example/markers.html#selecting-tests-based-on-their-node-id">single test based on its node ID</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
+span.prompt1:before {
+  content: "$ ";
+}
+</style><span class="prompt1">pytest<span class="w"> </span>-v<span class="w"> </span>sklearn/linear_model/tests/test_logistic.py::test_sparsify</span>
+</pre></div></div><p>or use the <a class="reference external" href="https://docs.pytest.org/en/latest/example/markers.html#using-k-expr-to-select-tests-based-on-their-name">-k pytest parameter</a>
+to select tests based on their name. For instance,:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pytest<span class="w"> </span>sklearn/tests/test_common.py<span class="w"> </span>-v<span class="w"> </span>-k<span class="w"> </span>LogisticRegression</span>
+</pre></div></div><p>will run all <a class="reference internal" href="../glossary.html#term-common-tests"><span class="xref std std-term">common tests</span></a> for the <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> estimator.</p>
+<p>When a unit test fails, the following tricks can make debugging easier:</p>
+<ol class="arabic">
+<li><p>The command line argument <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-l</span></code> instructs pytest to print the local
+variables when a failure occurs.</p></li>
+<li><p>The argument <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--pdb</span></code> drops into the Python debugger on failure. To
+instead drop into the rich IPython debugger <code class="docutils literal notranslate"><span class="pre">ipdb</span></code>, you may set up a
+shell alias to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pytest<span class="w"> </span>--pdbcls<span class="o">=</span>IPython.terminal.debugger:TerminalPdb<span class="w"> </span>--capture<span class="w"> </span>no</span>
+</pre></div></div></li>
+</ol>
+<p>Other <code class="docutils literal notranslate"><span class="pre">pytest</span></code> options that may become useful include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-x</span></code> which exits on the first failed test,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--lf</span></code> to rerun the tests that failed on the previous run,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--ff</span></code> to rerun all previous tests, running the ones that failed first,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-s</span></code> so that pytest does not capture the output of <code class="docutils literal notranslate"><span class="pre">print()</span></code> statements,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--tb=short</span></code> or <code class="docutils literal notranslate"><span class="pre">--tb=line</span></code> to control the length of the logs,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--runxfail</span></code> also run tests marked as a known failure (XFAIL) and report errors.</p></li>
+</ul>
+<p>Since our continuous integration tests will error if
+<code class="docutils literal notranslate"><span class="pre">FutureWarning</span></code> isn’t properly caught,
+it is also recommended to run <code class="docutils literal notranslate"><span class="pre">pytest</span></code> along with the
+<code class="docutils literal notranslate"><span class="pre">-Werror::FutureWarning</span></code> flag.</p>
+</section>
+<section id="standard-replies-for-reviewing">
+<span id="saved-replies"></span><h3>Standard replies for reviewing<a class="headerlink" href="#standard-replies-for-reviewing" title="Link to this heading">#</a></h3>
+<p>It may be helpful to store some of these in GitHub’s <a class="reference external" href="https://github.com/settings/replies/">saved
+replies</a> for reviewing:</p>
+<p>Issue: Usage questions</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>You are asking a usage question. The issue tracker is for bugs and new features. For usage questions, it is recommended to try [Stack Overflow](https://stackoverflow.com/questions/tagged/scikit-learn) or [the Mailing List](https://mail.python.org/mailman/listinfo/scikit-learn).
+
+Unfortunately, we need to close this issue as this issue tracker is a communication tool used for the development of scikit-learn. The additional activity created by usage questions crowds it too much and impedes this development. The conversation can continue here, however there is no guarantee that it will receive attention from core developers.
+</pre></div>
+</div>
+<p>Issue: You’re welcome to update the docs</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please feel free to offer a pull request updating the documentation if you feel it could be improved.
+</pre></div>
+</div>
+<p>Issue: Self-contained example for bug</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please provide [self-contained example code](https://scikit-learn.org/dev/developers/minimal_reproducer.html), including imports and data (if possible), so that other contributors can just run it and reproduce your issue. Ideally your example code should be minimal.
+</pre></div>
+</div>
+<p>Issue: Software versions</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>To help diagnose your issue, please paste the output of:
+```py
+import sklearn; sklearn.show_versions()
+```
+Thanks.
+</pre></div>
+</div>
+<p>Issue: Code blocks</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Readability can be greatly improved if you [format](https://help.github.com/articles/creating-and-highlighting-code-blocks/) your code snippets and complete error messages appropriately. For example:
+
+    ```python
+    print(something)
+    ```
+
+generates:
+
+```python
+print(something)
+```
+
+And:
+
+    ```pytb
+    Traceback (most recent call last):
+        File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+    ImportError: No module named &#39;hello&#39;
+    ```
+
+generates:
+
+```pytb
+Traceback (most recent call last):
+    File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+ImportError: No module named &#39;hello&#39;
+```
+
+You can edit your issue descriptions and comments at any time to improve readability. This helps maintainers a lot. Thanks!
+</pre></div>
+</div>
+<p>Issue/Comment: Linking to code</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Friendly advice: for clarity&#39;s sake, you can link to code like [this](https://help.github.com/articles/creating-a-permanent-link-to-a-code-snippet/).
+</pre></div>
+</div>
+<p>Issue/Comment: Linking to comments</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please use links to comments, which make it a lot easier to see what you are referring to, rather than just linking to the issue. See [this](https://stackoverflow.com/questions/25163598/how-do-i-reference-a-specific-issue-comment-on-github) for more details.
+</pre></div>
+</div>
+<p>PR-NEW: Better description and title</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Thanks for the pull request! Please make the title of the PR more descriptive. The title will become the commit message when this is merged. You should state what issue (or PR) it fixes/resolves in the description using the syntax described [here](https://scikit-learn.org/dev/developers/contributing.html#contributing-pull-requests).
+</pre></div>
+</div>
+<p>PR-NEW: Fix #</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please use &quot;Fix #issueNumber&quot; in your PR description (and you can do it more than once). This way the associated issue gets closed automatically when the PR is merged. For more details, look at [this](https://github.com/blog/1506-closing-issues-via-pull-requests).
+</pre></div>
+</div>
+<p>PR-NEW or Issue: Maintenance cost</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Every feature we include has a [maintenance cost](https://scikit-learn.org/dev/faq.html#why-are-you-so-selective-on-what-algorithms-you-include-in-scikit-learn). Our maintainers are mostly volunteers. For a new feature to be included, we need evidence that it is often useful and, ideally, [well-established](https://scikit-learn.org/dev/faq.html#what-are-the-inclusion-criteria-for-new-algorithms) in the literature or in practice. Also, we expect PR authors to take part in the maintenance for the code they submit, at least initially. That doesn&#39;t stop you implementing it for yourself and publishing it in a separate repository, or even [scikit-learn-contrib](https://scikit-learn-contrib.github.io).
+</pre></div>
+</div>
+<p>PR-WIP: What’s needed before merge?</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please clarify (perhaps as a TODO list in the PR description) what work you believe still needs to be done before it can be reviewed for merge. When it is ready, please prefix the PR title with `[MRG]`.
+</pre></div>
+</div>
+<p>PR-WIP: Regression test needed</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please add a [non-regression test](https://en.wikipedia.org/wiki/Non-regression_testing) that would fail at main but pass in this PR.
+</pre></div>
+</div>
+<p>PR-MRG: Patience</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Before merging, we generally require two core developers to agree that your pull request is desirable and ready. [Please be patient](https://scikit-learn.org/dev/faq.html#why-is-my-pull-request-not-getting-any-attention), as we mostly rely on volunteered time from busy core developers. (You are also welcome to help us out with [reviewing other PRs](https://scikit-learn.org/dev/developers/contributing.html#code-review-guidelines).)
+</pre></div>
+</div>
+<p>PR-MRG: Add to what’s new</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please add an entry to the future changelog by adding an RST fragment into the module associated with your change located in `doc/whats_new/upcoming_changes`. Refer to the following [README](https://github.com/scikit-learn/scikit-learn/blob/main/doc/whats_new/upcoming_changes/README.md) for full instructions.
+</pre></div>
+</div>
+<p>PR: Don’t change unrelated</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Please do not change unrelated lines. It makes your contribution harder to review and may introduce merge conflicts to other pull requests.
+</pre></div>
+</div>
+</section>
+<section id="debugging-ci-issues">
+<span id="id2"></span><h3>Debugging CI issues<a class="headerlink" href="#debugging-ci-issues" title="Link to this heading">#</a></h3>
+<p>CI issues may arise for a variety of reasons, so this is by no means a
+comprehensive guide, but rather a list of useful tips and tricks.</p>
+<section id="using-a-lock-file-to-get-an-environment-close-to-the-ci">
+<h4>Using a lock-file to get an environment close to the CI<a class="headerlink" href="#using-a-lock-file-to-get-an-environment-close-to-the-ci" title="Link to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">conda-lock</span></code> can be used to create a conda environment with the exact same
+conda and pip packages as on the CI. For example, the following command will
+create a conda environment named <code class="docutils literal notranslate"><span class="pre">scikit-learn-doc</span></code> that is similar to the CI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda-lock<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </span>scikit-learn-doc<span class="w"> </span>build_tools/circle/doc_linux-64_conda.lock</span>
+</pre></div></div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It only works if you have the same OS as the CI build (check <code class="docutils literal notranslate"><span class="pre">platform:</span></code> in
+the lock-file). For example, the previous command will only work if you are
+on a Linux machine. Also this may not allow you to reproduce some of the
+issues that are more tied to the particularities of the CI environment, for
+example CPU architecture reported by OpenBLAS in <code class="docutils literal notranslate"><span class="pre">sklearn.show_versions()</span></code>.</p>
+</div>
+<p>If you don’t have the same OS as the CI build you can still create a conda
+environment from the right environment yaml file, although it won’t be as close
+as the CI environment as using the associated lock-file. For example for the
+doc build:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>scikit-learn-doc<span class="w"> </span>-f<span class="w"> </span>build_tools/circle/doc_environment.yml<span class="w"> </span>-y</span>
+</pre></div></div><p>This may not give you exactly the same package versions as in the CI for a
+variety of reasons, for example:</p>
+<ul class="simple">
+<li><p>some packages may have had new releases between the time the lock files were
+last updated in the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch and the time you run the <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">create</span></code>
+command. You can always try to look at the version in the lock-file and
+specify the versions by hand for some specific packages that you think would
+help reproducing the issue.</p></li>
+<li><p>different packages may be installed by default depending on the OS. For
+example, the default BLAS library when installing numpy is OpenBLAS on Linux
+and MKL on Windows.</p></li>
+</ul>
+<p>Also the problem may be OS specific so the only way to be able to reproduce
+would be to have the same OS as the CI build.</p>
+</section>
+</section>
+</section>
+<section id="debugging-memory-errors-in-cython-with-valgrind">
+<h2>Debugging memory errors in Cython with valgrind<a class="headerlink" href="#debugging-memory-errors-in-cython-with-valgrind" title="Link to this heading">#</a></h2>
+<p>While python/numpy’s built-in memory management is relatively robust, it can
+lead to performance penalties for some routines. For this reason, much of
+the high-performance code in scikit-learn is written in cython. This
+performance gain comes with a tradeoff, however: it is very easy for memory
+bugs to crop up in cython code, especially in situations where that code
+relies heavily on pointer arithmetic.</p>
+<p>Memory errors can manifest themselves a number of ways. The easiest ones to
+debug are often segmentation faults and related glibc errors. Uninitialized
+variables can lead to unexpected behavior that is difficult to track down.
+A very useful tool when debugging these sorts of errors is
+<a class="reference external" href="https://valgrind.org">valgrind</a>.</p>
+<p>Valgrind is a command-line tool that can trace memory errors in a variety of
+code. Follow these steps:</p>
+<ol class="arabic">
+<li><p>Install <a class="reference external" href="https://valgrind.org">valgrind</a> on your system.</p></li>
+<li><p>Download the python valgrind suppression file: <a class="reference external" href="https://github.com/python/cpython/blob/master/Misc/valgrind-python.supp">valgrind-python.supp</a>.</p></li>
+<li><p>Follow the directions in the <a class="reference external" href="https://github.com/python/cpython/blob/master/Misc/README.valgrind">README.valgrind</a> file to customize your
+python suppressions. If you don’t, you will have spurious output coming
+related to the python interpreter instead of your own code.</p></li>
+<li><p>Run valgrind as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">valgrind<span class="w"> </span>-v<span class="w"> </span>--suppressions<span class="o">=</span>valgrind-python.supp<span class="w"> </span>python<span class="w"> </span>my_test_script.py</span>
+</pre></div></div></li>
+</ol>
+<p>The result will be a list of all the memory-related errors, which reference
+lines in the C-code generated by cython from your .pyx file. If you examine
+the referenced lines in the .c file, you will see comments which indicate the
+corresponding location in your .pyx source file. Hopefully the output will
+give you clues as to the source of your memory error.</p>
+<p>For more information on valgrind and the array of options it has, see the
+tutorials and documentation on the <a class="reference external" href="https://valgrind.org">valgrind web site</a>.</p>
+</section>
+<section id="building-and-testing-for-the-arm64-platform-on-a-x86-64-machine">
+<span id="arm64-dev-env"></span><h2>Building and testing for the ARM64 platform on a x86_64 machine<a class="headerlink" href="#building-and-testing-for-the-arm64-platform-on-a-x86-64-machine" title="Link to this heading">#</a></h2>
+<p>ARM-based machines are a popular target for mobile, edge or other low-energy
+deployments (including in the cloud, for instance on Scaleway or AWS Graviton).</p>
+<p>Here are instructions to setup a local dev environment to reproduce
+ARM-specific bugs or test failures on a x86_64 host laptop or workstation. This
+is based on QEMU user mode emulation using docker for convenience (see
+<a class="github reference external" href="https://github.com/multiarch/qemu-user-static">multiarch/qemu-user-static</a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following instructions are illustrated for ARM64 but they also apply to
+ppc64le, after changing the Docker image and Miniforge paths appropriately.</p>
+</div>
+<p>Prepare a folder on the host filesystem and download the necessary tools and
+source code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">mkdir<span class="w"> </span>arm64</span>
+<span class="prompt1"><span class="nb">pushd</span><span class="w"> </span>arm64</span>
+<span class="prompt1">wget<span class="w"> </span>https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-aarch64.sh</span>
+<span class="prompt1">git<span class="w"> </span>clone<span class="w"> </span>https://github.com/scikit-learn/scikit-learn.git</span>
+</pre></div></div><p>Use docker to install QEMU user mode and run an ARM64v8 container with access
+to your shared folder under the <code class="docutils literal notranslate"><span class="pre">/io</span></code> mount point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>multiarch/qemu-user-static<span class="w"> </span>--reset<span class="w"> </span>-p<span class="w"> </span>yes</span>
+<span class="prompt1">docker<span class="w"> </span>run<span class="w"> </span>-v<span class="w"> </span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/io<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>arm64v8/ubuntu<span class="w"> </span>/bin/bash</span>
+</pre></div></div><p>In the container, install miniforge3 for the ARM64 (a.k.a. aarch64)
+architecture:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">bash<span class="w"> </span>Miniforge3-Linux-aarch64.sh</span>
+<span class="prompt1"><span class="c1"># Choose to install miniforge3 under: `/io/miniforge3`</span></span>
+</pre></div></div><p>Whenever you restart a new container, you will need to reinit the conda env
+previously installed under <code class="docutils literal notranslate"><span class="pre">/io/miniforge3</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">/io/miniforge3/bin/conda<span class="w"> </span>init</span>
+<span class="prompt1"><span class="nb">source</span><span class="w"> </span>/root/.bashrc</span>
+</pre></div></div><p>as the <code class="docutils literal notranslate"><span class="pre">/root</span></code> home folder is part of the ephemeral docker container. Every
+file or directory stored under <code class="docutils literal notranslate"><span class="pre">/io</span></code> is persistent on the other hand.</p>
+<p>You can then build scikit-learn as usual (you will need to install compiler
+tools and dependencies using apt or conda as usual). Building scikit-learn
+takes a lot of time because of the emulation layer, however it needs to be
+done only once if you put the scikit-learn folder under the <code class="docutils literal notranslate"><span class="pre">/io</span></code> mount
+point.</p>
+<p>Then use pytest to run only the tests of the module you are interested in
+debugging.</p>
+</section>
+<section id="the-meson-build-backend">
+<span id="meson-build-backend"></span><h2>The Meson Build Backend<a class="headerlink" href="#the-meson-build-backend" title="Link to this heading">#</a></h2>
+<p>Since scikit-learn 1.5.0 we use meson-python as the build tool. Meson is
+a new tool for scikit-learn and the PyData ecosystem. It is used by several
+other packages that have written good guides about what it is and how it works.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pandas.pydata.org/docs/development/contributing_environment.html#step-3-build-and-install-pandas">pandas setup doc</a>:
+pandas has a similar setup as ours (no spin or dev.py)</p></li>
+<li><p><a class="reference external" href="https://scipy.github.io/devdocs/building/understanding_meson.html">scipy Meson doc</a> gives
+more background about how Meson works behind the scenes</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  <div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item">
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+                </footer>
+              
+              
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#productivity-and-sanity-preserving-tips">Productivity and sanity-preserving tips</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#folding-and-unfolding-outdated-diffs-on-pull-requests">Folding and unfolding outdated diffs on pull requests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-out-pull-requests-as-remote-tracking-branches">Checking out pull requests as remote-tracking branches</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#display-code-coverage-in-pull-requests">Display code coverage in pull requests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#useful-pytest-aliases-and-flags">Useful pytest aliases and flags</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-replies-for-reviewing">Standard replies for reviewing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-ci-issues">Debugging CI issues</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-a-lock-file-to-get-an-environment-close-to-the-ci">Using a lock-file to get an environment close to the CI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-memory-errors-in-cython-with-valgrind">Debugging memory errors in Cython with valgrind</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-and-testing-for-the-arm64-platform-on-a-x86-64-machine">Building and testing for the ARM64 platform on a x86_64 machine</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-meson-build-backend">The Meson Build Backend</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developers/tips.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2007 - 2025, scikit-learn developers (BSD License).
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<!-- data-theme below is forced to be "light" but should be changed if we use pydata-theme-sphinx in the future -->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" data-content_root="../../" data-theme="light"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" data-content_root="../../" data-theme="light"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Overview of multiclass training meta-estimators" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://scikit-learn/stable/auto_examples/multiclass/plot_multiclass_overview.html" />
+<meta property="og:site_name" content="scikit-learn" />
+<meta property="og:description" content="In this example, we discuss the problem of classification when the target variable is composed of more than two classes. This is called multiclass classification. In scikit-learn, all estimators su..." />
+<meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" />
+<meta property="og:image:alt" content="scikit-learn" />
+<meta name="description" content="In this example, we discuss the problem of classification when the target variable is composed of more than two classes. This is called multiclass classification. In scikit-learn, all estimators su..." />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Overview of multiclass training meta-estimators &mdash; scikit-learn 1.4.2 documentation</title>
+  
+  <link rel="canonical" href="https://scikit-learn.org/stable/auto_examples/multiclass/plot_multiclass_overview.html" />
+
+  
+  <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  <link rel="stylesheet" href="../../_static/css/vendor/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+  <link rel="stylesheet" href="../../https://fonts.googleapis.com/css?family=Vibur" type="text/css" />
+  <link rel="stylesheet" href="../../_static/jupyterlite_sphinx.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-binder.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-dataframe.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sg_gallery-rendered-html.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+<script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+<script src="../../_static/js/vendor/jquery-3.6.3.slim.min.js"></script>
+<script src="../../_static/js/details-permalink.js"></script> 
+</head>
+<body>
+
+
+
+
+
+
+<nav id="navbar" class="sk-docs-navbar navbar navbar-expand-md navbar-light bg-light py-0">
+  <div class="container-fluid sk-docs-container px-0">
+      <a class="navbar-brand py-0" href="../../index.html">
+        <img
+          class="sk-brand-img"
+          src="../../_static/scikit-learn-logo-small.png"
+          alt="logo"/>
+      </a>
+    <button
+      id="sk-navbar-toggler"
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="sk-navbar-collapse collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../install.html">Install</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../user_guide.html">User Guide</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../../modules/classes.html">API</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" href="../index.html">Examples</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link" target="_blank" rel="noopener noreferrer" href="https://blog.scikit-learn.org/">Community</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../getting_started.html" >Getting Started</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../tutorial/index.html" >Tutorial</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../whats_new/v1.4.html" >What's new</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../glossary.html" >Glossary</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="https://scikit-learn.org/dev/developers/index.html" target="_blank" rel="noopener noreferrer">Development</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../faq.html" >FAQ</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../support.html" >Support</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../related_projects.html" >Related packages</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../roadmap.html" >Roadmap</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../governance.html" >Governance</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="../../about.html" >About us</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="https://github.com/scikit-learn/scikit-learn" >GitHub</a>
+        </li>
+        <li class="nav-item">
+          <a class="sk-nav-link nav-link nav-more-item-mobile-items" href="https://scikit-learn.org/dev/versions.html" >Other Versions and Download</a>
+        </li>
+        <li class="nav-item dropdown nav-more-item-dropdown">
+          <a class="sk-nav-link nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../getting_started.html" >Getting Started</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../tutorial/index.html" >Tutorial</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../whats_new/v1.4.html" >What's new</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../glossary.html" >Glossary</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://scikit-learn.org/dev/developers/index.html" target="_blank" rel="noopener noreferrer">Development</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../faq.html" >FAQ</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../support.html" >Support</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../related_projects.html" >Related packages</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../roadmap.html" >Roadmap</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../governance.html" >Governance</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="../../about.html" >About us</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://github.com/scikit-learn/scikit-learn" >GitHub</a>
+              <a class="sk-nav-dropdown-item dropdown-item" href="https://scikit-learn.org/dev/versions.html" >Other Versions and Download</a>
+          </div>
+        </li>
+      </ul>
+      <div id="searchbox" role="search">
+          <div class="searchformwrapper">
+          <form class="search" action="../../search.html" method="get">
+            <input class="sk-search-text-input" type="text" name="q" aria-labelledby="searchlabel" />
+            <input class="sk-search-text-btn" type="submit" value="Go" />
+          </form>
+          </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="d-flex" id="sk-doc-wrapper">
+    <input type="checkbox" name="sk-toggle-checkbox" id="sk-toggle-checkbox">
+    <label id="sk-sidemenu-toggle" class="sk-btn-toggle-toc btn sk-btn-primary" for="sk-toggle-checkbox">Toggle Menu</label>
+    <div id="sk-sidebar-wrapper" class="border-right">
+      <div class="sk-sidebar-toc-wrapper">
+        <div class="btn-group w-100 mb-2" role="group" aria-label="rellinks">
+            <a href="index.html" role="button" class="btn sk-btn-rellink py-1" sk-rellink-tooltip="Multiclass methods">Prev</a><a href="index.html" role="button" class="btn sk-btn-rellink py-1" sk-rellink-tooltip="Multiclass methods">Up</a>
+            <a href="../multioutput/index.html" role="button" class="btn sk-btn-rellink py-1" sk-rellink-tooltip="Multioutput methods">Next</a>
+        </div>
+        <div class="alert alert-danger p-1 mb-2" role="alert">
+          <p class="text-center mb-0">
+          <strong>scikit-learn 1.4.2</strong><br/>
+          <a href="https://scikit-learn.org/dev/versions.html">Other versions</a>
+          </p>
+        </div>
+        <div class="alert alert-warning p-1 mb-2" role="alert">
+          <p class="text-center mb-0">
+            Please <a class="font-weight-bold" href="../../about.html#citing-scikit-learn"><string>cite us</string></a> if you use the software.
+          </p>
+        </div>
+            <div class="sk-sidebar-toc">
+              <ul>
+<li><a class="reference internal" href="#">Overview of multiclass training meta-estimators</a><ul>
+<li><a class="reference internal" href="#the-yeast-uci-dataset">The Yeast UCI dataset</a></li>
+<li><a class="reference internal" href="#strategies-comparison">Strategies comparison</a></li>
+<li><a class="reference internal" href="#the-importance-of-hyperparameters-search">The importance of hyperparameters search</a></li>
+<li><a class="reference internal" href="#conclusion">Conclusion</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+      </div>
+    </div>
+    <div id="sk-page-content-wrapper">
+      <div class="sk-page-content container-fluid body px-md-3" role="main">
+        
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-multiclass-plot-multiclass-overview-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code or to run this example in your browser via JupyterLite or Binder</p>
+</div>
+<section class="sphx-glr-example-title" id="overview-of-multiclass-training-meta-estimators">
+<span id="sphx-glr-auto-examples-multiclass-plot-multiclass-overview-py"></span><h1>Overview of multiclass training meta-estimators<a class="headerlink" href="#overview-of-multiclass-training-meta-estimators" title="Link to this heading">¶</a></h1>
+<p>In this example, we discuss the problem of classification when the target
+variable is composed of more than two classes. This is called multiclass
+classification.</p>
+<p>In scikit-learn, all estimators support multiclass classification out of the
+box: the most sensible strategy was implemented for the end-user. The
+<a class="reference internal" href="../../modules/classes.html#module-sklearn.multiclass" title="sklearn.multiclass"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.multiclass</span></code></a> module implements various strategies that one can use
+for experimenting or developing third-party estimators that only support binary
+classification.</p>
+<p><a class="reference internal" href="../../modules/classes.html#module-sklearn.multiclass" title="sklearn.multiclass"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.multiclass</span></code></a> includes OvO/OvR strategies used to train a
+multiclass classifier by fitting a set of binary classifiers (the
+<a class="reference internal" href="../../modules/generated/sklearn.multiclass.OneVsOneClassifier.html#sklearn.multiclass.OneVsOneClassifier" title="sklearn.multiclass.OneVsOneClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneVsOneClassifier</span></code></a> and
+<a class="reference internal" href="../../modules/generated/sklearn.multiclass.OneVsRestClassifier.html#sklearn.multiclass.OneVsRestClassifier" title="sklearn.multiclass.OneVsRestClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneVsRestClassifier</span></code></a> meta-estimators). This example
+will review them.</p>
+<section id="the-yeast-uci-dataset">
+<h2>The Yeast UCI dataset<a class="headerlink" href="#the-yeast-uci-dataset" title="Link to this heading">¶</a></h2>
+<p>In this example, we use a UCI dataset <a class="footnote-reference brackets" href="#id5" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, generally referred as the Yeast
+dataset. We use the <a class="reference internal" href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.datasets.fetch_openml</span></code></a> function to load
+the dataset from OpenML.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="mi">181</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To know the type of data science problem we are dealing with, we can check
+the target for which we want to build a predictive model.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>class_protein_localization
+CYT    463
+ERL      5
+EXC     35
+ME1     44
+ME2     51
+ME3    163
+MIT    244
+NUC    429
+POX     20
+VAC     30
+Name: count, dtype: int64
+</pre></div>
+</div>
+<p>We see that the target is discrete and composed of 10 classes. We therefore
+deal with a multiclass classification problem.</p>
+</section>
+<section id="strategies-comparison">
+<h2>Strategies comparison<a class="headerlink" href="#strategies-comparison" title="Link to this heading">¶</a></h2>
+<p>In the following experiment, we use a
+<a class="reference internal" href="../../modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeClassifier</span></code></a> and a
+<a class="reference internal" href="../../modules/generated/sklearn.model_selection.RepeatedStratifiedKFold.html#sklearn.model_selection.RepeatedStratifiedKFold" title="sklearn.model_selection.RepeatedStratifiedKFold"><code class="xref py py-class docutils literal notranslate"><span class="pre">RepeatedStratifiedKFold</span></code></a> cross-validation
+with 3 splits and 5 repetitions.</p>
+<p>We compare the following strategies:</p>
+<ul class="simple">
+<li><p>:class:~sklearn.tree.DecisionTreeClassifier can handle multiclass
+classification without needing any special adjustments. It works by breaking
+down the training data into smaller subsets and focusing on the most common
+class in each subset. By repeating this process, the model can accurately
+classify input data into multiple different classes.</p></li>
+<li><p><a class="reference internal" href="../../modules/generated/sklearn.multiclass.OneVsOneClassifier.html#sklearn.multiclass.OneVsOneClassifier" title="sklearn.multiclass.OneVsOneClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneVsOneClassifier</span></code></a> trains a set of binary
+classifiers where each classifier is trained to distinguish between
+two classes.</p></li>
+<li><p><a class="reference internal" href="../../modules/generated/sklearn.multiclass.OneVsRestClassifier.html#sklearn.multiclass.OneVsRestClassifier" title="sklearn.multiclass.OneVsRestClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">OneVsRestClassifier</span></code></a>: trains a set of binary
+classifiers where each classifier is trained to distinguish between
+one class and the rest of the classes.</p></li>
+<li><p><a class="reference internal" href="../../modules/generated/sklearn.multiclass.OutputCodeClassifier.html#sklearn.multiclass.OutputCodeClassifier" title="sklearn.multiclass.OutputCodeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">OutputCodeClassifier</span></code></a>: trains a set of binary
+classifiers where each classifier is trained to distinguish between
+a set of classes from the rest of the classes. The set of classes is
+defined by a codebook, which is randomly generated in scikit-learn. This
+method exposes a parameter <code class="docutils literal notranslate"><span class="pre">code_size</span></code> to control the size of the codebook.
+We set it above one since we are not interested in compressing the class
+representation.</p></li>
+</ul>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.RepeatedStratifiedKFold.html#sklearn.model_selection.RepeatedStratifiedKFold" title="sklearn.model_selection.RepeatedStratifiedKFold" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RepeatedStratifiedKFold</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a>
+<span class="kn">from</span> <span class="nn">sklearn.multiclass</span> <span class="kn">import</span> <span class="p">(</span>
+    <a href="../../modules/generated/sklearn.multiclass.OneVsOneClassifier.html#sklearn.multiclass.OneVsOneClassifier" title="sklearn.multiclass.OneVsOneClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneVsOneClassifier</span></a><span class="p">,</span>
+    <a href="../../modules/generated/sklearn.multiclass.OneVsRestClassifier.html#sklearn.multiclass.OneVsRestClassifier" title="sklearn.multiclass.OneVsRestClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneVsRestClassifier</span></a><span class="p">,</span>
+    <a href="../../modules/generated/sklearn.multiclass.OutputCodeClassifier.html#sklearn.multiclass.OutputCodeClassifier" title="sklearn.multiclass.OutputCodeClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OutputCodeClassifier</span></a><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <a href="../../modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier" class="sphx-glr-backref-module-sklearn-tree sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DecisionTreeClassifier</span></a>
+
+<span class="n">cv</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.RepeatedStratifiedKFold.html#sklearn.model_selection.RepeatedStratifiedKFold" title="sklearn.model_selection.RepeatedStratifiedKFold" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RepeatedStratifiedKFold</span></a><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_repeats</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier" class="sphx-glr-backref-module-sklearn-tree sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DecisionTreeClassifier</span></a><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ovo_tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.multiclass.OneVsOneClassifier.html#sklearn.multiclass.OneVsOneClassifier" title="sklearn.multiclass.OneVsOneClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneVsOneClassifier</span></a><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+<span class="n">ovr_tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.multiclass.OneVsRestClassifier.html#sklearn.multiclass.OneVsRestClassifier" title="sklearn.multiclass.OneVsRestClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneVsRestClassifier</span></a><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+<span class="n">ecoc</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.multiclass.OutputCodeClassifier.html#sklearn.multiclass.OutputCodeClassifier" title="sklearn.multiclass.OutputCodeClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OutputCodeClassifier</span></a><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">code_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">cv_results_tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv_results_ovo</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">ovo_tree</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv_results_ovr</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">ovr_tree</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv_results_ecoc</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">ecoc</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can now compare the statistical performance of the different strategies.
+We plot the score distribution of the different strategies.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">scores</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;DecisionTreeClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_tree</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;OneVsOneClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_ovo</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;OneVsRestClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_ovr</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;OutputCodeClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_ecoc</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">kde</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Accuracy score&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+    <span class="s2">&quot;Density of the accuracy scores for the different multiclass strategies&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_plot_multiclass_overview_001.png" srcset="../../_images/sphx_glr_plot_multiclass_overview_001.png" alt="Density of the accuracy scores for the different multiclass strategies" class = "sphx-glr-single-img"/><p>At a first glance, we can see that the built-in strategy of the decision
+tree classifier is working quite well. One-vs-one and the error-correcting
+output code strategies are working even better. However, the
+one-vs-rest strategy is not working as well as the other strategies.</p>
+<p>Indeed, these results reproduce something reported in the literature
+as in <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. However, the story is not as simple as it seems.</p>
+</section>
+<section id="the-importance-of-hyperparameters-search">
+<h2>The importance of hyperparameters search<a class="headerlink" href="#the-importance-of-hyperparameters-search" title="Link to this heading">¶</a></h2>
+<p>It was later shown in <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> that the multiclass strategies would show similar
+scores if the hyperparameters of the base classifiers are first optimized.</p>
+<p>Here we try to reproduce such result by at least optimizing the depth of the
+base decision tree.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a>
+
+<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">]}</span>
+<span class="n">tree_optimized</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ovo_tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.multiclass.OneVsOneClassifier.html#sklearn.multiclass.OneVsOneClassifier" title="sklearn.multiclass.OneVsOneClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneVsOneClassifier</span></a><span class="p">(</span><span class="n">tree_optimized</span><span class="p">)</span>
+<span class="n">ovr_tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.multiclass.OneVsRestClassifier.html#sklearn.multiclass.OneVsRestClassifier" title="sklearn.multiclass.OneVsRestClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneVsRestClassifier</span></a><span class="p">(</span><span class="n">tree_optimized</span><span class="p">)</span>
+<span class="n">ecoc</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.multiclass.OutputCodeClassifier.html#sklearn.multiclass.OutputCodeClassifier" title="sklearn.multiclass.OutputCodeClassifier" class="sphx-glr-backref-module-sklearn-multiclass sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OutputCodeClassifier</span></a><span class="p">(</span><span class="n">tree_optimized</span><span class="p">,</span> <span class="n">code_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">cv_results_tree</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">tree_optimized</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv_results_ovo</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">ovo_tree</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv_results_ovr</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">ovr_tree</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">cv_results_ecoc</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_validate</span></a><span class="p">(</span><span class="n">ecoc</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">scores</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;DecisionTreeClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_tree</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;OneVsOneClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_ovo</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;OneVsRestClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_ovr</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;OutputCodeClassifier&quot;</span><span class="p">:</span> <span class="n">cv_results_ecoc</span><span class="p">[</span><span class="s2">&quot;test_score&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">kde</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Accuracy score&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">])</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+    <span class="s2">&quot;Density of the accuracy scores for the different multiclass strategies&quot;</span>
+<span class="p">)</span>
+
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../../_images/sphx_glr_plot_multiclass_overview_002.png" srcset="../../_images/sphx_glr_plot_multiclass_overview_002.png" alt="Density of the accuracy scores for the different multiclass strategies" class = "sphx-glr-single-img"/><p>We can see that once the hyperparameters are optimized, all multiclass
+strategies have similar performance as discussed in <a class="footnote-reference brackets" href="#id7" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<p>We can get some intuition behind those results.</p>
+<p>First, the reason for which one-vs-one and error-correcting output code are
+outperforming the tree when the hyperparameters are not optimized relies on
+fact that they ensemble a larger number of classifiers. The ensembling
+improves the generalization performance. This is a bit similar why a bagging
+classifier generally performs better than a single decision tree if no care
+is taken to optimize the hyperparameters.</p>
+<p>Then, we see the importance of optimizing the hyperparameters. Indeed, it
+should be regularly explored when developing predictive models even if
+techniques such as ensembling help at reducing this impact.</p>
+<p>Finally, it is important to recall that the estimators in scikit-learn
+are developed with a specific strategy to handle multiclass classification
+out of the box. So for these estimators, it means that there is no need to
+use different strategies. These strategies are mainly useful for third-party
+estimators supporting only binary classification. In all cases, we also show
+that the hyperparameters should be optimized.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/Yeast">https://archive.ics.uci.edu/ml/datasets/Yeast</a></p>
+</aside>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://www.jmlr.org/papers/volume1/allwein00a/allwein00a.pdf">“Reducing multiclass to binary: A unifying approach for margin classifiers.”
+Allwein, Erin L., Robert E. Schapire, and Yoram Singer.
+Journal of machine learning research 1
+Dec (2000): 113-141.</a>.</p>
+</aside>
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id3">1</a>,<a role="doc-backlink" href="#id4">2</a>)</span>
+<p><a class="reference external" href="https://www.jmlr.org/papers/volume5/rifkin04a/rifkin04a.pdf">“In defense of one-vs-all classification.”
+Journal of Machine Learning Research 5
+Jan (2004): 101-141.</a>.</p>
+</aside>
+</aside>
+</div></blockquote>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 18.937 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-multiclass-plot-multiclass-overview-py">
+<div class="binder-badge docutils container">
+<a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/1.4.X?urlpath=lab/tree/notebooks/auto_examples/multiclass/plot_multiclass_overview.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo23.svg" width="150px" /></a>
+</div>
+<div class="lite-badge docutils container">
+<a class="reference external image-reference" href="../../lite/lab/?path=auto_examples/multiclass/plot_multiclass_overview.ipynb"><img alt="Launch JupyterLite" src="../../_images/jupyterlite_badge_logo23.svg" width="150px" /></a>
+</div>
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/917c94a6c4500bbf4185faeba5504398/plot_multiclass_overview.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_multiclass_overview.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../../_downloads/6ab77a144e3d99c2ecfc30e7fb84ed8e/plot_multiclass_overview.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_multiclass_overview.py</span></code></a></p>
+</div>
+</div>
+<p class="rubric">Related examples</p>
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This example compares non-nested and nested cross-validation strategies on a classifier of the ..."><img alt="" src="../../_images/sphx_glr_plot_nested_cross_validation_iris_thumb.png" />
+<p><a class="reference internal" href="../model_selection/plot_nested_cross_validation_iris.html#sphx-glr-auto-examples-model-selection-plot-nested-cross-validation-iris-py"><span class="std std-ref">Nested versus non-nested cross-validation</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Nested versus non-nested cross-validation</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="The most naive strategy to solve such a task is to independently train a binary classifier on e..."><img alt="" src="../../_images/sphx_glr_plot_classifier_chain_yeast_thumb.png" />
+<p><a class="reference internal" href="../multioutput/plot_classifier_chain_yeast.html#sphx-glr-auto-examples-multioutput-plot-classifier-chain-yeast-py"><span class="std std-ref">Multilabel classification using a classifier chain</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Multilabel classification using a classifier chain</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 0.22, which comes with many bug fixes an..."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_0_22_0_thumb.png" />
+<p><a class="reference internal" href="../release_highlights/plot_release_highlights_0_22_0.html#sphx-glr-auto-examples-release-highlights-plot-release-highlights-0-22-0-py"><span class="std std-ref">Release Highlights for scikit-learn 0.22</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Release Highlights for scikit-learn 0.22</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="In this example, we will compare the training times and prediction performances of HistGradient..."><img alt="" src="../../_images/sphx_glr_plot_gradient_boosting_categorical_thumb.png" />
+<p><a class="reference internal" href="../ensemble/plot_gradient_boosting_categorical.html#sphx-glr-auto-examples-ensemble-plot-gradient-boosting-categorical-py"><span class="std std-ref">Categorical Feature Support in Gradient Boosting</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Categorical Feature Support in Gradient Boosting</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="This example illustrates the effect of the parameters gamma and C of the Radial Basis Function ..."><img alt="" src="../../_images/sphx_glr_plot_rbf_parameters_thumb.png" />
+<p><a class="reference internal" href="../svm/plot_rbf_parameters.html#sphx-glr-auto-examples-svm-plot-rbf-parameters-py"><span class="std std-ref">RBF SVM parameters</span></a></p>
+  <div class="sphx-glr-thumbnail-title">RBF SVM parameters</div>
+</div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+      </div>
+    <div class="container">
+      <footer class="sk-content-footer">
+            &copy; 2007 - 2024, scikit-learn developers (BSD License).
+          <a href="../../_sources/auto_examples/multiclass/plot_multiclass_overview.rst.txt" rel="nofollow">Show this page source</a>
+      </footer>
+    </div>
+  </div>
+</div>
+<script src="../../_static/js/vendor/bootstrap.min.js"></script>
+
+<script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-22606712-2', 'auto');
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script defer data-domain="scikit-learn.org" src="https://views.scientific-python.org/js/script.js">
+</script>
+
+
+<script src="../../_static/clipboard.min.js"></script>
+<script src="../../_static/copybutton.js"></script>
+
+<script>
+$(document).ready(function() {
+    /* Add a [>>>] button on the top-right corner of code samples to hide
+     * the >>> and ... prompts and the output and thus make the code
+     * copyable. */
+    var div = $('.highlight-python .highlight,' +
+                '.highlight-python3 .highlight,' +
+                '.highlight-pycon .highlight,' +
+		'.highlight-default .highlight')
+    var pre = div.find('pre');
+
+    // get the styles from the current theme
+    pre.parent().parent().css('position', 'relative');
+
+    // create and add the button to all the code blocks that contain >>>
+    div.each(function(index) {
+        var jthis = $(this);
+        // tracebacks (.gt) contain bare text elements that need to be
+        // wrapped in a span to work with .nextUntil() (see later)
+        jthis.find('pre:has(.gt)').contents().filter(function() {
+            return ((this.nodeType == 3) && (this.data.trim().length > 0));
+        }).wrap('<span>');
+    });
+
+	/*** Add permalink buttons next to glossary terms ***/
+	$('dl.glossary > dt[id]').append(function() {
+		return ('<a class="headerlink" href="#' +
+			    this.getAttribute('id') +
+			    '" title="Permalink to this term">¶</a>');
+	});
+});
+
+</script>
+    
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    
+    <script src="https://scikit-learn.org/versionwarning.js"></script>
+</body>
+</html>
