@@ -311,7 +311,7 @@ To make the meta-estimator a router, you only need to:
 - use `process_routing` inside its methods (`fit`, `predict`, ...) to  properly
   route the metadata from the meta-estimator to its sub-estimator.
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-216
+.. GENERATED FROM PYTHON SOURCE LINES 177-218
 
 .. code-block:: Python
 
@@ -340,18 +340,20 @@ To make the meta-estimator a router, you only need to:
             routed_params = process_routing(self, "fit", **fit_params)
             # A sub-estimator is fitted and its classes are attributed to the
             # meta-estimator. Since we call the sub-estimator's fit method, we pass the
-            # the metadata stored in `routed_params.estimator.fit`.
-            self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+            # the metadata stored in `routed_params["estimator"]["fit"]`.
+            self.estimator_ = clone(self.estimator).fit(
+                X, y, **routed_params["estimator"]["fit"]
+            )
             self.classes_ = self.estimator_.classes_
             return self
 
         def predict(self, X, **predict_params):
             check_is_fitted(self)
-            # As in `fit`, we get information on all the metadata that should be routed and
-            # pass the metadata that is stored in `routed_params.estimator.predict` to the
-            # sub-estimator's predict method.
+            # As in `fit`, we get information on all the metadata that should be routed
+            # and pass the metadata that is stored in
+            # `routed_params["estimator"]["predict"]` to the sub-estimator's predict method.
             routed_params = process_routing(self, "predict", **predict_params)
-            return self.estimator_.predict(X, **routed_params.estimator.predict)
+            return self.estimator_.predict(X, **routed_params["estimator"]["predict"])
 
 
 
@@ -361,23 +363,24 @@ To make the meta-estimator a router, you only need to:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 217-225
+.. GENERATED FROM PYTHON SOURCE LINES 219-228
 
 Let's break down different parts of the above code.
 
 In each method, we use the ``process_routing`` function to construct a
 :class:`~utils.Bunch` of the form ``{"object_name": {"method_name": {"metadata":
 value}}}`` to pass to the underlying estimator's method. The ``object_name``
-(``estimator`` in ``routed_params.estimator.fit``) is the same as the `estimator`
-added in the ``get_metadata_routing``. ``process_routing`` also validates the input
+(``estimator`` in ``routed_params["estimator"]["fit"]``) is the same as the
+`estimator` added in the ``get_metadata_routing``. ``process_routing`` also validates
+the input
 metadata: it makes sure all given metadata are requested to avoid silent bugs.
 
-.. GENERATED FROM PYTHON SOURCE LINES 227-229
+.. GENERATED FROM PYTHON SOURCE LINES 230-232
 
 Next, we illustrate the different behaviors and notably the type of errors
 raised.
 
-.. GENERATED FROM PYTHON SOURCE LINES 229-235
+.. GENERATED FROM PYTHON SOURCE LINES 232-238
 
 .. code-block:: Python
 
@@ -1338,14 +1341,14 @@ raised.
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 236-240
+.. GENERATED FROM PYTHON SOURCE LINES 239-243
 
 Note that the above example is calling our utility function
 `check_metadata()` via the `ExampleClassifier`. It checks that
 ``sample_weight`` is correctly passed to it. If it is not, like in the
 following example, it would print that ``sample_weight`` is ``None``:
 
-.. GENERATED FROM PYTHON SOURCE LINES 240-243
+.. GENERATED FROM PYTHON SOURCE LINES 243-246
 
 .. code-block:: Python
 
@@ -2303,11 +2306,11 @@ following example, it would print that ``sample_weight`` is ``None``:
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 244-245
+.. GENERATED FROM PYTHON SOURCE LINES 247-248
 
 If we pass an unknown metadata, an error is raised:
 
-.. GENERATED FROM PYTHON SOURCE LINES 245-250
+.. GENERATED FROM PYTHON SOURCE LINES 248-253
 
 .. code-block:: Python
 
@@ -2329,11 +2332,11 @@ If we pass an unknown metadata, an error is raised:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 251-252
+.. GENERATED FROM PYTHON SOURCE LINES 254-255
 
 And if we pass a metadata which is not explicitly requested:
 
-.. GENERATED FROM PYTHON SOURCE LINES 252-257
+.. GENERATED FROM PYTHON SOURCE LINES 255-260
 
 .. code-block:: Python
 
@@ -2356,11 +2359,11 @@ And if we pass a metadata which is not explicitly requested:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 258-259
+.. GENERATED FROM PYTHON SOURCE LINES 261-262
 
 Also, if we explicitly set it as not requested, but it is provided:
 
-.. GENERATED FROM PYTHON SOURCE LINES 259-269
+.. GENERATED FROM PYTHON SOURCE LINES 262-272
 
 .. code-block:: Python
 
@@ -2388,7 +2391,7 @@ Also, if we explicitly set it as not requested, but it is provided:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 270-280
+.. GENERATED FROM PYTHON SOURCE LINES 273-283
 
 Another concept to introduce is **aliased metadata**. This is when an
 estimator requests a metadata with a different variable name than the default
@@ -2401,7 +2404,7 @@ meta-estimator, but the meta-estimator understands that
 ``aliased_sample_weight`` is an alias for ``sample_weight``, and passes it as
 ``sample_weight`` to the underlying estimator:
 
-.. GENERATED FROM PYTHON SOURCE LINES 280-285
+.. GENERATED FROM PYTHON SOURCE LINES 283-288
 
 .. code-block:: Python
 
@@ -3361,12 +3364,12 @@ meta-estimator, but the meta-estimator understands that
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 286-288
+.. GENERATED FROM PYTHON SOURCE LINES 289-291
 
 Passing ``sample_weight`` here will fail since it is requested with an
 alias and ``sample_weight`` with that name is not requested:
 
-.. GENERATED FROM PYTHON SOURCE LINES 288-293
+.. GENERATED FROM PYTHON SOURCE LINES 291-296
 
 .. code-block:: Python
 
@@ -3388,7 +3391,7 @@ alias and ``sample_weight`` with that name is not requested:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 294-303
+.. GENERATED FROM PYTHON SOURCE LINES 297-306
 
 This leads us to the ``get_metadata_routing``. The way routing works in
 scikit-learn is that consumers request what they need, and routers pass that
@@ -3400,7 +3403,7 @@ the complete tree of requested metadata by all nested objects and their
 corresponding method routings, i.e. which method of a sub-estimator is used
 in which method of a meta-estimator:
 
-.. GENERATED FROM PYTHON SOURCE LINES 303-306
+.. GENERATED FROM PYTHON SOURCE LINES 306-309
 
 .. code-block:: Python
 
@@ -3425,7 +3428,7 @@ in which method of a meta-estimator:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 307-315
+.. GENERATED FROM PYTHON SOURCE LINES 310-318
 
 As you can see, the only metadata requested for method ``fit`` is
 ``"sample_weight"`` with ``"aliased_sample_weight"`` as the alias. The
@@ -3436,7 +3439,7 @@ the routing object which would create the output we need for our
 In order to understand how aliases work in meta-estimators, imagine our
 meta-estimator inside another one:
 
-.. GENERATED FROM PYTHON SOURCE LINES 315-320
+.. GENERATED FROM PYTHON SOURCE LINES 318-323
 
 .. code-block:: Python
 
@@ -3458,7 +3461,7 @@ meta-estimator inside another one:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 321-335
+.. GENERATED FROM PYTHON SOURCE LINES 324-338
 
 In the above example, this is how the ``fit`` method of `meta_meta_est`
 will call their sub-estimator's ``fit`` methods::
@@ -3475,7 +3478,7 @@ will call their sub-estimator's ``fit`` methods::
             self.estimator_.fit(X, y, sample_weight=aliased_sample_weight):
                 ...
 
-.. GENERATED FROM PYTHON SOURCE LINES 337-344
+.. GENERATED FROM PYTHON SOURCE LINES 340-347
 
 Consuming and routing Meta-Estimator
 ------------------------------------
@@ -3485,7 +3488,7 @@ in its own methods. This meta-estimator is a consumer and a router at the
 same time. Implementing one is very similar to what we had before, but with a
 few tweaks.
 
-.. GENERATED FROM PYTHON SOURCE LINES 344-389
+.. GENERATED FROM PYTHON SOURCE LINES 347-394
 
 .. code-block:: Python
 
@@ -3524,14 +3527,16 @@ few tweaks.
             if sample_weight is not None:
                 fit_params["sample_weight"] = sample_weight
             routed_params = process_routing(self, "fit", **fit_params)
-            self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+            self.estimator_ = clone(self.estimator).fit(
+                X, y, **routed_params["estimator"]["fit"]
+            )
             self.classes_ = self.estimator_.classes_
             return self
 
         def predict(self, X, **predict_params):
             check_is_fitted(self)
             routed_params = process_routing(self, "predict", **predict_params)
-            return self.estimator_.predict(X, **routed_params.estimator.predict)
+            return self.estimator_.predict(X, **routed_params["estimator"]["predict"])
 
 
 
@@ -3541,7 +3546,7 @@ few tweaks.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 390-402
+.. GENERATED FROM PYTHON SOURCE LINES 395-407
 
 The key parts where the above meta-estimator differs from our previous
 meta-estimator is accepting ``sample_weight`` explicitly in ``fit`` and
@@ -3556,11 +3561,11 @@ In ``get_metadata_routing``, we add ``self`` to the routing using
 ``$self_request`` key to the routing info as illustrated below. Now let's
 look at some examples:
 
-.. GENERATED FROM PYTHON SOURCE LINES 404-405
+.. GENERATED FROM PYTHON SOURCE LINES 409-410
 
 - No metadata requested
 
-.. GENERATED FROM PYTHON SOURCE LINES 405-409
+.. GENERATED FROM PYTHON SOURCE LINES 410-414
 
 .. code-block:: Python
 
@@ -3588,11 +3593,11 @@ look at some examples:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 410-411
+.. GENERATED FROM PYTHON SOURCE LINES 415-416
 
 - ``sample_weight`` requested by sub-estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 411-416
+.. GENERATED FROM PYTHON SOURCE LINES 416-421
 
 .. code-block:: Python
 
@@ -3621,11 +3626,11 @@ look at some examples:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 417-418
+.. GENERATED FROM PYTHON SOURCE LINES 422-423
 
 - ``sample_weight`` requested by meta-estimator
 
-.. GENERATED FROM PYTHON SOURCE LINES 418-423
+.. GENERATED FROM PYTHON SOURCE LINES 423-428
 
 .. code-block:: Python
 
@@ -3654,14 +3659,14 @@ look at some examples:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 424-428
+.. GENERATED FROM PYTHON SOURCE LINES 429-433
 
 Note the difference in the requested metadata representations above.
 
 - We can also alias the metadata to pass different values to the fit methods
   of the meta- and the sub-estimator:
 
-.. GENERATED FROM PYTHON SOURCE LINES 428-434
+.. GENERATED FROM PYTHON SOURCE LINES 433-439
 
 .. code-block:: Python
 
@@ -3691,13 +3696,13 @@ Note the difference in the requested metadata representations above.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 435-438
+.. GENERATED FROM PYTHON SOURCE LINES 440-443
 
 However, ``fit`` of the meta-estimator only needs the alias for the
 sub-estimator and addresses their own sample weight as `sample_weight`, since
 it doesn't validate and route its own required metadata:
 
-.. GENERATED FROM PYTHON SOURCE LINES 438-440
+.. GENERATED FROM PYTHON SOURCE LINES 443-445
 
 .. code-block:: Python
 
@@ -4655,14 +4660,14 @@ it doesn't validate and route its own required metadata:
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 441-445
+.. GENERATED FROM PYTHON SOURCE LINES 446-450
 
 - Alias only on the sub-estimator:
 
 This is useful when we don't want the meta-estimator to use the metadata, but
 the sub-estimator should.
 
-.. GENERATED FROM PYTHON SOURCE LINES 445-449
+.. GENERATED FROM PYTHON SOURCE LINES 450-454
 
 .. code-block:: Python
 
@@ -4690,13 +4695,13 @@ the sub-estimator should.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 450-453
+.. GENERATED FROM PYTHON SOURCE LINES 455-458
 
 The meta-estimator cannot use `aliased_sample_weight`, because it expects
 it passed as `sample_weight`. This would apply even if
 `set_fit_request(sample_weight=True)` was set on it.
 
-.. GENERATED FROM PYTHON SOURCE LINES 455-464
+.. GENERATED FROM PYTHON SOURCE LINES 460-469
 
 Simple Pipeline
 ---------------
@@ -4708,7 +4713,7 @@ transformed data. Upon `predict`, it applies the transformer's `transform`
 before predicting with the classifier's `predict` method on the transformed
 new data.
 
-.. GENERATED FROM PYTHON SOURCE LINES 464-521
+.. GENERATED FROM PYTHON SOURCE LINES 469-526
 
 .. code-block:: Python
 
@@ -4747,14 +4752,14 @@ new data.
             routed_params = process_routing(self, "fit", **fit_params)
 
             self.transformer_ = clone(self.transformer).fit(
-                X, y, **routed_params.transformer.fit
+                X, y, **routed_params["transformer"]["fit"]
             )
             X_transformed = self.transformer_.transform(
-                X, **routed_params.transformer.transform
+                X, **routed_params["transformer"]["transform"]
             )
 
             self.classifier_ = clone(self.classifier).fit(
-                X_transformed, y, **routed_params.classifier.fit
+                X_transformed, y, **routed_params["classifier"]["fit"]
             )
             return self
 
@@ -4762,10 +4767,10 @@ new data.
             routed_params = process_routing(self, "predict", **predict_params)
 
             X_transformed = self.transformer_.transform(
-                X, **routed_params.transformer.transform
+                X, **routed_params["transformer"]["transform"]
             )
             return self.classifier_.predict(
-                X_transformed, **routed_params.classifier.predict
+                X_transformed, **routed_params["classifier"]["predict"]
             )
 
 
@@ -4776,7 +4781,7 @@ new data.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 522-538
+.. GENERATED FROM PYTHON SOURCE LINES 527-543
 
 Note the usage of :class:`~utils.metadata_routing.MethodMapping` to
 declare which methods of the child estimator (callee) are used in which
@@ -4795,7 +4800,7 @@ against it.
 
 In order to test the above pipeline, let's add an example transformer.
 
-.. GENERATED FROM PYTHON SOURCE LINES 538-553
+.. GENERATED FROM PYTHON SOURCE LINES 543-558
 
 .. code-block:: Python
 
@@ -4821,7 +4826,7 @@ In order to test the above pipeline, let's add an example transformer.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 554-563
+.. GENERATED FROM PYTHON SOURCE LINES 559-568
 
 Note that in the above example, we have implemented ``fit_transform`` which
 calls ``fit`` and ``transform`` with the appropriate metadata. This is only
@@ -4833,7 +4838,7 @@ Now we can test our pipeline, and see if metadata is correctly passed around.
 This example uses our `SimplePipeline`, our `ExampleTransformer`, and our
 `RouterConsumerClassifier` which uses our `ExampleClassifier`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 563-584
+.. GENERATED FROM PYTHON SOURCE LINES 568-589
 
 .. code-block:: Python
 
@@ -4877,7 +4882,7 @@ This example uses our `SimplePipeline`, our `ExampleTransformer`, and our
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 585-592
+.. GENERATED FROM PYTHON SOURCE LINES 590-597
 
 Deprecation / Default Value Change
 ----------------------------------
@@ -4887,7 +4892,7 @@ sub-estimator, or a consumer starts consuming a metadata which it wasn't in
 an older release. In this case, a warning should be raised for a while, to
 let users know the behavior is changed from previous versions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 592-610
+.. GENERATED FROM PYTHON SOURCE LINES 597-617
 
 .. code-block:: Python
 
@@ -4899,7 +4904,9 @@ let users know the behavior is changed from previous versions.
 
         def fit(self, X, y, **fit_params):
             routed_params = process_routing(self, "fit", **fit_params)
-            self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+            self.estimator_ = clone(self.estimator).fit(
+                X, y, **routed_params["estimator"]["fit"]
+            )
 
         def get_metadata_routing(self):
             router = MetadataRouter(owner=self).add(
@@ -4916,12 +4923,12 @@ let users know the behavior is changed from previous versions.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 611-613
+.. GENERATED FROM PYTHON SOURCE LINES 618-620
 
 As explained above, this is a valid usage if `my_weights` aren't supposed
 to be passed as `sample_weight` to `MetaRegressor`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 613-618
+.. GENERATED FROM PYTHON SOURCE LINES 620-625
 
 .. code-block:: Python
 
@@ -4937,12 +4944,12 @@ to be passed as `sample_weight` to `MetaRegressor`:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 619-621
+.. GENERATED FROM PYTHON SOURCE LINES 626-628
 
 Now imagine we further develop ``MetaRegressor`` and it now also *consumes*
 ``sample_weight``:
 
-.. GENERATED FROM PYTHON SOURCE LINES 621-650
+.. GENERATED FROM PYTHON SOURCE LINES 628-659
 
 .. code-block:: Python
 
@@ -4961,7 +4968,9 @@ Now imagine we further develop ``MetaRegressor`` and it now also *consumes*
                 self, "fit", sample_weight=sample_weight, **fit_params
             )
             check_metadata(self, sample_weight=sample_weight)
-            self.estimator_ = clone(self.estimator).fit(X, y, **routed_params.estimator.fit)
+            self.estimator_ = clone(self.estimator).fit(
+                X, y, **routed_params["estimator"]["fit"]
+            )
 
         def get_metadata_routing(self):
             router = (
@@ -4982,13 +4991,13 @@ Now imagine we further develop ``MetaRegressor`` and it now also *consumes*
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 651-654
+.. GENERATED FROM PYTHON SOURCE LINES 660-663
 
 The above implementation is almost the same as ``MetaRegressor``, and
 because of the default request value defined in ``__metadata_request__fit``
 there is a warning raised when fitted.
 
-.. GENERATED FROM PYTHON SOURCE LINES 654-663
+.. GENERATED FROM PYTHON SOURCE LINES 663-672
 
 .. code-block:: Python
 
@@ -5015,12 +5024,12 @@ there is a warning raised when fitted.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 664-666
+.. GENERATED FROM PYTHON SOURCE LINES 673-675
 
 When an estimator consumes a metadata which it didn't consume before, the
 following pattern can be used to warn the users about it.
 
-.. GENERATED FROM PYTHON SOURCE LINES 666-684
+.. GENERATED FROM PYTHON SOURCE LINES 675-693
 
 .. code-block:: Python
 
@@ -5056,11 +5065,11 @@ following pattern can be used to warn the users about it.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 685-686
+.. GENERATED FROM PYTHON SOURCE LINES 694-695
 
 At the end we disable the configuration flag for metadata routing:
 
-.. GENERATED FROM PYTHON SOURCE LINES 686-689
+.. GENERATED FROM PYTHON SOURCE LINES 695-698
 
 .. code-block:: Python
 
@@ -5074,7 +5083,7 @@ At the end we disable the configuration flag for metadata routing:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 690-707
+.. GENERATED FROM PYTHON SOURCE LINES 699-716
 
 Third Party Development and scikit-learn Dependency
 ---------------------------------------------------
@@ -5097,7 +5106,7 @@ need to modify your code at all:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.046 seconds)
+   **Total running time of the script:** (0 minutes 0.053 seconds)
 
 
 .. _sphx_glr_download_auto_examples_miscellaneous_plot_metadata_routing.py:
