@@ -1248,15 +1248,11 @@ deviance divided by 2.</p>
 </section>
 <section id="missing-values-support">
 <span id="tree-missing-value-support"></span><h2><span class="section-number">1.10.8. </span>Missing Values Support<a class="headerlink" href="#missing-values-support" title="Link to this heading">#</a></h2>
-<p><a class="reference internal" href="generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeClassifier</span></code></a>, <a class="reference internal" href="generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor" title="sklearn.tree.DecisionTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeRegressor</span></code></a>
-have built-in support for missing values using <code class="docutils literal notranslate"><span class="pre">splitter='best'</span></code>, where
-the splits are determined in a greedy fashion.
+<p><a class="reference internal" href="generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeClassifier</span></code></a>, <a class="reference internal" href="generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor" title="sklearn.tree.DecisionTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeRegressor</span></code></a> and
 <a class="reference internal" href="generated/sklearn.tree.ExtraTreeClassifier.html#sklearn.tree.ExtraTreeClassifier" title="sklearn.tree.ExtraTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreeClassifier</span></code></a>, and <a class="reference internal" href="generated/sklearn.tree.ExtraTreeRegressor.html#sklearn.tree.ExtraTreeRegressor" title="sklearn.tree.ExtraTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreeRegressor</span></code></a> have built-in
-support for missing values for <code class="docutils literal notranslate"><span class="pre">splitter='random'</span></code>, where the splits
-are determined randomly. For more details on how the splitter differs on
-non-missing values, see the <a class="reference internal" href="ensemble.html#forest"><span class="std std-ref">Forest section</span></a>.</p>
+support for missing values except for sparse inputs.</p>
 <p>First we will describe how <a class="reference internal" href="generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeClassifier</span></code></a>, <a class="reference internal" href="generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor" title="sklearn.tree.DecisionTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionTreeRegressor</span></code></a>
-handle missing-values in the data.</p>
+(<code class="docutils literal notranslate"><span class="pre">splitter='best'</span></code>) handle missing-values in the data.</p>
 <p>For each potential threshold on the non-missing data, the splitter will evaluate
 the split with all the missing values going to the left node or the right node.</p>
 <p>Decisions are made as follows:</p>
@@ -1310,12 +1306,11 @@ prediction missing values are mapped to the child with the most samples:</p>
 </div>
 </li>
 </ul>
-<p><a class="reference internal" href="generated/sklearn.tree.ExtraTreeClassifier.html#sklearn.tree.ExtraTreeClassifier" title="sklearn.tree.ExtraTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreeClassifier</span></code></a>, and <a class="reference internal" href="generated/sklearn.tree.ExtraTreeRegressor.html#sklearn.tree.ExtraTreeRegressor" title="sklearn.tree.ExtraTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreeRegressor</span></code></a> handle missing values
-in a slightly different way. When splitting a node, a random threshold will be chosen
-to split the non-missing values on. Then the non-missing values will be sent to the
-left and right child based on the randomly selected threshold, while the missing
-values will also be randomly sent to the left or right child. This is repeated for
-every feature considered at each split. The best split among these is chosen.</p>
+<p><a class="reference internal" href="generated/sklearn.tree.ExtraTreeClassifier.html#sklearn.tree.ExtraTreeClassifier" title="sklearn.tree.ExtraTreeClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreeClassifier</span></code></a>, and <a class="reference internal" href="generated/sklearn.tree.ExtraTreeRegressor.html#sklearn.tree.ExtraTreeRegressor" title="sklearn.tree.ExtraTreeRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraTreeRegressor</span></code></a> (<code class="docutils literal notranslate"><span class="pre">splitter='random'</span></code>)
+handle missing values in a slightly different way. When splitting a node, a random
+threshold will be chosen to split the non-missing values on, while the missing values
+are assigned together to one randomly chosen side. This is repeated for every
+feature considered at each split. The best split among these is chosen.</p>
 <p>During prediction, the treatment of missing-values is the same as that of the
 decision tree:</p>
 <ul class="simple">
