@@ -1364,7 +1364,7 @@
 <h1>DecisionBoundaryDisplay<a class="headerlink" href="#decisionboundarydisplay" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sklearn.inspection.DecisionBoundaryDisplay">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sklearn.inspection.</span></span><span class="sig-name descname"><span class="pre">DecisionBoundaryDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">xx0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xx1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiclass_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/da47f5c03/sklearn/inspection/_plot/decision_boundary.py#L132"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.inspection.DecisionBoundaryDisplay" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sklearn.inspection.</span></span><span class="sig-name descname"><span class="pre">DecisionBoundaryDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">xx0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xx1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiclass_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deprecated'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/59335ca67/sklearn/inspection/_plot/decision_boundary.py#L151"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.inspection.DecisionBoundaryDisplay" title="Link to this definition">#</a></dt>
 <dd><p>Decisions boundary visualization.</p>
 <p>It is recommended to use
 <a class="reference internal" href="#sklearn.inspection.DecisionBoundaryDisplay.from_estimator" title="sklearn.inspection.DecisionBoundaryDisplay.from_estimator"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_estimator</span></code></a>
@@ -1397,6 +1397,33 @@ responses).</p>
 </dd>
 <dt><strong>response</strong><span class="classifier">ndarray of shape (grid_resolution, grid_resolution) or             (grid_resolution, grid_resolution, n_classes)</span></dt><dd><p>Values of the response function.</p>
 </dd>
+<dt><strong>target_colors</strong><span class="classifier">str or list of matplotlib colors, default=None</span></dt><dd><p>Specifies how to color each class when plotting all classes of
+<a class="reference internal" href="../../glossary.html#term-multiclass"><span class="xref std std-term">multiclass</span></a> problems.</p>
+<p>Possible inputs are:</p>
+<ul class="simple">
+<li><p>None: defaults to list of accessible <a class="reference external" href="https://github.com/matplotlib/matplotlib/issues/9460#issuecomment-875185352">Petroff colors</a>
+if <code class="docutils literal notranslate"><span class="pre">n_classes</span> <span class="pre">&lt;=</span> <span class="pre">10</span></code>, otherwise ‘gist_rainbow’ colormap</p></li>
+<li><p>str: name of <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.colors.Colormap</span></code></a></p></li>
+<li><p>list: list of length <code class="docutils literal notranslate"><span class="pre">n_classes</span></code> of <a class="reference external" href="https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def">matplotlib colors</a></p></li>
+</ul>
+<p>Single color (fading to white) colormaps will be generated from the colors in
+the list or colors taken from the colormap, and passed to the <code class="docutils literal notranslate"><span class="pre">cmap</span></code> parameter
+of the <code class="docutils literal notranslate"><span class="pre">plot_method</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">response_method='predict'</span></code> and <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is ignored and the class boundaries are plotted in black
+instead as the boundary lines may overlap and the colors don’t necessarily
+correspond to the classes.</p>
+<p>For <a class="reference internal" href="../../glossary.html#term-binary"><span class="xref std std-term">binary</span></a> problems, <code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is also ignored and <code class="docutils literal notranslate"><span class="pre">cmap</span></code> or
+<code class="docutils literal notranslate"><span class="pre">colors</span></code> can be passed as kwargs instead, otherwise, the default colormap
+(‘viridis’) is used.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.10: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> was renamed to <code class="docutils literal notranslate"><span class="pre">target_colors</span></code></p>
+</div>
+</dd>
+<dt><strong>xlabel</strong><span class="classifier">str, default=None</span></dt><dd><p>Default label to place on x axis.</p>
+</dd>
+<dt><strong>ylabel</strong><span class="classifier">str, default=None</span></dt><dd><p>Default label to place on y axis.</p>
+</dd>
 <dt><strong>multiclass_colors</strong><span class="classifier">str or list of matplotlib colors, default=None</span></dt><dd><p>Specifies how to color each class when plotting all classes of
 <a class="reference internal" href="../../glossary.html#term-multiclass"><span class="xref std std-term">multiclass</span></a> problems.</p>
 <p>Possible inputs are:</p>
@@ -1410,26 +1437,26 @@ if <code class="docutils literal notranslate"><span class="pre">n_classes</span>
 the list or colors taken from the colormap, and passed to the <code class="docutils literal notranslate"><span class="pre">cmap</span></code> parameter
 of the <code class="docutils literal notranslate"><span class="pre">plot_method</span></code>.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">response_method='predict'</span></code> and <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> is ignored and the class boundaries are plotted in black
+<code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is ignored and the class boundaries are plotted in black
 instead as the boundary lines may overlap and the colors don’t necessarily
 correspond to the classes.</p>
-<p>For <a class="reference internal" href="../../glossary.html#term-binary"><span class="xref std std-term">binary</span></a> problems, <code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> is also ignored and <code class="docutils literal notranslate"><span class="pre">cmap</span></code> or
+<p>For <a class="reference internal" href="../../glossary.html#term-binary"><span class="xref std std-term">binary</span></a> problems, <code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is also ignored and <code class="docutils literal notranslate"><span class="pre">cmap</span></code> or
 <code class="docutils literal notranslate"><span class="pre">colors</span></code> can be passed as kwargs instead, otherwise, the default colormap
 (‘viridis’) is used.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.7.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 1.9: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> is now also used when <code class="docutils literal notranslate"><span class="pre">response_method=&quot;predict&quot;</span></code>,
+<p><span class="versionmodified changed">Changed in version 1.9: </span><code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is now also used when <code class="docutils literal notranslate"><span class="pre">response_method=&quot;predict&quot;</span></code>,
 except for when <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>, where it is ignored and “black” is
 used instead.
 The default colors changed from ‘tab10’ to the more accessible <a class="reference external" href="https://github.com/matplotlib/matplotlib/issues/9460#issuecomment-875185352">Petroff
 colors</a>.</p>
 </div>
-</dd>
-<dt><strong>xlabel</strong><span class="classifier">str, default=None</span></dt><dd><p>Default label to place on x axis.</p>
-</dd>
-<dt><strong>ylabel</strong><span class="classifier">str, default=None</span></dt><dd><p>Default label to place on y axis.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> was renamed to <code class="docutils literal notranslate"><span class="pre">target_colors</span></code> in 1.10 and will be
+removed in 1.12.</p>
+</div>
 </dd>
 </dl>
 </dd>
@@ -1440,15 +1467,25 @@ colors</a>.</p>
 <code class="docutils literal notranslate"><span class="pre">plot_method</span></code> is ‘pcolormesh’, <code class="docutils literal notranslate"><span class="pre">surface_</span></code> is
 <a class="reference external" href="https://matplotlib.org/stable/api/collections_api.html#matplotlib.collections.QuadMesh" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuadMesh</span></code></a>.</p>
 </dd>
-<dt><strong>multiclass_colors_</strong><span class="classifier">array of shape (n_classes, 4)</span></dt><dd><p>Colors used to plot each class in multiclass problems.
+<dt><strong>target_colors_</strong><span class="classifier">array of shape (n_classes, 4)</span></dt><dd><p>Colors used to plot each class in multiclass problems.
 Only defined when <code class="docutils literal notranslate"><span class="pre">n_classes</span></code> &gt; 2.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.7.</span></p>
+<p><span class="versionmodified added">Added in version 1.10: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors_</span></code> was renamed to <code class="docutils literal notranslate"><span class="pre">target_colors_</span></code></p>
 </div>
 </dd>
 <dt><strong>ax_</strong><span class="classifier">matplotlib Axes</span></dt><dd><p>Axes with decision boundary.</p>
 </dd>
 <dt><strong>figure_</strong><span class="classifier">matplotlib Figure</span></dt><dd><p>Figure containing the decision boundary.</p>
+</dd>
+<dt><strong>multiclass_colors_</strong><span class="classifier">array of shape (n_classes, 4)</span></dt><dd><p>Colors used to plot each class in multiclass problems.
+Only defined when <code class="docutils literal notranslate"><span class="pre">n_classes</span></code> &gt; 2.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.7.</span></p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors_</span></code> was renamed to <code class="docutils literal notranslate"><span class="pre">target_colors_</span></code> in 1.10 and will be
+removed in 1.12.</p>
+</div>
 </dd>
 </dl>
 </dd>
@@ -1489,7 +1526,7 @@ Only defined when <code class="docutils literal notranslate"><span class="pre">n
 <span class="gp">... </span>            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
 <span class="gp">... </span>            <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="p">)</span>
-<span class="gp">... </span>        <span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">multiclass_colors_</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">target_colors_</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>            <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
@@ -1508,7 +1545,7 @@ Only defined when <code class="docutils literal notranslate"><span class="pre">n
 </figure>
 <dl class="py method">
 <dt class="sig sig-object py" id="sklearn.inspection.DecisionBoundaryDisplay.from_estimator">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'contourf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_of_interest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiclass_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/da47f5c03/sklearn/inspection/_plot/decision_boundary.py#L471"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.inspection.DecisionBoundaryDisplay.from_estimator" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">estimator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'contourf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_of_interest</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiclass_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deprecated'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/59335ca67/sklearn/inspection/_plot/decision_boundary.py#L545"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.inspection.DecisionBoundaryDisplay.from_estimator" title="Link to this definition">#</a></dt>
 <dd><p>Plot decision boundary given an estimator.</p>
 <p>Read more in the <a class="reference internal" href="../../visualizations.html#visualizations"><span class="std std-ref">User Guide</span></a>.</p>
 <dl class="field-list">
@@ -1545,12 +1582,12 @@ listed above.</p>
 the decision boundary plot; when <code class="docutils literal notranslate"><span class="pre">response_method</span></code> is <a class="reference internal" href="../../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a>
 or <a class="reference internal" href="../../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a>, the class with the highest response value
 at each point is plotted. The color of each class can be set via
-<code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">target_colors</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.4.</span></p>
 </div>
 </dd>
-<dt><strong>multiclass_colors</strong><span class="classifier">str or list of matplotlib colors, default=None</span></dt><dd><p>Specifies how to color each class when plotting <a class="reference internal" href="../../glossary.html#term-multiclass"><span class="xref std std-term">multiclass</span></a> problems
+<dt><strong>target_colors</strong><span class="classifier">str or list of matplotlib colors, default=None</span></dt><dd><p>Specifies how to color each class when plotting <a class="reference internal" href="../../glossary.html#term-multiclass"><span class="xref std std-term">multiclass</span></a> problems
 and <code class="docutils literal notranslate"><span class="pre">class_of_interest</span></code> is None.</p>
 <p>Possible inputs are:</p>
 <ul class="simple">
@@ -1563,21 +1600,14 @@ if <code class="docutils literal notranslate"><span class="pre">n_classes</span>
 in the list or colors taken from the colormap, and passed to the <code class="docutils literal notranslate"><span class="pre">cmap</span></code>
 parameter of the <code class="docutils literal notranslate"><span class="pre">plot_method</span></code>.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">response_method='predict'</span></code> and <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> is ignored and the class boundaries are plotted in black
+<code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is ignored and the class boundaries are plotted in black
 instead as the boundary lines may overlap and the colors don’t necessarily
 correspond to the classes.</p>
-<p>For <a class="reference internal" href="../../glossary.html#term-binary"><span class="xref std std-term">binary</span></a> problems, <code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> is also ignored and <code class="docutils literal notranslate"><span class="pre">cmap</span></code>
+<p>For <a class="reference internal" href="../../glossary.html#term-binary"><span class="xref std std-term">binary</span></a> problems, <code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is also ignored and <code class="docutils literal notranslate"><span class="pre">cmap</span></code>
 or <code class="docutils literal notranslate"><span class="pre">colors</span></code> can be passed as kwargs instead, otherwise, the default colormap
 (‘viridis’) is used.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.7.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 1.9: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> is now also used when <code class="docutils literal notranslate"><span class="pre">response_method=&quot;predict&quot;</span></code>,
-except for when <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>, where it is ignored and “black”
-is used instead.
-The default colors changed from ‘tab10’ to the more accessible <a class="reference external" href="https://github.com/matplotlib/matplotlib/issues/9460#issuecomment-875185352">Petroff
-colors</a>.</p>
+<p><span class="versionmodified added">Added in version 1.10: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> was renamed to <code class="docutils literal notranslate"><span class="pre">target_colors</span></code></p>
 </div>
 </dd>
 <dt><strong>xlabel</strong><span class="classifier">str, default=None</span></dt><dd><p>The label used for the x-axis. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, an attempt is made to
@@ -1590,6 +1620,40 @@ string is used.</p>
 </dd>
 <dt><strong>ax</strong><span class="classifier">Matplotlib axes, default=None</span></dt><dd><p>Axes object to plot on. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, a new figure and axes is
 created.</p>
+</dd>
+<dt><strong>multiclass_colors</strong><span class="classifier">str or list of matplotlib colors, default=None</span></dt><dd><p>Specifies how to color each class when plotting all classes of
+<a class="reference internal" href="../../glossary.html#term-multiclass"><span class="xref std std-term">multiclass</span></a> problems.</p>
+<p>Possible inputs are:</p>
+<ul class="simple">
+<li><p>None: defaults to list of accessible <a class="reference external" href="https://github.com/matplotlib/matplotlib/issues/9460#issuecomment-875185352">Petroff colors</a>
+if <code class="docutils literal notranslate"><span class="pre">n_classes</span> <span class="pre">&lt;=</span> <span class="pre">10</span></code>, otherwise ‘gist_rainbow’ colormap</p></li>
+<li><p>str: name of <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.colors.Colormap</span></code></a></p></li>
+<li><p>list: list of length <code class="docutils literal notranslate"><span class="pre">n_classes</span></code> of <a class="reference external" href="https://matplotlib.org/stable/users/explain/colors/colors.html#colors-def">matplotlib colors</a></p></li>
+</ul>
+<p>Single color (fading to white) colormaps will be generated from the colors
+in the list or colors taken from the colormap, and passed to the <code class="docutils literal notranslate"><span class="pre">cmap</span></code>
+parameter of the <code class="docutils literal notranslate"><span class="pre">plot_method</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">response_method='predict'</span></code> and <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is ignored and the class boundaries are plotted in black
+instead as the boundary lines may overlap and the colors don’t necessarily
+correspond to the classes.</p>
+<p>For <a class="reference internal" href="../../glossary.html#term-binary"><span class="xref std std-term">binary</span></a> problems, <code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is also ignored and <code class="docutils literal notranslate"><span class="pre">cmap</span></code> or
+<code class="docutils literal notranslate"><span class="pre">colors</span></code> can be passed as kwargs instead, otherwise, the default colormap
+(‘viridis’) is used.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.9: </span><code class="docutils literal notranslate"><span class="pre">target_colors</span></code> is now also used when <code class="docutils literal notranslate"><span class="pre">response_method=&quot;predict&quot;</span></code>,
+except for when <code class="docutils literal notranslate"><span class="pre">plot_method='contour'</span></code>, where it is ignored and “black”
+is used instead.
+The default colors changed from ‘tab10’ to the more accessible <a class="reference external" href="https://github.com/matplotlib/matplotlib/issues/9460#issuecomment-875185352">Petroff
+colors</a>.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.10: </span><code class="docutils literal notranslate"><span class="pre">multiclass_colors</span></code> was renamed to <code class="docutils literal notranslate"><span class="pre">target_colors</span></code> in 1.10 and will be
+removed in 1.12.</p>
+</div>
 </dd>
 <dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional keyword arguments to be passed to the <code class="docutils literal notranslate"><span class="pre">plot_method</span></code>.</p>
 </dd>
@@ -1627,7 +1691,7 @@ created.</p>
 <span class="gp">... </span>    <span class="n">xlabel</span><span class="o">=</span><span class="n">iris</span><span class="o">.</span><span class="n">feature_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ylabel</span><span class="o">=</span><span class="n">iris</span><span class="o">.</span><span class="n">feature_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">disp</span><span class="o">.</span><span class="n">multiclass_colors_</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">disp</span><span class="o">.</span><span class="n">target_colors_</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="o">.</span><span class="n">ax_</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
 <span class="go">&lt;...&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1640,7 +1704,7 @@ created.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sklearn.inspection.DecisionBoundaryDisplay.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'contourf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/da47f5c03/sklearn/inspection/_plot/decision_boundary.py#L300"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.inspection.DecisionBoundaryDisplay.plot" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'contourf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/59335ca67/sklearn/inspection/_plot/decision_boundary.py#L374"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.inspection.DecisionBoundaryDisplay.plot" title="Link to this definition">#</a></dt>
 <dd><p>Plot visualization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1708,7 +1772,7 @@ top).</p>
 <span class="gp">... </span>    <span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">... </span>    <span class="n">c</span><span class="o">=</span><span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">multiclass_colors_</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">cmap</span><span class="o">=</span><span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">target_colors_</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">&lt;...&gt;</span>
