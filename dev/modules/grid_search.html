@@ -1199,10 +1199,16 @@ eliminated enough candidates during the first iterations, using <code class="doc
 </details></section>
 <section id="analyzing-results-with-the-cv-results-attribute">
 <span id="successive-halving-cv-results"></span><h3><span class="section-number">3.2.3.2. </span>Analyzing results with the <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute<a class="headerlink" href="#analyzing-results-with-the-cv-results-attribute" title="Link to this heading">#</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute contains useful information for analyzing the
-results of a search. It can be converted to a pandas dataframe with <code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">=</span>
-<span class="pre">pd.DataFrame(est.cv_results_)</span></code>. The <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute of
-<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> is similar
+<p>The <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> attribute contains the cross-validation results for the
+candidates evaluated in the <strong>last</strong> halving iteration only. It can be
+converted to a pandas dataframe with <code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">=</span> <span class="pre">pd.DataFrame(est.cv_results_)</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">all_cv_results_</span></code> attribute contains the full history of the search:
+all candidates evaluated across all halving iterations. It has the same
+structure as <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code>, with additional <code class="docutils literal notranslate"><span class="pre">iter</span></code> and <code class="docutils literal notranslate"><span class="pre">n_resources</span></code>
+columns identifying each row. It can be converted to a pandas dataframe with
+<code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">=</span> <span class="pre">pd.DataFrame(est.all_cv_results_)</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> and <code class="docutils literal notranslate"><span class="pre">all_cv_results_</span></code> attributes of
+<a class="reference internal" href="generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingRandomSearchCV</span></code></a> are similar
 to that of <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> and <a class="reference internal" href="generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code></a>, with
 additional information related to the successive halving process.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="example-of-a-(truncated)-output-dataframe:">
@@ -1283,7 +1289,9 @@ additional information related to the successive halving process.</p>
 </div>
 <p class="sd-card-text">Each row corresponds to a given parameter combination (a candidate) and a given
 iteration. The iteration is given by the <code class="docutils literal notranslate"><span class="pre">iter</span></code> column. The <code class="docutils literal notranslate"><span class="pre">n_resources</span></code>
-column tells you how many resources were used.</p>
+column tells you how many resources were used. This table is obtained from
+<code class="docutils literal notranslate"><span class="pre">all_cv_results_</span></code>; <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code> contains only the rows from the last
+iteration (here, <code class="docutils literal notranslate"><span class="pre">iter</span></code> 3).</p>
 <p class="sd-card-text">In the example above, the best parameter combination is <code class="docutils literal notranslate"><span class="pre">{'criterion':</span>
 <span class="pre">'log_loss',</span> <span class="pre">'max_depth':</span> <span class="pre">None,</span> <span class="pre">'max_features':</span> <span class="pre">9,</span> <span class="pre">'min_samples_split':</span> <span class="pre">10}</span></code>
 since it has reached the last iteration (3) with the highest score:

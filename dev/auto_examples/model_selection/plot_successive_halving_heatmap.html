@@ -737,7 +737,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../applications/index.html">Examples based on real world datasets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_tomography_l1_reconstruction.html">Compressive sensing: tomography reconstruction with L1 prior (Lasso)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../applications/plot_face_recognition.html">Faces recognition example using eigenfaces and SVMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../applications/plot_face_recognition.html">Faces recognition example using eigenfaces and kernel approximation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_digits_denoising.html">Image denoising using kernel PCA</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_time_series_lagged_features.html">Lagged features for time series forecasting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_model_complexity_influence.html">Model Complexity Influence</a></li>
@@ -1087,7 +1087,8 @@ estimator, and compute the time required to train a
 <p>We now plot heatmaps for both search estimators.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_heatmap</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">gs</span><span class="p">,</span> <span class="n">is_sh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">make_cbar</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper to make a heatmap.&quot;&quot;&quot;</span>
-    <span class="n">results</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">gs</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
+    <span class="n">cv_results</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="s2">&quot;all_cv_results_&quot;</span><span class="p">,</span> <span class="n">gs</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">cv_results</span><span class="p">)</span>
     <span class="n">results</span><span class="p">[[</span><span class="s2">&quot;param_C&quot;</span><span class="p">,</span> <span class="s2">&quot;param_gamma&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">results</span><span class="p">[[</span><span class="s2">&quot;param_C&quot;</span><span class="p">,</span> <span class="s2">&quot;param_gamma&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
         <a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">float64</span></a>
     <span class="p">)</span>
@@ -1152,7 +1153,7 @@ estimator, and compute the time required to train a
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_plot_successive_halving_heatmap_001.png" srcset="../../_images/sphx_glr_plot_successive_halving_heatmap_001.png" alt="Successive Halving time = 1.820s, GridSearch time = 6.592s" class = "sphx-glr-single-img"/><p>The heatmaps show the mean test score of the parameter combinations for an
+<img src="../../_images/sphx_glr_plot_successive_halving_heatmap_001.png" srcset="../../_images/sphx_glr_plot_successive_halving_heatmap_001.png" alt="Successive Halving time = 1.799s, GridSearch time = 6.579s" class = "sphx-glr-single-img"/><p>The heatmaps show the mean test score of the parameter combinations for an
 <a class="reference internal" href="../../modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="sklearn.svm.SVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">SVC</span></code></a> instance. The
 <a class="reference internal" href="../../modules/generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a> also shows the
 iteration at which the combinations where last used. The combinations marked
@@ -1161,7 +1162,7 @@ as <code class="docutils literal notranslate"><span class="pre">0</span></code> 
 <p>We can see that the <a class="reference internal" href="../../modules/generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">HalvingGridSearchCV</span></code></a>
 class is able to find parameter combinations that are just as accurate as
 <a class="reference internal" href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>, in much less time.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 8.558 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 8.530 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-model-selection-plot-successive-halving-heatmap-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/model_selection/plot_successive_halving_heatmap.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo23.svg" style="width: 150px;" />
@@ -1185,15 +1186,15 @@ class is able to find parameter combinations that are just as accurate as
 <div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="This example illustrates how a successive halving search (~sklearn.model_selection.HalvingGridSearchCV and HalvingRandomSearchCV) iteratively chooses the best parameter combination out of multiple candidates."><img alt="" src="../../_images/sphx_glr_plot_successive_halving_iterations_thumb.png" />
 <p><a class="reference internal" href="plot_successive_halving_iterations.html"><span class="doc">Successive Halving Iterations</span></a></p>
   <div class="sphx-glr-thumbnail-title">Successive Halving Iterations</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Compare several strategies to optimize the hyperparameters of a linear SVM trained with stochastic gradient descent. We score the candidates with the one-vs-rest ROC AUC (``roc_auc_ovr``), which evaluates the ranking quality of the predicted class probabilities rather than the raw accuracy of the hard labels."><img alt="" src="../../_images/sphx_glr_plot_randomized_search_thumb.png" />
+<p><a class="reference internal" href="plot_randomized_search.html"><span class="doc">Comparing randomized search and grid search for hyperparameter estimation</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Comparing randomized search and grid search for hyperparameter estimation</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="The PCA does an unsupervised dimensionality reduction, while the logistic regression does the prediction."><img alt="" src="../../_images/sphx_glr_plot_digits_pipe_thumb.png" />
 <p><a class="reference internal" href="../compose/plot_digits_pipe.html"><span class="doc">Pipelining: chaining a PCA and a logistic regression</span></a></p>
   <div class="sphx-glr-thumbnail-title">Pipelining: chaining a PCA and a logistic regression</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="Compare randomized search and grid search for optimizing hyperparameters of a linear SVM with SGD training. All parameters that influence the learning are searched simultaneously (except for the number of estimators, which poses a time / quality tradeoff)."><img alt="" src="../../_images/sphx_glr_plot_randomized_search_thumb.png" />
-<p><a class="reference internal" href="plot_randomized_search.html"><span class="doc">Comparing randomized search and grid search for hyperparameter estimation</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Comparing randomized search and grid search for hyperparameter estimation</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="This example plots the ellipsoids obtained from a toy dataset (mixture of three Gaussians) fitted by the BayesianGaussianMixture class models with a Dirichlet distribution prior (``weight_concentration_prior_type=&#x27;dirichlet_distribution&#x27;``) and a Dirichlet process prior (``weight_concentration_prior_type=&#x27;dirichlet_process&#x27;``). On each figure, we plot the results for three different values of the weight concentration prior."><img alt="" src="../../_images/sphx_glr_plot_concentration_prior_thumb.png" />
-<p><a class="reference internal" href="../mixture/plot_concentration_prior.html"><span class="doc">Concentration Prior Type Analysis of Variation Bayesian Gaussian Mixture</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Concentration Prior Type Analysis of Variation Bayesian Gaussian Mixture</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Multiple metric parameter search can be done by setting the scoring parameter to a list of metric scorer names or a dict mapping the scorer names to the scorer callables."><img alt="" src="../../_images/sphx_glr_plot_multi_metric_evaluation_thumb.png" />
+<p><a class="reference internal" href="plot_multi_metric_evaluation.html"><span class="doc">Demonstration of multi-metric evaluation on cross_val_score and GridSearchCV</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Demonstration of multi-metric evaluation on cross_val_score and GridSearchCV</div>
 </div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 

@@ -737,7 +737,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../applications/index.html">Examples based on real world datasets</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_tomography_l1_reconstruction.html">Compressive sensing: tomography reconstruction with L1 prior (Lasso)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../applications/plot_face_recognition.html">Faces recognition example using eigenfaces and SVMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../applications/plot_face_recognition.html">Faces recognition example using eigenfaces and kernel approximation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_digits_denoising.html">Image denoising using kernel PCA</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_time_series_lagged_features.html">Lagged features for time series forecasting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../applications/plot_model_complexity_influence.html">Model Complexity Influence</a></li>
@@ -1803,14 +1803,14 @@ a.param-doc-link::before {
             <td class="param">
         <a class="param-doc-link"
             style="anchor-name: --doc-link-transform_input;"
-            rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone">
+            rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-tuple%20or%20list%20of%20str%2C%20default%3D%28%22X_val%22%2C%29">
             transform_input
             <span class="param-doc-description"
             style="position-anchor: --doc-link-transform_input;">
-            transform_input: list of str, default=None<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>You can only set this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6</span>
+            transform_input: tuple or list of str, default=(&quot;X_val&quot;,)<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>By default, the validation set `X_val` is always transformed.<br><br>You can only use this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6<br><br>.. versionchanged:: 1.10<br>    The default changed from `None` to `(&quot;X_val&quot;,)`.</span>
         </a>
     </td>
-            <td class="value">None</td>
+            <td class="value">(&#x27;X_val&#x27;,)</td>
         </tr>
 
 
@@ -3126,7 +3126,7 @@ a.param-doc-link::before {
         </tr>
 
 
-        <tr class="user-set">
+        <tr class="default">
             <td><i class="copy-paste-icon"
                  onclick="copyToClipboard('transform_input',
                           this.parentElement.nextElementSibling)"
@@ -3134,11 +3134,11 @@ a.param-doc-link::before {
             <td class="param">
         <a class="param-doc-link"
             style="anchor-name: --doc-link-transform_input;"
-            rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone">
+            rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-tuple%20or%20list%20of%20str%2C%20default%3D%28%22X_val%22%2C%29">
             transform_input
             <span class="param-doc-description"
             style="position-anchor: --doc-link-transform_input;">
-            transform_input: list of str, default=None<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>You can only set this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6</span>
+            transform_input: tuple or list of str, default=(&quot;X_val&quot;,)<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>By default, the validation set `X_val` is always transformed.<br><br>You can only use this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6<br><br>.. versionchanged:: 1.10<br>    The default changed from `None` to `(&quot;X_val&quot;,)`.</span>
         </a>
     </td>
             <td class="value">[&#x27;X_val&#x27;]</td>
@@ -4317,7 +4317,7 @@ with regard to the other estimators in scikit-learn.</p>
 <p>In order to prepare <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.migration_to_sparray.html">SciPy migration from sparse matrices to sparse arrays</a>,
 all scikit-learn estimators that accept sparse matrices as input now also accept
 sparse arrays.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.181 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.147 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-release-highlights-plot-release-highlights-1-7-0-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/release_highlights/plot_release_highlights_1_7_0.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo29.svg" style="width: 150px;" />

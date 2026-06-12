@@ -64,6 +64,13 @@ more details.
   when metadata routing is enabled.
   By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34224`
 
+:mod:`sklearn.datasets`
+-----------------------
+
+- |Fix| :func:`datasets.fetch_openml` now correctly recovers from a corrupted
+  download by re-downloading it, instead of raising an error.
+  By :user:`Roman Yurchak <rth>`. :pr:`34262`
+
 :mod:`sklearn.ensemble`
 -----------------------
 
@@ -107,9 +114,24 @@ more details.
 :mod:`sklearn.metrics`
 ----------------------
 
+- |Efficiency| Scorers created with :func:`~metrics.make_scorer` no longer deep-copy metadata
+  kwargs on each call, reducing memory usage during model selection and
+  cross-validation.
+  By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34236`
+
 - |Fix| Fixed :func:`metrics.average_precision_score` to handle list-type `y_score` for
   multiclass data.
   By :user:`Lucy Liu <lucyleeow>`. :pr:`34083`
+
+:mod:`sklearn.model_selection`
+------------------------------
+
+- |API| :class:`model_selection.HalvingGridSearchCV` and
+  :class:`model_selection.HalvingRandomSearchCV` now expose the
+  cross-validation results of the last halving iteration in ``cv_results_``.
+  The full per-iteration history is available in the new ``all_cv_results_``
+  attribute.
+  By :user:`Guillaume Lemaitre <glemaitre>`. :pr:`34250`
 
 :mod:`sklearn.neighbors`
 ------------------------
@@ -119,6 +141,20 @@ more details.
   :user:`Arturo Amor <ArturoAmorQ>`. :pr:`34122`
 
 * |Efficiency| :class:`sklearn.neighbors.KNeighborsClassifier` is now faster when running with multiple threads. The statistics returned from :class:`sklearn.neighbors.BallTree` and :class:`sklearn.neighbors.KDTree` no longer reset on each query, and are no longer incorrect when the tree is used from multiple threads. :pr:`34187`
+
+:mod:`sklearn.pipeline`
+-----------------------
+
+- |Fix| The default value for the `transform_input` parameter of :class:`Pipeline` was changed
+  from `None` to `("X_val",)` so that the validation set, when passed to `fit`, is
+  always transformed alongside `X`, to prevent easy to miss mistakes.
+  By :user:`Jérémie du Boisberranger <jeremiedbb>`. :pr:`34263`
+
+:mod:`sklearn.svm`
+------------------
+
+- |Fix| Fixed a memory leak when calling the `fit` method of :class:`svm.LinearSVR`.
+  By :user:`Jake VanderPlas <jakevdp>`. :pr:`34256`
 
 .. rubric:: Code and documentation contributors
 

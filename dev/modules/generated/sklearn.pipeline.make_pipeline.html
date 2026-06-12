@@ -1363,7 +1363,7 @@
 <h1>make_pipeline<a class="headerlink" href="#make-pipeline" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sklearn.pipeline.make_pipeline">
-<span class="sig-prename descclassname"><span class="pre">sklearn.pipeline.</span></span><span class="sig-name descname"><span class="pre">make_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/257313507/sklearn/pipeline.py#L1460"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.pipeline.make_pipeline" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sklearn.pipeline.</span></span><span class="sig-name descname"><span class="pre">make_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('X_val',)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/0059e2490/sklearn/pipeline.py#L1471"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.pipeline.make_pipeline" title="Link to this definition">#</a></dt>
 <dd><p>Construct a <a class="reference internal" href="sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> from the given estimators.</p>
 <p>This is a shorthand for the <a class="reference internal" href="sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> constructor; it does not
 require, and does not permit, naming the estimators. Instead, their names
@@ -1382,14 +1382,18 @@ pipeline cannot be inspected directly. Use the attribute <code class="docutils l
 or <code class="docutils literal notranslate"><span class="pre">steps</span></code> to inspect estimators within the pipeline. Caching the
 transformers is advantageous when fitting is time consuming.</p>
 </dd>
-<dt><strong>transform_input</strong><span class="classifier">list of str, default=None</span></dt><dd><p>This enables transforming some input arguments to <code class="docutils literal notranslate"><span class="pre">fit</span></code> (other than <code class="docutils literal notranslate"><span class="pre">X</span></code>)
+<dt><strong>transform_input</strong><span class="classifier">tuple or list of str, default=(“X_val”,)</span></dt><dd><p>This enables transforming some input arguments to <code class="docutils literal notranslate"><span class="pre">fit</span></code> (other than <code class="docutils literal notranslate"><span class="pre">X</span></code>)
 to be transformed by the steps of the pipeline up to the step which requires
 them. Requirement is defined via <a class="reference internal" href="../../metadata_routing.html#metadata-routing"><span class="std std-ref">metadata routing</span></a>.
 This can be used to pass a validation set through the pipeline for instance.</p>
-<p>You can only set this if metadata routing is enabled, which you
+<p>By default, the validation set <code class="docutils literal notranslate"><span class="pre">X_val</span></code> is always transformed.</p>
+<p>You can only use this if metadata routing is enabled, which you
 can enable using <code class="docutils literal notranslate"><span class="pre">sklearn.set_config(enable_metadata_routing=True)</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 1.6.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.10: </span>The default changed from <code class="docutils literal notranslate"><span class="pre">None</span></code> to <code class="docutils literal notranslate"><span class="pre">(&quot;X_val&quot;,)</span></code>.</p>
 </div>
 </dd>
 <dt><strong>verbose</strong><span class="classifier">bool, default=False</span></dt><dd><p>If True, the time elapsed while fitting each step will be printed as it

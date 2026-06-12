@@ -717,6 +717,14 @@ when metadata routing is enabled.
 By <a class="reference external" href="https://github.com/StefanieSenger">Stefanie Senger</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34224">#34224</a></p></li>
 </ul>
 </section>
+<section id="sklearn-datasets">
+<h3><a class="reference internal" href="../api/sklearn.datasets.html#module-sklearn.datasets" title="sklearn.datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.datasets</span></code></a><a class="headerlink" href="#sklearn-datasets" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  <a class="reference internal" href="../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml"><code class="xref py py-func docutils literal notranslate"><span class="pre">datasets.fetch_openml</span></code></a> now correctly recovers from a corrupted
+download by re-downloading it, instead of raising an error.
+By <a class="reference external" href="https://github.com/rth">Roman Yurchak</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34262">#34262</a></p></li>
+</ul>
+</section>
 <section id="sklearn-ensemble">
 <h3><a class="reference internal" href="../api/sklearn.ensemble.html#module-sklearn.ensemble" title="sklearn.ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.ensemble</span></code></a><a class="headerlink" href="#sklearn-ensemble" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -761,9 +769,24 @@ By <a class="reference external" href="https://github.com/AnneBeyer">Anne Beyer<
 <section id="sklearn-metrics">
 <h3><a class="reference internal" href="../api/sklearn.metrics.html#module-sklearn.metrics" title="sklearn.metrics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.metrics</span></code></a><a class="headerlink" href="#sklearn-metrics" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-info">Efficiency</span></span>  Scorers created with <a class="reference internal" href="../modules/generated/sklearn.metrics.make_scorer.html#sklearn.metrics.make_scorer" title="sklearn.metrics.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer</span></code></a> no longer deep-copy metadata
+kwargs on each call, reducing memory usage during model selection and
+cross-validation.
+By <a class="reference external" href="https://github.com/StefanieSenger">Stefanie Senger</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34236">#34236</a></p></li>
 <li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  Fixed <a class="reference internal" href="../modules/generated/sklearn.metrics.average_precision_score.html#sklearn.metrics.average_precision_score" title="sklearn.metrics.average_precision_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">metrics.average_precision_score</span></code></a> to handle list-type <code class="docutils literal notranslate"><span class="pre">y_score</span></code> for
 multiclass data.
 By <a class="reference external" href="https://github.com/lucyleeow">Lucy Liu</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34083">#34083</a></p></li>
+</ul>
+</section>
+<section id="sklearn-model-selection">
+<h3><a class="reference internal" href="../api/sklearn.model_selection.html#module-sklearn.model_selection" title="sklearn.model_selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.model_selection</span></code></a><a class="headerlink" href="#sklearn-model-selection" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-warning">API Change</span></span>  <a class="reference internal" href="../modules/generated/sklearn.model_selection.HalvingGridSearchCV.html#sklearn.model_selection.HalvingGridSearchCV" title="sklearn.model_selection.HalvingGridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">model_selection.HalvingGridSearchCV</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">model_selection.HalvingRandomSearchCV</span></code></a> now expose the
+cross-validation results of the last halving iteration in <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code>.
+The full per-iteration history is available in the new <code class="docutils literal notranslate"><span class="pre">all_cv_results_</span></code>
+attribute.
+By <a class="reference external" href="https://github.com/glemaitre">Guillaume Lemaitre</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34250">#34250</a></p></li>
 </ul>
 </section>
 <section id="sklearn-neighbors">
@@ -775,6 +798,22 @@ input matrices for <code class="docutils literal notranslate"><span class="pre">
 </ul>
 <ul class="simple">
 <li><p><span class="raw-html"><span class="badge text-bg-info">Efficiency</span></span>  <a class="reference internal" href="../modules/generated/sklearn.neighbors.KNeighborsClassifier.html#sklearn.neighbors.KNeighborsClassifier" title="sklearn.neighbors.KNeighborsClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.neighbors.KNeighborsClassifier</span></code></a> is now faster when running with multiple threads. The statistics returned from <a class="reference internal" href="../modules/generated/sklearn.neighbors.BallTree.html#sklearn.neighbors.BallTree" title="sklearn.neighbors.BallTree"><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.neighbors.BallTree</span></code></a> and <a class="reference internal" href="../modules/generated/sklearn.neighbors.KDTree.html#sklearn.neighbors.KDTree" title="sklearn.neighbors.KDTree"><code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.neighbors.KDTree</span></code></a> no longer reset on each query, and are no longer incorrect when the tree is used from multiple threads. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34187">#34187</a></p></li>
+</ul>
+</section>
+<section id="sklearn-pipeline">
+<h3><a class="reference internal" href="../api/sklearn.pipeline.html#module-sklearn.pipeline" title="sklearn.pipeline"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.pipeline</span></code></a><a class="headerlink" href="#sklearn-pipeline" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  The default value for the <code class="docutils literal notranslate"><span class="pre">transform_input</span></code> parameter of <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code> was changed
+from <code class="docutils literal notranslate"><span class="pre">None</span></code> to <code class="docutils literal notranslate"><span class="pre">(&quot;X_val&quot;,)</span></code> so that the validation set, when passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code>, is
+always transformed alongside <code class="docutils literal notranslate"><span class="pre">X</span></code>, to prevent easy to miss mistakes.
+By <a class="reference external" href="https://github.com/jeremiedbb">Jérémie du Boisberranger</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34263">#34263</a></p></li>
+</ul>
+</section>
+<section id="sklearn-svm">
+<h3><a class="reference internal" href="../api/sklearn.svm.html#module-sklearn.svm" title="sklearn.svm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.svm</span></code></a><a class="headerlink" href="#sklearn-svm" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  Fixed a memory leak when calling the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method of <a class="reference internal" href="../modules/generated/sklearn.svm.LinearSVR.html#sklearn.svm.LinearSVR" title="sklearn.svm.LinearSVR"><code class="xref py py-class docutils literal notranslate"><span class="pre">svm.LinearSVR</span></code></a>.
+By <a class="reference external" href="https://github.com/jakevdp">Jake VanderPlas</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34256">#34256</a></p></li>
 </ul>
 <p class="rubric">Code and documentation contributors</p>
 <p>Thanks to everyone who has contributed to the maintenance and improvement of
@@ -838,11 +877,15 @@ the project since version 1.9, including:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-1-10-dev0">Version 1.10.dev0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#support-for-array-api">Support for Array API</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-routing">Metadata routing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-datasets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.datasets</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.ensemble</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-impute"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.impute</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-inspection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.inspection</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-metrics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.metrics</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-model-selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.model_selection</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-neighbors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.neighbors</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-pipeline"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.pipeline</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-svm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.svm</span></code></a></li>
 </ul>
 </li>
 </ul>
