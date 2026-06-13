@@ -1361,7 +1361,7 @@
 <h1>calibration_curve<a class="headerlink" href="#calibration-curve" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sklearn.calibration.calibration_curve">
-<span class="sig-prename descclassname"><span class="pre">sklearn.calibration.</span></span><span class="sig-name descname"><span class="pre">calibration_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prob</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/5e878b2ec/sklearn/calibration.py#L1217"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.calibration.calibration_curve" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sklearn.calibration.</span></span><span class="sig-name descname"><span class="pre">calibration_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_prob</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/d6a36523d/sklearn/calibration.py#L1217"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklearn.calibration.calibration_curve" title="Link to this definition">#</a></dt>
 <dd><p>Compute true and predicted probabilities for a calibration curve.</p>
 <p>The method assumes the inputs come from a binary classifier, and
 discretize the [0, 1] interval into bins.</p>
@@ -1379,10 +1379,16 @@ discretize the [0, 1] interval into bins.</p>
 <p><span class="versionmodified added">Added in version 1.1.</span></p>
 </div>
 </dd>
-<dt><strong>n_bins</strong><span class="classifier">int, default=5</span></dt><dd><p>Number of bins to discretize the [0, 1] interval. A bigger number
+<dt><strong>n_bins</strong><span class="classifier">int or “cube_root”, default=5</span></dt><dd><p>Number of bins to discretize the [0, 1] interval. A bigger number
 requires more data. Bins with no samples (i.e. without
 corresponding values in <code class="docutils literal notranslate"><span class="pre">y_prob</span></code>) will not be returned, thus the
-returned arrays may have less than <code class="docutils literal notranslate"><span class="pre">n_bins</span></code> values.</p>
+returned arrays may have less than <code class="docutils literal notranslate"><span class="pre">n_bins</span></code> values.
+If “cube_root”, the number of bins is set to
+<code class="docutils literal notranslate"><span class="pre">ceil(n_samples</span> <span class="pre">**</span> <span class="pre">(1/3))</span></code> to balance the trade-off between
+bias and variance.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.10: </span>The “cube_root” option was added.</p>
+</div>
 </dd>
 <dt><strong>strategy</strong><span class="classifier">{‘uniform’, ‘quantile’}, default=’uniform’</span></dt><dd><p>Strategy used to define the widths of the bins.</p>
 <dl class="simple">
@@ -1418,6 +1424,11 @@ bin (fraction of positives).</p>
 Probabilities With Supervised Learning, in Proceedings of the 22nd
 International Conference on Machine Learning (ICML).
 See section 4 (Qualitative Analysis of Predictions).</p>
+<p>Sun, Z., Song, D., &amp; Hero, A. O. (2023). Minimum-Risk Recalibration of
+Classifiers, in Advances in Neural Information Processing Systems (NeurIPS).</p>
+<p>Futami, F., &amp; Fujisawa, M. (2024). Information-Theoretic Generalization
+Analysis for Expected Calibration Error, in Advances in Neural Information
+Processing Systems (NeurIPS).</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">calibration_curve</span>
