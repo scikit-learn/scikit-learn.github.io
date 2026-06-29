@@ -150,6 +150,11 @@ more details.
 :mod:`sklearn.metrics`
 ----------------------
 
+- |Efficiency| :func:`metrics.nan_euclidean_distances` is now several times faster on dense data,
+  with a more moderate speed-up for :class:`impute.KNNImputer` and estimators using
+  ``metric="nan_euclidean"`` such as :class:`neighbors.NearestNeighbors`.
+  By :user:`Roman Yurchak <rth>`. :pr:`1140`
+
 - |Efficiency| Scorers created with :func:`~metrics.make_scorer` no longer deep-copy metadata
   kwargs on each call, reducing memory usage during model selection and
   cross-validation.
@@ -158,6 +163,13 @@ more details.
 - |Fix| Fixed :func:`metrics.average_precision_score` to handle list-type `y_score` for
   multiclass data.
   By :user:`Lucy Liu <lucyleeow>`. :pr:`34083`
+
+:mod:`sklearn.mixture`
+----------------------
+
+- |Efficiency| :class:`mixture.GaussianMixture` with ``covariance_type="tied"`` is now faster,
+  with the speed-up most visible for many components or high-dimensional data.
+  By :user:`Roman Yurchak <rth>`. :pr:`1140`
 
 :mod:`sklearn.model_selection`
 ------------------------------
@@ -175,6 +187,10 @@ more details.
 - |Feature| :class:`neighbors.NeighborhoodComponentsAnalysis` now supports sparse
   input matrices for ``init`` in ``['pca', 'random', 'identity']``. By
   :user:`Arturo Amor <ArturoAmorQ>`. :pr:`34122`
+
+- |Efficiency| :meth:`neighbors.KNeighborsRegressor.predict` is now faster for regression with
+  many output targets.
+  By :user:`Roman Yurchak <rth>`. :pr:`1140`
 
 * |Efficiency| :class:`sklearn.neighbors.KNeighborsClassifier` is now faster when running with multiple threads. The statistics returned from :class:`sklearn.neighbors.BallTree` and :class:`sklearn.neighbors.KDTree` no longer reset on each query, and are no longer incorrect when the tree is used from multiple threads. :pr:`34187`
 
