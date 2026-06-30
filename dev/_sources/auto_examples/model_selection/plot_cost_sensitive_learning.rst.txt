@@ -147,7 +147,7 @@ We check the feature types available in `X`.
      18  own_telephone           1000 non-null   category
      19  foreign_worker          1000 non-null   category
     dtypes: category(13), int64(7)
-    memory usage: 69.0 KB
+    memory usage: 68.9 KB
 
 
 
@@ -320,8 +320,8 @@ negative gains (costs) to the two kinds of prediction errors:
 - a gain of `-5` for each false negative ("bad" credit labeled as "good"),
 - a `0` gain for true positives and true negatives.
 
-Note that theoretically, given that our model is calibrated and our data
-set representative and large enough, we do not need to tune the
+Note that theoretically, given that our model is calibrated, our dataset
+is representative and large enough, we do not need to tune the
 threshold, but can safely set it to 1/5 of the cost ratio, as stated by
 Eq. (2) in Elkan's paper [2]_.
 
@@ -2105,12 +2105,12 @@ available options regarding model refitting and cross-validation.
 
 The second remark is that the cut-off points of the vanilla and tuned model are
 different. To understand why the tuned model has chosen this cut-off point, we can
-look at the right-hand side plot that plots the objective score that is our exactly
+look at the right-hand side plot that plots the objective score that is exactly
 the same as our business metric. We see that the optimum threshold corresponds to the
 maximum of the objective score. This maximum is reached for a decision threshold
 much lower than 0.5: the tuned model enjoys a much higher recall at the cost of
-of significantly lower precision: the tuned model is much more eager to
-predict the "bad" class label to larger fraction of individuals.
+significantly lower precision: the tuned model is much more eager to
+predict the "bad" class label for a larger fraction of individuals.
 
 We can now check if choosing this cut-off point leads to a better score on the testing
 set:
@@ -2136,8 +2136,8 @@ set:
 
 .. GENERATED FROM PYTHON SOURCE LINES 387-406
 
-We observe that tuning the decision threshold almost improves our business gains
-by factor of 2.
+We observe that tuning the decision threshold improves our business gains
+by almost a factor of 2.
 
 .. _TunedThresholdClassifierCV_no_cv:
 
@@ -2153,8 +2153,8 @@ point is chosen.
 These two strategies can be changed by providing the `refit` and `cv` parameters.
 For instance, one could provide a fitted `estimator` and set `cv="prefit"`, in which
 case the cut-off point is found on the entire dataset provided at fitting time.
-Also, the underlying classifier is not be refitted by setting `refit=False`. Here, we
-can try to do such experiment.
+This also requires to set `refit=False`, so that the underlying classifier will not be
+refitted. Here, we can try to do such an experiment:
 
 .. GENERATED FROM PYTHON SOURCE LINES 406-411
 
@@ -2201,29 +2201,31 @@ Then, we evaluate our model with the same approach as before:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 417-436
+.. GENERATED FROM PYTHON SOURCE LINES 417-438
 
-We observe the that the optimum cut-off point is different from the one found
+We observe that the optimum cut-off point is different from the one found
 in the previous experiment. If we look at the right-hand side plot, we
-observe that the business gain has large plateau of near-optimal 0 gain for a
-large span of decision thresholds. This behavior is symptomatic of an
-overfitting. Because we disable cross-validation, we tuned the cut-off point
+can see that the business gain has a large plateau of near-optimal 0 gain for a
+large span of decision thresholds. This behavior is symptomatic of
+overfitting. Because we disabled cross-validation, we tuned the cut-off point
 on the same set as the model was trained on, and this is the reason for the
 observed overfitting.
 
 This option should therefore be used with caution. One needs to make sure that the
 data provided at fitting time to the
 :class:`~sklearn.model_selection.TunedThresholdClassifierCV` is not the same as the
-data used to train the underlying classifier. This could happen sometimes when the
+data used to train the underlying classifier. This can be the case when the
 idea is just to tune the predictive model on a completely new validation set without a
 costly complete refit.
 
 When cross-validation is too costly, a potential alternative is to use a
 single train-test split by providing a floating number in range `[0, 1]` to the `cv`
-parameter. It splits the data into a training and testing set. Let's explore this
-option:
+parameter. It splits the data into a training and testing set. (Note that
+`refit=False` is still set, which means the model will not be refitted on the entire
+training set once the threshold has been found.)
+Let's explore this option:
 
-.. GENERATED FROM PYTHON SOURCE LINES 436-438
+.. GENERATED FROM PYTHON SOURCE LINES 438-440
 
 .. code-block:: Python
 
@@ -4023,18 +4025,18 @@ option:
     <br />
     <br />
 
-.. GENERATED FROM PYTHON SOURCE LINES 439-442
+.. GENERATED FROM PYTHON SOURCE LINES 441-444
 
 .. code-block:: Python
 
-    title = "Tuned GBDT model without refitting and using the entire dataset"
+    title = "Tuned GBDT model using a single train-test split"
     plot_roc_pr_curves(model, tuned_model, title=title)
 
 
 
 
 .. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_cost_sensitive_learning_004.png
-   :alt: Tuned GBDT model without refitting and using the entire dataset, Precision-Recall curve, ROC curve, Objective score as a function of the decision threshold
+   :alt: Tuned GBDT model using a single train-test split, Precision-Recall curve, ROC curve, Objective score as a function of the decision threshold
    :srcset: /auto_examples/model_selection/images/sphx_glr_plot_cost_sensitive_learning_004.png
    :class: sphx-glr-single-img
 
@@ -4042,7 +4044,7 @@ option:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 443-463
+.. GENERATED FROM PYTHON SOURCE LINES 445-465
 
 Regarding the cut-off point, we observe that the optimum is similar to the multiple
 repeated cross-validation case. However, be aware that a single split does not account
@@ -4065,7 +4067,7 @@ detecting fraud in credit card transaction records.
 The credit card dataset
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. GENERATED FROM PYTHON SOURCE LINES 463-466
+.. GENERATED FROM PYTHON SOURCE LINES 465-468
 
 .. code-block:: Python
 
@@ -4121,18 +4123,17 @@ The credit card dataset
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 467-470
+.. GENERATED FROM PYTHON SOURCE LINES 469-472
 
 The dataset contains information about credit card records from which some are
 fraudulent and others are legitimate. The goal is therefore to predict whether or
 not a credit card record is fraudulent.
 
-.. GENERATED FROM PYTHON SOURCE LINES 470-474
+.. GENERATED FROM PYTHON SOURCE LINES 472-475
 
 .. code-block:: Python
 
-    columns_to_drop = ["Class"]
-    data = credit_card.frame.drop(columns=columns_to_drop)
+    data = credit_card.frame.drop(columns=["Class"])
     target = credit_card.frame["Class"].astype(int)
 
 
@@ -4142,11 +4143,11 @@ not a credit card record is fraudulent.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 475-476
+.. GENERATED FROM PYTHON SOURCE LINES 476-477
 
 First, we check the class distribution of the datasets.
 
-.. GENERATED FROM PYTHON SOURCE LINES 476-478
+.. GENERATED FROM PYTHON SOURCE LINES 477-479
 
 .. code-block:: Python
 
@@ -4168,13 +4169,13 @@ First, we check the class distribution of the datasets.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 479-482
+.. GENERATED FROM PYTHON SOURCE LINES 480-483
 
 The dataset is highly imbalanced with fraudulent transaction representing only 0.17%
 of the data. Since we are interested in training a machine learning model, we should
 also make sure that we have enough samples in the minority class to train the model.
 
-.. GENERATED FROM PYTHON SOURCE LINES 482-484
+.. GENERATED FROM PYTHON SOURCE LINES 483-485
 
 .. code-block:: Python
 
@@ -4196,23 +4197,22 @@ also make sure that we have enough samples in the minority class to train the mo
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 485-489
+.. GENERATED FROM PYTHON SOURCE LINES 486-490
 
 We observe that we have around 500 samples that is on the low end of the number of
 samples required to train a machine learning model. In addition of the target
 distribution, we check the distribution of the amount of the
 fraudulent transactions.
 
-.. GENERATED FROM PYTHON SOURCE LINES 489-496
+.. GENERATED FROM PYTHON SOURCE LINES 490-496
 
 .. code-block:: Python
 
     fraud = target == 1
     amount_fraud = data["Amount"][fraud]
-    _, ax = plt.subplots()
-    ax.hist(amount_fraud, bins=30)
-    ax.set_title("Amount of fraud transaction")
-    _ = ax.set_xlabel("Amount (€)")
+    _ = amount_fraud.plot.hist(
+        bins=30, title="Amount of fraud transaction", xlabel="Amount (€)"
+    )
 
 
 
@@ -4231,10 +4231,10 @@ fraudulent transactions.
 Addressing the problem with a business metric
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now, we create the business metric that depends on the amount of each transaction. We
+Now, we create a business metric that depends on the amount of each transaction. We
 define the cost matrix similarly to [2]_. Accepting a legitimate transaction provides
 a gain of 2% of the amount of the transaction. However, accepting a fraudulent
-transaction result in a loss of the amount of the transaction. As stated in [2]_, the
+transaction results in a loss of the amount of the transaction. As stated in [2]_, the
 gain and loss related to refusals (of fraudulent and legitimate transactions) are not
 trivial to define. Here, we define that a refusal of a legitimate transaction
 is estimated to a loss of 5€ while the refusal of a fraudulent transaction is
@@ -4268,11 +4268,11 @@ compute the total benefit of a given decision:
 
 .. GENERATED FROM PYTHON SOURCE LINES 524-529
 
-From this business metric, we create a scikit-learn scorer that given a fitted
-classifier and a test set compute the business metric. In this regard, we use
-the :func:`~sklearn.metrics.make_scorer` factory. The variable `amount` is an
-additional metadata to be passed to the scorer and we need to use
-:ref:`metadata routing <metadata_routing>` to take into account this information.
+From this business metric, we create a scikit-learn scorer that, given a fitted
+classifier and a test set, computes the business metric. We use the
+:func:`~sklearn.metrics.make_scorer` factory again here. The variable `amount` is an
+additional metadata to be passed to the scorer and we need to use :ref:`metadata
+routing <metadata_routing>` to take this information into account.
 
 .. GENERATED FROM PYTHON SOURCE LINES 529-532
 
@@ -4291,7 +4291,7 @@ additional metadata to be passed to the scorer and we need to use
 .. GENERATED FROM PYTHON SOURCE LINES 533-540
 
 So at this stage, we observe that the amount of the transaction is used twice: once
-as a feature to train our predictive model and once as a metadata to compute the
+as a feature to train our predictive model and once as metadata to compute the
 the business metric and thus the statistical performance of our model. When used as a
 feature, we are only required to have a column in `data` that contains the amount of
 each transaction. To use this information as metadata, we need to have an external
@@ -4394,7 +4394,7 @@ transactions as fraudulent.
 
 .. GENERATED FROM PYTHON SOURCE LINES 576-590
 
-Such a policy would entail a catastrophic loss: around 670,000€. This is
+Such a policy would entail a catastrophic loss: almost 700,000€. This is
 expected since the vast majority of the transactions are legitimate and the
 policy would refuse them at a non-trivial cost.
 
@@ -5449,7 +5449,7 @@ threshold.
             </a>
         </td>
                <td class="fitted-att-type">dict</td>
-               <td>{&#x27;me...me&#x27;: array([0.2 , ...  0.24, 0.23]), &#x27;me...me&#x27;: array([0.02, ...  0.02, 0.02]), &#x27;me...re&#x27;: array([-0.01,...-0.  , -0.  ]), &#x27;pa..._C&#x27;: masked_array(...l_value=1e+20), ...}</td>
+               <td>{&#x27;me...me&#x27;: array([0.18, ...  0.22, 0.22]), &#x27;me...me&#x27;: array([0.02, ...  0.02, 0.02]), &#x27;me...re&#x27;: array([-0.01,...-0.  , -0.  ]), &#x27;pa..._C&#x27;: masked_array(...l_value=1e+20), ...}</td>
 
 
            </tr>
@@ -5539,7 +5539,7 @@ threshold.
             </a>
         </td>
                <td class="fitted-att-type">float</td>
-               <td>0.3092</td>
+               <td>0.3042</td>
 
 
            </tr>
@@ -6533,7 +6533,7 @@ accepting all transactions.
 Tuning the decision threshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now the question is: is our model optimum for the type of decision that we want to do?
+Now the question is: is our model optimal for the type of decision that we want to do?
 Up to now, we did not optimize the decision threshold. We use the
 :class:`~sklearn.model_selection.TunedThresholdClassifierCV` to optimize the decision
 given our business scorer. To avoid a nested cross-validation, we will use the
@@ -8795,7 +8795,7 @@ historical data (offline evaluation) should ideally be confirmed by A/B testing
 on live data (online evaluation). Note however that A/B testing models is
 beyond the scope of the scikit-learn library itself.
 
-At the end, we disable the configuration flag for metadata routing::
+At the end, we disable the configuration flag for metadata routing:
 
 .. GENERATED FROM PYTHON SOURCE LINES 693-694
 
@@ -8812,7 +8812,7 @@ At the end, we disable the configuration flag for metadata routing::
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 27.398 seconds)
+   **Total running time of the script:** (0 minutes 25.787 seconds)
 
 
 .. _sphx_glr_download_auto_examples_model_selection_plot_cost_sensitive_learning.py:
