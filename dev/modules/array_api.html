@@ -820,7 +820,10 @@ and some estimators. When <code class="docutils literal notranslate"><span class
 into NumPy arrays using <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="(in NumPy v2.5)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.asarray</span></code></a> (or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.5)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.array</span></code></a>).
 While this will successfully convert some array API inputs (e.g., JAX array),
 we generally recommend setting <code class="docutils literal notranslate"><span class="pre">array_api_dispatch=True</span></code> when using array API inputs.
-This is because NumPy conversion can often fail, e.g., torch tensor allocated on GPU.</p>
+This is because NumPy conversion can often fail, e.g., torch tensor allocated on GPU.
+Also note that the output array will be NumPy when <code class="docutils literal notranslate"><span class="pre">array_api_dispatch=False</span></code> whereas
+when <code class="docutils literal notranslate"><span class="pre">array_api_dispatch=True</span></code> the output array will depend on the input array (see
+<a class="reference internal" href="#input-output-array-api"><span class="std std-ref">Input and output array type handling</span></a> for details).</p>
 </section>
 <section id="example-usage">
 <h2><span class="section-number">13.2.3. </span>Example usage<a class="headerlink" href="#example-usage" title="Link to this heading">#</a></h2>
@@ -991,14 +994,25 @@ base estimator also does:</p>
 </section>
 </section>
 <section id="input-and-output-array-type-handling">
-<h2><span class="section-number">13.2.5. </span>Input and output array type handling<a class="headerlink" href="#input-and-output-array-type-handling" title="Link to this heading">#</a></h2>
+<span id="input-output-array-api"></span><h2><span class="section-number">13.2.5. </span>Input and output array type handling<a class="headerlink" href="#input-and-output-array-type-handling" title="Link to this heading">#</a></h2>
 <p>Estimators and scoring functions are able to accept input arrays
 from different array libraries and/or devices. When a mixed set of input arrays is
-passed, scikit-learn converts arrays as needed to make them all consistent.</p>
+passed, scikit-learn converts arrays as needed to make them all consistent. The
+following section describes how input and output array types are handled
+when <code class="docutils literal notranslate"><span class="pre">array_api_dispatch=True</span></code>.</p>
 <p>For estimators, the rule is <strong>“everything follows</strong> <code class="docutils literal notranslate"><span class="pre">X</span></code> <strong>“</strong> - mixed array inputs are
 converted so that they all match the array library and device of <code class="docutils literal notranslate"><span class="pre">X</span></code>.
 For scoring functions the rule is <strong>“everything follows</strong> <code class="docutils literal notranslate"><span class="pre">y_pred</span></code> <strong>“</strong> - mixed array
 inputs are converted so that they all match the array library and device of <code class="docutils literal notranslate"><span class="pre">y_pred</span></code>.</p>
+<p>Mixed array input support also covers the particular case where <code class="docutils literal notranslate"><span class="pre">y</span></code> is a NumPy
+array of string values, while other inputs are numerical arrays of any
+container type. As all models require numerical input, scikit-learn often converts
+<code class="docutils literal notranslate"><span class="pre">y</span></code> to a numerical representation internally (for instance via one-hot encoding or
+ordinal encoding). The result of this is able to be moved to the namespace and device
+of the other inputs, as string-valued arrays are not covered by the array API
+specifications.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">classes_</span></code> estimator attribute always remains in the same array
+library as the original <code class="docutils literal notranslate"><span class="pre">y</span></code>, in order to support string class labels.</p>
 <p>When a function or method has been called with array API compatible inputs, the
 convention is to return arrays from the same array library and on the same
 device as the input data.</p>
