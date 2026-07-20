@@ -44,15 +44,32 @@ See :ref:`array_api` for more details.
 - |Feature| :class:`covariance.LedoitWolf` now supports array API compatible inputs.
   By :user:`Tim Head <betatim>` :pr:`33573`
 
+- |Feature| :func:`sklearn.metrics.matthews_corrcoef` now supports array API compatible inputs.
+  By :user:`Mohamad Fazeli <Fazel94>`. :pr:`34423`
+
   |Enhancement|:class:`linear_model.LogisticRegression` now supports array API compatible inputs
   with `solver="newton-cg"`.
   By :user:`Christian Lorentzen <lorentzenchr>` and :user:`Omar Salman <OmarManzoor>`. :pr:`34412`
+
+- |Fix| Fixed :func:`metrics.median_absolute_error` to handle integer inputs when
+  the input array namespace does not support integer inputs to its `quantile` function
+  (e.g., PyTorch).
+  By :user:`Lucy Liu <lucyleeow>`. :pr:`33778`
 
 Metadata routing
 ----------------
 
 Refer to the :ref:`Metadata Routing User Guide <metadata_routing>` for
 more details.
+
+- |Fix| Metadata is now correctly routed to the sub-estimator of meta-estimators such as
+  :class:`feature_selection.SelectFromModel`, :class:`feature_selection.RFE`,
+  :class:`feature_selection.RFECV`, :class:`feature_selection.SequentialFeatureSelector`,
+  and :class:`impute.IterativeImputer` when they are used as an intermediate step of a
+  :class:`pipeline.Pipeline`, i.e. when their composite ``fit_transform`` method is the
+  target of the routing. Previously, metadata such as ``sample_weight`` was silently
+  dropped in this case.
+  By :user:`Adrin Jalali <adrinjalali>` and :user:`Kyle Schluns <kschluns>`. :pr:`30869`
 
 - |Fix| :class:`ensemble.BaggingClassifier` now correctly routes metadata via `predict` and
   `predict_proba` dynamically to the corresponding method on the sub-estimator.
@@ -175,6 +192,13 @@ more details.
   multiclass data.
   By :user:`Lucy Liu <lucyleeow>`. :pr:`34083`
 
+- |API| In :class:`metrics.DetCurveDisplay` the `estimator_name` parameter is deprecated in
+  favour of `name` and will be removed in 1.12. The `**kwargs` parameter of
+  :meth:`metrics.DetCurveDisplay.plot`, :meth:`metrics.DetCurveDisplay.from_estimator`
+  and :meth:`metrics.DetCurveDisplay.from_predictions` is also deprecated in favour of
+  `curve_kwargs` and will be removed in 1.12.
+  By :user:`AnneBeyer`. :pr:`34443`
+
 :mod:`sklearn.mixture`
 ----------------------
 
@@ -233,8 +257,18 @@ more details.
 - |Fix| Fixed a memory leak when calling the `fit` method of :class:`svm.LinearSVR`.
   By :user:`Jake VanderPlas <jakevdp>`. :pr:`34256`
 
+- |Fix| Fixed an out-of-bound write in the ``fit`` method of :class:`svm.LinearSVC` memory
+  when using ``multi_class="crammer_singer"``.  By :user:`Jake VanderPlas <jakevdp>`. :pr:`34273`
+
 :mod:`sklearn.tree`
 -------------------
+
+- |MajorFeature| :class:`tree.DecisionTreeRegressor`, :class:`tree.DecisionTreeClassifier`
+  now have native support for categorical features for binary classification and
+  single-output regression. Categorical features can be specified with the
+  `categorical_features` parameter. Up to 256 categories per features are supported.
+  By `:user:`Adam Li <adam2392>`, `:user:`Arthur Lacote <cakedev0>`,
+  :user:`Adrin Jalali <adrinjalali>` and :user:`Christian Lorentzen <lorentzenchr>` :pr:`33354`
 
 - |Feature| Added a ``fill_colors`` parameter to :func:`tree.plot_tree` and
   :func:`tree.export_graphviz` to allow user-defined class colors when
@@ -248,6 +282,18 @@ more details.
   to 100 entries to improve rendering performance for estimators with many
   output features.
   By :user:`Dea María Léon <deamarialeon>`. :pr:`34362`
+
+- |Fix| Array API supporting functions and estimators that handle mixed input
+  namespaces now make negative-stride NumPy arrays contiguous before
+  transferring them to PyTorch through DLPack, avoiding a Python process
+  abort in ``torch.from_dlpack``.
+  By :user:`Yin Li <Kevin-Li-2025>`. :pr:`34380`
+
+- |Fix| ``set_output(transform="polars")`` no longer emits a
+  ``DeprecationWarning`` with ``polars>=1.42.1`` by using
+  ``how="horizontal_extend"`` instead of the deprecated
+  ``how="horizontal"`` when concatenating polars dataframes.
+  By :user:`Felix Hoehle <fhoehle>`. :pr:`34447`
 
 .. rubric:: Code and documentation contributors
 

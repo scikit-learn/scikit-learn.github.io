@@ -226,7 +226,7 @@ predictive feature, "bp", is also the same for the 2 methods. The remaining
 features are less predictive and the error bars of the permutation plot
 show that they overlap with 0.
 
-.. GENERATED FROM PYTHON SOURCE LINES 135-167
+.. GENERATED FROM PYTHON SOURCE LINES 135-177
 
 .. code-block:: Python
 
@@ -258,7 +258,17 @@ show that they overlap with 0.
     tick_labels_dict = {
         tick_labels_parameter_name: np.array(diabetes.feature_names)[sorted_idx]
     }
-    plt.boxplot(result.importances[sorted_idx].T, vert=False, **tick_labels_dict)
+    # `vert` was deprecated in matplotlib 3.11 and is replaced by `orientation`,
+    # which is available since matplotlib 3.10. The following code handles this, but
+    # as a scikit-learn user you probably can write simpler code by using
+    # `vert=False` (matplotlib < 3.11) or `orientation="horizontal"`
+    # (matplotlib >= 3.10).
+    orientation_dict = (
+        {"orientation": "horizontal"}
+        if parse_version(matplotlib.__version__) >= parse_version("3.10")
+        else {"vert": False}
+    )
+    plt.boxplot(result.importances[sorted_idx].T, **orientation_dict, **tick_labels_dict)
     plt.title("Permutation Importance (test set)")
     fig.tight_layout()
     plt.show()
@@ -277,7 +287,7 @@ show that they overlap with 0.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.319 seconds)
+   **Total running time of the script:** (0 minutes 1.562 seconds)
 
 
 .. _sphx_glr_download_auto_examples_ensemble_plot_gradient_boosting_regression.py:

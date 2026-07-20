@@ -140,7 +140,7 @@ DET display transforms the error rates as returned by the
 :func:`~sklearn.metrics.det_curve` and the axis scale using
 `scipy.stats.norm`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 86-120
+.. GENERATED FROM PYTHON SOURCE LINES 86-127
 
 .. code-block:: Python
 
@@ -159,8 +159,10 @@ DET display transforms the error rates as returned by the
     ax_det.grid(linestyle="--")
 
     for name, clf in classifiers.items():
-        (color, linestyle) = (
-            ("black", "--") if name == "Non-informative baseline" else (None, None)
+        curve_kwargs = (
+            dict(color="black", linestyle="--")
+            if name == "Non-informative baseline"
+            else None
         )
         clf.fit(X_train, y_train)
         RocCurveDisplay.from_estimator(
@@ -169,10 +171,15 @@ DET display transforms the error rates as returned by the
             y_test,
             ax=ax_roc,
             name=name,
-            curve_kwargs=dict(color=color, linestyle=linestyle),
+            curve_kwargs=curve_kwargs,
         )
         DetCurveDisplay.from_estimator(
-            clf, X_test, y_test, ax=ax_det, name=name, color=color, linestyle=linestyle
+            clf,
+            X_test,
+            y_test,
+            ax=ax_det,
+            name=name,
+            curve_kwargs=curve_kwargs,
         )
 
     plt.legend()
@@ -190,7 +197,7 @@ DET display transforms the error rates as returned by the
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 121-164
+.. GENERATED FROM PYTHON SOURCE LINES 128-171
 
 Notice that it is easier to visually assess the overall performance of
 different classification algorithms using DET curves than using ROC curves. As
@@ -239,7 +246,7 @@ and :math:`\text{FNR} = 1`, i.e.:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.182 seconds)
+   **Total running time of the script:** (0 minutes 0.279 seconds)
 
 
 .. _sphx_glr_download_auto_examples_model_selection_plot_det.py:

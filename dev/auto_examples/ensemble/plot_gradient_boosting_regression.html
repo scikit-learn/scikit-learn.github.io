@@ -35,8 +35,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -48,14 +48,14 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/colors.css?v=cc94ab7d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=a515e17a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/colors.css?v=66adee68" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=5167998d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
     <script src="../../_static/documentation_options.js?v=56ea316a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -68,7 +68,7 @@
     <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'auto_examples/ensemble/plot_gradient_boosting_regression';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.10.dev0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -626,6 +626,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../callbacks/index.html">Callbacks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../callbacks/plot_scoring_monitor.html">Analysis of the convergence of penalized logistic regression models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../callbacks/plot_callback_support.html">Supporting callbacks in third party estimators</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../classification/index.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -1186,13 +1187,23 @@ show that they overlap with 0.</p>
 <span class="n">tick_labels_dict</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">tick_labels_parameter_name</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="numpy.array" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">(</span><span class="n">diabetes</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)[</span><span class="n">sorted_idx</span><span class="p">]</span>
 <span class="p">}</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.boxplot.html#matplotlib.pyplot.boxplot" title="matplotlib.pyplot.boxplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span></a><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">importances</span><span class="p">[</span><span class="n">sorted_idx</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">vert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">tick_labels_dict</span><span class="p">)</span>
+<span class="c1"># `vert` was deprecated in matplotlib 3.11 and is replaced by `orientation`,</span>
+<span class="c1"># which is available since matplotlib 3.10. The following code handles this, but</span>
+<span class="c1"># as a scikit-learn user you probably can write simpler code by using</span>
+<span class="c1"># `vert=False` (matplotlib &lt; 3.11) or `orientation=&quot;horizontal&quot;`</span>
+<span class="c1"># (matplotlib &gt;= 3.10).</span>
+<span class="n">orientation_dict</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">parse_version</span><span class="p">(</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">parse_version</span><span class="p">(</span><span class="s2">&quot;3.10&quot;</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">{</span><span class="s2">&quot;vert&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+<span class="p">)</span>
+<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.boxplot.html#matplotlib.pyplot.boxplot" title="matplotlib.pyplot.boxplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span></a><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">importances</span><span class="p">[</span><span class="n">sorted_idx</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">orientation_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">tick_labels_dict</span><span class="p">)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title" title="matplotlib.pyplot.title" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="s2">&quot;Permutation Importance (test set)&quot;</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_plot_gradient_boosting_regression_002.png" srcset="../../_images/sphx_glr_plot_gradient_boosting_regression_002.png" alt="Feature Importance (MDI), Permutation Importance (test set)" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.319 seconds)</p>
+<img src="../../_images/sphx_glr_plot_gradient_boosting_regression_002.png" srcset="../../_images/sphx_glr_plot_gradient_boosting_regression_002.png" alt="Feature Importance (MDI), Permutation Importance (test set)" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.562 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-ensemble-plot-gradient-boosting-regression-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/ensemble/plot_gradient_boosting_regression.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo12.svg" style="width: 150px;" />
@@ -1213,18 +1224,18 @@ show that they overlap with 0.</p>
 </div>
 </div>
 <p class="rubric">Related examples</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Illustration of the effect of different regularization strategies for Gradient Boosting. The example is taken from Hastie et al 2009 [1]_."><img alt="" src="../../_images/sphx_glr_plot_gradient_boosting_regularization_thumb.png" />
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="In this example, we compute the permutation_importance of the features to a trained RandomForestClassifier using the breast_cancer_dataset. The model can easily get about 97% accuracy on a test dataset. Because this dataset contains multicollinear features, the permutation importance shows that none of the features are important, in contradiction with the high test accuracy."><img alt="" src="../../_images/sphx_glr_plot_permutation_importance_multicollinear_thumb.png" />
+<p><a class="reference internal" href="../inspection/plot_permutation_importance_multicollinear.html"><span class="doc">Permutation Importance with Multicollinear or Correlated Features</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Permutation Importance with Multicollinear or Correlated Features</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="In this example, we will compare the impurity-based feature importance of RandomForestClassifier with the permutation importance on the titanic dataset using permutation_importance. We will show that the impurity-based feature importance can inflate the importance of numerical features."><img alt="" src="../../_images/sphx_glr_plot_permutation_importance_thumb.png" />
+<p><a class="reference internal" href="../inspection/plot_permutation_importance.html"><span class="doc">Permutation Importance vs Random Forest Feature Importance (MDI)</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Permutation Importance vs Random Forest Feature Importance (MDI)</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="Illustration of the effect of different regularization strategies for Gradient Boosting. The example is taken from Hastie et al 2009 [1]_."><img alt="" src="../../_images/sphx_glr_plot_gradient_boosting_regularization_thumb.png" />
 <p><a class="reference internal" href="plot_gradient_boosting_regularization.html"><span class="doc">Gradient Boosting regularization</span></a></p>
   <div class="sphx-glr-thumbnail-title">Gradient Boosting regularization</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="This example shows the use of a forest of trees to evaluate the importance of features on an artificial classification task. The blue bars are the feature importances of the forest, along with their inter-trees variability represented by the error bars."><img alt="" src="../../_images/sphx_glr_plot_forest_importances_thumb.png" />
 <p><a class="reference internal" href="plot_forest_importances.html"><span class="doc">Feature importances with a forest of trees</span></a></p>
   <div class="sphx-glr-thumbnail-title">Feature importances with a forest of trees</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="In this example, we will compare the impurity-based feature importance of RandomForestClassifier with the permutation importance on the titanic dataset using permutation_importance. We will show that the impurity-based feature importance can inflate the importance of numerical features."><img alt="" src="../../_images/sphx_glr_plot_permutation_importance_thumb.png" />
-<p><a class="reference internal" href="../inspection/plot_permutation_importance.html"><span class="doc">Permutation Importance vs Random Forest Feature Importance (MDI)</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Permutation Importance vs Random Forest Feature Importance (MDI)</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="In this example, we compute the permutation_importance of the features to a trained RandomForestClassifier using the breast_cancer_dataset. The model can easily get about 97% accuracy on a test dataset. Because this dataset contains multicollinear features, the permutation importance shows that none of the features are important, in contradiction with the high test accuracy."><img alt="" src="../../_images/sphx_glr_plot_permutation_importance_multicollinear_thumb.png" />
-<p><a class="reference internal" href="../inspection/plot_permutation_importance_multicollinear.html"><span class="doc">Permutation Importance with Multicollinear or Correlated Features</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Permutation Importance with Multicollinear or Correlated Features</div>
 </div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 </section>
@@ -1376,8 +1387,8 @@ show that they overlap with 0.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
