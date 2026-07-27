@@ -84,7 +84,7 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="10.3. Parallelism, resource management, and configuration" href="parallelism.html" />
+    <link rel="next" title="10.3. Parallelism and resource management" href="parallelism.html" />
     <link rel="prev" title="10.1. Strategies to scale computationally: bigger data" href="scaling_strategies.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -666,7 +666,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../computing.html">10. Computing with scikit-learn</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="scaling_strategies.html">10.1. Strategies to scale computationally: bigger data</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">10.2. Computational Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parallelism.html">10.3. Parallelism, resource management, and configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallelism.html">10.3. Parallelism and resource management</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../model_persistence.html">11. Model persistence</a></li>
@@ -787,8 +787,8 @@ you an estimate of the order of magnitude of the prediction latency.</p>
 call to <code class="docutils literal notranslate"><span class="pre">predict</span></code> and similar functions. In particular, checking that
 features are finite (not NaN or infinite) involves a full pass over the
 data. If you ensure that your data is acceptable, you may suppress
-checking for finiteness by setting the environment variable
-<code class="docutils literal notranslate"><span class="pre">SKLEARN_ASSUME_FINITE</span></code> to a non-empty string before importing
+checking for finiteness by setting
+<a class="reference internal" href="../developers/global_configuration.html#envvar-sklearn-assume-finite"><span class="std std-ref">SKLEARN_ASSUME_FINITE</span></a> before importing
 scikit-learn, or configure it in Python with <a class="reference internal" href="../modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a>.
 For more control than these global settings, a <a class="reference internal" href="../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a>
 allows you to set this configuration within a specified context:</p>
@@ -958,8 +958,9 @@ involve using a large amount of temporary memory.  This may potentially exhaust
 system memory.  Where computations can be performed in fixed-memory chunks, we
 attempt to do so, and allow the user to hint at the maximum size of this
 working memory (defaulting to 1GB) using <a class="reference internal" href="../modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a> or
-<a class="reference internal" href="../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a>.  The following suggests to limit temporary working
-memory to 128 MiB:</p>
+<a class="reference internal" href="../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a>. See <a class="reference internal" href="../developers/global_configuration.html#envvar-sklearn-working-memory"><span class="std std-ref">SKLEARN_WORKING_MEMORY</span></a>
+which can be used to change the global default.</p>
+<p>The following suggests to limit temporary working memory to 128 MiB:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">config_context</span><span class="p">(</span><span class="n">working_memory</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">pass</span>  <span class="c1"># do chunked work here</span>
@@ -1045,7 +1046,7 @@ sufficient to not generate the relevant features, leaving their columns empty.</
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">10.3. </span>Parallelism, resource management, and configuration</p>
+        <p class="prev-next-title"><span class="section-number">10.3. </span>Parallelism and resource management</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
