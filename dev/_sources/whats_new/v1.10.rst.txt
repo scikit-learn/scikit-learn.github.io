@@ -65,6 +65,14 @@ See :ref:`array_api` for more details.
   with `solver="newton-cg"`.
   By :user:`Christian Lorentzen <lorentzenchr>` and :user:`Omar Salman <OmarManzoor>`. :pr:`34412`
 
+- |Fix| :class:`model_selection.GridSearchCV`, :class:`model_selection.RandomizedSearchCV`,
+  :func:`model_selection.cross_validate` and :func:`model_selection.cross_val_score`
+  no longer force `y` into `X`'s array namespace during cross-validation. Namespace
+  and device handling of `y` is delegated to the wrapped estimator, so an array API
+  `X` can be combined with a NumPy `y`, including a NumPy string `y` which cannot
+  be held by array API namespaces.
+  By :user:`Tim Head <betatim>`. :pr:`33633`
+
 - |Fix| Fixed :func:`metrics.median_absolute_error` to handle integer inputs when
   the input array namespace does not support integer inputs to its `quantile` function
   (e.g., PyTorch).
@@ -130,6 +138,17 @@ more details.
 - |Fix| :func:`datasets.fetch_openml` now correctly recovers from a corrupted
   download by re-downloading it, instead of raising an error.
   By :user:`Roman Yurchak <rth>`. :pr:`34262`
+
+:mod:`sklearn.discriminant_analysis`
+------------------------------------
+
+- |Fix| :class:`discriminant_analysis.LinearDiscriminantAnalysis` and
+  :class:`discriminant_analysis.QuadraticDiscriminantAnalysis` now return the same results
+  when using `solver="svd"` and `solver="eigen"`. The normalization for `solver="svd"` 
+  is changed to `1/n_samples` instead of `1/(n_samples - n_classes)` and `1/(n_samples - 1)`,
+  respectively, which is consistent with the maximum likelihood covariance estimator
+  (same as the `solver="eigen"` default).
+  By :user:`Daniel Herrera-Esposito <dherrera1911>`. :pr:`33626`
 
 :mod:`sklearn.ensemble`
 -----------------------
@@ -210,6 +229,13 @@ more details.
   already available with :class:`linear_model.LogisticRegression`.
   By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`33759`
 
+- |Enhancement| :class:`linear_model.ElasticNetCV`, :class:`linear_model.LassoCV` and
+  :class:`linear_model.MultiTaskElasticNetCV` as well as :func:`enet_path` and
+  :func:`lasso_path` are now faster. The (relative) speed-up is larger for lower
+  tolerance (larger values of `tol`) and achieved by avoiding to re-calculate the
+  residuals and the column norms of `X` for each penalty `alpha` along the path.
+  By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`34572`
+
 - |Fix| The `solver="newton-cg"` for :class:`linear_model.LogisticRegression`,
   :class:`linear_model.PoissonRegressor` and other GLMs is now more robust. Many
   convergence issues have been fixed, e.g. for certain ill-conditioned problems with
@@ -276,6 +302,10 @@ more details.
 
 * |Efficiency| :class:`sklearn.neighbors.KNeighborsClassifier` is now faster when running with multiple threads. The statistics returned from :class:`sklearn.neighbors.BallTree` and :class:`sklearn.neighbors.KDTree` no longer reset on each query, and are no longer incorrect when the tree is used from multiple threads. :pr:`34187`
 
+- |API| Getting statistics and number of calls from :class:`sklearn.neighbors.BallTree` and
+  :class:`sklearn.neighbors.KDTree` is deprecated. The relevant APIs will be removed in
+  version 1.12. :pr:`34242`
+
 :mod:`sklearn.pipeline`
 -----------------------
 
@@ -312,8 +342,9 @@ more details.
 
 - |MajorFeature| :class:`tree.DecisionTreeRegressor`, :class:`tree.DecisionTreeClassifier`
   now have native support for categorical features for binary classification and
-  single-output regression. Categorical features can be specified with the
-  `categorical_features` parameter. Up to 256 categories per features are supported.
+  single-output regression. All criteria are supported except for `'absolute_error'`.
+  Categorical features can be specified with the `categorical_features` parameter.
+  Up to 256 categories per features are supported.
   By `:user:`Adam Li <adam2392>`, `:user:`Arthur Lacote <cakedev0>`,
   :user:`Adrin Jalali <adrinjalali>` and :user:`Christian Lorentzen <lorentzenchr>` :pr:`33354`
 
