@@ -1103,13 +1103,12 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
     <a href="../../modules/generated/sklearn.ensemble.ExtraTreesClassifier.html#sklearn.ensemble.ExtraTreesClassifier" title="sklearn.ensemble.ExtraTreesClassifier" class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ExtraTreesClassifier</span></a><span class="p">,</span>
     <a href="../../modules/generated/sklearn.ensemble.RandomForestClassifier.html#sklearn.ensemble.RandomForestClassifier" title="sklearn.ensemble.RandomForestClassifier" class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomForestClassifier</span></a><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionBoundaryDisplay</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier" class="sphx-glr-backref-module-sklearn-tree sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DecisionTreeClassifier</span></a>
 
 <span class="c1"># Parameters</span>
 <span class="n">n_classes</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">n_estimators</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdYlBu</span>
-<span class="n">plot_step</span> <span class="o">=</span> <span class="mf">0.02</span>  <span class="c1"># fine step width for decision surface contours</span>
 <span class="n">plot_step_coarser</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># step widths for coarse classifier guesses</span>
 <span class="n">RANDOM_SEED</span> <span class="o">=</span> <span class="mi">13</span>  <span class="c1"># fix the seed on each iteration</span>
 
@@ -1156,7 +1155,7 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
             <span class="n">model_details</span> <span class="o">+=</span> <span class="s2">&quot; with </span><span class="si">{}</span><span class="s2"> estimators&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">estimators_</span><span class="p">))</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">model_details</span> <span class="o">+</span> <span class="s2">&quot; with features&quot;</span><span class="p">,</span> <span class="n">pair</span><span class="p">,</span> <span class="s2">&quot;has a score of&quot;</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
 
-        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">plot_idx</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">plot_idx</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">plot_idx</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
             <span class="c1"># Add a title at the top of each column</span>
             <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title" title="matplotlib.pyplot.title" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="n">model_title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
@@ -1165,16 +1164,18 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
         <span class="c1"># filled contour plot</span>
         <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.meshgrid.html#numpy.meshgrid" title="numpy.meshgrid" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span></a><span class="p">(</span>
-            <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">plot_step</span><span class="p">),</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">plot_step</span><span class="p">)</span>
-        <span class="p">)</span>
 
         <span class="c1"># Plot either a single DecisionTreeClassifier or alpha blend the</span>
         <span class="c1"># decision surfaces of the ensemble of classifiers</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <a href="../../modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier" title="sklearn.tree.DecisionTreeClassifier" class="sphx-glr-backref-module-sklearn-tree sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DecisionTreeClassifier</span></a><span class="p">):</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.c_.html#numpy.c_" title="numpy.c_" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">c_</span></a><span class="p">[</span><span class="n">xx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
-            <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="n">cs</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contourf.html#matplotlib.pyplot.contourf" title="matplotlib.pyplot.contourf" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">contourf</span></a><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+            <a href="../../modules/generated/sklearn.inspection.DecisionBoundaryDisplay.html#sklearn.inspection.DecisionBoundaryDisplay.from_estimator" title="sklearn.inspection.DecisionBoundaryDisplay.from_estimator" class="sphx-glr-backref-module-sklearn-inspection-DecisionBoundaryDisplay sphx-glr-backref-type-py-method"><span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span></a><span class="p">(</span>
+                <span class="n">model</span><span class="p">,</span>
+                <span class="n">X</span><span class="p">,</span>
+                <span class="n">target_colors</span><span class="o">=</span><span class="s2">&quot;RdYlBu&quot;</span><span class="p">,</span>
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+                <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span>
+                <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Choose alpha blend level with respect to the number</span>
             <span class="c1"># of estimators</span>
@@ -1182,9 +1183,14 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
             <span class="c1"># than its maximum if it achieves a good enough fit early on)</span>
             <span class="n">estimator_alpha</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">estimators_</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">estimators_</span><span class="p">:</span>
-                <span class="n">Z</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.c_.html#numpy.c_" title="numpy.c_" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">c_</span></a><span class="p">[</span><span class="n">xx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="n">ravel</span><span class="p">()])</span>
-                <span class="n">Z</span> <span class="o">=</span> <span class="n">Z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">xx</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-                <span class="n">cs</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contourf.html#matplotlib.pyplot.contourf" title="matplotlib.pyplot.contourf" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">contourf</span></a><span class="p">(</span><span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">estimator_alpha</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+                <a href="../../modules/generated/sklearn.inspection.DecisionBoundaryDisplay.html#sklearn.inspection.DecisionBoundaryDisplay.from_estimator" title="sklearn.inspection.DecisionBoundaryDisplay.from_estimator" class="sphx-glr-backref-module-sklearn-inspection-DecisionBoundaryDisplay sphx-glr-backref-type-py-method"><span class="n">DecisionBoundaryDisplay</span><span class="o">.</span><span class="n">from_estimator</span></a><span class="p">(</span>
+                    <span class="n">tree</span><span class="p">,</span>
+                    <span class="n">X</span><span class="p">,</span>
+                    <span class="n">target_colors</span><span class="o">=</span><span class="s2">&quot;RdYlBu&quot;</span><span class="p">,</span>
+                    <span class="n">alpha</span><span class="o">=</span><span class="n">estimator_alpha</span><span class="p">,</span>
+                    <span class="n">response_method</span><span class="o">=</span><span class="s2">&quot;predict&quot;</span><span class="p">,</span>
+                    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="c1"># Build a coarser grid to plot a set of ensemble classifications</span>
         <span class="c1"># to show how these are different to what we see in the decision</span>
@@ -1202,7 +1208,7 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
             <span class="n">yy_coarser</span><span class="p">,</span>
             <span class="n">s</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
             <span class="n">c</span><span class="o">=</span><span class="n">Z_points_coarser</span><span class="p">,</span>
-            <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">RdYlBu</span><span class="p">,</span>
             <span class="n">edgecolors</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -1224,7 +1230,7 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.613 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.909 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-ensemble-plot-forest-iris-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/ensemble/plot_forest_iris.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo12.svg" style="width: 150px;" />
@@ -1245,18 +1251,18 @@ AdaBoost with 30 estimators with features [2, 3] has a score of 0.98666666666666
 </div>
 </div>
 <p class="rubric">Related examples</p>
-<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="A comparison of different values for regularization parameter &#x27;alpha&#x27; on synthetic datasets. The plot shows that different alphas yield different decision functions."><img alt="" src="../../_images/sphx_glr_plot_mlp_alpha_thumb.png" />
-<p><a class="reference internal" href="../neural_networks/plot_mlp_alpha.html"><span class="doc">Varying regularization in Multi-layer Perceptron</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Varying regularization in Multi-layer Perceptron</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="Plot decision function of a weighted dataset, where the size of points is proportional to its weight."><img alt="" src="../../_images/sphx_glr_plot_sgd_weighted_samples_thumb.png" />
-<p><a class="reference internal" href="../linear_model/plot_sgd_weighted_samples.html"><span class="doc">SGD: Weighted samples</span></a></p>
-  <div class="sphx-glr-thumbnail-title">SGD: Weighted samples</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="RandomTreesEmbedding provides a way to map data to a very high-dimensional, sparse representation, which might be beneficial for classification. The mapping is completely unsupervised and very efficient."><img alt="" src="../../_images/sphx_glr_plot_random_forest_embedding_thumb.png" />
-<p><a class="reference internal" href="plot_random_forest_embedding.html"><span class="doc">Hashing feature transformation using Totally Random Trees</span></a></p>
-  <div class="sphx-glr-thumbnail-title">Hashing feature transformation using Totally Random Trees</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="Plot the decision surface of a decision tree trained on pairs of features of the iris dataset."><img alt="" src="../../_images/sphx_glr_plot_iris_dtc_thumb.png" />
+<div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="Plot the decision surface of a decision tree trained on pairs of features of the iris dataset."><img alt="" src="../../_images/sphx_glr_plot_iris_dtc_thumb.png" />
 <p><a class="reference internal" href="../tree/plot_iris_dtc.html"><span class="doc">Plot the decision surface of decision trees trained on the iris dataset</span></a></p>
   <div class="sphx-glr-thumbnail-title">Plot the decision surface of decision trees trained on the iris dataset</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="This example fits an AdaBoosted decision stump on a non-linearly separable classification dataset composed of two &quot;Gaussian quantiles&quot; clusters (see sklearn.datasets.make_gaussian_quantiles) and plots the decision boundary and decision scores. The distributions of decision scores are shown separately for samples of class A and B. The predicted class label for each sample is determined by the sign of the decision score. Samples with decision scores greater than zero are classified as B, and are otherwise classified as A. The magnitude of a decision score determines the degree of likeness with the predicted class label. Additionally, a new dataset could be constructed containing a desired purity of class B, for example, by only selecting samples with a decision score above some value."><img alt="" src="../../_images/sphx_glr_plot_adaboost_twoclass_thumb.png" />
+<p><a class="reference internal" href="plot_adaboost_twoclass.html"><span class="doc">Two-class AdaBoost</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Two-class AdaBoost</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="A comparison of several classifiers in scikit-learn on synthetic datasets. The point of this example is to illustrate the nature of decision boundaries of different classifiers. This should be taken with a grain of salt, as the intuition conveyed by these examples does not necessarily carry over to real datasets."><img alt="" src="../../_images/sphx_glr_plot_classifier_comparison_thumb.png" />
+<p><a class="reference internal" href="../classification/plot_classifier_comparison.html"><span class="doc">Classifier comparison</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Classifier comparison</div>
+</div><div class="sphx-glr-thumbcontainer" tooltip="A decision tree is boosted using the AdaBoost.R2 [1]_ algorithm on a 1D sinusoidal dataset with a small amount of Gaussian noise. 299 boosts (300 decision trees) is compared with a single decision tree regressor. As the number of boosts is increased the regressor can fit more detail."><img alt="" src="../../_images/sphx_glr_plot_adaboost_regression_thumb.png" />
+<p><a class="reference internal" href="plot_adaboost_regression.html"><span class="doc">Decision Tree Regression with AdaBoost</span></a></p>
+  <div class="sphx-glr-thumbnail-title">Decision Tree Regression with AdaBoost</div>
 </div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
 </section>
 
