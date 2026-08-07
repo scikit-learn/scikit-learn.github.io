@@ -871,16 +871,28 @@ By <a class="reference external" href="https://github.com/AnneBeyer">Anne Beyer<
 </section>
 <section id="sklearn-linear-model">
 <h3><a class="reference internal" href="../api/sklearn.linear_model.html#module-sklearn.linear_model" title="sklearn.linear_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.linear_model</span></code></a><a class="headerlink" href="#sklearn-linear-model" title="Link to this heading">#</a></h3>
-<ul class="simple">
+<ul>
 <li><p><span class="raw-html"><span class="badge text-bg-success">Major Feature</span></span>  The generalized linear models (GLM) <a class="reference internal" href="../modules/generated/sklearn.linear_model.GammaRegressor.html#sklearn.linear_model.GammaRegressor" title="sklearn.linear_model.GammaRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.GammaRegressor</span></code></a>,
 <a class="reference internal" href="../modules/generated/sklearn.linear_model.PoissonRegressor.html#sklearn.linear_model.PoissonRegressor" title="sklearn.linear_model.PoissonRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.PoissonRegressor</span></code></a> and <a class="reference internal" href="../modules/generated/sklearn.linear_model.TweedieRegressor.html#sklearn.linear_model.TweedieRegressor" title="sklearn.linear_model.TweedieRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.TweedieRegressor</span></code></a>
 are now able to fit L1 and Elastic-Net penalties with the new parameter <code class="docutils literal notranslate"><span class="pre">l1_ratio</span></code>
-together with the new solver <code class="docutils literal notranslate"><span class="pre">&quot;newton-cd-gram&quot;</span></code>.
-This new solver is also available for <a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.LogisticRegression</span></code></a>.
-It is based on the Newton solver infrastructure introduced for <code class="docutils literal notranslate"><span class="pre">&quot;newton-cholesky&quot;</span></code>
-and takes advantage of the already available and fast (e.g. via gap safe screening
-rules) coordinate descent solver of <code class="docutils literal notranslate"><span class="pre">ElasticNet(precompute=True)</span></code>.
-By <a class="reference external" href="https://github.com/lorentzenchr">Christian Lorentzen</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34377">#34377</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34523">#34523</a></p></li>
+together with the 2 new solvers <code class="docutils literal notranslate"><span class="pre">&quot;newton-cd&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;newton-cd-gram&quot;</span></code>.
+These new solvers are also available for <a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.LogisticRegression</span></code></a>.
+They are based on the Newton solver infrastructure introduced for <code class="docutils literal notranslate"><span class="pre">&quot;newton-cholesky&quot;</span></code>
+and take advantage of the already available and fast (e.g. via gap safe screening
+rules) coordinate descent solvers of <code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticNet</span></code>.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;newton-cd-gram&quot;</span></code> constructs the full Hessian (gram) matrix and then uses
+<code class="docutils literal notranslate"><span class="pre">ElasticNet(precompute=True)</span></code> as the inner solver. It is a good choice for
+<code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">&gt;&gt;</span> <span class="pre">n_features</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;newton-cd&quot;</span></code> avoids constructing the full Hessian matrix, but formulates the
+minimization problem for the inner solver as a penalized least squares problem
+(which amounts to taking the square root of the Hessian) and then uses
+<code class="docutils literal notranslate"><span class="pre">ElasticNet(precompute=False)</span></code> on it. It is a good choice for
+<code class="docutils literal notranslate"><span class="pre">n_features</span> <span class="pre">&gt;</span> <span class="pre">n_samples</span></code>.</p>
+<p>By <a class="reference external" href="https://github.com/lorentzenchr">Christian Lorentzen</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34377">#34377</a>, <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34523">#34523</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34561">#34561</a></p>
+</li>
+</ul>
+</li>
 <li><p><span class="raw-html"><span class="badge text-bg-info">Efficiency</span></span>  The <code class="docutils literal notranslate"><span class="pre">&quot;newton-cholesky&quot;</span></code> solver of <a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.LogisticRegression</span></code></a>,
 <a class="reference internal" href="../modules/generated/sklearn.linear_model.GammaRegressor.html#sklearn.linear_model.GammaRegressor" title="sklearn.linear_model.GammaRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.GammaRegressor</span></code></a>, <a class="reference internal" href="../modules/generated/sklearn.linear_model.PoissonRegressor.html#sklearn.linear_model.PoissonRegressor" title="sklearn.linear_model.PoissonRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.PoissonRegressor</span></code></a> and
 <a class="reference internal" href="../modules/generated/sklearn.linear_model.TweedieRegressor.html#sklearn.linear_model.TweedieRegressor" title="sklearn.linear_model.TweedieRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.TweedieRegressor</span></code></a> now uses an improved backtracking line search.
