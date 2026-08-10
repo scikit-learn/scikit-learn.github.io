@@ -818,24 +818,17 @@ span.prompt1:before {
   content: "$ ";
 }
 </style><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>line_profiler</span>
-</pre></div></div><p><strong>Under IPython 0.13+</strong>, first create a configuration profile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">ipython<span class="w"> </span>profile<span class="w"> </span>create</span>
-</pre></div></div><p>Then register the line_profiler extension in
-<code class="docutils literal notranslate"><span class="pre">~/.ipython/profile_default/ipython_config.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">TerminalIPythonApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;line_profiler&#39;</span><span class="p">)</span>
-<span class="n">c</span><span class="o">.</span><span class="n">InteractiveShellApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;line_profiler&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This will register the <code class="docutils literal notranslate"><span class="pre">%lprun</span></code> magic command in the IPython terminal application and the other frontends such as qtconsole and notebook.</p>
-<p>Now restart IPython and let us use this new toy:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_digits</span>
+</pre></div></div><p>Now restart IPython and let us use this new toy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">line_profiler</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_digits</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
   <span class="o">...</span> <span class="p">:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition._nmf</span><span class="w"> </span><span class="kn">import</span> <span class="n">_nls_subproblem</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="o">%</span><span class="n">lprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">_nls_subproblem</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">%</span><span class="n">lprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">_nls_subproblem</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="n">Timer</span> <span class="n">unit</span><span class="p">:</span> <span class="mf">1e-06</span> <span class="n">s</span>
 
 <span class="n">File</span><span class="p">:</span> <span class="n">sklearn</span><span class="o">/</span><span class="n">decomposition</span><span class="o">/</span><span class="n">nmf</span><span class="o">.</span><span class="n">py</span>
@@ -879,18 +872,39 @@ pin-point the most expensive expressions that would deserve additional care.</p>
 </section>
 <section id="memory-usage-profiling">
 <h2>Memory usage profiling<a class="headerlink" href="#memory-usage-profiling" title="Link to this heading">#</a></h2>
-<p>You can analyze in detail the memory usage of any Python code with the help of
-<a class="reference external" href="https://pypi.org/project/memory_profiler/">memory_profiler</a>. First,
-install the latest version:</p>
+<section id="peak-memory">
+<h3>Peak memory<a class="headerlink" href="#peak-memory" title="Link to this heading">#</a></h3>
+<p>Peak memory, i.e. the highest level of memory usage for a program, can be a
+bottleneck when processing large amounts of data. You can use <a class="reference external" href="https://bloomberg.github.io/memray/">memray</a> to measure peak memory, and discover the
+responsible code. In particular, it will tell you which Python callstacks were
+responsible for allocating the various allocations that led to peak memory.</p>
+<p>First, install the latest version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memray</span>
+</pre></div></div><p>Then, run a script using the relevant code under <code class="docutils literal notranslate"><span class="pre">memray</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">memray<span class="w"> </span>run<span class="w"> </span>example.py</span>
+</pre></div></div><p>It will tell you where it wrote the resulting data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Writing</span> <span class="n">profile</span> <span class="n">results</span> <span class="n">into</span> <span class="n">memray</span><span class="o">-</span><span class="n">example</span><span class="o">.</span><span class="n">py</span><span class="mf">.123</span><span class="o">.</span><span class="n">bin</span>
+</pre></div>
+</div>
+<p>You can then convert this data into an HTML report:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">memray<span class="w"> </span>flamegraph<span class="w"> </span>memray-example.py.123.bin</span>
+</pre></div></div><p>In this case it will generate a file called
+“memray-flamegraph-example.py.123.html” which you can then open in a browser. If
+you are not familiar with flamegraphs, see <a class="reference external" href="https://bloomberg.github.io/memray/flamegraph.html">Memray’s docs</a> for an introduction.</p>
+</section>
+<section id="memory-leaks">
+<h3>Memory leaks<a class="headerlink" href="#memory-leaks" title="Link to this heading">#</a></h3>
+<p>You can analyze the memory usage changes of any Python code with the help of
+<a class="reference external" href="https://pypi.org/project/memory_profiler/">memory_profiler</a>. It works by
+measuring how much memory usage has changed between the start of a line of code
+and the end of a line of code. As a result, it is less useful for discovering
+peak memory usage: it cannot detect any memory that is allocated and then
+immediately released while the line of code is executing, even if it’s a large
+amount.</p>
+<p>First, install the latest version:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memory_profiler</span>
-</pre></div></div><p>Then, setup the magics in a manner similar to <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code>.</p>
-<p><strong>Under IPython 0.11+</strong>, first create a configuration profile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">ipython<span class="w"> </span>profile<span class="w"> </span>create</span>
-</pre></div></div><p>Then register the extension in
-<code class="docutils literal notranslate"><span class="pre">~/.ipython/profile_default/ipython_config.py</span></code>
-alongside the line profiler:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">TerminalIPythonApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;memory_profiler&#39;</span><span class="p">)</span>
-<span class="n">c</span><span class="o">.</span><span class="n">InteractiveShellApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;memory_profiler&#39;</span><span class="p">)</span>
+</pre></div></div><p>Then, setup the magics in a manner similar to <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">memory_profiler</span>
 </pre></div>
 </div>
 <p>This will register the <code class="docutils literal notranslate"><span class="pre">%memit</span></code> and <code class="docutils literal notranslate"><span class="pre">%mprun</span></code> magic commands in the
@@ -899,9 +913,9 @@ IPython terminal application and the other frontends such as qtconsole and   not
 functions in your program. It is very similar to <code class="docutils literal notranslate"><span class="pre">%lprun</span></code>, discussed in the
 previous section. For example, from the <code class="docutils literal notranslate"><span class="pre">memory_profiler</span></code> <code class="docutils literal notranslate"><span class="pre">examples</span></code>
 directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="kn">from</span><span class="w"> </span><span class="nn">example</span><span class="w"> </span><span class="kn">import</span> <span class="n">my_func</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="kn">from</span><span class="w"> </span><span class="nn">example</span><span class="w"> </span><span class="kn">import</span> <span class="n">my_func</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span><span class="n">mprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">my_func</span> <span class="n">my_func</span><span class="p">()</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="n">mprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">my_func</span> <span class="n">my_func</span><span class="p">()</span>
 <span class="n">Filename</span><span class="p">:</span> <span class="n">example</span><span class="o">.</span><span class="n">py</span>
 
 <span class="n">Line</span> <span class="c1">#    Mem usage  Increment   Line Contents</span>
@@ -916,14 +930,17 @@ directory:</p>
 </div>
 <p>Another useful magic that <code class="docutils literal notranslate"><span class="pre">memory_profiler</span></code> defines is <code class="docutils literal notranslate"><span class="pre">%memit</span></code>, which is
 analogous to <code class="docutils literal notranslate"><span class="pre">%timeit</span></code>. It can be used as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">memory_profiler</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="o">%</span><span class="n">memit</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mf">1e7</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="o">%</span><span class="n">memit</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mf">1e7</span><span class="p">)</span>
 <span class="n">maximum</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">76.402344</span> <span class="n">MB</span> <span class="n">per</span> <span class="n">loop</span>
 </pre></div>
 </div>
 <p>For more details, see the docstrings of the magics, using <code class="docutils literal notranslate"><span class="pre">%memit?</span></code> and
 <code class="docutils literal notranslate"><span class="pre">%mprun?</span></code>.</p>
+</section>
 </section>
 <section id="using-cython">
 <h2>Using Cython<a class="headerlink" href="#using-cython" title="Link to this heading">#</a></h2>
@@ -1066,7 +1083,11 @@ a profiling report ‘line by line’.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-cython-or-c-c">Python, Cython or C/C++?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#profiling-python-code">Profiling Python code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-usage-profiling">Memory usage profiling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-usage-profiling">Memory usage profiling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peak-memory">Peak memory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-leaks">Memory leaks</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-cython">Using Cython</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#profiling-compiled-extensions">Profiling compiled extensions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-yep-and-gperftools">Using yep and gperftools</a></li>
