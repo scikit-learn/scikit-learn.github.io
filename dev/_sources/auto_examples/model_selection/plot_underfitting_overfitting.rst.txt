@@ -38,12 +38,12 @@ cross-validation. We calculate the mean squared error (MSE) on the validation
 set, the higher, the less likely the model generalizes correctly from the
 training data.
 
-.. GENERATED FROM PYTHON SOURCE LINES 23-83
+.. GENERATED FROM PYTHON SOURCE LINES 23-84
 
 
 
 .. image-sg:: /auto_examples/model_selection/images/sphx_glr_plot_underfitting_overfitting_001.png
-   :alt: Degree 1 MSE = 4.08e-01(+/- 4.25e-01), Degree 4 MSE = 4.32e-02(+/- 7.08e-02), Degree 15 MSE = 2.20e-01(+/- 4.20e-01)
+   :alt: Degree 1 MSE = 4.08e-01(+/- 4.25e-01), Degree 4 MSE = 4.32e-02(+/- 7.08e-02), Degree 15 MSE = 1.83e+08(+/- 5.48e+08)
    :srcset: /auto_examples/model_selection/images/sphx_glr_plot_underfitting_overfitting_001.png
    :class: sphx-glr-single-img
 
@@ -84,7 +84,8 @@ training data.
         plt.setp(ax, xticks=(), yticks=())
 
         polynomial_features = PolynomialFeatures(degree=degrees[i], include_bias=False)
-        linear_regression = LinearRegression()
+        # Avoid truncating small singular values (tol is used as cond in lstsq since v1.9)
+        linear_regression = LinearRegression(tol=np.finfo(float).eps)
         pipeline = Pipeline(
             [
                 ("polynomial_features", polynomial_features),
@@ -117,7 +118,7 @@ training data.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.256 seconds)
+   **Total running time of the script:** (0 minutes 0.227 seconds)
 
 
 .. _sphx_glr_download_auto_examples_model_selection_plot_underfitting_overfitting.py:
