@@ -89,6 +89,11 @@ See :ref:`array_api` for more details.
   :func:`sklearn.metrics.roc_curve`.
   By :user:`Lucy Liu <lucyleeow>`. :pr:`34442`
 
+- |Fix| :class:`discriminant_analysis.LinearDiscriminantAnalysis` now supports array
+  API inputs where `y` is from a different namespace or device than `X`,
+  including string labels.
+  By :user:`Kiyarash Fazeli <Fazel94>`. :pr:`34475`
+
 - |Fix| :class:`linear_model.PoissonRegressor` now accepts `y` and `sample_weight`
   from a different array API namespace or device than `X`.
   By :user:`Amineh Dadsetan <aminehd>`. :pr:`34480`
@@ -156,6 +161,13 @@ Callbacks
 
 :mod:`sklearn.discriminant_analysis`
 ------------------------------------
+
+- |Efficiency| :class:`discriminant_analysis.LinearDiscriminantAnalysis` is faster to fit: the
+  target is ordinal-encoded once in `fit` and the number of classes is passed down
+  to the internal helpers, removing a redundant pass over the target to recompute
+  the unique class labels. Computing the class means is up to 1.4x faster for
+  large numbers of samples and classes.
+  By :user:`Kiyarash Fazeli <Fazel94>`. :pr:`34475`
 
 - |Fix| :class:`discriminant_analysis.LinearDiscriminantAnalysis` and
   :class:`discriminant_analysis.QuadraticDiscriminantAnalysis` now return the same results
