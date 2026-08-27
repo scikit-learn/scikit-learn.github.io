@@ -793,10 +793,10 @@ is an estimator object:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">'reduce_dim'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s1">'clf'</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">estimators</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span>
-<span class="go">Pipeline(steps=[(&#39;reduce_dim&#39;, PCA()), (&#39;clf&#39;, SVC())])</span>
+<span class="go">Pipeline(steps=[('reduce_dim', PCA()), ('clf', SVC())])</span>
 </pre></div>
 </div>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="shorthand-version-using-make_pipeline">
@@ -808,7 +808,7 @@ it takes a variable number of estimators and returns a pipeline,
 filling in the names automatically:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">make_pipeline</span><span class="p">(</span><span class="n">PCA</span><span class="p">(),</span> <span class="n">SVC</span><span class="p">())</span>
-<span class="go">Pipeline(steps=[(&#39;pca&#39;, PCA()), (&#39;svc&#39;, SVC())])</span>
+<span class="go">Pipeline(steps=[('pca', PCA()), ('svc', SVC())])</span>
 </pre></div>
 </div>
 </div>
@@ -821,9 +821,9 @@ for Python Sequences such as lists or strings (although only a step of 1 is
 permitted). This is convenient for performing only some of the transformations
 (or their inverse):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span>
-<span class="go">Pipeline(steps=[(&#39;reduce_dim&#39;, PCA())])</span>
+<span class="go">Pipeline(steps=[('reduce_dim', PCA())])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-<span class="go">Pipeline(steps=[(&#39;clf&#39;, SVC())])</span>
+<span class="go">Pipeline(steps=[('clf', SVC())])</span>
 </pre></div>
 </div>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="accessing-a-step-by-name-or-position">
@@ -832,16 +832,16 @@ permitted). This is convenient for performing only some of the transformations
 <p class="sd-card-text">A specific step can also be accessed by index or name by indexing (with <code class="docutils literal notranslate"><span class="pre">[idx]</span></code>) the
 pipeline:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">steps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="go">(&#39;reduce_dim&#39;, PCA())</span>
+<span class="go">('reduce_dim', PCA())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">PCA()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[</span><span class="s1">'reduce_dim'</span><span class="p">]</span>
 <span class="go">PCA()</span>
 </pre></div>
 </div>
 <p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code>’s <code class="docutils literal notranslate"><span class="pre">named_steps</span></code> attribute allows accessing steps by name with tab
 completion in interactive environments:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">reduce_dim</span> <span class="ow">is</span> <span class="n">pipe</span><span class="p">[</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="o">.</span><span class="n">reduce_dim</span> <span class="ow">is</span> <span class="n">pipe</span><span class="p">[</span><span class="s1">'reduce_dim'</span><span class="p">]</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -857,12 +857,12 @@ pipeline slicing to get the feature names going into each step:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectKBest</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[</span>
-<span class="gp">... </span>   <span class="p">(</span><span class="s1">&#39;select&#39;</span><span class="p">,</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)),</span>
-<span class="gp">... </span>   <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">())])</span>
+<span class="gp">... </span>   <span class="p">(</span><span class="s1">'select'</span><span class="p">,</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)),</span>
+<span class="gp">... </span>   <span class="p">(</span><span class="s1">'clf'</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">())])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
-<span class="go">Pipeline(steps=[(&#39;select&#39;, SelectKBest(...)), (&#39;clf&#39;, LogisticRegression(...))])</span>
+<span class="go">Pipeline(steps=[('select', SelectKBest(...)), ('clf', LogisticRegression(...))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
-<span class="go">array([&#39;x2&#39;, &#39;x3&#39;], ...)</span>
+<span class="go">array(['x2', 'x3'], ...)</span>
 </pre></div>
 </div>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="customize-feature-names">
@@ -871,7 +871,7 @@ pipeline slicing to get the feature names going into each step:</p>
 <p class="sd-card-text">You can also provide custom feature names for the input data using
 <code class="docutils literal notranslate"><span class="pre">get_feature_names_out</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">(</span><span class="n">iris</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
-<span class="go">array([&#39;petal length (cm)&#39;, &#39;petal width (cm)&#39;], ...)</span>
+<span class="go">array(['petal length (cm)', 'petal width (cm)'], ...)</span>
 </pre></div>
 </div>
 </div>
@@ -882,9 +882,9 @@ pipeline slicing to get the feature names going into each step:</p>
 is therefore nested because it belongs to a particular sub-step. Parameters of the
 estimators in the pipeline are accessible using the <code class="docutils literal notranslate"><span class="pre">&lt;estimator&gt;__&lt;parameter&gt;</span></code>
 syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;reduce_dim&quot;</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s2">&quot;clf&quot;</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="s2">"reduce_dim"</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s2">"clf"</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">clf__C</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="go">Pipeline(steps=[(&#39;reduce_dim&#39;, PCA()), (&#39;clf&#39;, SVC(C=10))])</span>
+<span class="go">Pipeline(steps=[('reduce_dim', PCA()), ('clf', SVC(C=10))])</span>
 </pre></div>
 </div>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="when-does-it-matter?">
@@ -899,7 +899,7 @@ syntax:</p>
 </div>
 <p class="sd-card-text">Individual steps may also be replaced as parameters, and non-final steps may be
 ignored by setting them to <code class="docutils literal notranslate"><span class="pre">'passthrough'</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">reduce_dim</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;passthrough&#39;</span><span class="p">,</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">param_grid</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">reduce_dim</span><span class="o">=</span><span class="p">[</span><span class="s1">'passthrough'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">PCA</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
 <span class="gp">... </span>                  <span class="n">clf</span><span class="o">=</span><span class="p">[</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">LogisticRegression</span><span class="p">()],</span>
 <span class="gp">... </span>                  <span class="n">clf__C</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">grid_search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">)</span>
@@ -942,13 +942,13 @@ object:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">'reduce_dim'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s1">'clf'</span><span class="p">,</span> <span class="n">SVC</span><span class="p">())]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cachedir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">estimators</span><span class="p">,</span> <span class="n">memory</span><span class="o">=</span><span class="n">cachedir</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span>
 <span class="go">Pipeline(memory=...,</span>
-<span class="go">         steps=[(&#39;reduce_dim&#39;, PCA()), (&#39;clf&#39;, SVC())])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Clear the cache directory when you don&#39;t need it anymore</span>
+<span class="go">         steps=[('reduce_dim', PCA()), ('clf', SVC())])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Clear the cache directory when you don't need it anymore</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rmtree</span><span class="p">(</span><span class="n">cachedir</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -961,9 +961,9 @@ inspect the original instance such as:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_digits</span><span class="p">,</span> <span class="n">y_digits</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pca1</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">svm1</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">,</span> <span class="n">pca1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">svm1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">'reduce_dim'</span><span class="p">,</span> <span class="n">pca1</span><span class="p">),</span> <span class="p">(</span><span class="s1">'clf'</span><span class="p">,</span> <span class="n">svm1</span><span class="p">)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_digits</span><span class="p">,</span> <span class="n">y_digits</span><span class="p">)</span>
-<span class="go">Pipeline(steps=[(&#39;reduce_dim&#39;, PCA(n_components=10)), (&#39;clf&#39;, SVC())])</span>
+<span class="go">Pipeline(steps=[('reduce_dim', PCA(n_components=10)), ('clf', SVC())])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># The pca instance can be inspected directly</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pca1</span><span class="o">.</span><span class="n">components_</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(10, 64)</span>
@@ -980,12 +980,12 @@ the pipeline:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cachedir</span> <span class="o">=</span> <span class="n">mkdtemp</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pca2</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">svm2</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cached_pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">,</span> <span class="n">pca2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="n">svm2</span><span class="p">)],</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cached_pipe</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">'reduce_dim'</span><span class="p">,</span> <span class="n">pca2</span><span class="p">),</span> <span class="p">(</span><span class="s1">'clf'</span><span class="p">,</span> <span class="n">svm2</span><span class="p">)],</span>
 <span class="gp">... </span>                       <span class="n">memory</span><span class="o">=</span><span class="n">cachedir</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cached_pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_digits</span><span class="p">,</span> <span class="n">y_digits</span><span class="p">)</span>
 <span class="go">Pipeline(memory=...,</span>
-<span class="go">         steps=[(&#39;reduce_dim&#39;, PCA(n_components=10)), (&#39;clf&#39;, SVC())])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cached_pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s1">&#39;reduce_dim&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">components_</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">         steps=[('reduce_dim', PCA(n_components=10)), ('clf', SVC())])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cached_pipe</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s1">'reduce_dim'</span><span class="p">]</span><span class="o">.</span><span class="n">components_</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(10, 64)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Remove the cache directory</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rmtree</span><span class="p">(</span><span class="n">cachedir</span><span class="p">)</span>
@@ -1018,17 +1018,17 @@ be applied to the target variable:</p>
 <span class="gp">... </span>                       <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">())))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:</span><span class="mi">2000</span><span class="p">,</span> <span class="p">:],</span> <span class="n">y</span><span class="p">[:</span><span class="mi">2000</span><span class="p">]</span>  <span class="c1"># select a subset of data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transformer</span> <span class="o">=</span> <span class="n">QuantileTransformer</span><span class="p">(</span><span class="n">output_distribution</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transformer</span> <span class="o">=</span> <span class="n">QuantileTransformer</span><span class="p">(</span><span class="n">output_distribution</span><span class="o">=</span><span class="s1">'normal'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regressor</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regr</span> <span class="o">=</span> <span class="n">TransformedTargetRegressor</span><span class="p">(</span><span class="n">regressor</span><span class="o">=</span><span class="n">regressor</span><span class="p">,</span>
 <span class="gp">... </span>                                  <span class="n">transformer</span><span class="o">=</span><span class="n">transformer</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">TransformedTargetRegressor(...)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R2 score: </span><span class="si">{</span><span class="n">regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R2 score: </span><span class="si">{</span><span class="n">regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">R2 score: 0.67</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">raw_target_regr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R2 score: </span><span class="si">{</span><span class="n">raw_target_regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R2 score: </span><span class="si">{</span><span class="n">raw_target_regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">R2 score: 0.64</span>
 </pre></div>
 </div>
@@ -1046,7 +1046,7 @@ functions can be passed, defining the transformation and its inverse mapping:</p
 <span class="gp">... </span>                                  <span class="n">inverse_func</span><span class="o">=</span><span class="n">inverse_func</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">TransformedTargetRegressor(...)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R2 score: </span><span class="si">{</span><span class="n">regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R2 score: </span><span class="si">{</span><span class="n">regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">R2 score: 0.67</span>
 </pre></div>
 </div>
@@ -1061,7 +1061,7 @@ each other. However, it is possible to bypass this checking by setting
 <span class="gp">... </span>                                  <span class="n">check_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">TransformedTargetRegressor(...)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;R2 score: </span><span class="si">{</span><span class="n">regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R2 score: </span><span class="si">{</span><span class="n">regr</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">R2 score: -3.02</span>
 </pre></div>
 </div>
@@ -1104,20 +1104,20 @@ and <code class="docutils literal notranslate"><span class="pre">value</span></c
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">FeatureUnion</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">KernelPCA</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;linear_pca&#39;</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s1">&#39;kernel_pca&#39;</span><span class="p">,</span> <span class="n">KernelPCA</span><span class="p">())]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">estimators</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">'linear_pca'</span><span class="p">,</span> <span class="n">PCA</span><span class="p">()),</span> <span class="p">(</span><span class="s1">'kernel_pca'</span><span class="p">,</span> <span class="n">KernelPCA</span><span class="p">())]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">combined</span> <span class="o">=</span> <span class="n">FeatureUnion</span><span class="p">(</span><span class="n">estimators</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">combined</span>
-<span class="go">FeatureUnion(transformer_list=[(&#39;linear_pca&#39;, PCA()),</span>
-<span class="go">                               (&#39;kernel_pca&#39;, KernelPCA())])</span>
+<span class="go">FeatureUnion(transformer_list=[('linear_pca', PCA()),</span>
+<span class="go">                               ('kernel_pca', KernelPCA())])</span>
 </pre></div>
 </div>
 <p>Like pipelines, feature unions have a shorthand constructor called
 <a class="reference internal" href="generated/sklearn.pipeline.make_union.html#sklearn.pipeline.make_union" title="sklearn.pipeline.make_union"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_union</span></code></a> that does not require explicit naming of the components.</p>
 <p>Like <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code>, individual steps may be replaced using <code class="docutils literal notranslate"><span class="pre">set_params</span></code>,
 and ignored by setting to <code class="docutils literal notranslate"><span class="pre">'drop'</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combined</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">kernel_pca</span><span class="o">=</span><span class="s1">&#39;drop&#39;</span><span class="p">)</span>
-<span class="go">FeatureUnion(transformer_list=[(&#39;linear_pca&#39;, PCA()),</span>
-<span class="go">                               (&#39;kernel_pca&#39;, &#39;drop&#39;)])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combined</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">kernel_pca</span><span class="o">=</span><span class="s1">'drop'</span><span class="p">)</span>
+<span class="go">FeatureUnion(transformer_list=[('linear_pca', PCA()),</span>
+<span class="go">                               ('kernel_pca', 'drop')])</span>
 </pre></div>
 </div>
 <p class="rubric">Examples</p>
@@ -1151,11 +1151,11 @@ arrays, sparse matrices, and
 preprocessing or a specific feature extraction method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;city&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;London&#39;</span><span class="p">,</span> <span class="s1">&#39;London&#39;</span><span class="p">,</span> <span class="s1">&#39;Paris&#39;</span><span class="p">,</span> <span class="s1">&#39;Sallisaw&#39;</span><span class="p">],</span>
-<span class="gp">... </span>     <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;His Last Bow&quot;</span><span class="p">,</span> <span class="s2">&quot;How Watson Learned the Trick&quot;</span><span class="p">,</span>
-<span class="gp">... </span>               <span class="s2">&quot;A Moveable Feast&quot;</span><span class="p">,</span> <span class="s2">&quot;The Grapes of Wrath&quot;</span><span class="p">],</span>
-<span class="gp">... </span>     <span class="s1">&#39;expert_rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-<span class="gp">... </span>     <span class="s1">&#39;user_rating&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">'city'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'London'</span><span class="p">,</span> <span class="s1">'London'</span><span class="p">,</span> <span class="s1">'Paris'</span><span class="p">,</span> <span class="s1">'Sallisaw'</span><span class="p">],</span>
+<span class="gp">... </span>     <span class="s1">'title'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"His Last Bow"</span><span class="p">,</span> <span class="s2">"How Watson Learned the Trick"</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="s2">"A Moveable Feast"</span><span class="p">,</span> <span class="s2">"The Grapes of Wrath"</span><span class="p">],</span>
+<span class="gp">... </span>     <span class="s1">'expert_rating'</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="gp">... </span>     <span class="s1">'user_rating'</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]})</span>
 </pre></div>
 </div>
 <p>For this data, we might want to encode the <code class="docutils literal notranslate"><span class="pre">'city'</span></code> column as a categorical
@@ -1168,20 +1168,20 @@ By default, the remaining rating columns are ignored (<code class="docutils lite
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountVectorizer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[(</span><span class="s1">&#39;categories&#39;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">),</span> <span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>     <span class="p">(</span><span class="s1">&#39;title_bow&#39;</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">&#39;title&#39;</span><span class="p">)],</span>
-<span class="gp">... </span>    <span class="n">remainder</span><span class="o">=</span><span class="s1">&#39;drop&#39;</span><span class="p">,</span> <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="p">[(</span><span class="s1">'categories'</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">'int'</span><span class="p">),</span> <span class="p">[</span><span class="s1">'city'</span><span class="p">]),</span>
+<span class="gp">... </span>     <span class="p">(</span><span class="s1">'title_bow'</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">'title'</span><span class="p">)],</span>
+<span class="gp">... </span>    <span class="n">remainder</span><span class="o">=</span><span class="s1">'drop'</span><span class="p">,</span> <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="go">ColumnTransformer(transformers=[(&#39;categories&#39;, OneHotEncoder(dtype=&#39;int&#39;),</span>
-<span class="go">                                 [&#39;city&#39;]),</span>
-<span class="go">                                (&#39;title_bow&#39;, CountVectorizer(), &#39;title&#39;)],</span>
+<span class="go">ColumnTransformer(transformers=[('categories', OneHotEncoder(dtype='int'),</span>
+<span class="go">                                 ['city']),</span>
+<span class="go">                                ('title_bow', CountVectorizer(), 'title')],</span>
 <span class="go">                  verbose_feature_names_out=False)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
-<span class="go">array([&#39;city_London&#39;, &#39;city_Paris&#39;, &#39;city_Sallisaw&#39;, &#39;bow&#39;, &#39;feast&#39;,</span>
-<span class="go">&#39;grapes&#39;, &#39;his&#39;, &#39;how&#39;, &#39;last&#39;, &#39;learned&#39;, &#39;moveable&#39;, &#39;of&#39;, &#39;the&#39;,</span>
-<span class="go"> &#39;trick&#39;, &#39;watson&#39;, &#39;wrath&#39;], ...)</span>
+<span class="go">array(['city_London', 'city_Paris', 'city_Sallisaw', 'bow', 'feast',</span>
+<span class="go">'grapes', 'his', 'how', 'last', 'learned', 'moveable', 'of', 'the',</span>
+<span class="go"> 'trick', 'watson', 'wrath'], ...)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
 <span class="go">array([[1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],</span>
@@ -1204,11 +1204,11 @@ on data type or column name:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_column_selector</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ct</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">([</span>
-<span class="gp">... </span>      <span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">(),</span>
+<span class="gp">... </span>      <span class="p">(</span><span class="s1">'scale'</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">(),</span>
 <span class="gp">... </span>      <span class="n">make_column_selector</span><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)),</span>
-<span class="gp">... </span>      <span class="p">(</span><span class="s1">&#39;onehot&#39;</span><span class="p">,</span>
+<span class="gp">... </span>      <span class="p">(</span><span class="s1">'onehot'</span><span class="p">,</span>
 <span class="gp">... </span>      <span class="n">OneHotEncoder</span><span class="p">(),</span>
-<span class="gp">... </span>      <span class="n">make_column_selector</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;city&#39;</span><span class="p">,</span> <span class="n">dtype_include</span><span class="o">=</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">]))])</span>
+<span class="gp">... </span>      <span class="n">make_column_selector</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="s1">'city'</span><span class="p">,</span> <span class="n">dtype_include</span><span class="o">=</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="s2">"string"</span><span class="p">]))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ct</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="go">array([[ 0.904,  0.      ,  1. ,  0. ,  0. ],</span>
 <span class="go">       [-1.507,  1.414,  1. ,  0. ,  0. ],</span>
@@ -1222,9 +1222,9 @@ interpreted as the positional columns.</p>
 <code class="docutils literal notranslate"><span class="pre">remainder='passthrough'</span></code>. The values are appended to the end of the
 transformation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[(</span><span class="s1">&#39;city_category&#39;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">),[</span><span class="s1">&#39;city&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>     <span class="p">(</span><span class="s1">&#39;title_bow&#39;</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">&#39;title&#39;</span><span class="p">)],</span>
-<span class="gp">... </span>    <span class="n">remainder</span><span class="o">=</span><span class="s1">&#39;passthrough&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="p">[(</span><span class="s1">'city_category'</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">'int'</span><span class="p">),[</span><span class="s1">'city'</span><span class="p">]),</span>
+<span class="gp">... </span>     <span class="p">(</span><span class="s1">'title_bow'</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">'title'</span><span class="p">)],</span>
+<span class="gp">... </span>    <span class="n">remainder</span><span class="o">=</span><span class="s1">'passthrough'</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="go">array([[1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 5, 4],</span>
@@ -1238,8 +1238,8 @@ remaining rating columns. The transformed values are appended to the end of
 the transformation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinMaxScaler</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">[(</span><span class="s1">&#39;city_category&#39;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(),</span> <span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>     <span class="p">(</span><span class="s1">&#39;title_bow&#39;</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">&#39;title&#39;</span><span class="p">)],</span>
+<span class="gp">... </span>    <span class="p">[(</span><span class="s1">'city_category'</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(),</span> <span class="p">[</span><span class="s1">'city'</span><span class="p">]),</span>
+<span class="gp">... </span>     <span class="p">(</span><span class="s1">'title_bow'</span><span class="p">,</span> <span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">'title'</span><span class="p">)],</span>
 <span class="gp">... </span>    <span class="n">remainder</span><span class="o">=</span><span class="n">MinMaxScaler</span><span class="p">())</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)[:,</span> <span class="o">-</span><span class="mi">2</span><span class="p">:]</span>
@@ -1255,23 +1255,23 @@ Specifically, the names will be given automatically. The equivalent for the
 above example would be:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_column_transformer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="n">OneHotEncoder</span><span class="p">(),</span> <span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]),</span>
-<span class="gp">... </span>    <span class="p">(</span><span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">&#39;title&#39;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="n">OneHotEncoder</span><span class="p">(),</span> <span class="p">[</span><span class="s1">'city'</span><span class="p">]),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="n">CountVectorizer</span><span class="p">(),</span> <span class="s1">'title'</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">remainder</span><span class="o">=</span><span class="n">MinMaxScaler</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span>
 <span class="go">ColumnTransformer(remainder=MinMaxScaler(),</span>
-<span class="go">                  transformers=[(&#39;onehotencoder&#39;, OneHotEncoder(), [&#39;city&#39;]),</span>
-<span class="go">                                (&#39;countvectorizer&#39;, CountVectorizer(),</span>
-<span class="go">                                 &#39;title&#39;)])</span>
+<span class="go">                  transformers=[('onehotencoder', OneHotEncoder(), ['city']),</span>
+<span class="go">                                ('countvectorizer', CountVectorizer(),</span>
+<span class="go">                                 'title')])</span>
 </pre></div>
 </div>
 <p>If <a class="reference internal" href="generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ColumnTransformer</span></code></a> is fitted with a dataframe
 and the dataframe only has string column names, then transforming a dataframe
 will use the column names to select the columns:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ct</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span>
-<span class="gp">... </span>         <span class="p">[(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">(),</span> <span class="p">[</span><span class="s2">&quot;expert_rating&quot;</span><span class="p">])])</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_new</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;expert_rating&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-<span class="gp">... </span>                      <span class="s2">&quot;ignored_new_col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">]})</span>
+<span class="gp">... </span>         <span class="p">[(</span><span class="s2">"scale"</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">(),</span> <span class="p">[</span><span class="s2">"expert_rating"</span><span class="p">])])</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_new</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">"expert_rating"</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>                      <span class="s2">"ignored_new_col"</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ct</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_new</span><span class="p">)</span>
 <span class="go">array([[ 0.9],</span>
 <span class="go">       [ 2.1],</span>
@@ -1290,7 +1290,7 @@ many estimators. This visualization is activated by default:</p>
 <p>It can be deactivated by setting the <code class="docutils literal notranslate"><span class="pre">display</span></code> option in <a class="reference internal" href="generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a>
 to ‘text’:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_config</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">set_config</span><span class="p">(</span><span class="n">display</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_config</span><span class="p">(</span><span class="n">display</span><span class="o">=</span><span class="s1">'text'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># displays text representation in a jupyter context</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">column_trans</span>
 </pre></div>
@@ -1301,7 +1301,7 @@ to ‘text’:</p>
 As an alternative, the HTML can be written to a file using
 <a class="reference internal" href="generated/sklearn.utils.estimator_html_repr.html#sklearn.utils.estimator_html_repr" title="sklearn.utils.estimator_html_repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">estimator_html_repr</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">estimator_html_repr</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;my_estimator.html&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'my_estimator.html'</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">estimator_html_repr</span><span class="p">(</span><span class="n">clf</span><span class="p">))</span>
 </pre></div>
 </div>

@@ -921,17 +921,17 @@ do that is sparse and it might be challenging to do so.</p>
 information about the input as well, about which you can read more <a class="reference external" href="https://onnx.ai/sklearn-onnx/index.html">here</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">skl2onnx</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_onnx</span>
 <span class="n">onx</span> <span class="o">=</span> <span class="n">to_onnx</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">X</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">target_opset</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.onnx&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"filename.onnx"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">onx</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
 </pre></div>
 </div>
 <p class="sd-card-text">You can load the model in Python and use the <code class="docutils literal notranslate"><span class="pre">ONNX</span></code> runtime to get
 predictions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">onnxruntime</span><span class="w"> </span><span class="kn">import</span> <span class="n">InferenceSession</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.onnx&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"filename.onnx"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">onx</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">sess</span> <span class="o">=</span> <span class="n">InferenceSession</span><span class="p">(</span><span class="n">onx</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">])</span>
-<span class="n">pred_ort</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)})[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">sess</span> <span class="o">=</span> <span class="n">InferenceSession</span><span class="p">(</span><span class="n">onx</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="s2">"CPUExecutionProvider"</span><span class="p">])</span>
+<span class="n">pred_ort</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="s2">"X"</span><span class="p">:</span> <span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)})[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -949,7 +949,7 @@ and <a class="reference external" href="https://github.com/cloudpipe/cloudpickle
 explained in the <a class="reference external" href="https://skops.readthedocs.io/en/stable/persistence.html">documentation</a> using
 <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.dump" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.dump</span></code></a> and <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.dumps" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.dumps</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">skops.io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sio</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="s2">&quot;filename.skops&quot;</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="s2">"filename.skops"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sd-card-text">And you can load them back using <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.load" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.load</span></code></a> and
@@ -957,10 +957,10 @@ explained in the <a class="reference external" href="https://skops.readthedocs.i
 trusted by you. You can get existing unknown types in a dumped object / file
 using <a class="reference external" href="https://skops.readthedocs.io/en/stable/modules/classes.html#skops.io.get_untrusted_types" title="(in skops)"><code class="xref py py-func docutils literal notranslate"><span class="pre">skops.io.get_untrusted_types</span></code></a>, and after checking its contents,
 pass it to the load function:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unknown_types</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">get_untrusted_types</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s2">&quot;filename.skops&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">unknown_types</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">get_untrusted_types</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s2">"filename.skops"</span><span class="p">)</span>
 <span class="c1"># investigate the contents of unknown_types, and only load if you trust</span>
 <span class="c1"># everything you see.</span>
-<span class="n">clf</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;filename.skops&quot;</span><span class="p">,</span> <span class="n">trusted</span><span class="o">=</span><span class="n">unknown_types</span><span class="p">)</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"filename.skops"</span><span class="p">,</span> <span class="n">trusted</span><span class="o">=</span><span class="n">unknown_types</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="sd-card-text">Please report issues and feature requests related to this format on the <a class="reference external" href="https://github.com/skops-dev/skops/issues">skops
@@ -990,7 +990,7 @@ function to transform the data.</p></li>
 persist and load your scikit-learn model, and they all follow the same API:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here you can replace pickle with joblib or cloudpickle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">dump</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"filename.pkl"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">dump</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1001,7 +1001,7 @@ equivalent to <code class="docutils literal notranslate"><span class="pre">proto
 <p class="sd-card-text">And later when needed, you can load the same object from the persisted file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here you can replace pickle with joblib or cloudpickle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pickle</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;filename.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"filename.pkl"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">clf</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1069,10 +1069,10 @@ with the version the estimator was pickled with, an
 <a class="reference internal" href="modules/generated/sklearn.exceptions.InconsistentVersionWarning.html#sklearn.exceptions.InconsistentVersionWarning" title="sklearn.exceptions.InconsistentVersionWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">InconsistentVersionWarning</span></code></a> is raised. This warning
 can be caught to obtain the original version the estimator was pickled with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InconsistentVersionWarning</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="n">InconsistentVersionWarning</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"error"</span><span class="p">,</span> <span class="n">InconsistentVersionWarning</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;model_from_previous_version.pickle&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"model_from_previous_version.pickle"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">est</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 <span class="k">except</span> <span class="n">InconsistentVersionWarning</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">original_sklearn_version</span><span class="p">)</span>

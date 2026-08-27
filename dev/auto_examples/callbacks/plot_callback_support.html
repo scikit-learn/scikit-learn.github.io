@@ -1098,14 +1098,14 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>  <span class="c1"># controls the centroids&#39; initialization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>  <span class="c1"># controls the centroids' initialization</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_compute_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="c1"># Get the index of the closest centroid for each point in X.</span>
         <span class="k">return</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmin.html#numpy.argmin" title="numpy.argmin" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">argmin</span></a><span class="p">(</span><span class="n">euclidean_distances</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># `y` is not used but we need to declare it to adhere to scikit-learn&#39;s</span>
+        <span class="c1"># `y` is not used but we need to declare it to adhere to scikit-learn's</span>
         <span class="c1"># estimators fit convention.</span>
 
         <span class="c1"># Input validation is a good practice in estimators, for more information about</span>
@@ -1124,7 +1124,7 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
 
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">):</span>
                 <span class="c1"># For each centroid, if its cluster is not empty, its coordinates are</span>
-                <span class="c1"># updated with the coordinates of the cluster&#39;s center.</span>
+                <span class="c1"># updated with the coordinates of the cluster's center.</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -1161,10 +1161,10 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
         <span class="c1"># `setup` hooks of the callbacks. This context corresponds to the root task of</span>
         <span class="c1"># the fit function.</span>
         <span class="n">callback_ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_callback_context</span><span class="p">(</span>
-            <span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span>
+            <span class="n">task_name</span><span class="o">=</span><span class="s2">"fit"</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span>
         <span class="p">)</span>
-        <span class="c1"># Then the callback context&#39;s `call_on_fit_task_begin` method must be called. It</span>
-        <span class="c1"># will call all the callbacks&#39; `on_fit_task_begin` hooks. The `estimator`</span>
+        <span class="c1"># Then the callback context's `call_on_fit_task_begin` method must be called. It</span>
+        <span class="c1"># will call all the callbacks' `on_fit_task_begin` hooks. The `estimator`</span>
         <span class="c1"># argument is mandatory and optional `kwargs` can be passed to provide extra</span>
         <span class="c1"># contextual information for the callbacks, for example here `X` and `y` are</span>
         <span class="c1"># passed. See the following note for more details on these extra `kwargs`.</span>
@@ -1174,8 +1174,8 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">):</span>
             <span class="c1"># For each sub-task of fit (here each iteration of the loop), a sub-context</span>
-            <span class="c1"># must be created with the callback context&#39;s `subcontext` method.</span>
-            <span class="n">subcontext</span> <span class="o">=</span> <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;fit iteration&quot;</span><span class="p">)</span>
+            <span class="c1"># must be created with the callback context's `subcontext` method.</span>
+            <span class="n">subcontext</span> <span class="o">=</span> <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="s2">"fit iteration"</span><span class="p">)</span>
             <span class="c1"># The sub-context corresponds to a new sub-task, so its</span>
             <span class="c1"># `call_on_fit_task_begin` method must also be called.</span>
             <span class="n">subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
@@ -1188,7 +1188,7 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
 
             <span class="c1"># After each sub-task, the `call_on_fit_task_end` method of its sub-context</span>
             <span class="c1"># must be called, also with `estimator` as a mandatory argument and optional</span>
-            <span class="c1"># `kwargs`. It will call all the callbacks&#39; `on_fit_task_end` hooks. Here</span>
+            <span class="c1"># `kwargs`. It will call all the callbacks' `on_fit_task_end` hooks. Here</span>
             <span class="c1"># the extra `kwargs` contain a `reconstruction_attributes` callable,</span>
             <span class="c1"># which returns the necessary attributes to generate an estimator instance</span>
             <span class="c1"># ready to predict, as if the fit process just stopped at this step.</span>
@@ -1197,11 +1197,11 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
                 <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
                 <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
                 <span class="n">reconstruction_attributes</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;cluster_centers_&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span>
+                    <span class="s2">"cluster_centers_"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span>
                 <span class="p">},</span>
             <span class="p">):</span>
                 <span class="c1"># The `call_on_fit_task_end` method returns a boolean, which is set</span>
-                <span class="c1"># to True if any of the callbacks&#39; `on_fit_task_end` methods return</span>
+                <span class="c1"># to True if any of the callbacks' `on_fit_task_end` methods return</span>
                 <span class="c1"># True. This enables the interruption of the `fit` process by the</span>
                 <span class="c1"># callbacks, for example to implement early stopping. Thus the</span>
                 <span class="c1"># `call_on_fit_task_end` method can be used in an `if` / `break` block</span>
@@ -1215,11 +1215,11 @@ the example, a simplified version of KMeans is presented. First, let’s impleme
             <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
             <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
             <span class="n">reconstruction_attributes</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;cluster_centers_&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span>
+                <span class="s2">"cluster_centers_"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
 
-        <span class="c1"># The callbacks&#39; `teardown` hooks are called automatically in the decorator,</span>
+        <span class="c1"># The callbacks' `teardown` hooks are called automatically in the decorator,</span>
         <span class="c1"># after fit finishes, even if it crashed.</span>
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -1252,7 +1252,7 @@ number of callbacks.</p>
 <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SimpleKMeans - fit ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00.059
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SimpleKMeans - fit ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00.061
 </pre></div>
 </div>
 <div class="output_subarea output_html rendered_html output_result">
@@ -1961,7 +1961,7 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-15" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x726AD8AB8240)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-51" type="checkbox" checked><label for="sk-estimator-id-51" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+</style><body><div id="sk-container-id-15" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7F6720147840)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-51" type="checkbox" checked><label for="sk-estimator-id-51" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1975,7 +1975,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">random_state</td>
-            <td class="value">RandomState(M...0x726AD8AB8240</td>
+            <td class="value">RandomState(M...0x7F6720147840</td>
         </tr>
 
 
@@ -2283,7 +2283,7 @@ Let’s start with the implementation without the callback support.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The parallelized function needs to receive the callback context corresponding to its</span>
 <span class="c1"># task and the instance calling it.</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_fit_and_score_cv</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">outer_subcontext</span><span class="p">,</span> <span class="n">caller</span><span class="p">):</span>
-    <span class="c1"># The outer sub-context&#39;s `call_on_fit_task_begin` must be called.</span>
+    <span class="c1"># The outer sub-context's `call_on_fit_task_begin` must be called.</span>
     <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
     <span class="n">scores_per_fold</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
@@ -2291,24 +2291,24 @@ Let’s start with the implementation without the callback support.</p>
         <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
         <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="c1"># For each inner iteration a sub-context must be created.</span>
-        <span class="n">inner_subcontext</span> <span class="o">=</span> <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;fold </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">inner_subcontext</span> <span class="o">=</span> <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"fold </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="c1"># Since a sub-estimator is fitted in this task, the callbacks must be propagated</span>
         <span class="c1"># to that estimator with the `propagate_callback_context` context manager. Note</span>
         <span class="c1"># that only the callbacks following the `AutoPropagatedCallback` protocol can be</span>
         <span class="c1"># propagated.</span>
         <span class="k">with</span> <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">propagate_callback_context</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">):</span>
-            <span class="c1"># After the propagation, the inner sub-context&#39;s `call_on_fit_task_begin`</span>
+            <span class="c1"># After the propagation, the inner sub-context's `call_on_fit_task_begin`</span>
             <span class="c1"># method must be called.</span>
             <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span>
                 <span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span>
             <span class="p">)</span>
             <span class="n">cloned_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
             <span class="n">scores_per_fold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score_func</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
-            <span class="c1"># The inner sub-context&#39;s `call_on_fit_task_end` method must be called.</span>
+            <span class="c1"># The inner sub-context's `call_on_fit_task_end` method must be called.</span>
             <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span>
                 <span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span>
             <span class="p">)</span>
-    <span class="c1"># The outer sub-context&#39;s `call_on_fit_task_end` method must be called.</span>
+    <span class="c1"># The outer sub-context's `call_on_fit_task_end` method must be called.</span>
     <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">scores_per_fold</span>
 
@@ -2329,7 +2329,7 @@ Let’s start with the implementation without the callback support.</p>
         <span class="c1"># The callback context must be instantiated, which also calls the `setup` hooks</span>
         <span class="c1"># of the callbacks.</span>
         <span class="n">callback_ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_callback_context</span><span class="p">(</span>
-            <span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span>
+            <span class="n">task_name</span><span class="o">=</span><span class="s2">"fit"</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="c1"># The `call_on_fit_task_begin` method of this context must be called.</span>
         <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
@@ -2342,7 +2342,7 @@ Let’s start with the implementation without the callback support.</p>
         <span class="c1"># sub-contexts must be all created before the parallelization.</span>
         <span class="n">outer_subcontexts</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span>
-                <span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;param iteration&quot;</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">()</span>
+                <span class="n">task_name</span><span class="o">=</span><span class="s2">"param iteration"</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">()</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">))</span>
         <span class="p">]</span>
@@ -2362,10 +2362,10 @@ Let’s start with the implementation without the callback support.</p>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cv_results_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">,</span> <span class="n">scores_per_fold</span><span class="p">))</span>
 
-        <span class="c1"># The root context&#39;s `call_on_fit_task_end` must be called.</span>
+        <span class="c1"># The root context's `call_on_fit_task_end` must be called.</span>
         <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
 
-        <span class="c1"># The callbacks&#39; `teardown` hooks are called automatically in the decorator.</span>
+        <span class="c1"># The callbacks' `teardown` hooks are called automatically in the decorator.</span>
         <span class="k">return</span> <span class="bp">self</span>
 </pre></div>
 </div>
@@ -2384,7 +2384,7 @@ and the callbacks are ignored in the sub-estimator.</p>
 <p>Callbacks are registered to a meta-estimator the same way as to regular estimators.
 The callbacks which respect the <a class="reference internal" href="../../modules/generated/sklearn.callback.AutoPropagatedCallback.html#sklearn.callback.AutoPropagatedCallback" title="sklearn.callback.AutoPropagatedCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoPropagatedCallback</span></code></a> protocol (such as
 <a class="reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a>) are propagated to the sub-estimators.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">param_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;n_clusters&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;n_iter&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;n_clusters&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;n_iter&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}]</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">param_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"n_clusters"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"n_iter"</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="s2">"n_clusters"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"n_iter"</span><span class="p">:</span> <span class="mi">50</span><span class="p">}]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">score_func</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -3120,10 +3120,10 @@ a.param-doc-link::before {
   margin-top: 0.5em;
 }
 </style><body><div id="sk-container-id-16" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleGridSearch(cv=4,
-                 estimator=SimpleKMeans(random_state=RandomState(MT19937) at 0x726AD8AB8240),
+                 estimator=SimpleKMeans(random_state=RandomState(MT19937) at 0x7F6720147840),
                  param_list=[{&#x27;n_clusters&#x27;: 5, &#x27;n_iter&#x27;: 20},
                              {&#x27;n_clusters&#x27;: 4, &#x27;n_iter&#x27;: 50}],
-                 score_func=&lt;function score_func at 0x726aa8047060&gt;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-52" type="checkbox" ><label for="sk-estimator-id-52" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleGridSearch</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+                 score_func=&lt;function score_func at 0x7f67239faa30&gt;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-52" type="checkbox" ><label for="sk-estimator-id-52" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleGridSearch</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3137,7 +3137,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">estimator</td>
-            <td class="value">SimpleKMeans(...x726AD8AB8240)</td>
+            <td class="value">SimpleKMeans(...x7F6720147840)</td>
         </tr>
 
 
@@ -3170,7 +3170,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">score_func</td>
-            <td class="value">&lt;function sco...x726aa8047060&gt;</td>
+            <td class="value">&lt;function sco...x7f67239faa30&gt;</td>
         </tr>
 
 
@@ -3212,7 +3212,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-53" type="checkbox" ><label for="sk-estimator-id-53" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x726AD8AB8240)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-54" type="checkbox" ><label for="sk-estimator-id-54" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-53" type="checkbox" ><label for="sk-estimator-id-53" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7F6720147840)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-54" type="checkbox" ><label for="sk-estimator-id-54" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3226,7 +3226,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">random_state</td>
-            <td class="value">RandomState(M...0x726AD8AB8240</td>
+            <td class="value">RandomState(M...0x7F6720147840</td>
         </tr>
 
 
@@ -3428,7 +3428,7 @@ function forceTheme(elementId) {
 forceTheme('sk-container-id-16');</script></body>
 </div>
 <br />
-<br /><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.277 seconds)</p>
+<br /><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.265 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-callbacks-plot-callback-support-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/callbacks/plot_callback_support.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo3.svg" style="width: 150px;" />

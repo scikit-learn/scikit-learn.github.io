@@ -1087,8 +1087,8 @@ Graphical Statistics, 24(1): 44-65</a></p>
 rentals using weather and season data as well as the datetime information.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a>
 
-<span class="n">bikes</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="s2">&quot;Bike_Sharing_Demand&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># Make an explicit copy to avoid &quot;SettingWithCopyWarning&quot; from pandas</span>
+<span class="n">bikes</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="s2">"Bike_Sharing_Demand"</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Make an explicit copy to avoid "SettingWithCopyWarning" from pandas</span>
 <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">bikes</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">bikes</span><span class="o">.</span><span class="n">target</span>
 
 <span class="c1"># We use only a subset of the data to speed up the example.</span>
@@ -1098,7 +1098,7 @@ rentals using weather and season data as well as the datetime information.</p>
 </div>
 <p>The feature <code class="docutils literal notranslate"><span class="pre">&quot;weather&quot;</span></code> has a particularity: the category <code class="docutils literal notranslate"><span class="pre">&quot;heavy_rain&quot;</span></code> is a rare
 category.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="s2">&quot;weather&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="s2">"weather"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>weather
@@ -1110,16 +1110,16 @@ Name: count, dtype: int64
 </pre></div>
 </div>
 <p>Because of this rare category, we collapse it into <code class="docutils literal notranslate"><span class="pre">&quot;rain&quot;</span></code>.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="s2">&quot;weather&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">X</span><span class="p">[</span><span class="s2">&quot;weather&quot;</span><span class="p">]</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="s2">"weather"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">X</span><span class="p">[</span><span class="s2">"weather"</span><span class="p">]</span>
     <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s2">&quot;heavy_rain&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;rain&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s2">"heavy_rain"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"rain"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"category"</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>We now have a closer look at the <code class="docutils literal notranslate"><span class="pre">&quot;year&quot;</span></code> feature:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">[</span><span class="s2">"year"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>year
@@ -1130,8 +1130,8 @@ Name: count, dtype: int64
 </div>
 <p>We see that we have data from two years. We use the first year to train the
 model and the second year to test the model.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">mask_training</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">])</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">mask_training</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="s2">"year"</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"year"</span><span class="p">])</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">mask_training</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">mask_training</span><span class="p">]</span>
 <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">~</span><span class="n">mask_training</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">mask_training</span><span class="p">]</span>
 </pre></div>
@@ -1141,7 +1141,7 @@ have to preprocess the different columns accordingly.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;pandas.DataFrame&#39;&gt;
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class 'pandas.DataFrame'&gt;
 RangeIndex: 1729 entries, 0 to 8640
 Data columns (total 11 columns):
  #   Column      Non-Null Count  Dtype
@@ -1167,10 +1167,10 @@ categorical features as well.</p>
 <p>We manually define the columns containing numerical and categorical
 features.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">numerical_features</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;temp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;feel_temp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;humidity&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;windspeed&quot;</span><span class="p">,</span>
+    <span class="s2">"temp"</span><span class="p">,</span>
+    <span class="s2">"feel_temp"</span><span class="p">,</span>
+    <span class="s2">"humidity"</span><span class="p">,</span>
+    <span class="s2">"windspeed"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">categorical_features</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">numerical_features</span><span class="p">)</span>
 </pre></div>
@@ -1186,17 +1186,17 @@ by year.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="n">days</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Sun&quot;</span><span class="p">,</span> <span class="s2">&quot;Mon&quot;</span><span class="p">,</span> <span class="s2">&quot;Tue&quot;</span><span class="p">,</span> <span class="s2">&quot;Wed&quot;</span><span class="p">,</span> <span class="s2">&quot;Thu&quot;</span><span class="p">,</span> <span class="s2">&quot;Fri&quot;</span><span class="p">,</span> <span class="s2">&quot;Sat&quot;</span><span class="p">)</span>
+<span class="n">days</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Sun"</span><span class="p">,</span> <span class="s2">"Mon"</span><span class="p">,</span> <span class="s2">"Tue"</span><span class="p">,</span> <span class="s2">"Wed"</span><span class="p">,</span> <span class="s2">"Thu"</span><span class="p">,</span> <span class="s2">"Fri"</span><span class="p">,</span> <span class="s2">"Sat"</span><span class="p">)</span>
 <span class="n">hours</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">24</span><span class="p">))</span>
-<span class="n">xticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">hour</span><span class="si">}</span><span class="s2">:00&quot;</span> <span class="k">for</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/itertools.html#itertools.product" title="itertools.product" class="sphx-glr-backref-module-itertools sphx-glr-backref-type-py-function"><span class="n">product</span></a><span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">)]</span>
+<span class="n">xticklabels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">day</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">hour</span><span class="si">}</span><span class="s2">:00"</span> <span class="k">for</span> <span class="n">day</span><span class="p">,</span> <span class="n">hour</span> <span class="ow">in</span> <a href="https://docs.python.org/3/library/itertools.html#itertools.product" title="itertools.product" class="sphx-glr-backref-module-itertools sphx-glr-backref-type-py-function"><span class="n">product</span></a><span class="p">(</span><span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">)]</span>
 <span class="n">xtick_start</span><span class="p">,</span> <span class="n">xtick_period</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">average_bike_rentals</span> <span class="o">=</span> <span class="n">bikes</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;season&quot;</span><span class="p">,</span> <span class="s2">&quot;weekday&quot;</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">],</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">numeric_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
-<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axs</span><span class="p">,</span> <span class="n">average_bike_rentals</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)):</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;season&quot;</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="p">[</span><span class="s2">"year"</span><span class="p">,</span> <span class="s2">"season"</span><span class="p">,</span> <span class="s2">"weekday"</span><span class="p">,</span> <span class="s2">"hour"</span><span class="p">],</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">numeric_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">"count"</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axs</span><span class="p">,</span> <span class="n">average_bike_rentals</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"year"</span><span class="p">)):</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"season"</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># decorate the plot</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span>
@@ -1207,10 +1207,10 @@ by year.</p>
         <span class="p">)</span>
     <span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xticklabels</span><span class="p">[</span><span class="n">xtick_start</span><span class="p">::</span><span class="n">xtick_period</span><span class="p">])</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Average number of bike rentals&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Average number of bike rentals"</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Bike rental for </span><span class="si">{</span><span class="s1">&#39;2010 (train set)&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;2011 (test set)&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">"Bike rental for </span><span class="si">{</span><span class="s1">'2010 (train set)'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'2011 (test set)'</span><span class="si">}</span><span class="s2">"</span>
     <span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1_000</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">xticklabels</span><span class="p">))</span>
@@ -1241,8 +1241,8 @@ numerical features and encode the categorical features with a
 
 <span class="n">mlp_preprocessor</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnTransformer</span></a><span class="p">(</span>
     <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.QuantileTransformer.html#sklearn.preprocessing.QuantileTransformer" title="sklearn.preprocessing.QuantileTransformer" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">QuantileTransformer</span></a><span class="p">(</span><span class="n">n_quantiles</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">numerical_features</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneHotEncoder</span></a><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">),</span> <span class="n">categorical_features</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"num"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.QuantileTransformer.html#sklearn.preprocessing.QuantileTransformer" title="sklearn.preprocessing.QuantileTransformer" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">QuantileTransformer</span></a><span class="p">(</span><span class="n">n_quantiles</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span> <span class="n">numerical_features</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"cat"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneHotEncoder</span></a><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">),</span> <span class="n">categorical_features</span><span class="p">),</span>
     <span class="p">]</span>
 <span class="p">)</span>
 <span class="n">mlp_preprocessor</span>
@@ -2595,12 +2595,12 @@ encode the categorical features using a
 
 <span class="n">hgbdt_preprocessor</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnTransformer</span></a><span class="p">(</span>
     <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.OrdinalEncoder.html#sklearn.preprocessing.OrdinalEncoder" title="sklearn.preprocessing.OrdinalEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OrdinalEncoder</span></a><span class="p">(),</span> <span class="n">categorical_features</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="s2">&quot;passthrough&quot;</span><span class="p">,</span> <span class="n">numerical_features</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"cat"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.OrdinalEncoder.html#sklearn.preprocessing.OrdinalEncoder" title="sklearn.preprocessing.OrdinalEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OrdinalEncoder</span></a><span class="p">(),</span> <span class="n">categorical_features</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"num"</span><span class="p">,</span> <span class="s2">"passthrough"</span><span class="p">,</span> <span class="n">numerical_features</span><span class="p">),</span>
     <span class="p">],</span>
     <span class="n">sparse_threshold</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">verbose_feature_names_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="s2">"pandas"</span><span class="p">)</span>
 <span class="n">hgbdt_preprocessor</span>
 </pre></div>
 </div>
@@ -3811,7 +3811,7 @@ single-variable partial dependence plots.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neural_network</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.neural_network.MLPRegressor.html#sklearn.neural_network.MLPRegressor" title="sklearn.neural_network.MLPRegressor" class="sphx-glr-backref-module-sklearn-neural_network sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">MLPRegressor</span></a>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training MLPRegressor...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Training MLPRegressor..."</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="n">mlp_model</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span>
     <span class="n">mlp_preprocessor</span><span class="p">,</span>
@@ -3823,12 +3823,12 @@ single-variable partial dependence plots.</p>
     <span class="p">),</span>
 <span class="p">)</span>
 <span class="n">mlp_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test R2 score: </span><span class="si">{</span><span class="n">mlp_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Test R2 score: </span><span class="si">{</span><span class="n">mlp_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Training MLPRegressor...
-done in 0.666s
+done in 0.815s
 Test R2 score: 0.61
 </pre></div>
 </div>
@@ -3852,20 +3852,20 @@ reasonably well.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.inspection</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartialDependenceDisplay</span>
 
 <span class="n">common_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-    <span class="s2">&quot;n_jobs&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s2">&quot;grid_resolution&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="s2">&quot;random_state&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"subsample"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s2">"n_jobs"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"grid_resolution"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s2">"random_state"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots..."</span><span class="p">)</span>
 <span class="n">features_info</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># features of interest</span>
-    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">,</span> <span class="s2">&quot;windspeed&quot;</span><span class="p">,</span> <span class="s2">&quot;season&quot;</span><span class="p">,</span> <span class="s2">&quot;weather&quot;</span><span class="p">,</span> <span class="s2">&quot;hour&quot;</span><span class="p">],</span>
+    <span class="s2">"features"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">,</span> <span class="s2">"windspeed"</span><span class="p">,</span> <span class="s2">"season"</span><span class="p">,</span> <span class="s2">"weather"</span><span class="p">,</span> <span class="s2">"hour"</span><span class="p">],</span>
     <span class="c1"># type of partial dependence plot</span>
-    <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+    <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"average"</span><span class="p">,</span>
     <span class="c1"># information regarding categorical features</span>
-    <span class="s2">&quot;categorical_features&quot;</span><span class="p">:</span> <span class="n">categorical_features</span><span class="p">,</span>
+    <span class="s2">"categorical_features"</span><span class="p">:</span> <span class="n">categorical_features</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -3876,18 +3876,18 @@ reasonably well.</p>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
     <span class="p">(</span>
-        <span class="s2">&quot;Partial dependence of the number of bike rentals</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;for the bike rental dataset with an MLPRegressor&quot;</span>
+        <span class="s2">"Partial dependence of the number of bike rentals</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"for the bike rental dataset with an MLPRegressor"</span>
     <span class="p">),</span>
     <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_002.png" srcset="../../_images/sphx_glr_plot_partial_dependence_002.png" alt="Partial dependence of the number of bike rentals for the bike rental dataset with an MLPRegressor" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots...
-done in 0.864s
+done in 1.011s
 </pre></div>
 </div>
 </section>
@@ -3898,7 +3898,7 @@ compute the partial dependence on the same features. We also use the
 specific preprocessor we created for this model.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#sklearn.ensemble.HistGradientBoostingRegressor" title="sklearn.ensemble.HistGradientBoostingRegressor" class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">HistGradientBoostingRegressor</span></a>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training HistGradientBoostingRegressor...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Training HistGradientBoostingRegressor..."</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="n">hgbdt_model</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span>
     <span class="n">hgbdt_preprocessor</span><span class="p">,</span>
@@ -3909,12 +3909,12 @@ specific preprocessor we created for this model.</p>
     <span class="p">),</span>
 <span class="p">)</span>
 <span class="n">hgbdt_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test R2 score: </span><span class="si">{</span><span class="n">hgbdt_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Test R2 score: </span><span class="si">{</span><span class="n">hgbdt_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Training HistGradientBoostingRegressor...
-done in 0.104s
+done in 0.116s
 Test R2 score: 0.62
 </pre></div>
 </div>
@@ -3927,7 +3927,7 @@ also significantly cheaper to tune their hyperparameters (the defaults tend
 to work well while this is not often the case for neural networks).</p>
 <p>We will plot the partial dependence for some of the numerical and categorical
 features.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots...&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots..."</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">display</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.inspection.PartialDependenceDisplay.html#sklearn.inspection.PartialDependenceDisplay.from_estimator" title="sklearn.inspection.PartialDependenceDisplay.from_estimator" class="sphx-glr-backref-module-sklearn-inspection-PartialDependenceDisplay sphx-glr-backref-type-py-method"><span class="n">PartialDependenceDisplay</span><span class="o">.</span><span class="n">from_estimator</span></a><span class="p">(</span>
@@ -3937,18 +3937,18 @@ features.</p>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
     <span class="p">(</span>
-        <span class="s2">&quot;Partial dependence of the number of bike rentals</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;for the bike rental dataset with a gradient boosting&quot;</span>
+        <span class="s2">"Partial dependence of the number of bike rentals</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"for the bike rental dataset with a gradient boosting"</span>
     <span class="p">),</span>
     <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_003.png" srcset="../../_images/sphx_glr_plot_partial_dependence_003.png" alt="Partial dependence of the number of bike rentals for the bike rental dataset with a gradient boosting" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots...
-done in 1.045s
+done in 1.068s
 </pre></div>
 </div>
 </section>
@@ -3977,14 +3977,14 @@ response of all samples of the provided set. Thus, some effects could be hidden.
 this regard, it is possible to plot each individual response. This representation is
 called the Individual Effect Plot (ICE). In the plot below, we plot 50 randomly
 selected ICEs for the temperature and humidity features.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots and individual conditional expectation...&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots and individual conditional expectation..."</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">features_info</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;centered&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">"features"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">],</span>
+    <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"both"</span><span class="p">,</span>
+    <span class="s2">"centered"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">display</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.inspection.PartialDependenceDisplay.html#sklearn.inspection.PartialDependenceDisplay.from_estimator" title="sklearn.inspection.PartialDependenceDisplay.from_estimator" class="sphx-glr-backref-module-sklearn-inspection-PartialDependenceDisplay sphx-glr-backref-type-py-method"><span class="n">PartialDependenceDisplay</span><span class="o">.</span><span class="n">from_estimator</span></a><span class="p">(</span>
@@ -3994,12 +3994,12 @@ selected ICEs for the temperature and humidity features.</p>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;ICE and PDP representations&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"ICE and PDP representations"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_004.png" srcset="../../_images/sphx_glr_plot_partial_dependence_004.png" alt="ICE and PDP representations" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots and individual conditional expectation...
-done in 0.412s
+done in 0.540s
 </pre></div>
 </div>
 <p>We see that the ICE for the temperature feature gives us some additional information:
@@ -4019,7 +4019,7 @@ parameter <code class="docutils literal notranslate"><span class="pre">interacti
     <span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">histgradientboostingregressor__interaction_cst</span><span class="o">=</span><span class="n">interaction_cst</span><span class="p">)</span>
     <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test R2 score: </span><span class="si">{</span><span class="n">hgbdt_model_without_interactions</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Test R2 score: </span><span class="si">{</span><span class="n">hgbdt_model_without_interactions</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Test R2 score: 0.38
@@ -4027,7 +4027,7 @@ parameter <code class="docutils literal notranslate"><span class="pre">interacti
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">features_info</span><span class="p">[</span><span class="s2">&quot;centered&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">features_info</span><span class="p">[</span><span class="s2">"centered"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">display</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.inspection.PartialDependenceDisplay.html#sklearn.inspection.PartialDependenceDisplay.from_estimator" title="sklearn.inspection.PartialDependenceDisplay.from_estimator" class="sphx-glr-backref-module-sklearn-inspection-PartialDependenceDisplay sphx-glr-backref-type-py-method"><span class="n">PartialDependenceDisplay</span><span class="o">.</span><span class="n">from_estimator</span></a><span class="p">(</span>
     <span class="n">hgbdt_model_without_interactions</span><span class="p">,</span>
     <span class="n">X_train</span><span class="p">,</span>
@@ -4035,7 +4035,7 @@ parameter <code class="docutils literal notranslate"><span class="pre">interacti
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;ICE and PDP representations&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"ICE and PDP representations"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_005.png" srcset="../../_images/sphx_glr_plot_partial_dependence_005.png" alt="ICE and PDP representations" class = "sphx-glr-single-img"/></section>
@@ -4047,10 +4047,10 @@ However, ICEs cannot be plotted in an easy manner and thus interpreted. We will 
 the representation of available in
 <a class="reference internal" href="../../modules/generated/sklearn.inspection.PartialDependenceDisplay.html#sklearn.inspection.PartialDependenceDisplay.from_estimator" title="sklearn.inspection.PartialDependenceDisplay.from_estimator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_estimator</span></code></a> that is a 2D
 heatmap.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots...&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots..."</span><span class="p">)</span>
 <span class="n">features_info</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">)],</span>
-    <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+    <span class="s2">"features"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">)],</span>
+    <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"average"</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
@@ -4061,14 +4061,14 @@ heatmap.</p>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
-    <span class="s2">&quot;1-way vs 2-way of numerical PDP using gradient boosting&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span>
+    <span class="s2">"1-way vs 2-way of numerical PDP using gradient boosting"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_006.png" srcset="../../_images/sphx_glr_plot_partial_dependence_006.png" alt="1-way vs 2-way of numerical PDP using gradient boosting" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots...
-done in 6.411s
+done in 7.584s
 </pre></div>
 </div>
 <p>The two-way partial dependence plot shows the dependence of the number of bike rentals
@@ -4084,10 +4084,10 @@ dry conditions but much smoother under wetter conditions above 70% of humidity.<
 <p>We now contrast those results with the same plots computed for the model
 constrained to learn a prediction function that does not depend on such
 non-linear feature interactions.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots...&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots..."</span><span class="p">)</span>
 <span class="n">features_info</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">)],</span>
-    <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
+    <span class="s2">"features"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">)],</span>
+    <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"average"</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
@@ -4098,14 +4098,14 @@ non-linear feature interactions.</p>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
-    <span class="s2">&quot;1-way vs 2-way of numerical PDP using gradient boosting&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span>
+    <span class="s2">"1-way vs 2-way of numerical PDP using gradient boosting"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_007.png" srcset="../../_images/sphx_glr_plot_partial_dependence_007.png" alt="1-way vs 2-way of numerical PDP using gradient boosting" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots...
-done in 6.996s
+done in 7.341s
 </pre></div>
 </div>
 <p>The 1D partial dependence plots for the model constrained to not model feature
@@ -4126,11 +4126,11 @@ model.</p>
 <p>The partial dependence between categorical features will provide a discrete
 representation that can be shown as a heatmap. For instance the interaction between
 the season, the weather, and the target would be as follow:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots...&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots..."</span><span class="p">)</span>
 <span class="n">features_info</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;season&quot;</span><span class="p">,</span> <span class="s2">&quot;weather&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;season&quot;</span><span class="p">,</span> <span class="s2">&quot;weather&quot;</span><span class="p">)],</span>
-    <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;categorical_features&quot;</span><span class="p">:</span> <span class="n">categorical_features</span><span class="p">,</span>
+    <span class="s2">"features"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"season"</span><span class="p">,</span> <span class="s2">"weather"</span><span class="p">,</span> <span class="p">(</span><span class="s2">"season"</span><span class="p">,</span> <span class="s2">"weather"</span><span class="p">)],</span>
+    <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"average"</span><span class="p">,</span>
+    <span class="s2">"categorical_features"</span><span class="p">:</span> <span class="n">categorical_features</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
@@ -4142,14 +4142,14 @@ the season, the weather, and the target would be as follow:</p>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
-    <span class="s2">&quot;1-way vs 2-way PDP of categorical features using gradient boosting&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span>
+    <span class="s2">"1-way vs 2-way PDP of categorical features using gradient boosting"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_008.png" srcset="../../_images/sphx_glr_plot_partial_dependence_008.png" alt="1-way vs 2-way PDP of categorical features using gradient boosting" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots...
-done in 0.375s
+done in 0.443s
 </pre></div>
 </div>
 <section id="d-representation">
@@ -4164,26 +4164,26 @@ this time in 3 dimensions.</p>
 
 <span class="n">fig</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="matplotlib.pyplot.figure" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">)</span>
 <span class="n">pdp</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.inspection.partial_dependence.html#sklearn.inspection.partial_dependence" title="sklearn.inspection.partial_dependence" class="sphx-glr-backref-module-sklearn-inspection sphx-glr-backref-type-py-function"><span class="n">partial_dependence</span></a><span class="p">(</span>
-    <span class="n">hgbdt_model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="n">grid_resolution</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">hgbdt_model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"average"</span><span class="p">,</span> <span class="n">grid_resolution</span><span class="o">=</span><span class="mi">10</span>
 <span class="p">)</span>
-<span class="n">XX</span><span class="p">,</span> <span class="n">YY</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.meshgrid.html#numpy.meshgrid" title="numpy.meshgrid" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span></a><span class="p">(</span><span class="n">pdp</span><span class="p">[</span><span class="s2">&quot;grid_values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">pdp</span><span class="p">[</span><span class="s2">&quot;grid_values&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">XX</span><span class="p">,</span> <span class="n">YY</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.meshgrid.html#numpy.meshgrid" title="numpy.meshgrid" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span></a><span class="p">(</span><span class="n">pdp</span><span class="p">[</span><span class="s2">"grid_values"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">pdp</span><span class="p">[</span><span class="s2">"grid_values"</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">Z</span> <span class="o">=</span> <span class="n">pdp</span><span class="o">.</span><span class="n">average</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;3d&quot;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">"3d"</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
 
-<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">BuPu</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">BuPu</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"k"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
-    <span class="s2">&quot;PD of number of bike rentals on</span><span class="se">\n</span><span class="s2">the temperature and humidity GBDT model&quot;</span><span class="p">,</span>
+    <span class="s2">"PD of number of bike rentals on</span><span class="se">\n</span><span class="s2">the temperature and humidity GBDT model"</span><span class="p">,</span>
     <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="c1"># pretty init view</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">elev</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">azim</span><span class="o">=</span><span class="mi">122</span><span class="p">)</span>
 <span class="n">clb</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.colorbar.html#matplotlib.pyplot.colorbar" title="matplotlib.pyplot.colorbar" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span></a><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">clb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Partial</span><span class="se">\n</span><span class="s2">dependence&quot;</span><span class="p">)</span>
+<span class="n">clb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Partial</span><span class="se">\n</span><span class="s2">dependence"</span><span class="p">)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
@@ -4199,13 +4199,13 @@ data. The <code class="docutils literal notranslate"><span class="pre">custom_va
 want the model to be evaluated on. This overrides the <code class="docutils literal notranslate"><span class="pre">grid_resolution</span></code> and
 <code class="docutils literal notranslate"><span class="pre">percentiles</span></code> parameters. Let’s return to our gradient boosting example above
 but with custom values</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing partial dependence plots with custom evaluation values...&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing partial dependence plots with custom evaluation values..."</span><span class="p">)</span>
 <span class="n">tic</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">features_info</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;features&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
+    <span class="s2">"features"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"temp"</span><span class="p">,</span> <span class="s2">"humidity"</span><span class="p">],</span>
+    <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"both"</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">display</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.inspection.PartialDependenceDisplay.html#sklearn.inspection.PartialDependenceDisplay.from_estimator" title="sklearn.inspection.PartialDependenceDisplay.from_estimator" class="sphx-glr-backref-module-sklearn-inspection-PartialDependenceDisplay sphx-glr-backref-type-py-method"><span class="n">PartialDependenceDisplay</span><span class="o">.</span><span class="n">from_estimator</span></a><span class="p">(</span>
@@ -4216,23 +4216,23 @@ but with custom values</p>
     <span class="o">**</span><span class="n">common_params</span><span class="p">,</span>
     <span class="c1"># we set custom values for temp feature -</span>
     <span class="c1"># all other features are evaluated based on the data</span>
-    <span class="n">custom_values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">10</span><span class="p">)},</span>
+    <span class="n">custom_values</span><span class="o">=</span><span class="p">{</span><span class="s2">"temp"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">10</span><span class="p">)},</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"done in </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">tic</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">display</span><span class="o">.</span><span class="n">figure_</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
     <span class="p">(</span>
-        <span class="s2">&quot;Partial dependence of the number of bike rentals</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;for the bike rental dataset with a gradient boosting&quot;</span>
+        <span class="s2">"Partial dependence of the number of bike rentals</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"for the bike rental dataset with a gradient boosting"</span>
     <span class="p">),</span>
     <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_partial_dependence_010.png" srcset="../../_images/sphx_glr_plot_partial_dependence_010.png" alt="Partial dependence of the number of bike rentals for the bike rental dataset with a gradient boosting" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing partial dependence plots with custom evaluation values...
-done in 0.585s
+done in 0.531s
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 23.055 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 24.985 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-inspection-plot-partial-dependence-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/inspection/plot_partial_dependence.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo17.svg" style="width: 150px;" />

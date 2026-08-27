@@ -1069,21 +1069,21 @@ S. J. Phillips, R. P. Anderson, R. E. Schapire - Ecological Modelling,
 190:231-259, 2006.</p></li>
 </ul>
 <img src="../../_images/sphx_glr_plot_species_distribution_modeling_001.png" srcset="../../_images/sphx_glr_plot_species_distribution_modeling_001.png" alt="bradypus variegatus, microryzomys minutus" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>________________________________________________________________________________
-Modeling distribution of species &#39;bradypus variegatus&#39;
+Modeling distribution of species 'bradypus variegatus'
  - fit OneClassSVM ... done.
  - plot coastlines from coverage
  - predict species distribution
 
  Area under the ROC curve : 0.868443
 ________________________________________________________________________________
-Modeling distribution of species &#39;microryzomys minutus&#39;
+Modeling distribution of species 'microryzomys minutus'
  - fit OneClassSVM ... done.
  - plot coastlines from coverage
  - predict species distribution
 
  Area under the ROC curve : 0.993919
 
-time elapsed: 6.45s
+time elapsed: 6.00s
 </pre></div>
 </div>
 <div class="line-block">
@@ -1101,8 +1101,8 @@ time elapsed: 6.45s
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.fetch_species_distributions.html#sklearn.datasets.fetch_species_distributions" title="sklearn.datasets.fetch_species_distributions" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_species_distributions</span></a>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch" class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Bunch</span></a>
 
-<span class="c1"># if basemap is available, we&#39;ll use it.</span>
-<span class="c1"># otherwise, we&#39;ll improvise later...</span>
+<span class="c1"># if basemap is available, we'll use it.</span>
+<span class="c1"># otherwise, we'll improvise later...</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits.basemap</span><span class="w"> </span><span class="kn">import</span> <span class="n">Basemap</span>
 
@@ -1112,7 +1112,7 @@ time elapsed: 6.45s
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">construct_grids</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct the map grid from the batch object</span>
+<span class="w">    </span><span class="sd">"""Construct the map grid from the batch object</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1123,7 +1123,7 @@ time elapsed: 6.45s
 <span class="sd">    -------</span>
 <span class="sd">    (xgrid, ygrid) : 1-D arrays</span>
 <span class="sd">        The grid corresponding to the values in batch.coverages</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># x,y coordinates for corner cells</span>
     <span class="n">xmin</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">x_left_lower_corner</span> <span class="o">+</span> <span class="n">batch</span><span class="o">.</span><span class="n">grid_size</span>
     <span class="n">xmax</span> <span class="o">=</span> <span class="n">xmin</span> <span class="o">+</span> <span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">Nx</span> <span class="o">*</span> <span class="n">batch</span><span class="o">.</span><span class="n">grid_size</span><span class="p">)</span>
@@ -1139,38 +1139,38 @@ time elapsed: 6.45s
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">create_species_bunch</span><span class="p">(</span><span class="n">species_name</span><span class="p">,</span> <span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">,</span> <span class="n">coverages</span><span class="p">,</span> <span class="n">xgrid</span><span class="p">,</span> <span class="n">ygrid</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a bunch with information about a particular organism</span>
+<span class="w">    </span><span class="sd">"""Create a bunch with information about a particular organism</span>
 
 <span class="sd">    This will use the test/train record arrays to extract the</span>
 <span class="sd">    data specific to the given species name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bunch</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch" class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Bunch</span></a><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">species_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]))</span>
-    <span class="n">species_name</span> <span class="o">=</span> <span class="n">species_name</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">bunch</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.Bunch.html#sklearn.utils.Bunch" title="sklearn.utils.Bunch" class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Bunch</span></a><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">species_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">species_name</span> <span class="o">=</span> <span class="n">species_name</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">)</span>
     <span class="n">points</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="n">test</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">pts</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="c1"># choose points associated with the desired species</span>
-        <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">pts</span><span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">species_name</span><span class="p">]</span>
-        <span class="n">bunch</span><span class="p">[</span><span class="s2">&quot;pts_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="p">[</span><span class="n">pts</span><span class="p">[</span><span class="s2">"species"</span><span class="p">]</span> <span class="o">==</span> <span class="n">species_name</span><span class="p">]</span>
+        <span class="n">bunch</span><span class="p">[</span><span class="s2">"pts_</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">pts</span>
 
         <span class="c1"># determine coverage values for each of the training &amp; testing points</span>
-        <span class="n">ix</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.searchsorted.html#numpy.searchsorted" title="numpy.searchsorted" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span></a><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">pts</span><span class="p">[</span><span class="s2">&quot;dd long&quot;</span><span class="p">])</span>
-        <span class="n">iy</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.searchsorted.html#numpy.searchsorted" title="numpy.searchsorted" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span></a><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span> <span class="n">pts</span><span class="p">[</span><span class="s2">&quot;dd lat&quot;</span><span class="p">])</span>
-        <span class="n">bunch</span><span class="p">[</span><span class="s2">&quot;cov_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">coverages</span><span class="p">[:,</span> <span class="o">-</span><span class="n">iy</span><span class="p">,</span> <span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">ix</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.searchsorted.html#numpy.searchsorted" title="numpy.searchsorted" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span></a><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">pts</span><span class="p">[</span><span class="s2">"dd long"</span><span class="p">])</span>
+        <span class="n">iy</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.searchsorted.html#numpy.searchsorted" title="numpy.searchsorted" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span></a><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span> <span class="n">pts</span><span class="p">[</span><span class="s2">"dd lat"</span><span class="p">])</span>
+        <span class="n">bunch</span><span class="p">[</span><span class="s2">"cov_</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">coverages</span><span class="p">[:,</span> <span class="o">-</span><span class="n">iy</span><span class="p">,</span> <span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
 
     <span class="k">return</span> <span class="n">bunch</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_species_distribution</span><span class="p">(</span>
-    <span class="n">species</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;bradypus_variegatus_0&quot;</span><span class="p">,</span> <span class="s2">&quot;microryzomys_minutus_0&quot;</span><span class="p">),</span>
+    <span class="n">species</span><span class="o">=</span><span class="p">(</span><span class="s2">"bradypus_variegatus_0"</span><span class="p">,</span> <span class="s2">"microryzomys_minutus_0"</span><span class="p">),</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Plot the species distribution.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">species</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="s2">&quot;Note: when more than two species are provided,&quot;</span>
-            <span class="s2">&quot; only the first two will be used&quot;</span>
+            <span class="s2">"Note: when more than two species are provided,"</span>
+            <span class="s2">" only the first two will be used"</span>
         <span class="p">)</span>
 
     <span class="n">t0</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
@@ -1199,14 +1199,14 @@ time elapsed: 6.45s
         <a href="https://numpy.org/doc/stable/reference/random/generated/numpy.random.randint.html#numpy.random.randint" title="numpy.random.randint" class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span></a><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">Nx</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10000</span><span class="p">),</span>
     <span class="p">]</span><span class="o">.</span><span class="n">T</span>
 
-    <span class="c1"># We&#39;ll make use of the fact that coverages[6] has measurements at all</span>
+    <span class="c1"># We'll make use of the fact that coverages[6] has measurements at all</span>
     <span class="c1"># land points.  This will help us decide between land and water.</span>
     <span class="n">land_reference</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">coverages</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
 
     <span class="c1"># Fit, predict, and plot for each species.</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">species</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">BV_bunch</span><span class="p">,</span> <span class="n">MM_bunch</span><span class="p">]):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;_&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Modeling distribution of species &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">species</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"_"</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Modeling distribution of species '</span><span class="si">%s</span><span class="s2">'"</span> <span class="o">%</span> <span class="n">species</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="c1"># Standardize features</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="n">species</span><span class="o">.</span><span class="n">cov_train</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1214,39 +1214,39 @@ time elapsed: 6.45s
         <span class="n">train_cover_std</span> <span class="o">=</span> <span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="n">cov_train</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">std</span>
 
         <span class="c1"># Fit OneClassSVM</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - fit OneClassSVM ... &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">clf</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.svm.OneClassSVM.html#sklearn.svm.OneClassSVM" title="sklearn.svm.OneClassSVM" class="sphx-glr-backref-module-sklearn-svm sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">svm</span><span class="o">.</span><span class="n">OneClassSVM</span></a><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">" - fit OneClassSVM ... "</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
+        <span class="n">clf</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.svm.OneClassSVM.html#sklearn.svm.OneClassSVM" title="sklearn.svm.OneClassSVM" class="sphx-glr-backref-module-sklearn-svm sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">svm</span><span class="o">.</span><span class="n">OneClassSVM</span></a><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">"rbf"</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
         <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_cover_std</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"done."</span><span class="p">)</span>
 
         <span class="c1"># Plot map of South America</span>
         <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">basemap</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - plot coastlines using basemap&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" - plot coastlines using basemap"</span><span class="p">)</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">(</span>
-                <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;cyl&quot;</span><span class="p">,</span>
+                <span class="n">projection</span><span class="o">=</span><span class="s2">"cyl"</span><span class="p">,</span>
                 <span class="n">llcrnrlat</span><span class="o">=</span><span class="n">Y</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
                 <span class="n">urcrnrlat</span><span class="o">=</span><span class="n">Y</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
                 <span class="n">llcrnrlon</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
                 <span class="n">urcrnrlon</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
-                <span class="n">resolution</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">,</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="s2">"c"</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">m</span><span class="o">.</span><span class="n">drawcoastlines</span><span class="p">()</span>
             <span class="n">m</span><span class="o">.</span><span class="n">drawcountries</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - plot coastlines from coverage&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">" - plot coastlines from coverage"</span><span class="p">)</span>
             <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contour.html#matplotlib.pyplot.contour" title="matplotlib.pyplot.contour" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">contour</span></a><span class="p">(</span>
-                <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">land_reference</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">9998</span><span class="p">],</span> <span class="n">colors</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s2">&quot;solid&quot;</span>
+                <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">land_reference</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">9998</span><span class="p">],</span> <span class="n">colors</span><span class="o">=</span><span class="s2">"k"</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s2">"solid"</span>
             <span class="p">)</span>
             <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.xticks.html#matplotlib.pyplot.xticks" title="matplotlib.pyplot.xticks" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span></a><span class="p">([])</span>
             <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.yticks.html#matplotlib.pyplot.yticks" title="matplotlib.pyplot.yticks" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">yticks</span></a><span class="p">([])</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; - predict species distribution&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">" - predict species distribution"</span><span class="p">)</span>
 
         <span class="c1"># Predict species distribution using the training data</span>
         <span class="n">Z</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html#numpy.ones" title="numpy.ones" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">Ny</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">Nx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="numpy.float64" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">float64</span></a><span class="p">)</span>
 
-        <span class="c1"># We&#39;ll predict only for the land points.</span>
+        <span class="c1"># We'll predict only for the land points.</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">land_reference</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">9999</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
         <span class="n">coverages_land</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">coverages</span><span class="p">[:,</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span>
 
@@ -1259,28 +1259,28 @@ time elapsed: 6.45s
 
         <span class="c1"># plot contours of the prediction</span>
         <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contourf.html#matplotlib.pyplot.contourf" title="matplotlib.pyplot.contourf" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">contourf</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">Reds</span><span class="p">)</span>
-        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.colorbar.html#matplotlib.pyplot.colorbar" title="matplotlib.pyplot.colorbar" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span></a><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2">&quot;</span><span class="p">)</span>
+        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.colorbar.html#matplotlib.pyplot.colorbar" title="matplotlib.pyplot.colorbar" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span></a><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">"</span><span class="si">%.2f</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># scatter training/testing points</span>
         <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="matplotlib.pyplot.scatter" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span></a><span class="p">(</span>
-            <span class="n">species</span><span class="o">.</span><span class="n">pts_train</span><span class="p">[</span><span class="s2">&quot;dd long&quot;</span><span class="p">],</span>
-            <span class="n">species</span><span class="o">.</span><span class="n">pts_train</span><span class="p">[</span><span class="s2">&quot;dd lat&quot;</span><span class="p">],</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">pts_train</span><span class="p">[</span><span class="s2">"dd long"</span><span class="p">],</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">pts_train</span><span class="p">[</span><span class="s2">"dd lat"</span><span class="p">],</span>
             <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
-            <span class="n">c</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
-            <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;^&quot;</span><span class="p">,</span>
-            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+            <span class="n">c</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="s2">"^"</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">"train"</span><span class="p">,</span>
         <span class="p">)</span>
         <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="matplotlib.pyplot.scatter" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span></a><span class="p">(</span>
-            <span class="n">species</span><span class="o">.</span><span class="n">pts_test</span><span class="p">[</span><span class="s2">&quot;dd long&quot;</span><span class="p">],</span>
-            <span class="n">species</span><span class="o">.</span><span class="n">pts_test</span><span class="p">[</span><span class="s2">&quot;dd lat&quot;</span><span class="p">],</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">pts_test</span><span class="p">[</span><span class="s2">"dd long"</span><span class="p">],</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">pts_test</span><span class="p">[</span><span class="s2">"dd lat"</span><span class="p">],</span>
             <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
-            <span class="n">c</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
-            <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
-            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+            <span class="n">c</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="s2">"x"</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">"test"</span><span class="p">,</span>
         <span class="p">)</span>
         <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html#matplotlib.pyplot.legend" title="matplotlib.pyplot.legend" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">legend</span></a><span class="p">()</span>
         <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.title.html#matplotlib.pyplot.title" title="matplotlib.pyplot.title" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">title</span></a><span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.axis.html#matplotlib.pyplot.axis" title="matplotlib.pyplot.axis" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">axis</span></a><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.axis.html#matplotlib.pyplot.axis" title="matplotlib.pyplot.axis" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">axis</span></a><span class="p">(</span><span class="s2">"equal"</span><span class="p">)</span>
 
         <span class="c1"># Compute AUC with regards to background points</span>
         <span class="n">pred_background</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="n">background_points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">background_points</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
@@ -1289,17 +1289,17 @@ time elapsed: 6.45s
         <span class="n">y</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.r_.html#numpy.r_" title="numpy.r_" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">r_</span></a><span class="p">[</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html#numpy.ones" title="numpy.ones" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="n">pred_test</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="n">pred_background</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
         <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.metrics.roc_curve.html#sklearn.metrics.roc_curve" title="sklearn.metrics.roc_curve" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">metrics</span><span class="o">.</span><span class="n">roc_curve</span></a><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
         <span class="n">roc_auc</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc" title="sklearn.metrics.auc" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">metrics</span><span class="o">.</span><span class="n">auc</span></a><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
-        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.text.html#matplotlib.pyplot.text" title="matplotlib.pyplot.text" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">text</span></a><span class="p">(</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="o">-</span><span class="mi">70</span><span class="p">,</span> <span class="s2">&quot;AUC: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">roc_auc</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Area under the ROC curve : </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">roc_auc</span><span class="p">)</span>
+        <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.text.html#matplotlib.pyplot.text" title="matplotlib.pyplot.text" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">text</span></a><span class="p">(</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="o">-</span><span class="mi">70</span><span class="p">,</span> <span class="s2">"AUC: </span><span class="si">%.3f</span><span class="s2">"</span> <span class="o">%</span> <span class="n">roc_auc</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">"right"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2"> Area under the ROC curve : </span><span class="si">%f</span><span class="s2">"</span> <span class="o">%</span> <span class="n">roc_auc</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">time elapsed: </span><span class="si">%.2f</span><span class="s2">s&quot;</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">time elapsed: </span><span class="si">%.2f</span><span class="s2">s"</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
 
 
 <span class="n">plot_species_distribution</span><span class="p">()</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.632 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.193 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-applications-plot-species-distribution-modeling-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/applications/plot_species_distribution_modeling.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo.svg" style="width: 150px;" />

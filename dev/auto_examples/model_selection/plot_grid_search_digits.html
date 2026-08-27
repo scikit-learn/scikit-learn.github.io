@@ -1072,7 +1072,7 @@ Thus, we will get a final data array of shape <code class="docutils literal notr
 <span class="n">X</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="mi">8</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;The number of images is </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> and each image contains </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> pixels&quot;</span>
+    <span class="sa">f</span><span class="s2">"The number of images is </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> and each image contains </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> pixels"</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -1092,7 +1092,7 @@ and a testing set of equal size.</p>
 <p>We will select a classifier by searching the best hyper-parameters on folds
 of the training set. To do this, we need to define
 the scores to select the best candidate.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">]</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"precision"</span><span class="p">,</span> <span class="s2">"recall"</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>We can also define a function to be passed to the <code class="docutils literal notranslate"><span class="pre">refit</span></code> parameter of the
@@ -1109,24 +1109,24 @@ arbitrary.</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">print_dataframe</span><span class="p">(</span><span class="n">filtered_cv_results</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pretty print for filtered dataframe&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Pretty print for filtered dataframe"""</span>
     <span class="k">for</span> <span class="n">mean_precision</span><span class="p">,</span> <span class="n">std_precision</span><span class="p">,</span> <span class="n">mean_recall</span><span class="p">,</span> <span class="n">std_recall</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">&quot;mean_test_precision&quot;</span><span class="p">],</span>
-        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">&quot;std_test_precision&quot;</span><span class="p">],</span>
-        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">&quot;mean_test_recall&quot;</span><span class="p">],</span>
-        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">&quot;std_test_recall&quot;</span><span class="p">],</span>
-        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">],</span>
+        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">"mean_test_precision"</span><span class="p">],</span>
+        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">"std_test_precision"</span><span class="p">],</span>
+        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">"mean_test_recall"</span><span class="p">],</span>
+        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">"std_test_recall"</span><span class="p">],</span>
+        <span class="n">filtered_cv_results</span><span class="p">[</span><span class="s2">"params"</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;precision: </span><span class="si">{</span><span class="n">mean_precision</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> (±</span><span class="si">{</span><span class="n">std_precision</span><span class="si">:</span><span class="s2">0.03f</span><span class="si">}</span><span class="s2">),&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot; recall: </span><span class="si">{</span><span class="n">mean_recall</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> (±</span><span class="si">{</span><span class="n">std_recall</span><span class="si">:</span><span class="s2">0.03f</span><span class="si">}</span><span class="s2">),&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot; for </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"precision: </span><span class="si">{</span><span class="n">mean_precision</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> (±</span><span class="si">{</span><span class="n">std_precision</span><span class="si">:</span><span class="s2">0.03f</span><span class="si">}</span><span class="s2">),"</span>
+            <span class="sa">f</span><span class="s2">" recall: </span><span class="si">{</span><span class="n">mean_recall</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2"> (±</span><span class="si">{</span><span class="n">std_recall</span><span class="si">:</span><span class="s2">0.03f</span><span class="si">}</span><span class="s2">),"</span>
+            <span class="sa">f</span><span class="s2">" for </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
     <span class="nb">print</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">refit_strategy</span><span class="p">(</span><span class="n">cv_results</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define the strategy to select the best estimator.</span>
+<span class="w">    </span><span class="sd">"""Define the strategy to select the best estimator.</span>
 
 <span class="sd">    The strategy defined here is to filter-out all results below a precision threshold</span>
 <span class="sd">    of 0.98, rank the remaining by recall and keep all models with one standard</span>
@@ -1142,60 +1142,60 @@ arbitrary.</p>
 <span class="sd">    -------</span>
 <span class="sd">    best_index : int</span>
 <span class="sd">        The index of the best estimator as it appears in `cv_results`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># print the info about the grid-search for the different scores</span>
     <span class="n">precision_threshold</span> <span class="o">=</span> <span class="mf">0.98</span>
 
     <span class="n">cv_results_</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">cv_results</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All grid-search results:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"All grid-search results:"</span><span class="p">)</span>
     <span class="n">print_dataframe</span><span class="p">(</span><span class="n">cv_results_</span><span class="p">)</span>
 
     <span class="c1"># Filter-out all results below the threshold</span>
     <span class="n">high_precision_cv_results</span> <span class="o">=</span> <span class="n">cv_results_</span><span class="p">[</span>
-        <span class="n">cv_results_</span><span class="p">[</span><span class="s2">&quot;mean_test_precision&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">precision_threshold</span>
+        <span class="n">cv_results_</span><span class="p">[</span><span class="s2">"mean_test_precision"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">precision_threshold</span>
     <span class="p">]</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Models with a precision higher than </span><span class="si">{</span><span class="n">precision_threshold</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Models with a precision higher than </span><span class="si">{</span><span class="n">precision_threshold</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
     <span class="n">print_dataframe</span><span class="p">(</span><span class="n">high_precision_cv_results</span><span class="p">)</span>
 
     <span class="n">high_precision_cv_results</span> <span class="o">=</span> <span class="n">high_precision_cv_results</span><span class="p">[</span>
         <span class="p">[</span>
-            <span class="s2">&quot;mean_score_time&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;mean_test_recall&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;std_test_recall&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;mean_test_precision&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;std_test_precision&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;rank_test_recall&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;rank_test_precision&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;params&quot;</span><span class="p">,</span>
+            <span class="s2">"mean_score_time"</span><span class="p">,</span>
+            <span class="s2">"mean_test_recall"</span><span class="p">,</span>
+            <span class="s2">"std_test_recall"</span><span class="p">,</span>
+            <span class="s2">"mean_test_precision"</span><span class="p">,</span>
+            <span class="s2">"std_test_precision"</span><span class="p">,</span>
+            <span class="s2">"rank_test_recall"</span><span class="p">,</span>
+            <span class="s2">"rank_test_precision"</span><span class="p">,</span>
+            <span class="s2">"params"</span><span class="p">,</span>
         <span class="p">]</span>
     <span class="p">]</span>
 
     <span class="c1"># Select the most performant models in terms of recall</span>
     <span class="c1"># (within 1 sigma from the best)</span>
-    <span class="n">best_recall_std</span> <span class="o">=</span> <span class="n">high_precision_cv_results</span><span class="p">[</span><span class="s2">&quot;mean_test_recall&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    <span class="n">best_recall</span> <span class="o">=</span> <span class="n">high_precision_cv_results</span><span class="p">[</span><span class="s2">&quot;mean_test_recall&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">best_recall_std</span> <span class="o">=</span> <span class="n">high_precision_cv_results</span><span class="p">[</span><span class="s2">"mean_test_recall"</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+    <span class="n">best_recall</span> <span class="o">=</span> <span class="n">high_precision_cv_results</span><span class="p">[</span><span class="s2">"mean_test_recall"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
     <span class="n">best_recall_threshold</span> <span class="o">=</span> <span class="n">best_recall</span> <span class="o">-</span> <span class="n">best_recall_std</span>
 
     <span class="n">high_recall_cv_results</span> <span class="o">=</span> <span class="n">high_precision_cv_results</span><span class="p">[</span>
-        <span class="n">high_precision_cv_results</span><span class="p">[</span><span class="s2">&quot;mean_test_recall&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">best_recall_threshold</span>
+        <span class="n">high_precision_cv_results</span><span class="p">[</span><span class="s2">"mean_test_recall"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">best_recall_threshold</span>
     <span class="p">]</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;Out of the previously selected high precision models, we keep all the</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;the models within one standard deviation of the highest recall model:&quot;</span>
+        <span class="s2">"Out of the previously selected high precision models, we keep all the</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"the models within one standard deviation of the highest recall model:"</span>
     <span class="p">)</span>
     <span class="n">print_dataframe</span><span class="p">(</span><span class="n">high_recall_cv_results</span><span class="p">)</span>
 
     <span class="c1"># From the best candidates, select the fastest model to predict</span>
     <span class="n">fastest_top_recall_high_precision_index</span> <span class="o">=</span> <span class="n">high_recall_cv_results</span><span class="p">[</span>
-        <span class="s2">&quot;mean_score_time&quot;</span>
+        <span class="s2">"mean_score_time"</span>
     <span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()</span>
 
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The selected final model is the fastest to predict out of the previously</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;selected subset of best models based on precision and recall.</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;Its scoring time is:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">high_recall_cv_results</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fastest_top_recall_high_precision_index</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="s2">"</span><span class="se">\n</span><span class="s2">The selected final model is the fastest to predict out of the previously</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"selected subset of best models based on precision and recall.</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"Its scoring time is:</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">high_recall_cv_results</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">fastest_top_recall_high_precision_index</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">fastest_top_recall_high_precision_index</span>
@@ -1210,8 +1210,8 @@ of the hyper-parameters and create the grid-search instance:</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="sklearn.svm.SVC" class="sphx-glr-backref-module-sklearn-svm sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SVC</span></a>
 
 <span class="n">tuned_parameters</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;rbf&quot;</span><span class="p">],</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]},</span>
-    <span class="p">{</span><span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">],</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">"kernel"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"rbf"</span><span class="p">],</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span> <span class="s2">"C"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">"kernel"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"linear"</span><span class="p">],</span> <span class="s2">"C"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">]},</span>
 <span class="p">]</span>
 
 <span class="n">grid_search</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a><span class="p">(</span>
@@ -1221,47 +1221,47 @@ of the hyper-parameters and create the grid-search instance:</p>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>All grid-search results:
-precision: 1.000 (±0.000), recall: 0.854 (±0.063), for {&#39;C&#39;: 1, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.257 (±0.061), for {&#39;C&#39;: 1, &#39;gamma&#39;: 0.0001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 10, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 0.968 (±0.039), recall: 0.780 (±0.083), for {&#39;C&#39;: 10, &#39;gamma&#39;: 0.0001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 100, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 0.905 (±0.058), recall: 0.889 (±0.074), for {&#39;C&#39;: 100, &#39;gamma&#39;: 0.0001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 1000, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 0.904 (±0.058), recall: 0.890 (±0.073), for {&#39;C&#39;: 1000, &#39;gamma&#39;: 0.0001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 0.695 (±0.073), recall: 0.743 (±0.065), for {&#39;C&#39;: 1, &#39;kernel&#39;: &#39;linear&#39;}
-precision: 0.643 (±0.066), recall: 0.757 (±0.066), for {&#39;C&#39;: 10, &#39;kernel&#39;: &#39;linear&#39;}
-precision: 0.611 (±0.028), recall: 0.744 (±0.044), for {&#39;C&#39;: 100, &#39;kernel&#39;: &#39;linear&#39;}
-precision: 0.618 (±0.039), recall: 0.744 (±0.044), for {&#39;C&#39;: 1000, &#39;kernel&#39;: &#39;linear&#39;}
+precision: 1.000 (±0.000), recall: 0.854 (±0.063), for {'C': 1, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.257 (±0.061), for {'C': 1, 'gamma': 0.0001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 0.968 (±0.039), recall: 0.780 (±0.083), for {'C': 10, 'gamma': 0.0001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 100, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 0.905 (±0.058), recall: 0.889 (±0.074), for {'C': 100, 'gamma': 0.0001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 1000, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 0.904 (±0.058), recall: 0.890 (±0.073), for {'C': 1000, 'gamma': 0.0001, 'kernel': 'rbf'}
+precision: 0.695 (±0.073), recall: 0.743 (±0.065), for {'C': 1, 'kernel': 'linear'}
+precision: 0.643 (±0.066), recall: 0.757 (±0.066), for {'C': 10, 'kernel': 'linear'}
+precision: 0.611 (±0.028), recall: 0.744 (±0.044), for {'C': 100, 'kernel': 'linear'}
+precision: 0.618 (±0.039), recall: 0.744 (±0.044), for {'C': 1000, 'kernel': 'linear'}
 
 Models with a precision higher than 0.98:
-precision: 1.000 (±0.000), recall: 0.854 (±0.063), for {&#39;C&#39;: 1, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.257 (±0.061), for {&#39;C&#39;: 1, &#39;gamma&#39;: 0.0001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 10, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 100, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 1000, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
+precision: 1.000 (±0.000), recall: 0.854 (±0.063), for {'C': 1, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.257 (±0.061), for {'C': 1, 'gamma': 0.0001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 100, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 1000, 'gamma': 0.001, 'kernel': 'rbf'}
 
 Out of the previously selected high precision models, we keep all the
 the models within one standard deviation of the highest recall model:
-precision: 1.000 (±0.000), recall: 0.854 (±0.063), for {&#39;C&#39;: 1, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 10, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 100, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {&#39;C&#39;: 1000, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
+precision: 1.000 (±0.000), recall: 0.854 (±0.063), for {'C': 1, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 100, 'gamma': 0.001, 'kernel': 'rbf'}
+precision: 1.000 (±0.000), recall: 0.877 (±0.069), for {'C': 1000, 'gamma': 0.001, 'kernel': 'rbf'}
 
 
 The selected final model is the fastest to predict out of the previously
 selected subset of best models based on precision and recall.
 Its scoring time is:
 
-mean_score_time                                           0.006765
-mean_test_recall                                          0.877206
-std_test_recall                                           0.069196
-mean_test_precision                                            1.0
-std_test_precision                                             0.0
-rank_test_recall                                                 3
-rank_test_precision                                              1
-params                 {&#39;C&#39;: 100, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
-Name: 4, dtype: object
+mean_score_time                                          0.007135
+mean_test_recall                                         0.877206
+std_test_recall                                          0.069196
+mean_test_precision                                           1.0
+std_test_precision                                            0.0
+rank_test_recall                                                3
+rank_test_precision                                             1
+params                 {'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+Name: 2, dtype: object
 </pre></div>
 </div>
 <div class="output_subarea output_html rendered_html output_result">
@@ -1974,7 +1974,7 @@ a.param-doc-link::before {
              param_grid=[{&#x27;C&#x27;: [1, 10, 100, 1000], &#x27;gamma&#x27;: [0.001, 0.0001],
                           &#x27;kernel&#x27;: [&#x27;rbf&#x27;]},
                          {&#x27;C&#x27;: [1, 10, 100, 1000], &#x27;kernel&#x27;: [&#x27;linear&#x27;]}],
-             refit=&lt;function refit_strategy at 0x726aa4144eb0&gt;,
+             refit=&lt;function refit_strategy at 0x7f66e30fa350&gt;,
              scoring=[&#x27;precision&#x27;, &#x27;recall&#x27;])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-350" type="checkbox" ><label for="sk-estimator-id-350" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>GridSearchCV</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html">?<span>Documentation for GridSearchCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
@@ -2058,7 +2058,7 @@ a.param-doc-link::before {
             refit: bool, str, or callable, default=True<br><br>Refit an estimator using the best found parameters on the whole<br>dataset.<br><br>For multiple metric evaluation, this needs to be a `str` denoting the<br>scorer that would be used to find the best parameters for refitting<br>the estimator at the end.<br><br>Where there are considerations other than maximum score in<br>choosing a best estimator, ``refit`` can be set to a function which<br>returns the selected ``best_index_`` given ``cv_results_``. In that<br>case, the ``best_estimator_`` and ``best_params_`` will be set<br>according to the returned ``best_index_`` while the ``best_score_``<br>attribute will not be available.<br><br>The refitted estimator is made available at the ``best_estimator_``<br>attribute and permits using ``predict`` directly on this<br>``GridSearchCV`` instance.<br><br>Also for multiple metric evaluation, the attributes ``best_index_``,<br>``best_score_`` and ``best_params_`` will only be available if<br>``refit`` is set and all of them will be determined w.r.t this specific<br>scorer.<br><br>See ``scoring`` parameter to know more about multiple metric<br>evaluation.<br><br>See :ref:`sphx_glr_auto_examples_model_selection_plot_grid_search_digits.py`<br>to see how to design a custom selection strategy using a callable<br>via `refit`.<br><br>See :ref:`this example<br>&lt;sphx_glr_auto_examples_model_selection_plot_grid_search_refit_callable.py&gt;`<br>for an example of how to use ``refit=callable`` to balance model<br>complexity and cross-validated score.<br><br>.. versionchanged:: 0.20<br>    Support for callable added.</span>
         </a>
     </td>
-            <td class="value">&lt;function ref...x726aa4144eb0&gt;</td>
+            <td class="value">&lt;function ref...x7f66e30fa350&gt;</td>
         </tr>
 
 
@@ -2209,7 +2209,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">SVC</td>
-           <td>SVC(C=100, gamma=0.001)</td>
+           <td>SVC(C=10, gamma=0.001)</td>
 
 
        </tr>
@@ -2227,7 +2227,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">int64</td>
-           <td>np.int64(4)</td>
+           <td>np.int64(2)</td>
 
 
        </tr>
@@ -2245,7 +2245,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">dict</td>
-           <td>{&#x27;C&#x27;: 100, &#x27;gamma&#x27;: 0.001, &#x27;kernel&#x27;: &#x27;rbf&#x27;}</td>
+           <td>{&#x27;C&#x27;: 10, &#x27;gamma&#x27;: 0.001, &#x27;kernel&#x27;: &#x27;rbf&#x27;}</td>
 
 
        </tr>
@@ -2281,7 +2281,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">dict</td>
-           <td>{&#x27;me...me&#x27;: array([0.0085..., 1.57891173]), &#x27;me...me&#x27;: array([0.0077..., 0.00525889]), &#x27;me...on&#x27;: array([1.    ..., 0.61784765]), &#x27;me...ll&#x27;: array([0.8536..., 0.74411765]), ...}</td>
+           <td>{&#x27;me...me&#x27;: array([0.0121..., 1.49752302]), &#x27;me...me&#x27;: array([0.0111..., 0.00504665]), &#x27;me...on&#x27;: array([1.    ..., 0.61784765]), &#x27;me...ll&#x27;: array([0.8536..., 0.74411765]), ...}</td>
 
 
        </tr>
@@ -2353,7 +2353,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">float</td>
-           <td>0.01112</td>
+           <td>0.01127</td>
 
 
        </tr>
@@ -2380,7 +2380,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-351" type="checkbox" ><label for="sk-estimator-id-351" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>best_estimator_: SVC</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___"><pre>SVC(C=100, gamma=0.001)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-352" type="checkbox" ><label for="sk-estimator-id-352" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SVC</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.svm.SVC.html">?<span>Documentation for SVC</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___">
+    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-351" type="checkbox" ><label for="sk-estimator-id-351" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>best_estimator_: SVC</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___"><pre>SVC(C=10, gamma=0.001)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-352" type="checkbox" ><label for="sk-estimator-id-352" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SVC</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.svm.SVC.html">?<span>Documentation for SVC</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -2403,7 +2403,7 @@ a.param-doc-link::before {
             C: float, default=1.0<br><br>Regularization parameter. The strength of the regularization is<br>inversely proportional to C. Must be strictly positive. The penalty<br>is a squared l2 penalty. For an intuitive visualization of the effects<br>of scaling the regularization parameter C, see<br>:ref:`sphx_glr_auto_examples_svm_plot_svm_scale_c.py`.</span>
         </a>
     </td>
-            <td class="value">100</td>
+            <td class="value">10</td>
         </tr>
 
 
@@ -3122,7 +3122,7 @@ forceTheme('sk-container-id-74');</script></body>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">grid_search</span><span class="o">.</span><span class="n">best_params_</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;C&#39;: 100, &#39;gamma&#39;: 0.001, &#39;kernel&#39;: &#39;rbf&#39;}
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
 </pre></div>
 </div>
 <p>Finally, we evaluate the fine-tuned model on the left-out evaluation set: the
@@ -3151,7 +3151,7 @@ weighted avg       0.99      0.99      0.99       899
 <p>The problem is too easy: the hyperparameter plateau is too flat and the
 output model is the same for precision and recall with ties in quality.</p>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 11.178 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 11.254 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-model-selection-plot-grid-search-digits-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/model_selection/plot_grid_search_digits.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo23.svg" style="width: 150px;" />

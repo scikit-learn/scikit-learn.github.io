@@ -1086,8 +1086,8 @@ which the plain hinge loss could not provide.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.linear_model.SGDClassifier.html#sklearn.linear_model.SGDClassifier" title="sklearn.linear_model.SGDClassifier" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SGDClassifier</span></a>
 
 <span class="n">linear_svm</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.SGDClassifier.html#sklearn.linear_model.SGDClassifier" title="sklearn.linear_model.SGDClassifier" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SGDClassifier</span></a><span class="p">(</span>
-    <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;modified_huber&quot;</span><span class="p">,</span>
-    <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;elasticnet&quot;</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="s2">"modified_huber"</span><span class="p">,</span>
+    <span class="n">penalty</span><span class="o">=</span><span class="s2">"elasticnet"</span><span class="p">,</span>
     <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">max_iter</span><span class="o">=</span><span class="mi">5_000</span><span class="p">,</span>
 <span class="p">)</span>
@@ -1105,20 +1105,20 @@ resources, and we rank candidates by their mean validation score.</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">report</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">n_top</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Report the top parameters for each search strategy.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Report the top parameters for each search strategy."""</span>
     <span class="n">results</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot;iter&quot;</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;iter&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;iter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="s2">"iter"</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="s2">"iter"</span><span class="p">]</span> <span class="o">==</span> <span class="n">results</span><span class="p">[</span><span class="s2">"iter"</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
 
     <span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">candidate</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-        <span class="n">results</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">n_top</span><span class="p">,</span> <span class="s2">&quot;mean_test_score&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">n_top</span><span class="p">,</span> <span class="s2">"mean_test_score"</span><span class="p">)</span><span class="o">.</span><span class="n">iterrows</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span>
     <span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Model with rank: </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Mean validation score: &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;mean_test_score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;(std: </span><span class="si">{</span><span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;std_test_score&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"Model with rank: </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"Mean validation score: "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">candidate</span><span class="p">[</span><span class="s1">'mean_test_score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"(std: </span><span class="si">{</span><span class="n">candidate</span><span class="p">[</span><span class="s1">'std_test_score'</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"Parameters: </span><span class="si">{</span><span class="n">candidate</span><span class="p">[</span><span class="s1">'params'</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="p">)</span>
 </pre></div>
 </div>
@@ -1145,36 +1145,36 @@ explore and discard, so it is fine to silence the warning with a
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a>
 
 <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;average&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
-    <span class="s2">&quot;l1_ratio&quot;</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
-    <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.power.html#numpy.power" title="numpy.power" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">power</span></a><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)),</span>
+    <span class="s2">"average"</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+    <span class="s2">"l1_ratio"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">"alpha"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.power.html#numpy.power" title="numpy.power" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">power</span></a><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)),</span>
 <span class="p">}</span>
 
-<span class="n">grid_search</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a><span class="p">(</span><span class="n">linear_svm</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc_ovr&quot;</span><span class="p">)</span>
+<span class="n">grid_search</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a><span class="p">(</span><span class="n">linear_svm</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">param_grid</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"roc_auc_ovr"</span><span class="p">)</span>
 <span class="n">start</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="k">with</span> <a href="https://docs.python.org/3/library/warnings.html#warnings.catch_warnings" title="warnings.catch_warnings" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span></a><span class="p">():</span>
-    <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><a href="../../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning" class="sphx-glr-backref-module-sklearn-exceptions sphx-glr-backref-type-py-exception"><span class="n">ConvergenceWarning</span></a><span class="p">)</span>
+    <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><a href="../../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning" class="sphx-glr-backref-module-sklearn-exceptions sphx-glr-backref-type-py-exception"><span class="n">ConvergenceWarning</span></a><span class="p">)</span>
     <span class="n">grid_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;GridSearchCV took </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds for &quot;</span>
-    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2"> candidate parameter settings.&quot;</span>
+    <span class="sa">f</span><span class="s2">"GridSearchCV took </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds for "</span>
+    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s1">'params'</span><span class="p">])</span><span class="si">}</span><span class="s2"> candidate parameter settings."</span>
 <span class="p">)</span>
 <span class="n">report</span><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>GridSearchCV took 145.09 seconds for 60 candidate parameter settings.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>GridSearchCV took 137.90 seconds for 60 candidate parameter settings.
 Model with rank: 1
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(0.01), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.5555555555555556)}
+Parameters: {'alpha': np.float64(0.01), 'average': False, 'l1_ratio': np.float64(0.5555555555555556)}
 
 Model with rank: 2
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(0.1), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.0)}
+Parameters: {'alpha': np.float64(0.1), 'average': False, 'l1_ratio': np.float64(0.0)}
 
 Model with rank: 3
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(1.0), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.0)}
+Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.0)}
 </pre></div>
 </div>
 </section>
@@ -1191,9 +1191,9 @@ search while fitting far fewer configurations.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomizedSearchCV</span></a>
 
 <span class="n">param_dist</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;average&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
-    <span class="s2">&quot;l1_ratio&quot;</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.uniform.html#scipy.stats.uniform" title="scipy.stats.uniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">stats</span><span class="o">.</span><span class="n">loguniform</span></a><span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e0</span><span class="p">),</span>
+    <span class="s2">"average"</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+    <span class="s2">"l1_ratio"</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.uniform.html#scipy.stats.uniform" title="scipy.stats.uniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="s2">"alpha"</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">stats</span><span class="o">.</span><span class="n">loguniform</span></a><span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e0</span><span class="p">),</span>
 <span class="p">}</span>
 
 <span class="n">n_iter_search</span> <span class="o">=</span> <span class="mi">30</span>
@@ -1201,33 +1201,33 @@ search while fitting far fewer configurations.</p>
     <span class="n">linear_svm</span><span class="p">,</span>
     <span class="n">param_distributions</span><span class="o">=</span><span class="n">param_dist</span><span class="p">,</span>
     <span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter_search</span><span class="p">,</span>
-    <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc_ovr&quot;</span><span class="p">,</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="s2">"roc_auc_ovr"</span><span class="p">,</span>
     <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">start</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="k">with</span> <a href="https://docs.python.org/3/library/warnings.html#warnings.catch_warnings" title="warnings.catch_warnings" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span></a><span class="p">():</span>
-    <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><a href="../../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning" class="sphx-glr-backref-module-sklearn-exceptions sphx-glr-backref-type-py-exception"><span class="n">ConvergenceWarning</span></a><span class="p">)</span>
+    <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><a href="../../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning" class="sphx-glr-backref-module-sklearn-exceptions sphx-glr-backref-type-py-exception"><span class="n">ConvergenceWarning</span></a><span class="p">)</span>
     <span class="n">random_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;RandomizedSearchCV took </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds for </span><span class="si">{</span><span class="n">n_iter_search</span><span class="si">}</span><span class="s2"> &quot;</span>
-    <span class="sa">f</span><span class="s2">&quot;candidates parameter settings.&quot;</span>
+    <span class="sa">f</span><span class="s2">"RandomizedSearchCV took </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds for </span><span class="si">{</span><span class="n">n_iter_search</span><span class="si">}</span><span class="s2"> "</span>
+    <span class="sa">f</span><span class="s2">"candidates parameter settings."</span>
 <span class="p">)</span>
 <span class="n">report</span><span class="p">(</span><span class="n">random_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>RandomizedSearchCV took 57.15 seconds for 30 candidates parameter settings.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>RandomizedSearchCV took 53.92 seconds for 30 candidates parameter settings.
 Model with rank: 1
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(0.1673808578875213), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.04666566321361543)}
+Parameters: {'alpha': np.float64(0.1673808578875213), 'average': False, 'l1_ratio': np.float64(0.04666566321361543)}
 
 Model with rank: 2
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(0.04649617447336333), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.7080725777960455)}
+Parameters: {'alpha': np.float64(0.04649617447336333), 'average': False, 'l1_ratio': np.float64(0.7080725777960455)}
 
 Model with rank: 3
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(0.3503398491158687), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.2934881747180381)}
+Parameters: {'alpha': np.float64(0.3503398491158687), 'average': False, 'l1_ratio': np.float64(0.2934881747180381)}
 </pre></div>
 </div>
 </section>
@@ -1249,34 +1249,34 @@ iterations where most candidates are discarded.</p>
     <span class="n">linear_svm</span><span class="p">,</span>
     <span class="n">param_distributions</span><span class="o">=</span><span class="n">param_dist</span><span class="p">,</span>
     <span class="n">n_candidates</span><span class="o">=</span><span class="n">n_candidates</span><span class="p">,</span>
-    <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc_ovr&quot;</span><span class="p">,</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="s2">"roc_auc_ovr"</span><span class="p">,</span>
     <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
     <span class="n">min_resources</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">start</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
 <span class="k">with</span> <a href="https://docs.python.org/3/library/warnings.html#warnings.catch_warnings" title="warnings.catch_warnings" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span></a><span class="p">():</span>
-    <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><a href="../../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning" class="sphx-glr-backref-module-sklearn-exceptions sphx-glr-backref-type-py-exception"><span class="n">ConvergenceWarning</span></a><span class="p">)</span>
+    <a href="https://docs.python.org/3/library/warnings.html#warnings.simplefilter" title="warnings.simplefilter" class="sphx-glr-backref-module-warnings sphx-glr-backref-type-py-function"><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span></a><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><a href="../../modules/generated/sklearn.exceptions.ConvergenceWarning.html#sklearn.exceptions.ConvergenceWarning" title="sklearn.exceptions.ConvergenceWarning" class="sphx-glr-backref-module-sklearn-exceptions sphx-glr-backref-type-py-exception"><span class="n">ConvergenceWarning</span></a><span class="p">)</span>
     <span class="n">halving_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;HalvingRandomSearchCV took </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds for &quot;</span>
-    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">halving_search</span><span class="o">.</span><span class="n">n_candidates_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> initial candidate parameter settings.&quot;</span>
+    <span class="sa">f</span><span class="s2">"HalvingRandomSearchCV took </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds for "</span>
+    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">halving_search</span><span class="o">.</span><span class="n">n_candidates_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> initial candidate parameter settings."</span>
 <span class="p">)</span>
 <span class="n">report</span><span class="p">(</span><span class="n">halving_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>HalvingRandomSearchCV took 64.20 seconds for 60 initial candidate parameter settings.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>HalvingRandomSearchCV took 65.18 seconds for 60 initial candidate parameter settings.
 Model with rank: 1
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {&#39;alpha&#39;: np.float64(0.7121996518301618), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.11586905952512971)}
+Parameters: {'alpha': np.float64(0.7121996518301618), 'average': False, 'l1_ratio': np.float64(0.11586905952512971)}
 
 Model with rank: 2
 Mean validation score: 1.000 (std: 0.001)
-Parameters: {&#39;alpha&#39;: np.float64(0.21137059440645725), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.4251558744912447)}
+Parameters: {'alpha': np.float64(0.21137059440645725), 'average': False, 'l1_ratio': np.float64(0.4251558744912447)}
 
 Model with rank: 3
 Mean validation score: 0.999 (std: 0.001)
-Parameters: {&#39;alpha&#39;: np.float64(0.697828126512603), &#39;average&#39;: False, &#39;l1_ratio&#39;: np.float64(0.5704439744053994)}
+Parameters: {'alpha': np.float64(0.697828126512603), 'average': False, 'l1_ratio': np.float64(0.5704439744053994)}
 </pre></div>
 </div>
 </section>
@@ -1306,7 +1306,7 @@ computed on the full set of resources and remain comparable to the grid and
 randomized searches. More generally, rely on <code class="docutils literal notranslate"><span class="pre">best_params_</span></code> – which the
 halving search selects among the last-iteration candidates – and confirm the
 chosen model on a held-out test set.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 26.466 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 17.021 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-model-selection-plot-randomized-search-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/model_selection/plot_randomized_search.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo23.svg" style="width: 150px;" />

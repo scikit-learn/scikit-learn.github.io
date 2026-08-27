@@ -1088,31 +1088,31 @@ Third-Party Liability Claims (November 8, 2018). <a class="reference external" h
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">load_mtpl2</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch the French Motor Third-Party Liability Claims dataset.</span>
+<span class="w">    </span><span class="sd">"""Fetch the French Motor Third-Party Liability Claims dataset.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_samples: int, default=None</span>
 <span class="sd">      number of samples to select (for faster run time). Full dataset has</span>
 <span class="sd">      678013 samples.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># freMTPL2freq dataset from https://www.openml.org/d/41214</span>
     <span class="n">df_freq</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="mi">41214</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
-    <span class="n">df_freq</span><span class="p">[</span><span class="s2">&quot;IDpol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_freq</span><span class="p">[</span><span class="s2">&quot;IDpol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">df_freq</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;IDpol&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df_freq</span><span class="p">[</span><span class="s2">"IDpol"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_freq</span><span class="p">[</span><span class="s2">"IDpol"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">df_freq</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"IDpol"</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># freMTPL2sev dataset from https://www.openml.org/d/41215</span>
     <span class="n">df_sev</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="mi">41215</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
 
     <span class="c1"># sum ClaimAmount over identical IDs</span>
-    <span class="n">df_sev</span> <span class="o">=</span> <span class="n">df_sev</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;IDpol&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">df_sev</span> <span class="o">=</span> <span class="n">df_sev</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"IDpol"</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
-    <span class="n">df</span> <span class="o">=</span> <span class="n">df_freq</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df_sev</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df_freq</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df_sev</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">"left"</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># unquote string fields</span>
     <span class="k">for</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[[</span><span class="n">t</span> <span class="ow">is</span> <span class="nb">object</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">dtypes</span><span class="o">.</span><span class="n">values</span><span class="p">]]:</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"'"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">n_samples</span><span class="p">]</span>
 
 
@@ -1127,7 +1127,7 @@ Third-Party Liability Claims (November 8, 2018). <a class="reference external" h
     <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">fill_legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot observed and predicted - aggregated per feature level.</span>
+<span class="w">    </span><span class="sd">"""Plot observed and predicted - aggregated per feature level.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1143,32 +1143,32 @@ Third-Party Liability Claims (November 8, 2018). <a class="reference external" h
 <span class="sd">        a dataframe, with the same index as df, with the predicted target</span>
 <span class="sd">    fill_legend : bool, default=False</span>
 <span class="sd">        whether to show fill_between legend</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># aggregate observed and predicted variables by feature level</span>
     <span class="n">df_</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="n">feature</span><span class="p">,</span> <span class="n">weight</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">df_</span><span class="p">[</span><span class="s2">&quot;observed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">observed</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span>
-    <span class="n">df_</span><span class="p">[</span><span class="s2">&quot;predicted&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span>
+    <span class="n">df_</span><span class="p">[</span><span class="s2">"observed"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">observed</span><span class="p">]</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span>
+    <span class="n">df_</span><span class="p">[</span><span class="s2">"predicted"</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span>
     <span class="n">df_</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">df_</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">feature</span><span class="p">])[[</span><span class="n">weight</span><span class="p">,</span> <span class="s2">&quot;observed&quot;</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">]]</span>
+        <span class="n">df_</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">feature</span><span class="p">])[[</span><span class="n">weight</span><span class="p">,</span> <span class="s2">"observed"</span><span class="p">,</span> <span class="s2">"predicted"</span><span class="p">]]</span>
         <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">observed</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;observed&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">[</span><span class="n">weight</span><span class="p">])</span>
-        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">predicted</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;predicted&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">[</span><span class="n">weight</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">observed</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">"observed"</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">[</span><span class="n">weight</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">predicted</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">"predicted"</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">[</span><span class="n">weight</span><span class="p">])</span>
     <span class="p">)</span>
 
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;observed&quot;</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-    <span class="n">y_max</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;observed&quot;</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.8</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">"observed"</span><span class="p">,</span> <span class="s2">"predicted"</span><span class="p">]]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"."</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">y_max</span> <span class="o">=</span> <span class="n">df_</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">"observed"</span><span class="p">,</span> <span class="s2">"predicted"</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.8</span>
     <span class="n">p2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
         <span class="n">df_</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
         <span class="n">y_max</span> <span class="o">*</span> <span class="n">df_</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span> <span class="o">/</span> <span class="n">df_</span><span class="p">[</span><span class="n">weight</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
-        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">"g"</span><span class="p">,</span>
         <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">fill_legend</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="n">p2</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> distribution&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="p">)])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="n">p2</span><span class="p">],</span> <span class="p">[</span><span class="s2">"</span><span class="si">{}</span><span class="s2"> distribution"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="p">)])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
         <span class="n">ylabel</span><span class="o">=</span><span class="n">y_label</span> <span class="k">if</span> <span class="n">y_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="n">title</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;Train: Observed vs Predicted&quot;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">"Train: Observed vs Predicted"</span><span class="p">,</span>
     <span class="p">)</span>
 
 
@@ -1182,17 +1182,17 @@ Third-Party Liability Claims (November 8, 2018). <a class="reference external" h
     <span class="n">weights</span><span class="p">,</span>
     <span class="n">tweedie_powers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate an estimator on train and test sets with different metrics&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Evaluate an estimator on train and test sets with different metrics"""</span>
 
     <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;D² explained&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># Use default scorer if it exists</span>
-        <span class="p">(</span><span class="s2">&quot;mean abs. error&quot;</span><span class="p">,</span> <a href="../../modules/generated/sklearn.metrics.mean_absolute_error.html#sklearn.metrics.mean_absolute_error" title="sklearn.metrics.mean_absolute_error" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">mean_absolute_error</span></a><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;mean squared error&quot;</span><span class="p">,</span> <a href="../../modules/generated/sklearn.metrics.mean_squared_error.html#sklearn.metrics.mean_squared_error" title="sklearn.metrics.mean_squared_error" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">mean_squared_error</span></a><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"D² explained"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># Use default scorer if it exists</span>
+        <span class="p">(</span><span class="s2">"mean abs. error"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.metrics.mean_absolute_error.html#sklearn.metrics.mean_absolute_error" title="sklearn.metrics.mean_absolute_error" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">mean_absolute_error</span></a><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"mean squared error"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.metrics.mean_squared_error.html#sklearn.metrics.mean_squared_error" title="sklearn.metrics.mean_squared_error" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">mean_squared_error</span></a><span class="p">),</span>
     <span class="p">]</span>
     <span class="k">if</span> <span class="n">tweedie_powers</span><span class="p">:</span>
         <span class="n">metrics</span> <span class="o">+=</span> <span class="p">[</span>
             <span class="p">(</span>
-                <span class="s2">&quot;mean Tweedie dev p=</span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">power</span><span class="p">),</span>
+                <span class="s2">"mean Tweedie dev p=</span><span class="si">{:.4f}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">power</span><span class="p">),</span>
                 <a href="https://docs.python.org/3/library/functools.html#functools.partial" title="functools.partial" class="sphx-glr-backref-module-functools sphx-glr-backref-type-py-function"><span class="n">partial</span></a><span class="p">(</span><a href="../../modules/generated/sklearn.metrics.mean_tweedie_deviance.html#sklearn.metrics.mean_tweedie_deviance" title="sklearn.metrics.mean_tweedie_deviance" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">mean_tweedie_deviance</span></a><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="n">power</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">power</span> <span class="ow">in</span> <span class="n">tweedie_powers</span>
@@ -1200,8 +1200,8 @@ Third-Party Liability Claims (November 8, 2018). <a class="reference external" h
 
     <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">subset_label</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">df_test</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"train"</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">df_test</span><span class="p">),</span>
     <span class="p">]:</span>
         <span class="n">y</span><span class="p">,</span> <span class="n">_weights</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">target</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">weights</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">score_label</span><span class="p">,</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
@@ -1214,20 +1214,20 @@ Third-Party Liability Claims (November 8, 2018). <a class="reference external" h
                 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">score</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">_weights</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">score</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">_weights</span><span class="p">)</span>
 
-            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;subset&quot;</span><span class="p">:</span> <span class="n">subset_label</span><span class="p">,</span> <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="n">score_label</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">})</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"subset"</span><span class="p">:</span> <span class="n">subset_label</span><span class="p">,</span> <span class="s2">"metric"</span><span class="p">:</span> <span class="n">score_label</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="n">score</span><span class="p">})</span>
 
     <span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
         <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">&quot;metric&quot;</span><span class="p">,</span> <span class="s2">&quot;subset&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s2">"metric"</span><span class="p">,</span> <span class="s2">"subset"</span><span class="p">])</span>
         <span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]]</span>
+        <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s2">"train"</span><span class="p">,</span> <span class="s2">"test"</span><span class="p">]]</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span>
 </pre></div>
@@ -1252,13 +1252,13 @@ containing the claim amount (<code class="docutils literal notranslate"><span cl
 
 <span class="c1"># Correct for unreasonable observations (that might be data error)</span>
 <span class="c1"># and a few exceptionally large claim amounts</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">200000</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"ClaimNb"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimNb"</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mi">200000</span><span class="p">)</span>
 <span class="c1"># If the claim amount is 0, then we do not count it as a claim. The loss function</span>
 <span class="c1"># used by the severity model needs strictly positive claim amounts. This way</span>
 <span class="c1"># frequency and severity are more consistent with each other.</span>
-<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;ClaimNb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"ClaimNb"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">"ClaimNb"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="n">log_scale_transformer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span>
     <a href="../../modules/generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer" title="sklearn.preprocessing.FunctionTransformer" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">FunctionTransformer</span></a><span class="p">(</span><span class="n">func</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.log.html#numpy.log" title="numpy.log" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">log</span></a><span class="p">),</span> <a href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">StandardScaler</span></a><span class="p">()</span>
@@ -1267,35 +1267,35 @@ containing the claim amount (<code class="docutils literal notranslate"><span cl
 <span class="n">column_trans</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnTransformer</span></a><span class="p">(</span>
     <span class="p">[</span>
         <span class="p">(</span>
-            <span class="s2">&quot;binned_numeric&quot;</span><span class="p">,</span>
+            <span class="s2">"binned_numeric"</span><span class="p">,</span>
             <a href="../../modules/generated/sklearn.preprocessing.KBinsDiscretizer.html#sklearn.preprocessing.KBinsDiscretizer" title="sklearn.preprocessing.KBinsDiscretizer" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">KBinsDiscretizer</span></a><span class="p">(</span>
-                <span class="n">n_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">quantile_method</span><span class="o">=</span><span class="s2">&quot;averaged_inverted_cdf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span>
+                <span class="n">n_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">quantile_method</span><span class="o">=</span><span class="s2">"averaged_inverted_cdf"</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span>
             <span class="p">),</span>
-            <span class="p">[</span><span class="s2">&quot;VehAge&quot;</span><span class="p">,</span> <span class="s2">&quot;DrivAge&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">"VehAge"</span><span class="p">,</span> <span class="s2">"DrivAge"</span><span class="p">],</span>
         <span class="p">),</span>
         <span class="p">(</span>
-            <span class="s2">&quot;onehot_categorical&quot;</span><span class="p">,</span>
+            <span class="s2">"onehot_categorical"</span><span class="p">,</span>
             <a href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneHotEncoder</span></a><span class="p">(),</span>
-            <span class="p">[</span><span class="s2">&quot;VehBrand&quot;</span><span class="p">,</span> <span class="s2">&quot;VehPower&quot;</span><span class="p">,</span> <span class="s2">&quot;VehGas&quot;</span><span class="p">,</span> <span class="s2">&quot;Region&quot;</span><span class="p">,</span> <span class="s2">&quot;Area&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s2">"VehBrand"</span><span class="p">,</span> <span class="s2">"VehPower"</span><span class="p">,</span> <span class="s2">"VehGas"</span><span class="p">,</span> <span class="s2">"Region"</span><span class="p">,</span> <span class="s2">"Area"</span><span class="p">],</span>
         <span class="p">),</span>
-        <span class="p">(</span><span class="s2">&quot;passthrough_numeric&quot;</span><span class="p">,</span> <span class="s2">&quot;passthrough&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;BonusMalus&quot;</span><span class="p">]),</span>
-        <span class="p">(</span><span class="s2">&quot;log_scaled_numeric&quot;</span><span class="p">,</span> <span class="n">log_scale_transformer</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Density&quot;</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"passthrough_numeric"</span><span class="p">,</span> <span class="s2">"passthrough"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"BonusMalus"</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">"log_scaled_numeric"</span><span class="p">,</span> <span class="n">log_scale_transformer</span><span class="p">,</span> <span class="p">[</span><span class="s2">"Density"</span><span class="p">]),</span>
     <span class="p">],</span>
-    <span class="n">remainder</span><span class="o">=</span><span class="s2">&quot;drop&quot;</span><span class="p">,</span>
+    <span class="n">remainder</span><span class="o">=</span><span class="s2">"drop"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">column_trans</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># Insurances companies are interested in modeling the Pure Premium, that is</span>
 <span class="c1"># the expected total claim amount per unit of exposure for each policyholder</span>
 <span class="c1"># in their portfolio:</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"PurePremium"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span>
 
 <span class="c1"># This can be indirectly approximated by a 2-step modeling: the product of the</span>
 <span class="c1"># Frequency times the average claim amount per claim:</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;Frequency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span>
-<span class="n">df</span><span class="p">[</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">/</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.fmax.html#numpy.fmax" title="numpy.fmax" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">fmax</span></a><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"Frequency"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimNb"</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"AvgClaimAmount"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">/</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.fmax.html#numpy.fmax" title="numpy.fmax" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">fmax</span></a><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"ClaimNb"</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 
-<span class="k">with</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.option_context.html#pandas.option_context" title="pandas.option_context" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function"><span class="n">pd</span><span class="o">.</span><span class="n">option_context</span></a><span class="p">(</span><span class="s2">&quot;display.max_columns&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
+<span class="k">with</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.option_context.html#pandas.option_context" title="pandas.option_context" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function"><span class="n">pd</span><span class="o">.</span><span class="n">option_context</span></a><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">ClaimAmount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -1309,11 +1309,11 @@ IDpol
 
           VehGas  Density Region  ClaimAmount   PurePremium  Frequency  \
 IDpol
-139    &#39;Regular&#39;    27000    R11       303.00    404.000000   1.333333
-190     &#39;Diesel&#39;       56    R25      1981.84  14156.000000   7.142857
-414    &#39;Regular&#39;     4792    R11      1456.55  10403.928571   7.142857
-424    &#39;Regular&#39;    27000    R11     10834.00  17474.193548   3.225806
-463    &#39;Regular&#39;       12    R73      3986.67  12860.225806   3.225806
+139    'Regular'    27000    R11       303.00    404.000000   1.333333
+190     'Diesel'       56    R25      1981.84  14156.000000   7.142857
+414    'Regular'     4792    R11      1456.55  10403.928571   7.142857
+424    'Regular'    27000    R11     10834.00  17474.193548   3.225806
+463    'Regular'       12    R73      3986.67  12860.225806   3.225806
 
        AvgClaimAmount
 IDpol
@@ -1348,7 +1348,7 @@ non-zero is quite small:</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>169504
 </pre></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="n">df_test</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>6237
@@ -1360,8 +1360,8 @@ evaluation upon random resampling of the train test split.</p>
 on the training set via a Newton solver. Some of the features are collinear
 (e.g. because we did not drop any categorical level in the <code class="docutils literal notranslate"><span class="pre">OneHotEncoder</span></code>),
 we use a weak L2 penalization to avoid numerical issues.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">glm_freq</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.PoissonRegressor.html#sklearn.linear_model.PoissonRegressor" title="sklearn.linear_model.PoissonRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">PoissonRegressor</span></a><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;newton-cholesky&quot;</span><span class="p">)</span>
-<span class="n">glm_freq</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;Frequency&quot;</span><span class="p">],</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">])</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">glm_freq</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.PoissonRegressor.html#sklearn.linear_model.PoissonRegressor" title="sklearn.linear_model.PoissonRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">PoissonRegressor</span></a><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"newton-cholesky"</span><span class="p">)</span>
+<span class="n">glm_freq</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">"Frequency"</span><span class="p">],</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">])</span>
 
 <span class="n">scores</span> <span class="o">=</span> <span class="n">score_estimator</span><span class="p">(</span>
     <span class="n">glm_freq</span><span class="p">,</span>
@@ -1369,10 +1369,10 @@ we use a weak L2 penalization to avoid numerical issues.</p>
     <span class="n">X_test</span><span class="p">,</span>
     <span class="n">df_train</span><span class="p">,</span>
     <span class="n">df_test</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;Frequency&quot;</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">"Frequency"</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation of PoissonRegressor on target Frequency&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Evaluation of PoissonRegressor on target Frequency"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1396,47 +1396,47 @@ bonus/malus (<code class="docutils literal notranslate"><span class="pre">BonusM
 
 <span class="n">plot_obs_pred</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">df_train</span><span class="p">,</span>
-    <span class="n">feature</span><span class="o">=</span><span class="s2">&quot;DrivAge&quot;</span><span class="p">,</span>
-    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
-    <span class="n">observed</span><span class="o">=</span><span class="s2">&quot;Frequency&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="s2">"DrivAge"</span><span class="p">,</span>
+    <span class="n">weight</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
+    <span class="n">observed</span><span class="o">=</span><span class="s2">"Frequency"</span><span class="p">,</span>
     <span class="n">predicted</span><span class="o">=</span><span class="n">glm_freq</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Claim Frequency&quot;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;train data&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">"Claim Frequency"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"train data"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">plot_obs_pred</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span>
-    <span class="n">feature</span><span class="o">=</span><span class="s2">&quot;DrivAge&quot;</span><span class="p">,</span>
-    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
-    <span class="n">observed</span><span class="o">=</span><span class="s2">&quot;Frequency&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="s2">"DrivAge"</span><span class="p">,</span>
+    <span class="n">weight</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
+    <span class="n">observed</span><span class="o">=</span><span class="s2">"Frequency"</span><span class="p">,</span>
     <span class="n">predicted</span><span class="o">=</span><span class="n">glm_freq</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Claim Frequency&quot;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;test data&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">"Claim Frequency"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"test data"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="n">fill_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">plot_obs_pred</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span>
-    <span class="n">feature</span><span class="o">=</span><span class="s2">&quot;VehAge&quot;</span><span class="p">,</span>
-    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
-    <span class="n">observed</span><span class="o">=</span><span class="s2">&quot;Frequency&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="s2">"VehAge"</span><span class="p">,</span>
+    <span class="n">weight</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
+    <span class="n">observed</span><span class="o">=</span><span class="s2">"Frequency"</span><span class="p">,</span>
     <span class="n">predicted</span><span class="o">=</span><span class="n">glm_freq</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Claim Frequency&quot;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;test data&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">"Claim Frequency"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"test data"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
     <span class="n">fill_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">plot_obs_pred</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span>
-    <span class="n">feature</span><span class="o">=</span><span class="s2">&quot;BonusMalus&quot;</span><span class="p">,</span>
-    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
-    <span class="n">observed</span><span class="o">=</span><span class="s2">&quot;Frequency&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="s2">"BonusMalus"</span><span class="p">,</span>
+    <span class="n">weight</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
+    <span class="n">observed</span><span class="o">=</span><span class="s2">"Frequency"</span><span class="p">,</span>
     <span class="n">predicted</span><span class="o">=</span><span class="n">glm_freq</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Claim Frequency&quot;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;test data&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">"Claim Frequency"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"test data"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
     <span class="n">fill_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
@@ -1461,15 +1461,15 @@ more than one claim.</p></li>
 </ul>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.linear_model.GammaRegressor.html#sklearn.linear_model.GammaRegressor" title="sklearn.linear_model.GammaRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GammaRegressor</span></a>
 
-<span class="n">mask_train</span> <span class="o">=</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
-<span class="n">mask_test</span> <span class="o">=</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="n">mask_train</span> <span class="o">=</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="n">mask_test</span> <span class="o">=</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
-<span class="n">glm_sev</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.GammaRegressor.html#sklearn.linear_model.GammaRegressor" title="sklearn.linear_model.GammaRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GammaRegressor</span></a><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;newton-cholesky&quot;</span><span class="p">)</span>
+<span class="n">glm_sev</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.GammaRegressor.html#sklearn.linear_model.GammaRegressor" title="sklearn.linear_model.GammaRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GammaRegressor</span></a><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"newton-cholesky"</span><span class="p">)</span>
 
 <span class="n">glm_sev</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">X_train</span><span class="p">[</span><span class="n">mask_train</span><span class="o">.</span><span class="n">values</span><span class="p">],</span>
-    <span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">],</span>
-    <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">&quot;ClaimNb&quot;</span><span class="p">],</span>
+    <span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">"AvgClaimAmount"</span><span class="p">],</span>
+    <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">"ClaimNb"</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">scores</span> <span class="o">=</span> <span class="n">score_estimator</span><span class="p">(</span>
@@ -1478,10 +1478,10 @@ more than one claim.</p></li>
     <span class="n">X_test</span><span class="p">[</span><span class="n">mask_test</span><span class="o">.</span><span class="n">values</span><span class="p">],</span>
     <span class="n">df_train</span><span class="p">[</span><span class="n">mask_train</span><span class="p">],</span>
     <span class="n">df_test</span><span class="p">[</span><span class="n">mask_test</span><span class="p">],</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">"AvgClaimAmount"</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"ClaimNb"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation of GammaRegressor on target AvgClaimAmount&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Evaluation of GammaRegressor on target AvgClaimAmount"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1499,11 +1499,11 @@ features and always predicts a constant value, i.e. the average claim
 amount, in the same setting:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.dummy</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.dummy.DummyRegressor.html#sklearn.dummy.DummyRegressor" title="sklearn.dummy.DummyRegressor" class="sphx-glr-backref-module-sklearn-dummy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DummyRegressor</span></a>
 
-<span class="n">dummy_sev</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.dummy.DummyRegressor.html#sklearn.dummy.DummyRegressor" title="sklearn.dummy.DummyRegressor" class="sphx-glr-backref-module-sklearn-dummy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DummyRegressor</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+<span class="n">dummy_sev</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.dummy.DummyRegressor.html#sklearn.dummy.DummyRegressor" title="sklearn.dummy.DummyRegressor" class="sphx-glr-backref-module-sklearn-dummy sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">DummyRegressor</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">)</span>
 <span class="n">dummy_sev</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">X_train</span><span class="p">[</span><span class="n">mask_train</span><span class="o">.</span><span class="n">values</span><span class="p">],</span>
-    <span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">],</span>
-    <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">&quot;ClaimNb&quot;</span><span class="p">],</span>
+    <span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">"AvgClaimAmount"</span><span class="p">],</span>
+    <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">,</span> <span class="s2">"ClaimNb"</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">scores</span> <span class="o">=</span> <span class="n">score_estimator</span><span class="p">(</span>
@@ -1512,10 +1512,10 @@ amount, in the same setting:</p>
     <span class="n">X_test</span><span class="p">[</span><span class="n">mask_test</span><span class="o">.</span><span class="n">values</span><span class="p">],</span>
     <span class="n">df_train</span><span class="p">[</span><span class="n">mask_train</span><span class="p">],</span>
     <span class="n">df_test</span><span class="p">[</span><span class="n">mask_test</span><span class="p">],</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;ClaimNb&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">"AvgClaimAmount"</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"ClaimNb"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation of a mean predictor on target AvgClaimAmount&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Evaluation of a mean predictor on target AvgClaimAmount"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1536,19 +1536,19 @@ it is conditional on having at least one claim, and cannot be used to predict
 the average claim amount per policy. For this, it needs to be combined with
 a claims frequency model.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Mean AvgClaim Amount per policy:              </span><span class="si">%.2f</span><span class="s2"> &quot;</span>
-    <span class="o">%</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="s2">"Mean AvgClaim Amount per policy:              </span><span class="si">%.2f</span><span class="s2"> "</span>
+    <span class="o">%</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">"AvgClaimAmount"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Mean AvgClaim Amount | NbClaim &gt; 0:           </span><span class="si">%.2f</span><span class="s2">&quot;</span>
-    <span class="o">%</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">][</span><span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="s2">"Mean AvgClaim Amount | NbClaim &gt; 0:           </span><span class="si">%.2f</span><span class="s2">"</span>
+    <span class="o">%</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">"AvgClaimAmount"</span><span class="p">][</span><span class="n">df_train</span><span class="p">[</span><span class="s2">"AvgClaimAmount"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Predicted Mean AvgClaim Amount | NbClaim &gt; 0: </span><span class="si">%.2f</span><span class="s2">&quot;</span>
+    <span class="s2">"Predicted Mean AvgClaim Amount | NbClaim &gt; 0: </span><span class="si">%.2f</span><span class="s2">"</span>
     <span class="o">%</span> <span class="n">glm_sev</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s2">&quot;Predicted Mean AvgClaim Amount (dummy) | NbClaim &gt; 0: </span><span class="si">%.2f</span><span class="s2">&quot;</span>
+    <span class="s2">"Predicted Mean AvgClaim Amount (dummy) | NbClaim &gt; 0: </span><span class="si">%.2f</span><span class="s2">"</span>
     <span class="o">%</span> <span class="n">dummy_sev</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="p">)</span>
 </pre></div>
@@ -1565,23 +1565,23 @@ the drivers age (<code class="docutils literal notranslate"><span class="pre">Dr
 
 <span class="n">plot_obs_pred</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">df_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_train</span><span class="p">],</span>
-    <span class="n">feature</span><span class="o">=</span><span class="s2">&quot;DrivAge&quot;</span><span class="p">,</span>
-    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
-    <span class="n">observed</span><span class="o">=</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="s2">"DrivAge"</span><span class="p">,</span>
+    <span class="n">weight</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
+    <span class="n">observed</span><span class="o">=</span><span class="s2">"AvgClaimAmount"</span><span class="p">,</span>
     <span class="n">predicted</span><span class="o">=</span><span class="n">glm_sev</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">mask_train</span><span class="o">.</span><span class="n">values</span><span class="p">]),</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Average Claim Severity&quot;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;train data&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">"Average Claim Severity"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"train data"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">plot_obs_pred</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">df_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_test</span><span class="p">],</span>
-    <span class="n">feature</span><span class="o">=</span><span class="s2">&quot;DrivAge&quot;</span><span class="p">,</span>
-    <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
-    <span class="n">observed</span><span class="o">=</span><span class="s2">&quot;AvgClaimAmount&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="s2">"DrivAge"</span><span class="p">,</span>
+    <span class="n">weight</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
+    <span class="n">observed</span><span class="o">=</span><span class="s2">"AvgClaimAmount"</span><span class="p">,</span>
     <span class="n">predicted</span><span class="o">=</span><span class="n">glm_sev</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">mask_test</span><span class="o">.</span><span class="n">values</span><span class="p">]),</span>
-    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Average Claim Severity&quot;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;test data&quot;</span><span class="p">,</span>
+    <span class="n">y_label</span><span class="o">=</span><span class="s2">"Average Claim Severity"</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"test data"</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">fill_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
@@ -1617,9 +1617,9 @@ Ideally, we hope that one model will be consistently better than the other,
 regardless of <code class="docutils literal notranslate"><span class="pre">power</span></code>.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.linear_model.TweedieRegressor.html#sklearn.linear_model.TweedieRegressor" title="sklearn.linear_model.TweedieRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TweedieRegressor</span></a>
 
-<span class="n">glm_pure_premium</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.TweedieRegressor.html#sklearn.linear_model.TweedieRegressor" title="sklearn.linear_model.TweedieRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TweedieRegressor</span></a><span class="p">(</span><span class="n">power</span><span class="o">=</span><span class="mf">1.9</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;newton-cholesky&quot;</span><span class="p">)</span>
+<span class="n">glm_pure_premium</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.TweedieRegressor.html#sklearn.linear_model.TweedieRegressor" title="sklearn.linear_model.TweedieRegressor" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">TweedieRegressor</span></a><span class="p">(</span><span class="n">power</span><span class="o">=</span><span class="mf">1.9</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"newton-cholesky"</span><span class="p">)</span>
 <span class="n">glm_pure_premium</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
-    <span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">],</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">[</span><span class="s2">"PurePremium"</span><span class="p">],</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">df_train</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="n">tweedie_powers</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">1.99</span><span class="p">,</span> <span class="mf">1.999</span><span class="p">,</span> <span class="mf">1.9999</span><span class="p">]</span>
@@ -1630,8 +1630,8 @@ regardless of <code class="docutils literal notranslate"><span class="pre">power
     <span class="n">X_test</span><span class="p">,</span>
     <span class="n">df_train</span><span class="p">,</span>
     <span class="n">df_test</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">"PurePremium"</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
     <span class="n">tweedie_powers</span><span class="o">=</span><span class="n">tweedie_powers</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -1641,8 +1641,8 @@ regardless of <code class="docutils literal notranslate"><span class="pre">power
     <span class="n">X_test</span><span class="p">,</span>
     <span class="n">df_train</span><span class="p">,</span>
     <span class="n">df_test</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">,</span>
-    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;Exposure&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">"PurePremium"</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">"Exposure"</span><span class="p">,</span>
     <span class="n">tweedie_powers</span><span class="o">=</span><span class="n">tweedie_powers</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -1650,10 +1650,10 @@ regardless of <code class="docutils literal notranslate"><span class="pre">power
     <span class="p">[</span><span class="n">scores_product_model</span><span class="p">,</span> <span class="n">scores_glm_pure_premium</span><span class="p">],</span>
     <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">keys</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Product Model&quot;</span><span class="p">,</span> <span class="s2">&quot;TweedieRegressor&quot;</span><span class="p">),</span>
+    <span class="n">keys</span><span class="o">=</span><span class="p">(</span><span class="s2">"Product Model"</span><span class="p">,</span> <span class="s2">"TweedieRegressor"</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluation of the Product Model and the Tweedie Regressor on target PurePremium&quot;</span><span class="p">)</span>
-<span class="k">with</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.option_context.html#pandas.option_context" title="pandas.option_context" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function"><span class="n">pd</span><span class="o">.</span><span class="n">option_context</span></a><span class="p">(</span><span class="s2">&quot;display.expand_frame_repr&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Evaluation of the Product Model and the Tweedie Regressor on target PurePremium"</span><span class="p">)</span>
+<span class="k">with</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.option_context.html#pandas.option_context" title="pandas.option_context" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function"><span class="n">pd</span><span class="o">.</span><span class="n">option_context</span></a><span class="p">(</span><span class="s2">"display.expand_frame_repr"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1682,24 +1682,24 @@ on average, both model tend to underestimate the total claim (but this
 behavior depends on the amount of regularization).</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">subset_label</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">df</span> <span class="ow">in</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">df_test</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"train"</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">df_train</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">df_test</span><span class="p">),</span>
 <span class="p">]:</span>
-    <span class="n">exposure</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">exposure</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
     <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">{</span>
-            <span class="s2">&quot;subset&quot;</span><span class="p">:</span> <span class="n">subset_label</span><span class="p">,</span>
-            <span class="s2">&quot;observed&quot;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;ClaimAmount&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
-            <span class="s2">&quot;predicted, frequency*severity model&quot;</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span>
+            <span class="s2">"subset"</span><span class="p">:</span> <span class="n">subset_label</span><span class="p">,</span>
+            <span class="s2">"observed"</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">"ClaimAmount"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+            <span class="s2">"predicted, frequency*severity model"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span>
                 <span class="n">exposure</span> <span class="o">*</span> <span class="n">glm_freq</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="n">glm_sev</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="p">),</span>
-            <span class="s2">&quot;predicted, tweedie, power=</span><span class="si">%.2f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">glm_pure_premium</span><span class="o">.</span><span class="n">power</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span>
+            <span class="s2">"predicted, tweedie, power=</span><span class="si">%.2f</span><span class="s2">"</span> <span class="o">%</span> <span class="n">glm_pure_premium</span><span class="o">.</span><span class="n">power</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span>
                 <span class="n">exposure</span> <span class="o">*</span> <span class="n">glm_pure_premium</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
             <span class="p">),</span>
         <span class="p">}</span>
     <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;subset&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"subset"</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>subset                                      train          test
@@ -1757,41 +1757,41 @@ of models, each with its own set of hyperparameters.</p>
 <span class="n">y_pred_total</span> <span class="o">=</span> <span class="n">glm_pure_premium</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">y_pred</span> <span class="ow">in</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s2">&quot;Frequency * Severity model&quot;</span><span class="p">,</span> <span class="n">y_pred_product</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;Compound Poisson Gamma&quot;</span><span class="p">,</span> <span class="n">y_pred_total</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Frequency * Severity model"</span><span class="p">,</span> <span class="n">y_pred_product</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Compound Poisson Gamma"</span><span class="p">,</span> <span class="n">y_pred_total</span><span class="p">),</span>
 <span class="p">]:</span>
     <span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span> <span class="o">=</span> <span class="n">lorenz_curve</span><span class="p">(</span>
-        <span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span>
+        <span class="n">df_test</span><span class="p">[</span><span class="s2">"PurePremium"</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span>
     <span class="p">)</span>
     <span class="n">gini</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <a href="../../modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc" title="sklearn.metrics.auc" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">auc</span></a><span class="p">(</span><span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span><span class="p">)</span>
-    <span class="n">label</span> <span class="o">+=</span> <span class="s2">&quot; (Gini index: </span><span class="si">{:.3f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gini</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">label</span> <span class="o">+=</span> <span class="s2">" (Gini index: </span><span class="si">{:.3f}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gini</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"-"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
 
 <span class="c1"># Oracle model: y_pred == y_test</span>
 <span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span> <span class="o">=</span> <span class="n">lorenz_curve</span><span class="p">(</span>
-    <span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;PurePremium&quot;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">&quot;Exposure&quot;</span><span class="p">]</span>
+    <span class="n">df_test</span><span class="p">[</span><span class="s2">"PurePremium"</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">"PurePremium"</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="s2">"Exposure"</span><span class="p">]</span>
 <span class="p">)</span>
 <span class="n">gini</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <a href="../../modules/generated/sklearn.metrics.auc.html#sklearn.metrics.auc" title="sklearn.metrics.auc" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">auc</span></a><span class="p">(</span><span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span><span class="p">)</span>
-<span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Oracle (Gini index: </span><span class="si">{:.3f}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gini</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-.&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+<span class="n">label</span> <span class="o">=</span> <span class="s2">"Oracle (Gini index: </span><span class="si">{:.3f}</span><span class="s2">)"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gini</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cum_exposure</span><span class="p">,</span> <span class="n">cum_claims</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"-."</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
 
 <span class="c1"># Random baseline</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Random baseline&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Random baseline"</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Lorenz Curves&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Lorenz Curves"</span><span class="p">,</span>
     <span class="n">xlabel</span><span class="o">=</span><span class="p">(</span>
-        <span class="s2">&quot;Cumulative proportion of exposure</span><span class="se">\n</span><span class="s2">(ordered by model from safest to riskiest)&quot;</span>
+        <span class="s2">"Cumulative proportion of exposure</span><span class="se">\n</span><span class="s2">(ordered by model from safest to riskiest)"</span>
     <span class="p">),</span>
-    <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Cumulative proportion of claim amounts&quot;</span><span class="p">,</span>
+    <span class="n">ylabel</span><span class="o">=</span><span class="s2">"Cumulative proportion of claim amounts"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper left&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="matplotlib.pyplot.plot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span></a><span class="p">()</span>
 </pre></div>
 </div>
 <img src="../../_images/sphx_glr_plot_tweedie_regression_insurance_claims_003.png" srcset="../../_images/sphx_glr_plot_tweedie_regression_insurance_claims_003.png" alt="Lorenz Curves" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>[]
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.763 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 7.252 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-linear-model-plot-tweedie-regression-insurance-claims-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/linear_model/plot_tweedie_regression_insurance_claims.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo19.svg" style="width: 150px;" />

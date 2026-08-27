@@ -836,16 +836,16 @@ when <code class="docutils literal notranslate"><span class="pre">array_api_disp
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_np</span><span class="p">,</span> <span class="n">y_np</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X_np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cuda&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X_np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">"cuda"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_torch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">"cuda"</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">config_context</span><span class="p">(</span><span class="n">array_api_dispatch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">lda</span> <span class="o">=</span> <span class="n">LinearDiscriminantAnalysis</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="n">X_trans</span> <span class="o">=</span> <span class="n">lda</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_torch</span><span class="p">,</span> <span class="n">y_torch</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">X_trans</span><span class="p">)</span>
-<span class="go">&lt;class &#39;torch.Tensor&#39;&gt;</span>
+<span class="go">&lt;class 'torch.Tensor'&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_trans</span><span class="o">.</span><span class="n">device</span><span class="o">.</span><span class="n">type</span>
-<span class="go">&#39;cuda&#39;</span>
+<span class="go">'cuda'</span>
 </pre></div>
 </div>
 <p>This pattern works identically with any supported array library. For example,
@@ -870,11 +870,11 @@ namespace to <code class="docutils literal notranslate"><span class="pre">transf
 to a different namespace and device:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils._array_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">move_estimator_to</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lda_np</span> <span class="o">=</span> <span class="n">move_estimator_to</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lda_np</span> <span class="o">=</span> <span class="n">move_estimator_to</span><span class="p">(</span><span class="n">lda</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">"cpu"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">config_context</span><span class="p">(</span><span class="n">array_api_dispatch</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">X_trans</span> <span class="o">=</span> <span class="n">lda_np</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_np</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">X_trans</span><span class="p">)</span>
-<span class="go">&lt;class &#39;numpy.ndarray&#39;&gt;</span>
+<span class="go">&lt;class 'numpy.ndarray'&gt;</span>
 </pre></div>
 </div>
 </section>
@@ -1093,7 +1093,7 @@ not be executed or have missing dependencies will be automatically skipped.
 Therefore it’s important to run the tests with the <code class="docutils literal notranslate"><span class="pre">-v</span></code> flag to see which
 checks are skipped:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>array-api-strict<span class="w">  </span><span class="c1"># and other libraries as needed</span></span>
-<span class="prompt1">pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;array_api&quot;</span><span class="w"> </span>-v</span>
+<span class="prompt1">pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">"array_api"</span><span class="w"> </span>-v</span>
 </pre></div></div><p>Running the scikit-learn tests against <code class="docutils literal notranslate"><span class="pre">array-api-strict</span></code> should help reveal
 most code problems related to handling multiple device inputs via the use of
 simulated non-CPU devices. This allows for fast iterative development and debugging of
@@ -1120,7 +1120,7 @@ writing. See the following github issue for more details:</p>
 </ul>
 <p>To enable the MPS support in PyTorch, set the environment variable
 <code class="docutils literal notranslate"><span class="pre">PYTORCH_ENABLE_MPS_FALLBACK=1</span></code> before running the tests:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTORCH_ENABLE_MPS_FALLBACK</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;array_api&quot;</span><span class="w"> </span>-v</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="nv">PYTORCH_ENABLE_MPS_FALLBACK</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">"array_api"</span><span class="w"> </span>-v</span>
 </pre></div></div><p>At the time of writing all scikit-learn tests should pass, however, the
 computational speed is not necessarily better than with the CPU device.</p>
 </section>

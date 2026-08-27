@@ -1232,11 +1232,11 @@ Fitting 5 folds for each of 18 candidates, totalling 90 fits
 [CV 4/5; 18/18] END features__pca__n_components=3, features__univ_select__k=2, svm__C=10;, score=0.967 total time=   0.0s
 [CV 5/5; 18/18] START features__pca__n_components=3, features__univ_select__k=2, svm__C=10
 [CV 5/5; 18/18] END features__pca__n_components=3, features__univ_select__k=2, svm__C=10;, score=1.000 total time=   0.0s
-Pipeline(steps=[(&#39;features&#39;,
-                 FeatureUnion(transformer_list=[(&#39;pca&#39;, PCA(n_components=3)),
-                                                (&#39;univ_select&#39;,
+Pipeline(steps=[('features',
+                 FeatureUnion(transformer_list=[('pca', PCA(n_components=3)),
+                                                ('univ_select',
                                                  SelectKBest(k=1))])),
-                (&#39;svm&#39;, SVC(C=10, kernel=&#39;linear&#39;))])
+                ('svm', SVC(C=10, kernel='linear'))])
 </pre></div>
 </div>
 <div class="line-block">
@@ -1264,17 +1264,17 @@ Pipeline(steps=[(&#39;features&#39;,
 
 <span class="c1"># Build estimator from PCA and Univariate selection:</span>
 
-<span class="n">combined_features</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.FeatureUnion.html#sklearn.pipeline.FeatureUnion" title="sklearn.pipeline.FeatureUnion" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">FeatureUnion</span></a><span class="p">([(</span><span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="n">pca</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;univ_select&quot;</span><span class="p">,</span> <span class="n">selection</span><span class="p">)])</span>
+<span class="n">combined_features</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.FeatureUnion.html#sklearn.pipeline.FeatureUnion" title="sklearn.pipeline.FeatureUnion" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">FeatureUnion</span></a><span class="p">([(</span><span class="s2">"pca"</span><span class="p">,</span> <span class="n">pca</span><span class="p">),</span> <span class="p">(</span><span class="s2">"univ_select"</span><span class="p">,</span> <span class="n">selection</span><span class="p">)])</span>
 
 <span class="c1"># Use combined features to transform dataset:</span>
 <span class="n">X_features</span> <span class="o">=</span> <span class="n">combined_features</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Combined space has&quot;</span><span class="p">,</span> <span class="n">X_features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;features&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Combined space has"</span><span class="p">,</span> <span class="n">X_features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">"features"</span><span class="p">)</span>
 
-<span class="n">svm</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="sklearn.svm.SVC" class="sphx-glr-backref-module-sklearn-svm sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SVC</span></a><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">svm</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC" title="sklearn.svm.SVC" class="sphx-glr-backref-module-sklearn-svm sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SVC</span></a><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">"linear"</span><span class="p">)</span>
 
 <span class="c1"># Do grid search over k, n_components and C:</span>
 
-<span class="n">pipeline</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a><span class="p">([(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">combined_features</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;svm&quot;</span><span class="p">,</span> <span class="n">svm</span><span class="p">)])</span>
+<span class="n">pipeline</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a><span class="p">([(</span><span class="s2">"features"</span><span class="p">,</span> <span class="n">combined_features</span><span class="p">),</span> <span class="p">(</span><span class="s2">"svm"</span><span class="p">,</span> <span class="n">svm</span><span class="p">)])</span>
 
 <span class="n">param_grid</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
     <span class="n">features__pca__n_components</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
@@ -1287,7 +1287,7 @@ Pipeline(steps=[(&#39;features&#39;,
 <span class="nb">print</span><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.562 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.682 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-compose-plot-feature-union-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/compose/plot_feature_union.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo6.svg" style="width: 150px;" />

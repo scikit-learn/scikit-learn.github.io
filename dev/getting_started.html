@@ -732,8 +732,8 @@ the test data:</p>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># fit the whole pipeline</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="go">Pipeline(steps=[(&#39;standardscaler&#39;, StandardScaler()),</span>
-<span class="go">                (&#39;logisticregression&#39;, LogisticRegression())])</span>
+<span class="go">Pipeline(steps=[('standardscaler', StandardScaler()),</span>
+<span class="go">                ('logisticregression', LogisticRegression())])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># we can now use it like any other estimator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="n">y_test</span><span class="p">)</span>
 <span class="go">0.97...</span>
@@ -760,7 +760,7 @@ our <a class="reference internal" href="modules/cross_validation.html#cross-vali
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>  <span class="c1"># defaults to 5-fold CV</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;test_score&#39;</span><span class="p">]</span>  <span class="c1"># r_squared score is high because dataset is easy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s1">'test_score'</span><span class="p">]</span>  <span class="c1"># r_squared score is high because dataset is easy</span>
 <span class="go">array([1., 1., 1., 1., 1.])</span>
 </pre></div>
 </div>
@@ -796,8 +796,8 @@ the best set of parameters. Read more in the <a class="reference internal" href=
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># define the parameter space that will be searched over</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">param_distributions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-<span class="gp">... </span>                       <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">param_distributions</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'n_estimators'</span><span class="p">:</span> <span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="gp">... </span>                       <span class="s1">'max_depth'</span><span class="p">:</span> <span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)}</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># now create a searchCV object and fit it to the data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">search</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
@@ -806,11 +806,11 @@ the best set of parameters. Read more in the <a class="reference internal" href=
 <span class="gp">... </span>                            <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 <span class="go">RandomizedSearchCV(estimator=RandomForestRegressor(random_state=0), n_iter=5,</span>
-<span class="go">                   param_distributions={&#39;max_depth&#39;: ...,</span>
-<span class="go">                                        &#39;n_estimators&#39;: ...},</span>
+<span class="go">                   param_distributions={'max_depth': ...,</span>
+<span class="go">                                        'n_estimators': ...},</span>
 <span class="go">                   random_state=0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">search</span><span class="o">.</span><span class="n">best_params_</span>
-<span class="go">{&#39;max_depth&#39;: 9, &#39;n_estimators&#39;: 4}</span>
+<span class="go">{'max_depth': 9, 'n_estimators': 4}</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># the search object now acts like a normal random forest estimator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># with max_depth=9 and n_estimators=4</span>
