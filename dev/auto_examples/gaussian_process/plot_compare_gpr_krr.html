@@ -1209,14 +1209,14 @@ Similar conclusions could be drawn with the length-scale parameter. Thus, it
 tells us that the kernel parameters need to be tuned. We will use a randomized
 search to tune the different parameters the kernel ridge model: the <code class="docutils literal notranslate"><span class="pre">alpha</span></code>
 parameter and the kernel parameters.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">loguniform</span></a>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">loguniform</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomizedSearchCV</span></a>
 
 <span class="n">param_distributions</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"alpha"</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">loguniform</span></a><span class="p">(</span><span class="mf">1e0</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">),</span>
-    <span class="s2">"kernel__length_scale"</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">loguniform</span></a><span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e2</span><span class="p">),</span>
-    <span class="s2">"kernel__periodicity"</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">loguniform</span></a><span class="p">(</span><span class="mf">1e0</span><span class="p">,</span> <span class="mf">1e1</span><span class="p">),</span>
+    <span class="s2">"alpha"</span><span class="p">:</span> <span class="n">loguniform</span><span class="p">(</span><span class="mf">1e0</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">),</span>
+    <span class="s2">"kernel__length_scale"</span><span class="p">:</span> <span class="n">loguniform</span><span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e2</span><span class="p">),</span>
+    <span class="s2">"kernel__periodicity"</span><span class="p">:</span> <span class="n">loguniform</span><span class="p">(</span><span class="mf">1e0</span><span class="p">,</span> <span class="mf">1e1</span><span class="p">),</span>
 <span class="p">}</span>
 <span class="n">kernel_ridge_tuned</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomizedSearchCV</span></a><span class="p">(</span>
     <span class="n">kernel_ridge</span><span class="p">,</span>
@@ -1229,7 +1229,7 @@ parameter and the kernel parameters.</p>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time for KernelRidge fitting: </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span><span class="o">.</span><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for KernelRidge fitting: 4.650 seconds
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for KernelRidge fitting: 4.171 seconds
 </pre></div>
 </div>
 <p>Fitting the model is now more computationally expensive since we have to try
@@ -1249,7 +1249,7 @@ defaults. We also see that the periodicity is closer to the expected value:
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Time for KernelRidge predict: </span><span class="si">{</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span><span class="o">.</span><span class="n">time</span></a><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for KernelRidge predict: 0.002 seconds
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for KernelRidge predict: 0.001 seconds
 </pre></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="matplotlib.pyplot.plot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"True signal"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">)</span>
@@ -1302,7 +1302,7 @@ estimate the noise in the dataset.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for GaussianProcessRegressor fitting: 0.025 seconds
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for GaussianProcessRegressor fitting: 0.022 seconds
 </pre></div>
 </div>
 <p>The computation cost of training a Gaussian process is much less than the
@@ -1328,7 +1328,7 @@ our model.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for GaussianProcessRegressor predict: 0.002 seconds
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Time for GaussianProcessRegressor predict: 0.001 seconds
 </pre></div>
 </div>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="matplotlib.pyplot.plot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">plot</span></a><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"True signal"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">)</span>
@@ -1442,7 +1442,7 @@ periodicity effect once that no sample are available in the training.
 As testing samples get further away from the training ones, predictions
 are converging towards their mean and their standard deviation
 also increases.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 5.378 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 4.799 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-gaussian-process-plot-compare-gpr-krr-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/gaussian_process/plot_compare_gpr_krr.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo15.svg" style="width: 150px;" />
