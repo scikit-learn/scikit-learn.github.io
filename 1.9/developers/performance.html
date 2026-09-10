@@ -16,7 +16,7 @@
 <meta property="og:image:alt" content="scikit-learn" />
 <meta name="description" content="The following gives some practical guidelines to help you write efficient code for the scikit-learn project. Python, Cython or C/C++?: In general, the scikit-learn project emphasizes the readabilit..." />
 
-    <title>How to optimize for speed &#8212; scikit-learn 1.9.0 documentation</title>
+    <title>How to optimize for speed &#8212; scikit-learn 1.9.1 documentation</title>
   
   
   
@@ -35,29 +35,29 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=8ee2c72c" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyterlite_sphinx.css?v=f676e775" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=cc94ab7d" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=9cea2f99" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/colors.css?v=66adee68" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/custom.css?v=48ff45b1" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=c4cb232b"></script>
+    <script src="../_static/documentation_options.js?v=60b3a732"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
@@ -68,9 +68,9 @@
     <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'developers/performance';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://scikit-learn.org/dev/_static/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.9.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '1.9.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -581,7 +581,8 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
     <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
   </svg>
   <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
@@ -728,7 +729,7 @@ magic command:</p>
          <span class="mi">14496</span> <span class="n">function</span> <span class="n">calls</span> <span class="ow">in</span> <span class="mf">1.682</span> <span class="n">CPU</span> <span class="n">seconds</span>
 
    <span class="n">Ordered</span> <span class="n">by</span><span class="p">:</span> <span class="n">internal</span> <span class="n">time</span>
-   <span class="n">List</span> <span class="n">reduced</span> <span class="kn">from</span><span class="w"> </span><span class="mi">90</span> <span class="n">to</span> <span class="mi">9</span> <span class="n">due</span> <span class="n">to</span> <span class="n">restriction</span> <span class="o">&lt;</span><span class="s1">&#39;nmf.py&#39;</span><span class="o">&gt;</span>
+   <span class="n">List</span> <span class="n">reduced</span> <span class="kn">from</span><span class="w"> </span><span class="mi">90</span> <span class="n">to</span> <span class="mi">9</span> <span class="n">due</span> <span class="n">to</span> <span class="n">restriction</span> <span class="o">&lt;</span><span class="s1">'nmf.py'</span><span class="o">&gt;</span>
 
    <span class="n">ncalls</span>  <span class="n">tottime</span>  <span class="n">percall</span>  <span class="n">cumtime</span>  <span class="n">percall</span> <span class="n">filename</span><span class="p">:</span><span class="n">lineno</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
        <span class="mi">36</span>    <span class="mf">0.609</span>    <span class="mf">0.017</span>    <span class="mf">1.499</span>    <span class="mf">0.042</span> <span class="n">nmf</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">151</span><span class="p">(</span><span class="n">_nls_subproblem</span><span class="p">)</span>
@@ -760,10 +761,10 @@ filter:</p>
      <span class="mi">2833</span>    <span class="mf">0.653</span>    <span class="mf">0.000</span>    <span class="mf">0.653</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">numpy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_dotblas</span><span class="o">.</span><span class="n">dot</span><span class="p">}</span>
        <span class="mi">46</span>    <span class="mf">0.651</span>    <span class="mf">0.014</span>    <span class="mf">1.636</span>    <span class="mf">0.036</span> <span class="n">nmf</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">151</span><span class="p">(</span><span class="n">_nls_subproblem</span><span class="p">)</span>
      <span class="mi">1397</span>    <span class="mf">0.171</span>    <span class="mf">0.000</span>    <span class="mf">0.171</span>    <span class="mf">0.000</span> <span class="n">nmf</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">18</span><span class="p">(</span><span class="n">_pos</span><span class="p">)</span>
-     <span class="mi">2780</span>    <span class="mf">0.167</span>    <span class="mf">0.000</span>    <span class="mf">0.167</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">method</span> <span class="s1">&#39;sum&#39;</span> <span class="n">of</span> <span class="s1">&#39;numpy.ndarray&#39;</span> <span class="n">objects</span><span class="p">}</span>
+     <span class="mi">2780</span>    <span class="mf">0.167</span>    <span class="mf">0.000</span>    <span class="mf">0.167</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">method</span> <span class="s1">'sum'</span> <span class="n">of</span> <span class="s1">'numpy.ndarray'</span> <span class="n">objects</span><span class="p">}</span>
         <span class="mi">1</span>    <span class="mf">0.064</span>    <span class="mf">0.064</span>    <span class="mf">1.840</span>    <span class="mf">1.840</span> <span class="n">nmf</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">352</span><span class="p">(</span><span class="n">fit_transform</span><span class="p">)</span>
-     <span class="mi">1542</span>    <span class="mf">0.043</span>    <span class="mf">0.000</span>    <span class="mf">0.043</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">method</span> <span class="s1">&#39;flatten&#39;</span> <span class="n">of</span> <span class="s1">&#39;numpy.ndarray&#39;</span> <span class="n">objects</span><span class="p">}</span>
-      <span class="mi">337</span>    <span class="mf">0.019</span>    <span class="mf">0.000</span>    <span class="mf">0.019</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">method</span> <span class="s1">&#39;all&#39;</span> <span class="n">of</span> <span class="s1">&#39;numpy.ndarray&#39;</span> <span class="n">objects</span><span class="p">}</span>
+     <span class="mi">1542</span>    <span class="mf">0.043</span>    <span class="mf">0.000</span>    <span class="mf">0.043</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">method</span> <span class="s1">'flatten'</span> <span class="n">of</span> <span class="s1">'numpy.ndarray'</span> <span class="n">objects</span><span class="p">}</span>
+      <span class="mi">337</span>    <span class="mf">0.019</span>    <span class="mf">0.000</span>    <span class="mf">0.019</span>    <span class="mf">0.000</span> <span class="p">{</span><span class="n">method</span> <span class="s1">'all'</span> <span class="n">of</span> <span class="s1">'numpy.ndarray'</span> <span class="n">objects</span><span class="p">}</span>
      <span class="mi">2734</span>    <span class="mf">0.011</span>    <span class="mf">0.000</span>    <span class="mf">0.181</span>    <span class="mf">0.000</span> <span class="n">fromnumeric</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1185</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
         <span class="mi">2</span>    <span class="mf">0.010</span>    <span class="mf">0.005</span>    <span class="mf">0.010</span>    <span class="mf">0.005</span> <span class="p">{</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lapack_lite</span><span class="o">.</span><span class="n">dgesdd</span><span class="p">}</span>
       <span class="mi">748</span>    <span class="mf">0.009</span>    <span class="mf">0.000</span>    <span class="mf">0.065</span>    <span class="mf">0.000</span> <span class="n">nmf</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">28</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
@@ -792,24 +793,17 @@ span.prompt1:before {
   content: "$ ";
 }
 </style><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>line_profiler</span>
-</pre></div></div><p><strong>Under IPython 0.13+</strong>, first create a configuration profile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">ipython<span class="w"> </span>profile<span class="w"> </span>create</span>
-</pre></div></div><p>Then register the line_profiler extension in
-<code class="docutils literal notranslate"><span class="pre">~/.ipython/profile_default/ipython_config.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">TerminalIPythonApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;line_profiler&#39;</span><span class="p">)</span>
-<span class="n">c</span><span class="o">.</span><span class="n">InteractiveShellApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;line_profiler&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This will register the <code class="docutils literal notranslate"><span class="pre">%lprun</span></code> magic command in the IPython terminal application and the other frontends such as qtconsole and notebook.</p>
-<p>Now restart IPython and let us use this new toy:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_digits</span>
+</pre></div></div><p>Now restart IPython and let us use this new toy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">line_profiler</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_digits</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
   <span class="o">...</span> <span class="p">:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition._nmf</span><span class="w"> </span><span class="kn">import</span> <span class="n">_nls_subproblem</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="o">%</span><span class="n">lprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">_nls_subproblem</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="o">%</span><span class="n">lprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">_nls_subproblem</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="n">Timer</span> <span class="n">unit</span><span class="p">:</span> <span class="mf">1e-06</span> <span class="n">s</span>
 
 <span class="n">File</span><span class="p">:</span> <span class="n">sklearn</span><span class="o">/</span><span class="n">decomposition</span><span class="o">/</span><span class="n">nmf</span><span class="o">.</span><span class="n">py</span>
@@ -819,11 +813,11 @@ span.prompt1:before {
 <span class="n">Line</span> <span class="c1">#      Hits         Time  Per Hit   % Time  Line Contents</span>
 <span class="o">==============================================================</span>
    <span class="mi">137</span>                                           <span class="k">def</span><span class="w"> </span><span class="nf">_nls_subproblem</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">H_init</span><span class="p">,</span> <span class="n">tol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">):</span>
-   <span class="mi">138</span>                                               <span class="s2">&quot;&quot;&quot;Non-negative least square solver</span>
+   <span class="mi">138</span>                                               <span class="s2">"""Non-negative least square solver</span>
 <span class="s2">   ...</span>
-<span class="s2">   170                                               &quot;&quot;&quot;</span>
+<span class="s2">   170                                               """</span>
    <span class="mi">171</span>        <span class="mi">48</span>         <span class="mi">5863</span>    <span class="mf">122.1</span>      <span class="mf">0.3</span>      <span class="k">if</span> <span class="p">(</span><span class="n">H_init</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-   <span class="mi">172</span>                                                   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Negative values in H_init passed to NLS solver.&quot;</span><span class="p">)</span>
+   <span class="mi">172</span>                                                   <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Negative values in H_init passed to NLS solver."</span><span class="p">)</span>
    <span class="mi">173</span>
    <span class="mi">174</span>        <span class="mi">48</span>          <span class="mi">139</span>      <span class="mf">2.9</span>      <span class="mf">0.0</span>      <span class="n">H</span> <span class="o">=</span> <span class="n">H_init</span>
    <span class="mi">175</span>        <span class="mi">48</span>       <span class="mi">112141</span>   <span class="mf">2336.3</span>      <span class="mf">5.8</span>      <span class="n">WtV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
@@ -853,18 +847,39 @@ pin-point the most expensive expressions that would deserve additional care.</p>
 </section>
 <section id="memory-usage-profiling">
 <h2>Memory usage profiling<a class="headerlink" href="#memory-usage-profiling" title="Link to this heading">#</a></h2>
-<p>You can analyze in detail the memory usage of any Python code with the help of
-<a class="reference external" href="https://pypi.org/project/memory_profiler/">memory_profiler</a>. First,
-install the latest version:</p>
+<section id="peak-memory">
+<h3>Peak memory<a class="headerlink" href="#peak-memory" title="Link to this heading">#</a></h3>
+<p>Peak memory, i.e. the highest level of memory usage for a program, can be a
+bottleneck when processing large amounts of data. You can use <a class="reference external" href="https://bloomberg.github.io/memray/">memray</a> to measure peak memory, and discover the
+responsible code. In particular, it will tell you which Python callstacks were
+responsible for allocating the various allocations that led to peak memory.</p>
+<p>First, install the latest version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memray</span>
+</pre></div></div><p>Then, run a script using the relevant code under <code class="docutils literal notranslate"><span class="pre">memray</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">memray<span class="w"> </span>run<span class="w"> </span>example.py</span>
+</pre></div></div><p>It will tell you where it wrote the resulting data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Writing</span> <span class="n">profile</span> <span class="n">results</span> <span class="n">into</span> <span class="n">memray</span><span class="o">-</span><span class="n">example</span><span class="o">.</span><span class="n">py</span><span class="mf">.123</span><span class="o">.</span><span class="n">bin</span>
+</pre></div>
+</div>
+<p>You can then convert this data into an HTML report:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">memray<span class="w"> </span>flamegraph<span class="w"> </span>memray-example.py.123.bin</span>
+</pre></div></div><p>In this case it will generate a file called
+“memray-flamegraph-example.py.123.html” which you can then open in a browser. If
+you are not familiar with flamegraphs, see <a class="reference external" href="https://bloomberg.github.io/memray/flamegraph.html">Memray’s docs</a> for an introduction.</p>
+</section>
+<section id="memory-leaks">
+<h3>Memory leaks<a class="headerlink" href="#memory-leaks" title="Link to this heading">#</a></h3>
+<p>You can analyze the memory usage changes of any Python code with the help of
+<a class="reference external" href="https://pypi.org/project/memory_profiler/">memory_profiler</a>. It works by
+measuring how much memory usage has changed between the start of a line of code
+and the end of a line of code. As a result, it is less useful for discovering
+peak memory usage: it cannot detect any memory that is allocated and then
+immediately released while the line of code is executing, even if it’s a large
+amount.</p>
+<p>First, install the latest version:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memory_profiler</span>
-</pre></div></div><p>Then, setup the magics in a manner similar to <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code>.</p>
-<p><strong>Under IPython 0.11+</strong>, first create a configuration profile:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">ipython<span class="w"> </span>profile<span class="w"> </span>create</span>
-</pre></div></div><p>Then register the extension in
-<code class="docutils literal notranslate"><span class="pre">~/.ipython/profile_default/ipython_config.py</span></code>
-alongside the line profiler:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">TerminalIPythonApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;memory_profiler&#39;</span><span class="p">)</span>
-<span class="n">c</span><span class="o">.</span><span class="n">InteractiveShellApp</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;memory_profiler&#39;</span><span class="p">)</span>
+</pre></div></div><p>Then, setup the magics in a manner similar to <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">memory_profiler</span>
 </pre></div>
 </div>
 <p>This will register the <code class="docutils literal notranslate"><span class="pre">%memit</span></code> and <code class="docutils literal notranslate"><span class="pre">%mprun</span></code> magic commands in the
@@ -873,9 +888,9 @@ IPython terminal application and the other frontends such as qtconsole and   not
 functions in your program. It is very similar to <code class="docutils literal notranslate"><span class="pre">%lprun</span></code>, discussed in the
 previous section. For example, from the <code class="docutils literal notranslate"><span class="pre">memory_profiler</span></code> <code class="docutils literal notranslate"><span class="pre">examples</span></code>
 directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="kn">from</span><span class="w"> </span><span class="nn">example</span><span class="w"> </span><span class="kn">import</span> <span class="n">my_func</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="kn">from</span><span class="w"> </span><span class="nn">example</span><span class="w"> </span><span class="kn">import</span> <span class="n">my_func</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span><span class="n">mprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">my_func</span> <span class="n">my_func</span><span class="p">()</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">%</span><span class="n">mprun</span> <span class="o">-</span><span class="n">f</span> <span class="n">my_func</span> <span class="n">my_func</span><span class="p">()</span>
 <span class="n">Filename</span><span class="p">:</span> <span class="n">example</span><span class="o">.</span><span class="n">py</span>
 
 <span class="n">Line</span> <span class="c1">#    Mem usage  Increment   Line Contents</span>
@@ -890,14 +905,17 @@ directory:</p>
 </div>
 <p>Another useful magic that <code class="docutils literal notranslate"><span class="pre">memory_profiler</span></code> defines is <code class="docutils literal notranslate"><span class="pre">%memit</span></code>, which is
 analogous to <code class="docutils literal notranslate"><span class="pre">%timeit</span></code>. It can be used as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">memory_profiler</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="o">%</span><span class="n">memit</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mf">1e7</span><span class="p">)</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="o">%</span><span class="n">memit</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mf">1e7</span><span class="p">)</span>
 <span class="n">maximum</span> <span class="n">of</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">76.402344</span> <span class="n">MB</span> <span class="n">per</span> <span class="n">loop</span>
 </pre></div>
 </div>
 <p>For more details, see the docstrings of the magics, using <code class="docutils literal notranslate"><span class="pre">%memit?</span></code> and
 <code class="docutils literal notranslate"><span class="pre">%mprun?</span></code>.</p>
+</section>
 </section>
 <section id="using-cython">
 <h2>Using Cython<a class="headerlink" href="#using-cython" title="Link to this heading">#</a></h2>
@@ -942,7 +960,7 @@ conda<span class="w"> </span>activate<span class="w"> </span>debug-scikit-dev
 mkdir<span class="w"> </span>debug
 <span class="nb">cd</span><span class="w"> </span>debug
 ../configure<span class="w"> </span>--prefix<span class="o">=</span><span class="nv">$CONDA_PREFIX</span><span class="w"> </span>--with-pydebug
-make<span class="w"> </span><span class="nv">EXTRA_CFLAGS</span><span class="o">=</span><span class="s1">&#39;-DPy_DEBUG&#39;</span><span class="w"> </span>-j&lt;num_cores&gt;
+make<span class="w"> </span><span class="nv">EXTRA_CFLAGS</span><span class="o">=</span><span class="s1">'-DPy_DEBUG'</span><span class="w"> </span>-j&lt;num_cores&gt;
 make<span class="w"> </span>install
 </pre></div>
 </div>
@@ -1022,7 +1040,11 @@ a profiling report ‘line by line’.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#python-cython-or-c-c">Python, Cython or C/C++?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#profiling-python-code">Profiling Python code</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-usage-profiling">Memory usage profiling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-usage-profiling">Memory usage profiling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peak-memory">Peak memory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-leaks">Memory leaks</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-cython">Using Cython</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#profiling-compiled-extensions">Profiling compiled extensions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-yep-and-gperftools">Using yep and gperftools</a></li>
@@ -1068,8 +1090,8 @@ a profiling report ‘line by line’.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
