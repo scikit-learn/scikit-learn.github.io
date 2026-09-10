@@ -110,42 +110,8 @@ See :ref:`array_api` for more details.
   device.
   By :user:`Olivier Grisel <ogrisel>`. :pr:`34779`
 
-Metadata routing
-----------------
-
-Refer to the :ref:`Metadata Routing User Guide <metadata_routing>` for
-more details.
-
-- |Fix| Metadata is now correctly routed to the sub-estimator of meta-estimators such as
-  :class:`feature_selection.SelectFromModel`, :class:`feature_selection.RFE`,
-  :class:`feature_selection.RFECV`, :class:`feature_selection.SequentialFeatureSelector`,
-  and :class:`impute.IterativeImputer` when they are used as an intermediate step of a
-  :class:`pipeline.Pipeline`, i.e. when their composite ``fit_transform`` method is the
-  target of the routing. Previously, metadata such as ``sample_weight`` was silently
-  dropped in this case.
-  By :user:`Adrin Jalali <adrinjalali>` and :user:`Kyle Schluns <kschluns>`. :pr:`30869`
-
-- |Fix| :class:`ensemble.BaggingClassifier` now correctly routes metadata via `predict` and
-  `predict_proba` dynamically to the corresponding method on the sub-estimator.
-  By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34188`
-
-- |Fix| :class:`pipeline.Pipeline`'s :meth:`~pipeline.Pipeline.fit_transform` and
-  :meth:`~pipeline.Pipeline.fit_predict` now correctly apply ``transform_input`` to
-  metadata routed to intermediate steps, matching :meth:`~pipeline.Pipeline.fit`.
-  By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34201`
-
-- |Fix| :class:`compose.TransformedTargetRegressor` now correctly routes metadata such as
-  ``sample_weight`` to its default regressor (:class:`~linear_model.LinearRegression`)
-  when metadata routing is enabled.
-  By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34224`
-
 Callbacks
 ---------
-
-- |Fix| Fixed a bug where fitting an estimator with a :class:`callback.ScoringMonitor` and a
-  parallel backend using multi-processing could fail with "Could not pickle the task to
-  send it to the workers".
-  By :user:`Jérémie du Boisberranger <jeremiedbb>`. :pr:`34821`
 
 - |API| In :class:`callback.ScoringMonitor`, the option to provide `scoring=None` to have the
   default scorer of the estimator has been removed.
@@ -161,29 +127,8 @@ Callbacks
   ``ceil(n_samples**(1/3))``.
   By :user:`Zeyu Sun <zeyusun>` :pr:`33856`
 
-:mod:`sklearn.cluster`
-----------------------
-
-- |Fix| :class:`cluster.DBSCAN` and :func:`cluster.dbscan` no longer raise a
-  spurious :class:`~sklearn.exceptions.EfficiencyWarning` when given a
-  precomputed sparse distance matrix.
-  By :user:`Vadim <Tweezky66>`. :pr:`34399`
-
-- |Fix| :class:`cluster.OPTICS` no longer raises a
-  :class:`~sklearn.exceptions.EfficiencyWarning` when fitted on a
-  precomputed sparse distance matrix.
-  By :user:`Dea María Léon <deamarialeon>`. :pr:`34692`
-
 :mod:`sklearn.datasets`
 -----------------------
-
-- |Fix| :func:`datasets.fetch_openml` now correctly recovers from a corrupted
-  download by re-downloading it, instead of raising an error.
-  By :user:`Roman Yurchak <rth>`. :pr:`34262`
-
-- |Fix| :func:`datasets.fetch_file` now raises a `ValueError` when `local_filename`
-  is a path instead of a plain filename.
-  By :user:`Dea María Léon <DeaMariaLeon>`. :pr:`34815`
 
 - |Fix| :func:`datasets.fetch_openml` with `parser="pandas"` no longer raises a
   `TypeError` when a nominal column's values are inferred by pandas as numeric
@@ -199,14 +144,6 @@ Callbacks
   the unique class labels. Computing the class means is up to 1.4x faster for
   large numbers of samples and classes.
   By :user:`Kiyarash Fazeli <Fazel94>`. :pr:`34475`
-
-- |Fix| :class:`discriminant_analysis.LinearDiscriminantAnalysis` and
-  :class:`discriminant_analysis.QuadraticDiscriminantAnalysis` now return the same results
-  when using `solver="svd"` and `solver="eigen"`. The normalization for `solver="svd"`
-  is changed to `1/n_samples` instead of `1/(n_samples - n_classes)` and `1/(n_samples - 1)`,
-  respectively, which is consistent with the maximum likelihood covariance estimator
-  (same as the `solver="eigen"` default).
-  By :user:`Daniel Herrera-Esposito <dherrera1911>`. :pr:`33626`
 
 :mod:`sklearn.ensemble`
 -----------------------
@@ -329,11 +266,6 @@ Callbacks
   ``metric="nan_euclidean"`` such as :class:`neighbors.NearestNeighbors`.
   By :user:`Roman Yurchak <rth>`. :pr:`1140`
 
-- |Efficiency| Scorers created with :func:`~metrics.make_scorer` no longer deep-copy metadata
-  kwargs on each call, reducing memory usage during model selection and
-  cross-validation.
-  By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34236`
-
 - |Enhancement| :func:`~metrics.confusion_matrix_at_thresholds`, :func:`~metrics.roc_curve`,
   :func:`~metrics.precision_recall_curve`, :func:`~metrics.det_curve`, and
   :func:`~metrics.roc_auc_score` now use exact integer cumulative sums for
@@ -392,11 +324,6 @@ Callbacks
 * |Efficiency| :class:`sklearn.neighbors.KNeighborsClassifier` is now faster when fitting when used with :class:`sklearn.neighbors.BallTree` or :class:`sklearn.neighbors.KDTree`.
   By :user:`Itamar Turner-Trauring <itamarst>`. :pr:`34564`
 
-- |Fix| :meth:`neighbors.NearestNeighbors.radius_neighbors` now correctly handles an
-  array-like ``radius`` when ``n_jobs > 1`` with the ``ball_tree`` and
-  ``kd_tree`` algorithms.
-  By :user:`Nicolas Salvy <nicolassalvy>`. :pr:`34341`
-
 - |API| Getting statistics and number of calls from :class:`sklearn.neighbors.BallTree` and
   :class:`sklearn.neighbors.KDTree` is deprecated. The relevant APIs will be removed in
   version 1.12. :pr:`34242`
@@ -423,24 +350,10 @@ Callbacks
   Fortran-contiguous memory layout in their encoding paths.
   By :user:`Arthur Lacote <cakedev0>`. :pr:`34392`
 
-- |Fix| Fixed a bug in :class:`preprocessing.QuantileTransformer` where fitting on
-  sparse data with `ignore_implicit_zeros=True` and subsampling could compute
-  degenerate quantiles for some features.
-  By :user:`Arthur Lacote <cakedev0>`. :pr:`32587`
-
 - |Fix| The warning raised by :class:`preprocessing.OneHotEncoder` now distinguishes
   columns where unknown categories are encoded as the infrequent category from
   columns where they are encoded as all zeros.
   By :user:`oathbreaker <karansgotit>`. :pr:`34861`
-
-:mod:`sklearn.svm`
-------------------
-
-- |Fix| Fixed a memory leak when calling the `fit` method of :class:`svm.LinearSVR`.
-  By :user:`Jake VanderPlas <jakevdp>`. :pr:`34256`
-
-- |Fix| Fixed an out-of-bound write in the ``fit`` method of :class:`svm.LinearSVC` memory
-  when using ``multi_class="crammer_singer"``.  By :user:`Jake VanderPlas <jakevdp>`. :pr:`34273`
 
 :mod:`sklearn.tree`
 -------------------
@@ -467,32 +380,6 @@ Callbacks
   :func:`tree.export_graphviz` to allow user-defined class colors when
   rendering filled decision trees.
   By :user:`Simon-Martin Schröder <moi90>`. :pr:`33810`
-
-:mod:`sklearn.utils`
---------------------
-
-- |Fix| The HTML representation of estimators now truncates the output feature list
-  to 100 entries to improve rendering performance for estimators with many
-  output features.
-  By :user:`Dea María Léon <deamarialeon>`. :pr:`34362`
-
-- |Fix| Array API supporting functions and estimators that handle mixed input
-  namespaces now make negative-stride NumPy arrays contiguous before
-  transferring them to PyTorch through DLPack, avoiding a Python process
-  abort in ``torch.from_dlpack``.
-  By :user:`Yin Li <Kevin-Li-2025>`. :pr:`34380`
-
-- |Fix| The copy-to-clipboard icons in the HTML representation of estimators are
-  now rendered as ``<button>`` elements with an ``aria-label`` and a visible
-  focus outline, instead of non-interactive ``<i>`` elements, so they are
-  reachable and usable with a keyboard and screen readers.
-  By :user:`Dea María Léon <deamarialeon>`. :pr:`34429`
-
-- |Fix| ``set_output(transform="polars")`` no longer emits a
-  ``DeprecationWarning`` with ``polars>=1.42.1`` by using
-  ``how="horizontal_extend"`` instead of the deprecated
-  ``how="horizontal"`` when concatenating polars dataframes.
-  By :user:`Felix Hoehle <fhoehle>`. :pr:`34447`
 
 .. rubric:: Code and documentation contributors
 
