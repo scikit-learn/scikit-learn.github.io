@@ -105,7 +105,7 @@ which the plain hinge loss could not provide.
         loss="modified_huber",
         penalty="elasticnet",
         fit_intercept=True,
-        max_iter=5_000,
+        max_iter=1_000,
     )
 
 
@@ -191,7 +191,7 @@ explore and discard, so it is fine to silence the warning with a
 
     param_grid = {
         "average": [True, False],
-        "l1_ratio": np.linspace(0, 1, num=10),
+        "l1_ratio": np.linspace(0, 1, num=5),
         "alpha": np.power(10, np.arange(-2, 1, dtype=float)),
     }
 
@@ -215,18 +215,18 @@ explore and discard, so it is fine to silence the warning with a
 
  .. code-block:: none
 
-    GridSearchCV took 134.02 seconds for 60 candidate parameter settings.
+    GridSearchCV took 20.18 seconds for 30 candidate parameter settings.
     Model with rank: 1
     Mean validation score: 1.000 (std: 0.000)
-    Parameters: {'alpha': np.float64(0.01), 'average': False, 'l1_ratio': np.float64(0.5555555555555556)}
+    Parameters: {'alpha': np.float64(0.1), 'average': False, 'l1_ratio': np.float64(0.25)}
 
     Model with rank: 2
     Mean validation score: 1.000 (std: 0.000)
-    Parameters: {'alpha': np.float64(0.1), 'average': False, 'l1_ratio': np.float64(0.0)}
+    Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.0)}
 
     Model with rank: 3
-    Mean validation score: 1.000 (std: 0.000)
-    Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.0)}
+    Mean validation score: 0.999 (std: 0.002)
+    Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.5)}
 
 
 
@@ -258,7 +258,7 @@ search while fitting far fewer configurations.
         "alpha": stats.loguniform(1e-2, 1e0),
     }
 
-    n_iter_search = 30
+    n_iter_search = 15
     random_search = RandomizedSearchCV(
         linear_svm,
         param_distributions=param_dist,
@@ -285,18 +285,18 @@ search while fitting far fewer configurations.
 
  .. code-block:: none
 
-    RandomizedSearchCV took 52.31 seconds for 30 candidates parameter settings.
+    RandomizedSearchCV took 9.72 seconds for 15 candidates parameter settings.
     Model with rank: 1
     Mean validation score: 1.000 (std: 0.000)
     Parameters: {'alpha': np.float64(0.1673808578875213), 'average': False, 'l1_ratio': np.float64(0.04666566321361543)}
 
     Model with rank: 2
     Mean validation score: 1.000 (std: 0.000)
-    Parameters: {'alpha': np.float64(0.04649617447336333), 'average': False, 'l1_ratio': np.float64(0.7080725777960455)}
+    Parameters: {'alpha': np.float64(0.7535384509295541), 'average': False, 'l1_ratio': np.float64(0.18182496720710062)}
 
     Model with rank: 3
-    Mean validation score: 1.000 (std: 0.000)
-    Parameters: {'alpha': np.float64(0.3503398491158687), 'average': False, 'l1_ratio': np.float64(0.2934881747180381)}
+    Mean validation score: 0.993 (std: 0.014)
+    Parameters: {'alpha': np.float64(0.010994335574766203), 'average': False, 'l1_ratio': np.float64(0.7219987722668247)}
 
 
 
@@ -323,7 +323,7 @@ iterations where most candidates are discarded.
     from sklearn.experimental import enable_halving_search_cv  # noqa: F401
     from sklearn.model_selection import HalvingRandomSearchCV
 
-    n_candidates = 60
+    n_candidates = 30
     halving_search = HalvingRandomSearchCV(
         linear_svm,
         param_distributions=param_dist,
@@ -351,18 +351,18 @@ iterations where most candidates are discarded.
 
  .. code-block:: none
 
-    HalvingRandomSearchCV took 55.21 seconds for 60 initial candidate parameter settings.
+    HalvingRandomSearchCV took 10.34 seconds for 30 initial candidate parameter settings.
     Model with rank: 1
-    Mean validation score: 1.000 (std: 0.000)
-    Parameters: {'alpha': np.float64(0.7121996518301618), 'average': False, 'l1_ratio': np.float64(0.11586905952512971)}
+    Mean validation score: 0.999 (std: 0.001)
+    Parameters: {'alpha': np.float64(0.11006988685589526), 'average': False, 'l1_ratio': np.float64(0.32533033076326434)}
 
     Model with rank: 2
-    Mean validation score: 1.000 (std: 0.001)
+    Mean validation score: 0.999 (std: 0.001)
     Parameters: {'alpha': np.float64(0.21137059440645725), 'average': False, 'l1_ratio': np.float64(0.4251558744912447)}
 
     Model with rank: 3
     Mean validation score: 0.999 (std: 0.001)
-    Parameters: {'alpha': np.float64(0.697828126512603), 'average': False, 'l1_ratio': np.float64(0.5704439744053994)}
+    Parameters: {'alpha': np.float64(0.7535384509295541), 'average': False, 'l1_ratio': np.float64(0.18182496720710062)}
 
 
 
@@ -375,15 +375,15 @@ Conclusion
 
 Running the three searches on the same problem highlights their trade-offs:
 
-- **Grid search** evaluates all 60 combinations of the grid and reaches a best
+- **Grid search** evaluates all 30 combinations of the grid and reaches a best
   mean validation ROC AUC of essentially 1.0. It is exhaustive, but its cost
   grows with the resolution of the grid and a finer grid would be needed to
   refine the continuous parameters, making it the slowest of the three.
 - **Randomized search** reaches an essentially equivalent score while sampling
-  only 30 candidates, i.e. half the budget, and is therefore markedly faster.
+  only 15 candidates, i.e. half the budget, and is therefore markedly faster.
   Drawing the continuous parameters from distributions is usually a better use
   of a limited budget than refining a grid.
-- **Successive halving** screens the 60 candidates for a run time comparable to
+- **Successive halving** screens the 30 candidates for a run time comparable to
   the randomized search by spending most of its resources only on the most
   promising candidates. It explores more candidates than the randomized search
   without paying the full cost of the grid search.
@@ -401,7 +401,7 @@ chosen model on a held-out test set.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (4 minutes 1.557 seconds)
+   **Total running time of the script:** (0 minutes 40.263 seconds)
 
 
 .. _sphx_glr_download_auto_examples_model_selection_plot_randomized_search.py:

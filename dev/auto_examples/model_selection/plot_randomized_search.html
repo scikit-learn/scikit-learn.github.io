@@ -1089,7 +1089,7 @@ which the plain hinge loss could not provide.</p>
     <span class="n">loss</span><span class="o">=</span><span class="s2">"modified_huber"</span><span class="p">,</span>
     <span class="n">penalty</span><span class="o">=</span><span class="s2">"elasticnet"</span><span class="p">,</span>
     <span class="n">fit_intercept</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">max_iter</span><span class="o">=</span><span class="mi">5_000</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=</span><span class="mi">1_000</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -1146,7 +1146,7 @@ explore and discard, so it is fine to silence the warning with a
 
 <span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"average"</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
-    <span class="s2">"l1_ratio"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+    <span class="s2">"l1_ratio"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html#numpy.linspace" title="numpy.linspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">linspace</span></a><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
     <span class="s2">"alpha"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.power.html#numpy.power" title="numpy.power" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">power</span></a><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)),</span>
 <span class="p">}</span>
 
@@ -1163,18 +1163,18 @@ explore and discard, so it is fine to silence the warning with a
 <span class="n">report</span><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>GridSearchCV took 134.02 seconds for 60 candidate parameter settings.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>GridSearchCV took 20.18 seconds for 30 candidate parameter settings.
 Model with rank: 1
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {'alpha': np.float64(0.01), 'average': False, 'l1_ratio': np.float64(0.5555555555555556)}
+Parameters: {'alpha': np.float64(0.1), 'average': False, 'l1_ratio': np.float64(0.25)}
 
 Model with rank: 2
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {'alpha': np.float64(0.1), 'average': False, 'l1_ratio': np.float64(0.0)}
+Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.0)}
 
 Model with rank: 3
-Mean validation score: 1.000 (std: 0.000)
-Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.0)}
+Mean validation score: 0.999 (std: 0.002)
+Parameters: {'alpha': np.float64(1.0), 'average': False, 'l1_ratio': np.float64(0.5)}
 </pre></div>
 </div>
 </section>
@@ -1196,7 +1196,7 @@ search while fitting far fewer configurations.</p>
     <span class="s2">"alpha"</span><span class="p">:</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html#scipy.stats.loguniform" title="scipy.stats.loguniform" class="sphx-glr-backref-module-scipy-stats sphx-glr-backref-type-py-data"><span class="n">stats</span><span class="o">.</span><span class="n">loguniform</span></a><span class="p">(</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e0</span><span class="p">),</span>
 <span class="p">}</span>
 
-<span class="n">n_iter_search</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">n_iter_search</span> <span class="o">=</span> <span class="mi">15</span>
 <span class="n">random_search</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomizedSearchCV</span></a><span class="p">(</span>
     <span class="n">linear_svm</span><span class="p">,</span>
     <span class="n">param_distributions</span><span class="o">=</span><span class="n">param_dist</span><span class="p">,</span>
@@ -1216,18 +1216,18 @@ search while fitting far fewer configurations.</p>
 <span class="n">report</span><span class="p">(</span><span class="n">random_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>RandomizedSearchCV took 52.31 seconds for 30 candidates parameter settings.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>RandomizedSearchCV took 9.72 seconds for 15 candidates parameter settings.
 Model with rank: 1
 Mean validation score: 1.000 (std: 0.000)
 Parameters: {'alpha': np.float64(0.1673808578875213), 'average': False, 'l1_ratio': np.float64(0.04666566321361543)}
 
 Model with rank: 2
 Mean validation score: 1.000 (std: 0.000)
-Parameters: {'alpha': np.float64(0.04649617447336333), 'average': False, 'l1_ratio': np.float64(0.7080725777960455)}
+Parameters: {'alpha': np.float64(0.7535384509295541), 'average': False, 'l1_ratio': np.float64(0.18182496720710062)}
 
 Model with rank: 3
-Mean validation score: 1.000 (std: 0.000)
-Parameters: {'alpha': np.float64(0.3503398491158687), 'average': False, 'l1_ratio': np.float64(0.2934881747180381)}
+Mean validation score: 0.993 (std: 0.014)
+Parameters: {'alpha': np.float64(0.010994335574766203), 'average': False, 'l1_ratio': np.float64(0.7219987722668247)}
 </pre></div>
 </div>
 </section>
@@ -1244,7 +1244,7 @@ iterations where most candidates are discarded.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.experimental</span><span class="w"> </span><span class="kn">import</span> <span class="n">enable_halving_search_cv</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">HalvingRandomSearchCV</span></a>
 
-<span class="n">n_candidates</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">n_candidates</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">halving_search</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html#sklearn.model_selection.HalvingRandomSearchCV" title="sklearn.model_selection.HalvingRandomSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">HalvingRandomSearchCV</span></a><span class="p">(</span>
     <span class="n">linear_svm</span><span class="p">,</span>
     <span class="n">param_distributions</span><span class="o">=</span><span class="n">param_dist</span><span class="p">,</span>
@@ -1265,18 +1265,18 @@ iterations where most candidates are discarded.</p>
 <span class="n">report</span><span class="p">(</span><span class="n">halving_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>HalvingRandomSearchCV took 55.21 seconds for 60 initial candidate parameter settings.
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>HalvingRandomSearchCV took 10.34 seconds for 30 initial candidate parameter settings.
 Model with rank: 1
-Mean validation score: 1.000 (std: 0.000)
-Parameters: {'alpha': np.float64(0.7121996518301618), 'average': False, 'l1_ratio': np.float64(0.11586905952512971)}
+Mean validation score: 0.999 (std: 0.001)
+Parameters: {'alpha': np.float64(0.11006988685589526), 'average': False, 'l1_ratio': np.float64(0.32533033076326434)}
 
 Model with rank: 2
-Mean validation score: 1.000 (std: 0.001)
+Mean validation score: 0.999 (std: 0.001)
 Parameters: {'alpha': np.float64(0.21137059440645725), 'average': False, 'l1_ratio': np.float64(0.4251558744912447)}
 
 Model with rank: 3
 Mean validation score: 0.999 (std: 0.001)
-Parameters: {'alpha': np.float64(0.697828126512603), 'average': False, 'l1_ratio': np.float64(0.5704439744053994)}
+Parameters: {'alpha': np.float64(0.7535384509295541), 'average': False, 'l1_ratio': np.float64(0.18182496720710062)}
 </pre></div>
 </div>
 </section>
@@ -1284,15 +1284,15 @@ Parameters: {'alpha': np.float64(0.697828126512603), 'average': False, 'l1_ratio
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
 <p>Running the three searches on the same problem highlights their trade-offs:</p>
 <ul class="simple">
-<li><p><strong>Grid search</strong> evaluates all 60 combinations of the grid and reaches a best
+<li><p><strong>Grid search</strong> evaluates all 30 combinations of the grid and reaches a best
 mean validation ROC AUC of essentially 1.0. It is exhaustive, but its cost
 grows with the resolution of the grid and a finer grid would be needed to
 refine the continuous parameters, making it the slowest of the three.</p></li>
 <li><p><strong>Randomized search</strong> reaches an essentially equivalent score while sampling
-only 30 candidates, i.e. half the budget, and is therefore markedly faster.
+only 15 candidates, i.e. half the budget, and is therefore markedly faster.
 Drawing the continuous parameters from distributions is usually a better use
 of a limited budget than refining a grid.</p></li>
-<li><p><strong>Successive halving</strong> screens the 60 candidates for a run time comparable to
+<li><p><strong>Successive halving</strong> screens the 30 candidates for a run time comparable to
 the randomized search by spending most of its resources only on the most
 promising candidates. It explores more candidates than the randomized search
 without paying the full cost of the grid search.</p></li>
@@ -1306,7 +1306,7 @@ computed on the full set of resources and remain comparable to the grid and
 randomized searches. More generally, rely on <code class="docutils literal notranslate"><span class="pre">best_params_</span></code> – which the
 halving search selects among the last-iteration candidates – and confirm the
 chosen model on a held-out test set.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (4 minutes 1.557 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 40.263 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-model-selection-plot-randomized-search-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/model_selection/plot_randomized_search.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo23.svg" style="width: 150px;" />
