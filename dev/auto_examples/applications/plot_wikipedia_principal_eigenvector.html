@@ -1172,13 +1172,15 @@ of the latent structured data of the Wikipedia content.</p>
             <span class="k">break</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">"Computing the adjacency matrix"</span><span class="p">)</span>
-    <span class="n">X</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_array.html#scipy.sparse.lil_array" title="scipy.sparse.lil_array" class="sphx-glr-backref-module-scipy-sparse sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sparse</span><span class="o">.</span><span class="n">lil_array</span></a><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32" title="numpy.float32" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">float32</span></a><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
-        <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">)</span>
+    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="numpy.array" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int32" title="numpy.int32" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">int32</span></a><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="k">del</span> <span class="n">links</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Converting to CSR representation"</span><span class="p">)</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"CSR conversion done"</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html#numpy.ones" title="numpy.ones" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32" title="numpy.float32" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">float32</span></a><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array" title="scipy.sparse.csr_array" class="sphx-glr-backref-module-scipy-sparse sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sparse</span><span class="o">.</span><span class="n">csr_array</span></a><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+    <span class="c1"># Multiple links between the same pair of pages must still count as a</span>
+    <span class="c1"># single edge, so we set the data to 1 after the CSR matrix constructor</span>
+    <span class="c1"># which sums duplicate (row, col) entries.</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span>
 
 
@@ -1191,24 +1193,22 @@ of the latent structured data of the Wikipedia content.</p>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing the redirect map
 Parsing the NT redirect file
-[2026-09-17T15:49:02.565961] line: 00000000
-[2026-09-17T15:49:07.959667] line: 01000000
-[2026-09-17T15:49:13.812745] line: 02000000
-[2026-09-17T15:49:20.187579] line: 03000000
-[2026-09-17T15:49:26.268073] line: 04000000
+[2026-09-17T16:41:05.077381] line: 00000000
+[2026-09-17T16:41:10.114278] line: 01000000
+[2026-09-17T16:41:15.136175] line: 02000000
+[2026-09-17T16:41:20.313263] line: 03000000
+[2026-09-17T16:41:25.182246] line: 04000000
 Computing the transitive closure of the redirect relation
-[2026-09-17T15:49:26.774968] line: 00000000
-[2026-09-17T15:49:27.431204] line: 01000000
-[2026-09-17T15:49:28.110402] line: 02000000
-[2026-09-17T15:49:28.839591] line: 03000000
-[2026-09-17T15:49:29.624288] line: 04000000
+[2026-09-17T16:41:25.582906] line: 00000000
+[2026-09-17T16:41:26.200435] line: 01000000
+[2026-09-17T16:41:26.851061] line: 02000000
+[2026-09-17T16:41:27.551170] line: 03000000
+[2026-09-17T16:41:28.291464] line: 04000000
 Computing the integer index map
-[2026-09-17T15:49:29.698942] line: 00000000
-[2026-09-17T15:49:35.420689] line: 01000000
-[2026-09-17T15:49:41.010857] line: 02000000
+[2026-09-17T16:41:28.362396] line: 00000000
+[2026-09-17T16:41:33.607233] line: 01000000
+[2026-09-17T16:41:39.212935] line: 02000000
 Computing the adjacency matrix
-Converting to CSR representation
-CSR conversion done
 </pre></div>
 </div>
 </section>
@@ -1227,7 +1227,7 @@ CSR conversion done
 </pre></div>
 </div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing the principal singular vectors using randomized_svd
-done in 2.575s
+done in 2.570s
 Top wikipedia pages according to principal singular vectors
 [b'1980',
  b'1990',
@@ -1400,7 +1400,7 @@ power iteration #45
 error: 0.000089
 power iteration #46
 error: 0.000075
-done in 1.024s
+done in 1.033s
 [b'Philosophy', b'New_York_City', b'World_War_I', b'France', b'United_States']
 </pre></div>
 </div>
@@ -1423,7 +1423,7 @@ done in 1.024s
 <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
 </pre></div>
 </div>
-<img src="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" srcset="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" alt="Wikipedia pages with the highest eigenvector centrality" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 57.457 seconds)</p>
+<img src="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" srcset="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" alt="Wikipedia pages with the highest eigenvector centrality" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 45.562 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-applications-plot-wikipedia-principal-eigenvector-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/applications/plot_wikipedia_principal_eigenvector.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo.svg" style="width: 150px;" />

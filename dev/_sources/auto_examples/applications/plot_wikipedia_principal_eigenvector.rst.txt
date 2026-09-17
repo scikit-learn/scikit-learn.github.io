@@ -175,7 +175,7 @@ Loading the redirect files
 Computing the Adjacency matrix
 ------------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-159
+.. GENERATED FROM PYTHON SOURCE LINES 111-161
 
 .. code-block:: Python
 
@@ -210,13 +210,15 @@ Computing the Adjacency matrix
                 break
 
         print("Computing the adjacency matrix")
-        X = sparse.lil_array((len(index_map), len(index_map)), dtype=np.float32)
-        for i, j in links:
-            X[i, j] = 1.0
+        n = len(index_map)
+        rows, cols = np.array(links, dtype=np.int32).T
         del links
-        print("Converting to CSR representation")
-        X = X.tocsr()
-        print("CSR conversion done")
+        data = np.ones(len(rows), dtype=np.float32)
+        X = sparse.csr_array((data, (rows, cols)), shape=(n, n))
+        # Multiple links between the same pair of pages must still count as a
+        # single edge, so we set the data to 1 after the CSR matrix constructor
+        # which sums duplicate (row, col) entries.
+        X.data[:] = 1.0
         return X, redirects, index_map
 
 
@@ -237,34 +239,32 @@ Computing the Adjacency matrix
 
     Computing the redirect map
     Parsing the NT redirect file
-    [2026-09-17T15:49:02.565961] line: 00000000
-    [2026-09-17T15:49:07.959667] line: 01000000
-    [2026-09-17T15:49:13.812745] line: 02000000
-    [2026-09-17T15:49:20.187579] line: 03000000
-    [2026-09-17T15:49:26.268073] line: 04000000
+    [2026-09-17T16:41:05.077381] line: 00000000
+    [2026-09-17T16:41:10.114278] line: 01000000
+    [2026-09-17T16:41:15.136175] line: 02000000
+    [2026-09-17T16:41:20.313263] line: 03000000
+    [2026-09-17T16:41:25.182246] line: 04000000
     Computing the transitive closure of the redirect relation
-    [2026-09-17T15:49:26.774968] line: 00000000
-    [2026-09-17T15:49:27.431204] line: 01000000
-    [2026-09-17T15:49:28.110402] line: 02000000
-    [2026-09-17T15:49:28.839591] line: 03000000
-    [2026-09-17T15:49:29.624288] line: 04000000
+    [2026-09-17T16:41:25.582906] line: 00000000
+    [2026-09-17T16:41:26.200435] line: 01000000
+    [2026-09-17T16:41:26.851061] line: 02000000
+    [2026-09-17T16:41:27.551170] line: 03000000
+    [2026-09-17T16:41:28.291464] line: 04000000
     Computing the integer index map
-    [2026-09-17T15:49:29.698942] line: 00000000
-    [2026-09-17T15:49:35.420689] line: 01000000
-    [2026-09-17T15:49:41.010857] line: 02000000
+    [2026-09-17T16:41:28.362396] line: 00000000
+    [2026-09-17T16:41:33.607233] line: 01000000
+    [2026-09-17T16:41:39.212935] line: 02000000
     Computing the adjacency matrix
-    Converting to CSR representation
-    CSR conversion done
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 160-162
+.. GENERATED FROM PYTHON SOURCE LINES 162-164
 
 Computing Principal Singular Vector using Randomized SVD
 --------------------------------------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-174
+.. GENERATED FROM PYTHON SOURCE LINES 164-176
 
 .. code-block:: Python
 
@@ -289,7 +289,7 @@ Computing Principal Singular Vector using Randomized SVD
  .. code-block:: none
 
     Computing the principal singular vectors using randomized_svd
-    done in 2.575s
+    done in 2.570s
     Top wikipedia pages according to principal singular vectors
     [b'1980',
      b'1990',
@@ -315,12 +315,12 @@ Computing Principal Singular Vector using Randomized SVD
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 175-177
+.. GENERATED FROM PYTHON SOURCE LINES 177-179
 
 Computing Centrality scores
 ---------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-226
+.. GENERATED FROM PYTHON SOURCE LINES 179-228
 
 .. code-block:: Python
 
@@ -477,18 +477,18 @@ Computing Centrality scores
     error: 0.000089
     power iteration #46
     error: 0.000075
-    done in 1.024s
+    done in 1.033s
     [b'Philosophy', b'New_York_City', b'World_War_I', b'France', b'United_States']
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 227-229
+.. GENERATED FROM PYTHON SOURCE LINES 229-231
 
 Plot results
 ------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 229-237
+.. GENERATED FROM PYTHON SOURCE LINES 231-239
 
 .. code-block:: Python
 
@@ -512,7 +512,7 @@ Plot results
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 238-244
+.. GENERATED FROM PYTHON SOURCE LINES 240-246
 
 .. code-block:: Python
 
@@ -537,7 +537,7 @@ Plot results
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 57.457 seconds)
+   **Total running time of the script:** (0 minutes 45.562 seconds)
 
 
 .. _sphx_glr_download_auto_examples_applications_plot_wikipedia_principal_eigenvector.py:
