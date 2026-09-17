@@ -694,6 +694,12 @@ future; or a feature will be removed in the future.</p></li>
 <section id="changed-models">
 <h3>Changed models<a class="headerlink" href="#changed-models" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p><a class="reference internal" href="../modules/generated/sklearn.preprocessing.QuantileTransformer.html#sklearn.preprocessing.QuantileTransformer" title="sklearn.preprocessing.QuantileTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.QuantileTransformer</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.preprocessing.quantile_transform.html#sklearn.preprocessing.quantile_transform" title="sklearn.preprocessing.quantile_transform"><code class="xref py py-func docutils literal notranslate"><span class="pre">preprocessing.quantile_transform</span></code></a> now estimate quantiles with the
+<code class="docutils literal notranslate"><span class="pre">averaged_inverted_cdf</span></code> method and no longer cap <code class="docutils literal notranslate"><span class="pre">n_quantiles</span></code> at <code class="docutils literal notranslate"><span class="pre">n_samples</span></code>.
+Dense subsampling is also done with replacement. These changes affect <code class="docutils literal notranslate"><span class="pre">quantiles_</span></code>
+even when <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> is not passed.
+By <a class="reference external" href="https://github.com/kaekkr">Karassay Raushanbek</a> and <a class="reference external" href="https://github.com/snath-xoc">Shruti Nath</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32761">#32761</a></p></li>
 <li><p><a class="reference internal" href="../modules/generated/sklearn.inspection.partial_dependence.html#sklearn.inspection.partial_dependence" title="sklearn.inspection.partial_dependence"><code class="xref py py-func docutils literal notranslate"><span class="pre">inspection.partial_dependence</span></code></a> and <a class="reference internal" href="../modules/generated/sklearn.inspection.PartialDependenceDisplay.html#sklearn.inspection.PartialDependenceDisplay" title="sklearn.inspection.PartialDependenceDisplay"><code class="xref py py-class docutils literal notranslate"><span class="pre">inspection.PartialDependenceDisplay</span></code></a>
 now use <code class="docutils literal notranslate"><span class="pre">numpy.nanquantile</span></code>’s linear interpolation instead of the (unmaintained)
 <code class="docutils literal notranslate"><span class="pre">scipy.stats.mstats.mquantiles</span></code>’s Cunnane interpolation to compute the grid of
@@ -1022,6 +1028,12 @@ By <a class="reference external" href="https://github.com/itamarst">Itamar Turne
 and <a class="reference internal" href="../modules/generated/sklearn.preprocessing.TargetEncoder.html#sklearn.preprocessing.TargetEncoder" title="sklearn.preprocessing.TargetEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.TargetEncoder</span></code></a> are now faster by using a
 Fortran-contiguous memory layout in their encoding paths.
 By <a class="reference external" href="https://github.com/cakedev0">Arthur Lacote</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34392">#34392</a></p></li>
+<li><p><span class="raw-html"><span class="badge text-bg-info">Enhancement</span></span>  <a class="reference internal" href="../modules/generated/sklearn.preprocessing.QuantileTransformer.html#sklearn.preprocessing.QuantileTransformer" title="sklearn.preprocessing.QuantileTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.QuantileTransformer</span></code></a> can now handle sample weight values
+by subsampling using sample weights if subsampling is enabled or otherwise using
+<code class="docutils literal notranslate"><span class="pre">_weighted_percentile</span></code>. The default method of calculating percentiles for both
+weighted and unweighted cases is now fixed to “averaged_inverted_cdf”.
+Support is only implemented for dense X.
+By <a class="reference external" href="https://github.com/kaekkr">Karassay Raushanbek</a> and <a class="reference external" href="https://github.com/snath-xoc">Shruti Nath</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32761">#32761</a></p></li>
 <li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  The warning raised by <a class="reference internal" href="../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">preprocessing.OneHotEncoder</span></code></a> now distinguishes
 columns where unknown categories are encoded as the infrequent category from
 columns where they are encoded as all zeros.

@@ -36,6 +36,13 @@ Version 1.10.dev0
 Changed models
 --------------
 
+- :class:`preprocessing.QuantileTransformer` and
+  :func:`preprocessing.quantile_transform` now estimate quantiles with the
+  `averaged_inverted_cdf` method and no longer cap `n_quantiles` at `n_samples`.
+  Dense subsampling is also done with replacement. These changes affect `quantiles_`
+  even when `sample_weight` is not passed.
+  By :user:`Karassay Raushanbek <kaekkr>` and :user:`Shruti Nath <snath-xoc>`. :pr:`32761`
+
 - :func:`inspection.partial_dependence` and :class:`inspection.PartialDependenceDisplay`
   now use `numpy.nanquantile`'s linear interpolation instead of the (unmaintained)
   `scipy.stats.mstats.mquantiles`'s Cunnane interpolation to compute the grid of
@@ -376,6 +383,13 @@ Callbacks
   and :class:`preprocessing.TargetEncoder` are now faster by using a
   Fortran-contiguous memory layout in their encoding paths.
   By :user:`Arthur Lacote <cakedev0>`. :pr:`34392`
+
+- |Enhancement| :class:`preprocessing.QuantileTransformer` can now handle sample weight values
+  by subsampling using sample weights if subsampling is enabled or otherwise using
+  `_weighted_percentile`. The default method of calculating percentiles for both
+  weighted and unweighted cases is now fixed to "averaged_inverted_cdf".
+  Support is only implemented for dense X.
+  By :user:`Karassay Raushanbek <kaekkr>` and :user:`Shruti Nath <snath-xoc>`. :pr:`32761`
 
 - |Fix| The warning raised by :class:`preprocessing.OneHotEncoder` now distinguishes
   columns where unknown categories are encoded as the infrequent category from
