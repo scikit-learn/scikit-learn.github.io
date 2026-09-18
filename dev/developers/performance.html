@@ -62,7 +62,7 @@
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=97f0b27d"></script>
+    <script src="../_static/copybutton.js?v=17edcc6c"></script>
     <script src="../_static/jupyterlite_sphinx.js?v=96e329c5"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script data-domain="scikit-learn.org" defer="defer" src="https://views.scientific-python.org/js/script.js"></script>
@@ -813,12 +813,10 @@ trying to optimize their implementation).</p>
 Python code: it takes around 100% of the accumulated time of the module. In
 order to better understand the profile of this specific function, let
 us install <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code> and wire it to IPython:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><style type="text/css">
-span.prompt1:before {
-  content: "$ ";
-}
-</style><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>line_profiler</span>
-</pre></div></div><p>Now restart IPython and let us use this new toy:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>line_profiler
+</pre></div>
+</div>
+<p>Now restart IPython and let us use this new toy:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">line_profiler</span>
 
 <span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_digits</span>
@@ -879,16 +877,22 @@ bottleneck when processing large amounts of data. You can use <a class="referenc
 responsible code. In particular, it will tell you which Python callstacks were
 responsible for allocating the various allocations that led to peak memory.</p>
 <p>First, install the latest version:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memray</span>
-</pre></div></div><p>Then, run a script using the relevant code under <code class="docutils literal notranslate"><span class="pre">memray</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">memray<span class="w"> </span>run<span class="w"> </span>example.py</span>
-</pre></div></div><p>It will tell you where it wrote the resulting data:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memray
+</pre></div>
+</div>
+<p>Then, run a script using the relevant code under <code class="docutils literal notranslate"><span class="pre">memray</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>memray<span class="w"> </span>run<span class="w"> </span>example.py
+</pre></div>
+</div>
+<p>It will tell you where it wrote the resulting data:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Writing</span> <span class="n">profile</span> <span class="n">results</span> <span class="n">into</span> <span class="n">memray</span><span class="o">-</span><span class="n">example</span><span class="o">.</span><span class="n">py</span><span class="mf">.123</span><span class="o">.</span><span class="n">bin</span>
 </pre></div>
 </div>
 <p>You can then convert this data into an HTML report:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">memray<span class="w"> </span>flamegraph<span class="w"> </span>memray-example.py.123.bin</span>
-</pre></div></div><p>In this case it will generate a file called
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>memray<span class="w"> </span>flamegraph<span class="w"> </span>memray-example.py.123.bin
+</pre></div>
+</div>
+<p>In this case it will generate a file called
 “memray-flamegraph-example.py.123.html” which you can then open in a browser. If
 you are not familiar with flamegraphs, see <a class="reference external" href="https://bloomberg.github.io/memray/flamegraph.html">Memray’s docs</a> for an introduction.</p>
 </section>
@@ -902,8 +906,10 @@ peak memory usage: it cannot detect any memory that is allocated and then
 immediately released while the line of code is executing, even if it’s a large
 amount.</p>
 <p>First, install the latest version:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1">pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memory_profiler</span>
-</pre></div></div><p>Then, setup the magics in a manner similar to <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>memory_profiler
+</pre></div>
+</div>
+<p>Then, setup the magics in a manner similar to <code class="docutils literal notranslate"><span class="pre">line_profiler</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span><span class="n">load_ext</span> <span class="n">memory_profiler</span>
 </pre></div>
 </div>
@@ -1008,11 +1014,15 @@ recompile everything.</p>
 <h4>kcachegrind<a class="headerlink" href="#kcachegrind" title="Link to this heading">#</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">yep</span></code> can be used to create a profiling report.
 <code class="docutils literal notranslate"><span class="pre">kcachegrind</span></code> provides a graphical environment to visualize this report:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="c1"># Run yep to profile some python script</span></span>
-<span class="prompt1">python<span class="w"> </span>-m<span class="w"> </span>yep<span class="w"> </span>-c<span class="w"> </span>my_file.py</span>
-</pre></div></div><div class="highlight-default notranslate"><div class="highlight"><pre><span class="prompt1"><span class="c1"># open my_file.py.callgrin with kcachegrind</span></span>
-<span class="prompt1">kcachegrind<span class="w"> </span>my_file.py.prof</span>
-</pre></div></div><div class="admonition note">
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="c1"># Run yep to profile some python script</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>yep<span class="w"> </span>-c<span class="w"> </span>my_file.py
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="c1"># open my_file.py.callgrin with kcachegrind</span>
+<span class="gp">$ </span>kcachegrind<span class="w"> </span>my_file.py.prof
+</pre></div>
+</div>
+<div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">yep</span></code> can be executed with the argument <code class="docutils literal notranslate"><span class="pre">--lines</span></code> or <code class="docutils literal notranslate"><span class="pre">-l</span></code> to compile
 a profiling report ‘line by line’.</p>

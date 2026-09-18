@@ -227,7 +227,7 @@ var copyTargetText = (trigger) => {
   let exclude = 'style';
 
   let text = filterText(target, exclude);
-  return formatCopyText(text, '>>> |\\.\\.\\. ', true, true, true, true, '', '')
+  return formatCopyText(text, '>>> |\\.\\.\\. |\\$ |PS C:\\\\> ', true, true, true, true, '\\', '')
 }
 
   // Initialize with a callback so we can modify the text before copy

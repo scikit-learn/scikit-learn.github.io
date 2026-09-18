@@ -64,12 +64,12 @@ Reference Steps
       final and subsequent bug-fix releases of `1.10` should also happen
       under this branch with different tags.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git fetch upstream main
-        git checkout upstream/main
-        git checkout -b 1.10.X
-        git push --set-upstream upstream 1.10.X
+        $ git fetch upstream main
+        $ git checkout upstream/main
+        $ git checkout -b 1.10.X
+        $ git push --set-upstream upstream 1.10.X
     
 
     
@@ -126,17 +126,17 @@ Reference Steps
       because we'll generate it again for the final release, including the changes that
       may happen in between:
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        towncrier build --keep --version 1.10.0
+        $ towncrier build --keep --version 1.10.0
 
     - Trigger the wheel builder with the `[cd build]` commit marker. See also the
       `workflow runs of the wheel builder
       <https://github.com/scikit-learn/scikit-learn/actions/workflows/wheels.yml>`_.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
+        $ git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
 
       .. note::
 
@@ -171,10 +171,10 @@ Reference Steps
       ready, since adding a new tag to the main repository can trigger certain automated
       processes.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git tag -a 1.10.0rc1  # in the 1.10.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.10.0rc1
+        $ git tag -a 1.10.0rc1  # in the 1.10.X branch
+        $ git push https://github.com/scikit-learn/scikit-learn.git 1.10.0rc1
 
       .. warning::
 
@@ -202,11 +202,11 @@ Reference Steps
 
         Check out at the release tag and run the following commands.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          rm -r dist
-          python -m pip install -U wheelhouse_uploader twine
-          python -m wheelhouse_uploader fetch \
+          $ rm -r dist
+          $ python -m pip install -U wheelhouse_uploader twine
+          $ python -m wheelhouse_uploader fetch \
             --version 1.10.0rc1 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
@@ -219,15 +219,15 @@ Reference Steps
         package in that folder. Before uploading to PyPI, you can test uploading to
         `test.pypi.org` first.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+          $ twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
 
         Then upload everything at once to `pypi.org`.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          twine upload dist/*
+          $ twine upload dist/*
 
     
 
@@ -247,9 +247,9 @@ Reference Steps
     - Create a new branch from the `main` branch, then start an interactive rebase from
       `1.10.X` to select the commits that need to be backported:
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git rebase -i upstream/1.10.X
+        $ git rebase -i upstream/1.10.X
 
       This will open an interactive rebase with the `git-rebase-todo` containing all the
       latest commits on `main`. At this stage, you have to perform this interactive
@@ -314,24 +314,24 @@ Reference Steps
 
       - Generate the changelog, not keeping the fragments.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          towncrier build --version 1.10.0
+          $ towncrier build --version 1.10.0
 
       - Link the release highlights example.
       - Add the list of contributor names. Suppose that the tag of the last release in
         the previous major/minor version is `1.9.1`, then you can use the
         following command to retrieve the list of contributor names:
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          git shortlog -s 1.9.1.. |
-              cut -f2- |
-              sed -E '/Copilot|scikit-learn-bot|dependabot/d' |
-              sort --ignore-case |
-              tr "\n" ";" |
-              sed "s/;/, /g;s/, $//" |
-              fold -s |
+          $ git shortlog -s 1.9.1.. | \
+              cut -f2- | \
+              sed -E '/Copilot|scikit-learn-bot|dependabot/d' | \
+              sort --ignore-case | \
+              tr "\n" ";" | \
+              sed "s/;/, /g;s/, $//" | \
+              fold -s | \
               sed 's/[[:space:]]*$//'
 
       Then create a PR targeting the `main` branch and cherry-pick this commit there.
@@ -340,9 +340,9 @@ Reference Steps
       `workflow runs of the wheel builder
       <https://github.com/scikit-learn/scikit-learn/actions/workflows/wheels.yml>`_.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
+        $ git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
 
       .. note::
 
@@ -377,10 +377,10 @@ Reference Steps
       ready, since adding a new tag to the main repository can trigger certain automated
       processes.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git tag -a 1.10.0  # in the 1.10.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.10.0
+        $ git tag -a 1.10.0  # in the 1.10.X branch
+        $ git push https://github.com/scikit-learn/scikit-learn.git 1.10.0
 
       .. warning::
 
@@ -404,11 +404,11 @@ Reference Steps
 
         Check out at the release tag and run the following commands.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          rm -r dist
-          python -m pip install -U wheelhouse_uploader twine
-          python -m wheelhouse_uploader fetch \
+          $ rm -r dist
+          $ python -m pip install -U wheelhouse_uploader twine
+          $ python -m wheelhouse_uploader fetch \
             --version 1.10.0 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
@@ -421,15 +421,15 @@ Reference Steps
         package in that folder. Before uploading to PyPI, you can test uploading to
         `test.pypi.org` first.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+          $ twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
 
         Then upload everything at once to `pypi.org`.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          twine upload dist/*
+          $ twine upload dist/*
 
     
     - In the `main` branch, edit `doc/templates/index.html` to change the "News" section
@@ -445,38 +445,38 @@ Reference Steps
       repo in your own user, to have a place with the history of the repo in case it's
       needed. These commands will purge the history from the repo.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        # need a non-shallow copy, and using https is much faster than ssh here
-        # note that this will be a large download size, up to 100GB (repo size limit)
-        git clone https://github.com/scikit-learn/scikit-learn.github.io.git
-        cd scikit-learn.github.io
-        git remote add write git@github.com:scikit-learn/scikit-learn.github.io.git
-        # checkout an orphan branch w/o history
-        git checkout --orphan temp_branch
-        git add -A
-        git commit -m "Initial commit after purging history"
-        git branch -D main
-        # rename current branch to main to replace it
-        git branch -m main
-        git push --force write main
+        $ # need a non-shallow copy, and using https is much faster than ssh here
+        $ # note that this will be a large download size, up to 100GB (repo size limit)
+        $ git clone https://github.com/scikit-learn/scikit-learn.github.io.git
+        $ cd scikit-learn.github.io
+        $ git remote add write git@github.com:scikit-learn/scikit-learn.github.io.git
+        $ # checkout an orphan branch w/o history
+        $ git checkout --orphan temp_branch
+        $ git add -A
+        $ git commit -m "Initial commit after purging history"
+        $ git branch -D main
+        $ # rename current branch to main to replace it
+        $ git branch -m main
+        $ git push --force write main
 
     - Update the symlink for `stable` and the `latestStable` variable in
       `versionwarning.js` in https://github.com/scikit-learn/scikit-learn.github.io.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        cd /tmp
-        git clone --depth 1 --no-checkout https://github.com/scikit-learn/scikit-learn.github.io.git
-        cd scikit-learn.github.io
-        echo stable > .git/info/sparse-checkout
-        git checkout main
-        rm stable
-        ln -s 1.10 stable
-        sed -i "s/latestStable = '.*/latestStable = '1.10';/" versionwarning.js
-        git add stable versionwarning.js
-        git commit -m "Update stable to point to 1.10"
-        git push origin main
+        $ cd /tmp
+        $ git clone --depth 1 --no-checkout https://github.com/scikit-learn/scikit-learn.github.io.git
+        $ cd scikit-learn.github.io
+        $ echo stable > .git/info/sparse-checkout
+        $ git checkout main
+        $ rm stable
+        $ ln -s 1.10 stable
+        $ sed -i "s/latestStable = '.*/latestStable = '1.10';/" versionwarning.js
+        $ git add stable versionwarning.js
+        $ git commit -m "Update stable to point to 1.10"
+        $ git push origin main
     
 
     
@@ -500,9 +500,9 @@ Reference Steps
     - Create a new branch from the `main` branch, then start an interactive rebase from
       `1.9.X` to select the commits that need to be backported:
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git rebase -i upstream/1.9.X
+        $ git rebase -i upstream/1.9.X
 
       This will open an interactive rebase with the `git-rebase-todo` containing all the
       latest commits on `main`. At this stage, you have to perform this interactive
@@ -565,23 +565,23 @@ Reference Steps
 
       - Generate the changelog, not keeping the fragments.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          towncrier build --version 1.9.2
+          $ towncrier build --version 1.9.2
 
       - Add the list of contributor names. Suppose that the tag of the last release in
         the previous major/minor version is `1.8.0`, then you can use the
         following command to retrieve the list of contributor names:
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          git shortlog -s 1.8.0.. |
-              cut -f2- |
-              sed -E '/Copilot|scikit-learn-bot|dependabot/d' |
-              sort --ignore-case |
-              tr "\n" ";" |
-              sed "s/;/, /g;s/, $//" |
-              fold -s |
+          $ git shortlog -s 1.8.0.. | \
+              cut -f2- | \
+              sed -E '/Copilot|scikit-learn-bot|dependabot/d' | \
+              sort --ignore-case | \
+              tr "\n" ";" | \
+              sed "s/;/, /g;s/, $//" | \
+              fold -s | \
               sed 's/[[:space:]]*$//'
 
       Then create a PR targeting the `main` branch and cherry-pick this commit there.
@@ -590,9 +590,9 @@ Reference Steps
       `workflow runs of the wheel builder
       <https://github.com/scikit-learn/scikit-learn/actions/workflows/wheels.yml>`_.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
+        $ git commit --allow-empty -m "[cd build] Trigger wheel builder workflow"
 
       .. note::
 
@@ -627,10 +627,10 @@ Reference Steps
       ready, since adding a new tag to the main repository can trigger certain automated
       processes.
 
-      .. prompt:: bash
+      .. code-block:: console
 
-        git tag -a 1.9.2  # in the 1.9.X branch
-        git push https://github.com/scikit-learn/scikit-learn.git 1.9.2
+        $ git tag -a 1.9.2  # in the 1.9.X branch
+        $ git push https://github.com/scikit-learn/scikit-learn.git 1.9.2
 
       .. warning::
 
@@ -654,11 +654,11 @@ Reference Steps
 
         Check out at the release tag and run the following commands.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          rm -r dist
-          python -m pip install -U wheelhouse_uploader twine
-          python -m wheelhouse_uploader fetch \
+          $ rm -r dist
+          $ python -m pip install -U wheelhouse_uploader twine
+          $ python -m wheelhouse_uploader fetch \
             --version 1.9.2 --local-folder dist scikit-learn \
             https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
 
@@ -671,15 +671,15 @@ Reference Steps
         package in that folder. Before uploading to PyPI, you can test uploading to
         `test.pypi.org` first.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+          $ twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
 
         Then upload everything at once to `pypi.org`.
 
-        .. prompt:: bash
+        .. code-block:: console
 
-          twine upload dist/*
+          $ twine upload dist/*
 
     
     - In the `main` branch, edit `doc/templates/index.html` to change the "News" section
@@ -708,10 +708,10 @@ This section is about updating :ref:`authors`. First create a `classic token on 
 <https://github.com/settings/tokens/new>`_ with the `read:org` permission. Then run the
 following script and enter the token when prompted:
 
-.. prompt:: bash
+.. code-block:: console
 
-  cd build_tools
-  make authors  # Enter the token when prompted
+  $ cd build_tools
+  $ make authors  # Enter the token when prompted
 
 .. _bumping_dependencies_guideline:
 
