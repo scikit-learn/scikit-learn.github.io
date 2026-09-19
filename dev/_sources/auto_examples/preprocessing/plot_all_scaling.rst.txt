@@ -57,7 +57,7 @@ transformation instead of a per feature transformation.
 The following code is a bit verbose, feel free to jump directly to the analysis
 of the results_.
 
-.. GENERATED FROM PYTHON SOURCE LINES 42-201
+.. GENERATED FROM PYTHON SOURCE LINES 42-198
 
 .. code-block:: Python
 
@@ -138,9 +138,6 @@ of the results_.
     # scale the output between 0 and 1 for the colorbar
     y = minmax_scale(y_full)
 
-    # plasma does not exist in matplotlib < 1.5
-    cmap = getattr(cm, "plasma_r", cm.hot_r)
-
 
     def create_axes(title, figsize=(16, 6)):
         fig = plt.figure(figsize=figsize)
@@ -193,7 +190,7 @@ of the results_.
         ax.set_ylabel(x1_label)
 
         # The scatter plot
-        colors = cmap(y)
+        colors = cm.plasma_r(y)
         ax.scatter(X[:, 0], X[:, 1], alpha=0.5, marker="o", s=5, lw=0, c=colors)
 
         # Removing the top and the right spine for aesthetics
@@ -227,7 +224,7 @@ of the results_.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 202-207
+.. GENERATED FROM PYTHON SOURCE LINES 199-204
 
 Two plots will be shown for each scaler/normalizer/transformer. The left
 figure will show a scatter plot of the full data set while the right figure
@@ -235,7 +232,7 @@ will exclude the extreme values considering only 99 % of the data set,
 excluding marginal outliers. In addition, the marginal distributions for each
 feature will be shown on the sides of the scatter plot.
 
-.. GENERATED FROM PYTHON SOURCE LINES 207-251
+.. GENERATED FROM PYTHON SOURCE LINES 204-248
 
 .. code-block:: Python
 
@@ -276,7 +273,7 @@ feature will be shown on the sides of the scatter plot.
         norm = mpl.colors.Normalize(y_full.min(), y_full.max())
         mpl.colorbar.ColorbarBase(
             ax_colorbar,
-            cmap=cmap,
+            cmap=cm.plasma_r,
             norm=norm,
             orientation="vertical",
             label="Color mapping for values of y",
@@ -290,7 +287,7 @@ feature will be shown on the sides of the scatter plot.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 252-266
+.. GENERATED FROM PYTHON SOURCE LINES 249-263
 
 .. _results:
 
@@ -307,7 +304,7 @@ pre-processing can be very beneficial depending of the application. In the
 following, we present some insights and behaviors of those pre-processing
 methods in the presence of marginal outliers.
 
-.. GENERATED FROM PYTHON SOURCE LINES 266-269
+.. GENERATED FROM PYTHON SOURCE LINES 263-266
 
 .. code-block:: Python
 
@@ -326,7 +323,7 @@ methods in the presence of marginal outliers.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 270-288
+.. GENERATED FROM PYTHON SOURCE LINES 267-285
 
 .. _plot_all_scaling_standard_scaler_section:
 
@@ -347,7 +344,7 @@ smaller [-0.2, 0.2] range for the transformed average house occupancy.
 balanced feature scales in the
 presence of outliers.
 
-.. GENERATED FROM PYTHON SOURCE LINES 288-291
+.. GENERATED FROM PYTHON SOURCE LINES 285-288
 
 .. code-block:: Python
 
@@ -366,7 +363,7 @@ presence of outliers.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 292-306
+.. GENERATED FROM PYTHON SOURCE LINES 289-303
 
 .. _plot_all_scaling_minmax_scaler_section:
 
@@ -383,7 +380,7 @@ Both :class:`~sklearn.preprocessing.StandardScaler` and
 :class:`~sklearn.preprocessing.MinMaxScaler` are very sensitive to the
 presence of outliers.
 
-.. GENERATED FROM PYTHON SOURCE LINES 306-309
+.. GENERATED FROM PYTHON SOURCE LINES 303-306
 
 .. code-block:: Python
 
@@ -402,7 +399,7 @@ presence of outliers.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 310-325
+.. GENERATED FROM PYTHON SOURCE LINES 307-322
 
 .. _plot_all_scaling_max_abs_scaler_section:
 
@@ -420,7 +417,7 @@ and :class:`~sklearn.preprocessing.MaxAbsScaler` behave similarly.
 :class:`~sklearn.preprocessing.MaxAbsScaler` therefore also suffers from
 the presence of large outliers.
 
-.. GENERATED FROM PYTHON SOURCE LINES 325-328
+.. GENERATED FROM PYTHON SOURCE LINES 322-325
 
 .. code-block:: Python
 
@@ -439,7 +436,7 @@ the presence of large outliers.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 329-344
+.. GENERATED FROM PYTHON SOURCE LINES 326-341
 
 .. _plot_all_scaling_robust_scaler_section:
 
@@ -457,7 +454,7 @@ Note that the outliers themselves are still present in the transformed data.
 If a separate outlier clipping is desirable, a non-linear transformation is
 required (see below).
 
-.. GENERATED FROM PYTHON SOURCE LINES 344-347
+.. GENERATED FROM PYTHON SOURCE LINES 341-344
 
 .. code-block:: Python
 
@@ -476,7 +473,7 @@ required (see below).
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 348-363
+.. GENERATED FROM PYTHON SOURCE LINES 345-360
 
 .. _plot_all_scaling_power_transformer_section:
 
@@ -494,7 +491,7 @@ Box-Cox can only be applied to strictly positive data. Income and average
 house occupancy happen to be strictly positive, but if negative values are
 present the Yeo-Johnson transformed is preferred.
 
-.. GENERATED FROM PYTHON SOURCE LINES 363-367
+.. GENERATED FROM PYTHON SOURCE LINES 360-364
 
 .. code-block:: Python
 
@@ -526,7 +523,7 @@ present the Yeo-Johnson transformed is preferred.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 368-388
+.. GENERATED FROM PYTHON SOURCE LINES 365-385
 
 .. _plot_all_scaling_quantile_transformer_section:
 
@@ -549,7 +546,7 @@ approximately the same transformation. But contrary to
 collapse any outlier by setting them to the a priori defined range boundaries
 (0 and 1). This can result in saturation artifacts for extreme values.
 
-.. GENERATED FROM PYTHON SOURCE LINES 388-391
+.. GENERATED FROM PYTHON SOURCE LINES 385-388
 
 .. code-block:: Python
 
@@ -568,7 +565,7 @@ collapse any outlier by setting them to the a priori defined range boundaries
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 392-397
+.. GENERATED FROM PYTHON SOURCE LINES 389-394
 
 QuantileTransformer (Gaussian output)
 -------------------------------------
@@ -576,7 +573,7 @@ QuantileTransformer (Gaussian output)
 To map to a Gaussian distribution, set the parameter
 ``output_distribution='normal'``.
 
-.. GENERATED FROM PYTHON SOURCE LINES 397-400
+.. GENERATED FROM PYTHON SOURCE LINES 394-397
 
 .. code-block:: Python
 
@@ -595,7 +592,7 @@ To map to a Gaussian distribution, set the parameter
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 401-413
+.. GENERATED FROM PYTHON SOURCE LINES 398-410
 
 .. _plot_all_scaling_normalizer_section:
 
@@ -610,7 +607,7 @@ example the two selected features have only positive values; therefore the
 transformed data only lie in the positive quadrant. This would not be the
 case if some original features had a mix of positive and negative values.
 
-.. GENERATED FROM PYTHON SOURCE LINES 413-417
+.. GENERATED FROM PYTHON SOURCE LINES 410-414
 
 .. code-block:: Python
 
@@ -633,7 +630,7 @@ case if some original features had a mix of positive and negative values.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 13.326 seconds)
+   **Total running time of the script:** (0 minutes 9.411 seconds)
 
 
 .. _sphx_glr_download_auto_examples_preprocessing_plot_all_scaling.py:
