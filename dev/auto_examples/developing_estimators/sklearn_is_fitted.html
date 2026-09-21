@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1060,54 +1060,53 @@ by verifying the presence of the <code class="docutils literal notranslate"><spa
 that extends both the <code class="docutils literal notranslate"><span class="pre">BaseEstimator</span></code> and <code class="docutils literal notranslate"><span class="pre">ClassifierMixin</span></code> classes from
 scikit-learn and showcases the usage of the <code class="docutils literal notranslate"><span class="pre">__sklearn_is_fitted__</span></code> method
 and the <code class="docutils literal notranslate"><span class="pre">check_is_fitted</span></code> utility function.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">base</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="sklearn.base.ClassifierMixin"><span class="n">ClassifierMixin</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">utils</span><span class="nn">.</span><span class="nn">validation</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">class</span><span class="w"> </span><span class="nc">CustomEstimator</span><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="sklearn.base.ClassifierMixin"><span class="n">ClassifierMixin</span></a><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">parameter</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;
+        Fit the estimator to the training data.
+        &quot;&quot;&quot;</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># Custom attribute to track if the estimator is fitted</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">_is_fitted</span> <span class="o">=</span> <span class="kc">True</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;
+        Perform Predictions
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="sklearn.base.ClassifierMixin" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ClassifierMixin</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.validation</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a>
+        If the estimator is not fitted, then raise NotFittedError
+        &quot;&quot;&quot;</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># Perform prediction logic</span><span class="w">
+</span>        <span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span>        <span class="k">return</span> <span class="n">predictions</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;
+        Calculate Score
 
-
-<span class="k">class</span><span class="w"> </span><span class="nc">CustomEstimator</span><span class="p">(</span><a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.base.ClassifierMixin.html#sklearn.base.ClassifierMixin" title="sklearn.base.ClassifierMixin" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ClassifierMixin</span></a><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">parameter</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Fit the estimator to the training data.</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-        <span class="c1"># Custom attribute to track if the estimator is fitted</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_fitted</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Perform Predictions</span>
-
-<span class="sd">        If the estimator is not fitted, then raise NotFittedError</span>
-<span class="sd">        """</span>
-        <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="c1"># Perform prediction logic</span>
-        <span class="n">predictions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">predictions</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Calculate Score</span>
-
-<span class="sd">        If the estimator is not fitted, then raise NotFittedError</span>
-<span class="sd">        """</span>
-        <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="c1"># Perform scoring logic</span>
-        <span class="k">return</span> <span class="mf">0.5</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__sklearn_is_fitted__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Check fitted status and return a Boolean value.</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_is_fitted"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_fitted</span>
-</pre></div>
-</div>
+        If the estimator is not fitted, then raise NotFittedError
+        &quot;&quot;&quot;</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># Perform scoring logic</span><span class="w">
+</span>        <span class="k">return</span> <span class="mf">0.5</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">__sklearn_is_fitted__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;
+        Check fitted status and return a Boolean value.
+        &quot;&quot;&quot;</span><span class="w">
+</span>        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">_is_fitted</span><span class="s2">&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_fitted</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-developing-estimators-sklearn-is-fitted-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/developing_estimators/sklearn_is_fitted.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo11.svg" style="width: 150px;" />
@@ -1137,7 +1136,7 @@ and the <code class="docutils literal notranslate"><span class="pre">check_is_fi
 </div><div class="sphx-glr-thumbcontainer" tooltip="This document shows how to make third party estimators and meta-estimators compatible with the callback infrastructure supported by scikit-learn."><img alt="" src="../../_images/sphx_glr_plot_callback_support_thumb.png" />
 <p><a class="reference internal" href="../callbacks/plot_callback_support.html"><span class="doc">Supporting callbacks in third party estimators</span></a></p>
   <div class="sphx-glr-thumbnail-title">Supporting callbacks in third party estimators</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.6! Many bug fixes and improvements were added, as well as some key new features. Below we detail the highlights of this release. For an exhaustive list of all the changes, please refer to the release notes &lt;release_notes_1_6&gt;."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_6_0_thumb.png" />
+</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.6! Many bug fixes and improvements were added, as well as some key new features. Below we detail the highlights of this release. For an exhaustive list of all the changes, please refer to the release notes."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_6_0_thumb.png" />
 <p><a class="reference internal" href="../release_highlights/plot_release_highlights_1_6_0.html"><span class="doc">Release Highlights for scikit-learn 1.6</span></a></p>
   <div class="sphx-glr-thumbnail-title">Release Highlights for scikit-learn 1.6</div>
 </div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>

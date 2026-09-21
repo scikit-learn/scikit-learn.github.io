@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1053,10 +1053,9 @@ convergence of the model for each hyperparameter combination.</p></li>
 <li><p>Show how the monitoring of diverse scoring metrics can inform us about the
 quality of the model and the trade-off between refinement and calibration.</p></li>
 </ol>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span></pre></div></div>
 <section id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
 <p>Let’s first define the pipeline and the grid search. Here we register a
@@ -1064,51 +1063,49 @@ quality of the model and the trade-off between refinement and calibration.</p></
 the scores at each iteration of the L-BFGS solver.</p>
 <p>We reuse the same scoring metrics for the grid search itself and use the D²
 log-loss as the primary metric to select the best hyperparameter combination.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.callback</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ProgressBar</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.callback.ScoringMonitor.html#sklearn.callback.ScoringMonitor" title="sklearn.callback.ScoringMonitor" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ScoringMonitor</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">make_classification</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LogisticRegression</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">StandardScaler</span></a>
-
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">make_classification</span></a><span class="p">(</span>
-    <span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
-<span class="p">)</span>
-
-<span class="n">scoring_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"d2_log_loss_score"</span><span class="p">,</span> <span class="s2">"accuracy"</span><span class="p">,</span> <span class="s2">"average_precision"</span><span class="p">]</span>
-<span class="n">scoring_monitor</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.callback.ScoringMonitor.html#sklearn.callback.ScoringMonitor" title="sklearn.callback.ScoringMonitor" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ScoringMonitor</span></a><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">scoring_metrics</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span>
-    <a href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">StandardScaler</span></a><span class="p">(),</span>
-    <a href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LogisticRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">"lbfgs"</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><span class="n">scoring_monitor</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"standardscaler__with_std"</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
-    <span class="s2">"logisticregression__C"</span><span class="p">:</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.geomspace.html#numpy.geomspace" title="numpy.geomspace" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">geomspace</span></a><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-<span class="p">}</span>
-
-<span class="n">grid_search</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">GridSearchCV</span></a><span class="p">(</span>
-    <span class="n">model</span><span class="p">,</span>
-    <span class="n">param_grid</span><span class="p">,</span>
-    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">scoring</span><span class="o">=</span><span class="n">scoring_metrics</span><span class="p">,</span>
-    <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">error_score</span><span class="o">=</span><span class="s2">"raise"</span><span class="p">,</span>
-    <span class="n">refit</span><span class="o">=</span><span class="n">scoring_metrics</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-<span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">callback</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><span class="n">ProgressBar</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ScoringMonitor.html#sklearn.callback.ScoringMonitor" title="sklearn.callback.ScoringMonitor"><span class="n">ScoringMonitor</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification"><span class="n">make_classification</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">linear_model</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">model_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><span class="n">GridSearchCV</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline"><span class="n">make_pipeline</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">preprocessing</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler"><span class="n">StandardScaler</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification"><span class="n">make_classification</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">scoring_metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">d2_log_loss_score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">accuracy</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">average_precision</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="n">scoring_monitor</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ScoringMonitor.html#sklearn.callback.ScoringMonitor" title="sklearn.callback.ScoringMonitor"><span class="n">ScoringMonitor</span></a><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="n">scoring_metrics</span><span class="p">)</span><span class="w">
+</span><span class="n">model</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline"><span class="n">make_pipeline</span></a><span class="p">(</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler"><span class="n">StandardScaler</span></a><span class="p">(</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">lbfgs</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><span class="n">scoring_monitor</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">standardscaler__with_std</span><span class="s2">&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">logisticregression__C</span><span class="s2">&quot;</span><span class="p">:</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.geomspace.html#numpy.geomspace" title="numpy.geomspace"><span class="n">np</span><span class="o">.</span><span class="n">geomspace</span></a><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="n">grid_search</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><span class="n">GridSearchCV</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">model</span><span class="p">,</span><span class="w">
+</span>    <span class="n">param_grid</span><span class="p">,</span><span class="w">
+</span>    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="w">
+</span>    <span class="n">scoring</span><span class="o">=</span><span class="n">scoring_metrics</span><span class="p">,</span><span class="w">
+</span>    <span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w">
+</span>    <span class="n">error_score</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">raise</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">refit</span><span class="o">=</span><span class="n">scoring_metrics</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <p>Let’s fit the grid search with the auto-propagating progress bar callback.
 Feel free to set max_propagation_depth=3 in the ProgressBar constructor to
 get a more detailed output by displaying the progress bars for the pipeline,
 the standard scaler and the logistic regression.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">grid_search</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><a href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ProgressBar</span></a><span class="p">())</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">grid_search</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><span class="n">ProgressBar</span></a><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>GridSearchCV - fit                                                 ━━━ 100% 0:0…
   GridSearchCV - search #0                                         ━━━ 100% 0:0…
     GridSearchCV - candidate-split-evaluation | Pipeline - fit #0  ━━━ 100% 0:0…
@@ -2182,7 +2179,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">dict</td>
-           <td>{&#x27;me...me&#x27;: array([0.2258...  4.01937037]), &#x27;me...me&#x27;: array([0.0163...  0.01675549]), &#x27;me...cy&#x27;: array([0.296,...0.26 , 0.258]), &#x27;me...on&#x27;: array([0.2980...  0.26786657]), ...}</td>
+           <td>{&#x27;me...me&#x27;: array([0.1922...  4.48968568]), &#x27;me...me&#x27;: array([0.0215...  0.01200237]), &#x27;me...cy&#x27;: array([0.296,...0.26 , 0.258]), &#x27;me...on&#x27;: array([0.2980...  0.26786657]), ...}</td>
 
 
        </tr>
@@ -2254,7 +2251,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">float</td>
-           <td>1.194</td>
+           <td>1.234</td>
 
 
        </tr>
@@ -3571,10 +3568,9 @@ visible as the “refit-with-best-params” task in the output above.</p>
 <section id="consolidation-of-the-grid-search-results">
 <h2>Consolidation of the grid search results<a class="headerlink" href="#consolidation-of-the-grid-search-results" title="Link to this heading">#</a></h2>
 <p>Let’s look at the results of the grid search.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">cv_results</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
-<span class="n">cv_results</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">"rank_test_d2_log_loss_score"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">cv_results</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span><span class="w">
+</span><span class="n">cv_results</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">rank_test_d2_log_loss_score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <div>
 <style scoped>
@@ -3630,10 +3626,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
   <tbody>
     <tr>
       <th>1</th>
-      <td>1.491701</td>
-      <td>0.060279</td>
-      <td>0.011833</td>
-      <td>0.000140</td>
+      <td>1.459127</td>
+      <td>0.083070</td>
+      <td>0.015910</td>
+      <td>0.004904</td>
       <td>0.01</td>
       <td>False</td>
       <td>{'logisticregression__C': 0.01, 'standardscale...</td>
@@ -3664,10 +3660,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>0</th>
-      <td>0.225816</td>
-      <td>0.029398</td>
-      <td>0.016385</td>
-      <td>0.003991</td>
+      <td>0.192231</td>
+      <td>0.011289</td>
+      <td>0.021572</td>
+      <td>0.008763</td>
       <td>0.01</td>
       <td>True</td>
       <td>{'logisticregression__C': 0.01, 'standardscale...</td>
@@ -3698,10 +3694,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.494628</td>
-      <td>0.031093</td>
-      <td>0.024441</td>
-      <td>0.012035</td>
+      <td>0.498519</td>
+      <td>0.029170</td>
+      <td>0.017785</td>
+      <td>0.006864</td>
       <td>1.00</td>
       <td>True</td>
       <td>{'logisticregression__C': 1.0, 'standardscaler...</td>
@@ -3732,10 +3728,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>3</th>
-      <td>3.983535</td>
-      <td>0.311238</td>
-      <td>0.018855</td>
-      <td>0.010587</td>
+      <td>4.058554</td>
+      <td>0.151287</td>
+      <td>0.016101</td>
+      <td>0.007897</td>
       <td>1.00</td>
       <td>False</td>
       <td>{'logisticregression__C': 1.0, 'standardscaler...</td>
@@ -3766,10 +3762,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.620426</td>
-      <td>0.064477</td>
-      <td>0.014596</td>
-      <td>0.002959</td>
+      <td>0.682060</td>
+      <td>0.079292</td>
+      <td>0.015014</td>
+      <td>0.002830</td>
       <td>100.00</td>
       <td>True</td>
       <td>{'logisticregression__C': 100.0, 'standardscal...</td>
@@ -3800,10 +3796,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>5</th>
-      <td>4.019370</td>
-      <td>0.608934</td>
-      <td>0.016755</td>
-      <td>0.009671</td>
+      <td>4.489686</td>
+      <td>0.701869</td>
+      <td>0.012002</td>
+      <td>0.000363</td>
       <td>100.00</td>
       <td>False</td>
       <td>{'logisticregression__C': 100.0, 'standardscal...</td>
@@ -3849,10 +3845,9 @@ training set at each iteration of the L-BFGS solver and for each parameter
 combination. Note that these are training-set scores recorded during L-BFGS
 iterations, not the held-out CV scores from <code class="docutils literal notranslate"><span class="pre">cv_results_</span></code>.</p>
 <p>These values are stored in the <code class="docutils literal notranslate"><span class="pre">scoring_monitor</span></code> callback object:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">all_tasks_log</span> <span class="o">=</span> <span class="n">scoring_monitor</span><span class="o">.</span><span class="n">get_logs</span><span class="p">()</span><span class="o">.</span><span class="n">data_as_pandas</span>
-<span class="n">all_tasks_log</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">all_tasks_log</span> <span class="o">=</span> <span class="n">scoring_monitor</span><span class="o">.</span><span class="n">get_logs</span><span class="p">(</span><span class="p">)</span><span class="o">.</span><span class="n">data_as_pandas</span><span class="w">
+</span><span class="n">all_tasks_log</span><span class="w">
+</span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <div>
 <style scoped>
@@ -4025,63 +4020,60 @@ iterations, not the held-out CV scores from <code class="docutils literal notran
 <br /><p>Let’s enrich this log with the candidate parameters and the split index so we
 can plot the scores for each parameter combination for a particular CV split
 of interest.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">candidate_params</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s2">"params"</span><span class="p">])</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="s2">"param_"</span><span class="p">)</span>
-
-<span class="n">n_splits</span> <span class="o">=</span> <span class="n">grid_search</span><span class="o">.</span><span class="n">n_splits_</span>
-<span class="n">lbfgs_log</span> <span class="o">=</span> <span class="n">all_tasks_log</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
-    <span class="s2">"estimator_name == 'LogisticRegression' and task_name == 'lbfgs-iter'"</span>
-<span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="c1"># Index 2 in ``task_id_path`` is the ``candidate-split-evaluation`` task id.</span>
-<span class="c1"># Future versions of scikit-learn will provide a more convenient way to</span>
-<span class="c1"># retrieve this task id.</span>
-<span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"eval_task_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"task_id_path"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="n">path</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"candidate_idx"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"eval_task_id"</span><span class="p">]</span> <span class="o">//</span> <span class="n">n_splits</span>
-<span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"split_idx"</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"eval_task_id"</span><span class="p">]</span> <span class="o">%</span> <span class="n">n_splits</span>
-<span class="n">lbfgs_log</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"split_idx == 0"</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">candidate_params</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">"candidate_idx"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">candidate_params</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">grid_search</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">params</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="o">.</span><span class="n">add_prefix</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">param_</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">n_splits</span> <span class="o">=</span> <span class="n">grid_search</span><span class="o">.</span><span class="n">n_splits_</span><span class="w">
+</span><span class="n">lbfgs_log</span> <span class="o">=</span> <span class="n">all_tasks_log</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">estimator_name == </span><span class="s2">'</span><span class="s2">LogisticRegression</span><span class="s2">'</span><span class="s2"> and task_name == </span><span class="s2">'</span><span class="s2">lbfgs-iter</span><span class="s2">'</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="c1"># Index 2 in ``task_id_path`` is the ``candidate-split-evaluation`` task id.</span><span class="w">
+</span><span class="c1"># Future versions of scikit-learn will provide a more convenient way to</span><span class="w">
+</span><span class="c1"># retrieve this task id.</span><span class="w">
+</span><span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">eval_task_id</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">task_id_path</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="n">path</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">candidate_idx</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">eval_task_id</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">/</span><span class="o">/</span> <span class="n">n_splits</span><span class="w">
+</span><span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">split_idx</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">eval_task_id</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">%</span> <span class="n">n_splits</span><span class="w">
+</span><span class="n">lbfgs_log</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">split_idx == 0</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">candidate_params</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">candidate_idx</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <p>Exclude the final refit on the full dataset (<code class="docutils literal notranslate"><span class="pre">parent_task_id_path</span></code>
 starts with <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">1)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code> for cross-validation fits). Note
 that it is possible to call <code class="docutils literal notranslate"><span class="pre">scoring_monitor.get_logs(include_lineage=True)</span></code>
 to retrieve the task name of the ancestor tasks if needed.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">cv_lbfgs_log</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span>
-    <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">"parent_task_id_path"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
-<span class="p">]</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">cv_lbfgs_log</span> <span class="o">=</span> <span class="n">lbfgs_log</span><span class="p">[</span><span class="w">
+</span>    <span class="n">lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">parent_task_id_path</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></pre></div></div>
 <p>We define labels for plotting purposes and plot each metric separately.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">cv_lbfgs_log</span><span class="p">[</span><span class="s2">"param_label"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_lbfgs_log</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s2">"with_std=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'param_standardscaler__with_std'</span><span class="p">]</span><span class="si">}</span><span class="s2">, "</span>
-        <span class="sa">f</span><span class="s2">"C=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'param_logisticregression__C'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">"</span>
-    <span class="p">),</span>
-    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"d2_log_loss_score"</span><span class="p">:</span> <span class="s2">"D² log-loss (train)"</span><span class="p">,</span>
-    <span class="s2">"accuracy"</span><span class="p">:</span> <span class="s2">"Accuracy (train)"</span><span class="p">,</span>
-    <span class="s2">"average_precision"</span><span class="p">:</span> <span class="s2">"Average precision (train)"</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="n">_</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span>
-    <span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">),</span>
-    <span class="mi">1</span><span class="p">,</span>
-    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">2.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">)),</span>
-    <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">param_label</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">cv_lbfgs_log</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"param_label"</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">"task_id"</span><span class="p">],</span> <span class="n">group</span><span class="p">[</span><span class="n">metric</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">param_label</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"CV split 0"</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Hyperparameters"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">"small"</span><span class="p">)</span>
-
-<span class="n">_</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"L-BFGS iteration"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">cv_lbfgs_log</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">param_label</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cv_lbfgs_log</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="w">
+</span>    <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">(</span><span class="w">
+</span>        <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">with_std=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'</span><span class="s1">param_standardscaler__with_std</span><span class="s1">'</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="s2">&quot;</span><span class="w">
+</span>        <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">C=</span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">'</span><span class="s1">param_logisticregression__C</span><span class="s1">'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span>    <span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">d2_log_loss_score</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="s2">D² log-loss (train)</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">accuracy</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="s2">Accuracy (train)</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">average_precision</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="s2">Average precision (train)</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="n">_</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="w">
+</span>    <span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="mi">1</span><span class="p">,</span><span class="w">
+</span>    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">2.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w">
+</span>    <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">param_label</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">cv_lbfgs_log</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">param_label</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">task_id</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">param_label</span><span class="p">)</span><span class="w">
+</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span><span class="w">
+</span>    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">CV split 0</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">Hyperparameters</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">small</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">_</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">L-BFGS iteration</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <img src="../../_images/sphx_glr_plot_scoring_monitor_001.png" srcset="../../_images/sphx_glr_plot_scoring_monitor_001.png" alt="CV split 0" class = "sphx-glr-single-img"/></section>
 <section id="analysis-of-the-convergence-of-the-logistic-regression-models">
 <h2>Analysis of the convergence of the logistic regression models<a class="headerlink" href="#analysis-of-the-convergence-of-the-logistic-regression-models" title="Link to this heading">#</a></h2>
@@ -4152,7 +4144,7 @@ deprecation cycle.</p>
 “Rethinking Early Stopping: Refine, Then Calibrate” (2025).</a></p>
 </aside>
 </aside>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 30.515 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 31.956 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-callbacks-plot-scoring-monitor-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/callbacks/plot_scoring_monitor.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo3.svg" style="width: 150px;" />

@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1056,32 +1056,29 @@ particular pre-processor: by column names and by column data types.</p>
 <p>Finally, the preprocessing pipeline is integrated in a full prediction pipeline
 using <a class="reference internal" href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>, together with a simple classification
 model.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-</pre></div>
-</div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnTransformer</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.feature_selection.SelectPercentile.html#sklearn.feature_selection.SelectPercentile" title="sklearn.feature_selection.SelectPercentile" class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SelectPercentile</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2" title="sklearn.feature_selection.chi2" class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-function"><span class="n">chi2</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimpleImputer</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LogisticRegression</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomizedSearchCV</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">train_test_split</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneHotEncoder</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">StandardScaler</span></a>
-
-<a href="https://numpy.org/doc/stable/reference/random/generated/numpy.random.seed.html#numpy.random.seed" title="numpy.random.seed" class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span></a><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span></pre></div></div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">compose</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer"><span class="n">ColumnTransformer</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml"><span class="n">fetch_openml</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">feature_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.feature_selection.SelectPercentile.html#sklearn.feature_selection.SelectPercentile" title="sklearn.feature_selection.SelectPercentile"><span class="n">SelectPercentile</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2" title="sklearn.feature_selection.chi2"><span class="n">chi2</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">impute</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer"><span class="n">SimpleImputer</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">linear_model</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">model_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><span class="n">RandomizedSearchCV</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><span class="n">train_test_split</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><span class="n">Pipeline</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">preprocessing</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder"><span class="n">OneHotEncoder</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler"><span class="n">StandardScaler</span></a><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/random/generated/numpy.random.seed.html#numpy.random.seed" title="numpy.random.seed"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span></a><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <p>Load data from <a class="reference external" href="https://www.openml.org/d/40945">https://www.openml.org/d/40945</a></p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="s2">"titanic"</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Alternatively X and y can be obtained directly from the frame attribute:</span>
-<span class="c1"># X = titanic.frame.drop('survived', axis=1)</span>
-<span class="c1"># y = titanic.frame['survived']</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml"><span class="n">fetch_openml</span></a><span class="p">(</span><span class="s2">&quot;</span><span class="s2">titanic</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># Alternatively X and y can be obtained directly from the frame attribute:</span><span class="w">
+</span><span class="c1"># X = titanic.frame.drop('survived', axis=1)</span><span class="w">
+</span><span class="c1"># y = titanic.frame['survived']</span><span class="w">
+</span></pre></div></div>
 <p>Use <code class="docutils literal notranslate"><span class="pre">ColumnTransformer</span></code> by selecting column by names</p>
 <p>We will train our classifier with the following features:</p>
 <p>Numeric Features:</p>
@@ -1098,47 +1095,44 @@ model.</p>
 <p>We create the preprocessing pipelines for both numeric and categorical data.
 Note that <code class="docutils literal notranslate"><span class="pre">pclass</span></code> could either be treated as a categorical or numeric
 feature.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">numeric_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"age"</span><span class="p">,</span> <span class="s2">"fare"</span><span class="p">]</span>
-<span class="n">numeric_transformer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a><span class="p">(</span>
-    <span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="s2">"imputer"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimpleImputer</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"median"</span><span class="p">)),</span> <span class="p">(</span><span class="s2">"scaler"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">StandardScaler</span></a><span class="p">())]</span>
-<span class="p">)</span>
-
-<span class="n">categorical_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"embarked"</span><span class="p">,</span> <span class="s2">"sex"</span><span class="p">,</span> <span class="s2">"pclass"</span><span class="p">]</span>
-<span class="n">categorical_transformer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a><span class="p">(</span>
-    <span class="n">steps</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s2">"encoder"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">OneHotEncoder</span></a><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s2">"selector"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.feature_selection.SelectPercentile.html#sklearn.feature_selection.SelectPercentile" title="sklearn.feature_selection.SelectPercentile" class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SelectPercentile</span></a><span class="p">(</span><a href="../../modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2" title="sklearn.feature_selection.chi2" class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-function"><span class="n">chi2</span></a><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">50</span><span class="p">)),</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-<span class="n">preprocessor</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnTransformer</span></a><span class="p">(</span>
-    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s2">"num"</span><span class="p">,</span> <span class="n">numeric_transformer</span><span class="p">,</span> <span class="n">numeric_features</span><span class="p">),</span>
-        <span class="p">(</span><span class="s2">"cat"</span><span class="p">,</span> <span class="n">categorical_transformer</span><span class="p">,</span> <span class="n">categorical_features</span><span class="p">),</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">numeric_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">age</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">fare</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="n">numeric_transformer</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><span class="n">Pipeline</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">steps</span><span class="o">=</span><span class="p">[</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">imputer</span><span class="s2">&quot;</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer"><span class="n">SimpleImputer</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">median</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">)</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;</span><span class="s2">scaler</span><span class="s2">&quot;</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler" title="sklearn.preprocessing.StandardScaler"><span class="n">StandardScaler</span></a><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">categorical_features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">embarked</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">sex</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">pclass</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="n">categorical_transformer</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><span class="n">Pipeline</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">steps</span><span class="o">=</span><span class="p">[</span><span class="w">
+</span>        <span class="p">(</span><span class="s2">&quot;</span><span class="s2">encoder</span><span class="s2">&quot;</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.OneHotEncoder.html#sklearn.preprocessing.OneHotEncoder" title="sklearn.preprocessing.OneHotEncoder"><span class="n">OneHotEncoder</span></a><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">ignore</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>        <span class="p">(</span><span class="s2">&quot;</span><span class="s2">selector</span><span class="s2">&quot;</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.feature_selection.SelectPercentile.html#sklearn.feature_selection.SelectPercentile" title="sklearn.feature_selection.SelectPercentile"><span class="n">SelectPercentile</span></a><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-feature_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.feature_selection.chi2.html#sklearn.feature_selection.chi2" title="sklearn.feature_selection.chi2"><span class="n">chi2</span></a><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">preprocessor</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer"><span class="n">ColumnTransformer</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="w">
+</span>        <span class="p">(</span><span class="s2">&quot;</span><span class="s2">num</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">numeric_transformer</span><span class="p">,</span> <span class="n">numeric_features</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>        <span class="p">(</span><span class="s2">&quot;</span><span class="s2">cat</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">categorical_transformer</span><span class="p">,</span> <span class="n">categorical_features</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <p>Append classifier to preprocessing pipeline.
 Now we have a full prediction pipeline.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">clf</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a><span class="p">(</span>
-    <span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="s2">"preprocessor"</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">),</span> <span class="p">(</span><span class="s2">"classifier"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LogisticRegression</span></a><span class="p">())]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="s2">"pandas"</span><span class="p">)</span>
-
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">train_test_split</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"model score: </span><span class="si">%.3f</span><span class="s2">"</span> <span class="o">%</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">clf</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><span class="n">Pipeline</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">steps</span><span class="o">=</span><span class="p">[</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">preprocessor</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">)</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;</span><span class="s2">classifier</span><span class="s2">&quot;</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">pandas</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><span class="n">train_test_split</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">model score: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>model score: 0.798
 </pre></div>
 </div>
 <p>HTML representation of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> (display diagram)</p>
 <p>When the <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> is printed out in a jupyter notebook an HTML
 representation of the estimator is displayed:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">clf</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">clf</span><span class="w">
+</span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <style>.sk-global {
   /* Definition of color scheme common for light and dark mode */
@@ -1858,7 +1852,7 @@ a.param-doc-link::before {
                                                                                  sparse_output=False)),
                                                                   (&#x27;selector&#x27;,
                                                                    SelectPercentile(percentile=50,
-                                                                                    score_func=&lt;function chi2 at 0x7fa89c13d430&gt;))]),
+                                                                                    score_func=&lt;function chi2 at 0x7c10daf02da0&gt;))]),
                                                   [&#x27;embarked&#x27;, &#x27;sex&#x27;,
                                                    &#x27;pclass&#x27;])])),
                 (&#x27;classifier&#x27;, LogisticRegression())])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-380" type="checkbox" ><label for="sk-estimator-id-380" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
@@ -2284,7 +2278,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">list</td>
-           <td>[(&#x27;num&#x27;, Pipeline(step...ardScaler())]), [&#x27;age&#x27;, &#x27;fare&#x27;]), (&#x27;cat&#x27;, Pipeline(step...89c13d430&gt;))]), [&#x27;em...ed&#x27;, &#x27;sex&#x27;, &#x27;pclass&#x27;]), (&#x27;re...er&#x27;, &#x27;drop&#x27;, [&#x27;name&#x27;, &#x27;sibsp&#x27;, &#x27;parch&#x27;, &#x27;ticket&#x27;, ...])]</td>
+           <td>[(&#x27;num&#x27;, Pipeline(step...ardScaler())]), [&#x27;age&#x27;, &#x27;fare&#x27;]), (&#x27;cat&#x27;, Pipeline(step...0daf02da0&gt;))]), [&#x27;em...ed&#x27;, &#x27;sex&#x27;, &#x27;pclass&#x27;]), (&#x27;re...er&#x27;, &#x27;drop&#x27;, [&#x27;name&#x27;, &#x27;sibsp&#x27;, &#x27;parch&#x27;, &#x27;ticket&#x27;, ...])]</td>
 
 
        </tr>
@@ -3132,7 +3126,7 @@ a.param-doc-link::before {
             score_func: callable, default=f_classif<br><br>Function taking two arrays X and y, and returning a pair of arrays<br>(scores, pvalues) or a single array with scores.<br>Default is f_classif (see below &quot;See Also&quot;). The default function only<br>works with classification tasks.<br><br>.. versionadded:: 0.18</span>
         </a>
     </td>
-            <td class="value">&lt;function chi...x7fa89c13d430&gt;</td>
+            <td class="value">&lt;function chi...x7c10daf02da0&gt;</td>
         </tr>
 
 
@@ -3947,14 +3941,12 @@ numerical or categorical feature.
 <a class="reference internal" href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.compose.make_column_selector</span></code></a> gives this possibility.
 First, let’s only select a subset of columns to simplify our
 example.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">subset_feature</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"embarked"</span><span class="p">,</span> <span class="s2">"sex"</span><span class="p">,</span> <span class="s2">"pclass"</span><span class="p">,</span> <span class="s2">"age"</span><span class="p">,</span> <span class="s2">"fare"</span><span class="p">]</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">subset_feature</span><span class="p">],</span> <span class="n">X_test</span><span class="p">[</span><span class="n">subset_feature</span><span class="p">]</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">subset_feature</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">embarked</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">sex</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">pclass</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">age</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">fare</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">subset_feature</span><span class="p">]</span><span class="p">,</span> <span class="n">X_test</span><span class="p">[</span><span class="n">subset_feature</span><span class="p">]</span><span class="w">
+</span></pre></div></div>
 <p>Then, we introspect the information regarding each column data type.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">X_train</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">X_train</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;class 'pandas.DataFrame'&gt;
 Index: 1047 entries, 1118 to 684
 Data columns (total 5 columns):
@@ -3981,24 +3973,23 @@ If you want some columns to be considered as <code class="docutils literal notra
 convert them into categorical columns. If you are using pandas, you can
 refer to their documentation regarding <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/categorical.html">Categorical data</a>.</p>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_column_selector</span> <span class="k">as</span> <a href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">selector</span></a>
-
-<span class="n">preprocessor</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ColumnTransformer</span></a><span class="p">(</span>
-    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span>
-        <span class="p">(</span><span class="s2">"num"</span><span class="p">,</span> <span class="n">numeric_transformer</span><span class="p">,</span> <a href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_exclude</span><span class="o">=</span><span class="s2">"category"</span><span class="p">)),</span>
-        <span class="p">(</span><span class="s2">"cat"</span><span class="p">,</span> <span class="n">categorical_transformer</span><span class="p">,</span> <a href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s2">"category"</span><span class="p">)),</span>
-    <span class="p">]</span>
-<span class="p">)</span>
-<span class="n">clf</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Pipeline</span></a><span class="p">(</span>
-    <span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="s2">"preprocessor"</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">),</span> <span class="p">(</span><span class="s2">"classifier"</span><span class="p">,</span> <a href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LogisticRegression</span></a><span class="p">())]</span>
-<span class="p">)</span>
-
-
-<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"model score: </span><span class="si">%.3f</span><span class="s2">"</span> <span class="o">%</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
-<span class="n">clf</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_column_selector</span> <span class="k">as</span> <a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector"><span class="n">selector</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">preprocessor</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.ColumnTransformer.html#sklearn.compose.ColumnTransformer" title="sklearn.compose.ColumnTransformer"><span class="n">ColumnTransformer</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">transformers</span><span class="o">=</span><span class="p">[</span><span class="w">
+</span>        <span class="p">(</span><span class="s2">&quot;</span><span class="s2">num</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">numeric_transformer</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_exclude</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">category</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>        <span class="p">(</span><span class="s2">&quot;</span><span class="s2">cat</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">categorical_transformer</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">category</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">clf</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><span class="n">Pipeline</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">steps</span><span class="o">=</span><span class="p">[</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">preprocessor</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preprocessor</span><span class="p">)</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;</span><span class="s2">classifier</span><span class="s2">&quot;</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">model score: </span><span class="si">%.3f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">clf</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">clf</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>model score: 0.798
 </pre></div>
 </div>
@@ -4714,15 +4705,15 @@ a.param-doc-link::before {
                                                                    SimpleImputer(strategy=&#x27;median&#x27;)),
                                                                   (&#x27;scaler&#x27;,
                                                                    StandardScaler())]),
-                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7fa873b323f0&gt;),
+                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7c107d92f350&gt;),
                                                  (&#x27;cat&#x27;,
                                                   Pipeline(steps=[(&#x27;encoder&#x27;,
                                                                    OneHotEncoder(handle_unknown=&#x27;ignore&#x27;,
                                                                                  sparse_output=False)),
                                                                   (&#x27;selector&#x27;,
                                                                    SelectPercentile(percentile=50,
-                                                                                    score_func=&lt;function chi2 at 0x7fa89c13d430&gt;))]),
-                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7fa835f01c10&gt;)])),
+                                                                                    score_func=&lt;function chi2 at 0x7c10daf02da0&gt;))]),
+                                                  &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7c107d92cad0&gt;)])),
                 (&#x27;classifier&#x27;, LogisticRegression())])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-389" type="checkbox" ><label for="sk-estimator-id-389" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
@@ -5092,7 +5083,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">Bunch</td>
-           <td>{&#x27;num&#x27;: Pipel...9c13d430&gt;))])}</td>
+           <td>{&#x27;num&#x27;: Pipel...daf02da0&gt;))])}</td>
 
 
        </tr>
@@ -5146,7 +5137,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">list</td>
-           <td>[(&#x27;num&#x27;, Pipeline(step...ardScaler())]), [&#x27;pclass&#x27;, &#x27;age&#x27;, &#x27;fare&#x27;]), (&#x27;cat&#x27;, Pipeline(step...89c13d430&gt;))]), [&#x27;em...ed&#x27;, &#x27;sex&#x27;])]</td>
+           <td>[(&#x27;num&#x27;, Pipeline(step...ardScaler())]), [&#x27;pclass&#x27;, &#x27;age&#x27;, &#x27;fare&#x27;]), (&#x27;cat&#x27;, Pipeline(step...0daf02da0&gt;))]), [&#x27;em...ed&#x27;, &#x27;sex&#x27;])]</td>
 
 
        </tr>
@@ -5989,7 +5980,7 @@ a.param-doc-link::before {
             score_func: callable, default=f_classif<br><br>Function taking two arrays X and y, and returning a pair of arrays<br>(scores, pvalues) or a single array with scores.<br>Default is f_classif (see below &quot;See Also&quot;). The default function only<br>works with classification tasks.<br><br>.. versionadded:: 0.18</span>
         </a>
     </td>
-            <td class="value">&lt;function chi...x7fa89c13d430&gt;</td>
+            <td class="value">&lt;function chi...x7c10daf02da0&gt;</td>
         </tr>
 
 
@@ -6776,15 +6767,13 @@ forceTheme('sk-container-id-86');</script></body>
 <br /><p>The resulting score is not exactly the same as the one from the previous
 pipeline because the dtype-based selector treats the <code class="docutils literal notranslate"><span class="pre">pclass</span></code> column as
 a numeric feature instead of a categorical feature as previously:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_exclude</span><span class="o">=</span><span class="s2">"category"</span><span class="p">)(</span><span class="n">X_train</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_exclude</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">category</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>['pclass', 'age', 'fare']
 </pre></div>
 </div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><a href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector" class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s2">"category"</span><span class="p">)(</span><span class="n">X_train</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-sklearn-compose sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.compose.make_column_selector.html#sklearn.compose.make_column_selector" title="sklearn.compose.make_column_selector"><span class="n">selector</span></a><span class="p">(</span><span class="n">dtype_include</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">category</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>['embarked', 'sex']
 </pre></div>
 </div>
@@ -6799,16 +6788,15 @@ hyperparameter search randomly selects a fixed number of parameter
 settings configured by <code class="docutils literal notranslate"><span class="pre">n_iter</span></code>. Alternatively, one can use
 <a class="reference internal" href="../../modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> but the cartesian product of
 the parameter space will be evaluated.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"preprocessor__num__imputer__strategy"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"mean"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">],</span>
-    <span class="s2">"preprocessor__cat__selector__percentile"</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span>
-    <span class="s2">"classifier__C"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-<span class="p">}</span>
-
-<span class="n">search_cv</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomizedSearchCV</span></a><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">search_cv</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">preprocessor__num__imputer__strategy</span><span class="s2">&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">mean</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">median</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">preprocessor__cat__selector__percentile</span><span class="s2">&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">classifier__C</span><span class="s2">&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="n">search_cv</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.model_selection.RandomizedSearchCV.html#sklearn.model_selection.RandomizedSearchCV" title="sklearn.model_selection.RandomizedSearchCV"><span class="n">RandomizedSearchCV</span></a><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="n">search_cv</span><span class="w">
+</span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <style>.sk-global {
   /* Definition of color scheme common for light and dark mode */
@@ -7521,13 +7509,13 @@ a.param-doc-link::before {
                                                                                                 SimpleImputer(strategy=&#x27;median&#x27;)),
                                                                                                (&#x27;scaler&#x27;,
                                                                                                 StandardScaler())]),
-                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7fa873b323f0&gt;),
+                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7c107d92f350&gt;),
                                                                               (&#x27;cat&#x27;,
                                                                                Pipeline(steps=[(&#x27;encoder&#x27;,
                                                                                                 OneHotEncoder(handle_unknown=&#x27;ignore&#x27;,
                                                                                                               spars...
-                                                                                                                 score_func=&lt;function chi2 at 0x7fa89c13d430&gt;))]),
-                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7fa835f01c10&gt;)])),
+                                                                                                                 score_func=&lt;function chi2 at 0x7c10daf02da0&gt;))]),
+                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7c107d92cad0&gt;)])),
                                              (&#x27;classifier&#x27;,
                                               LogisticRegression())]),
                    param_distributions={&#x27;classifier__C&#x27;: [0.1, 1.0, 10, 100],
@@ -8330,7 +8318,7 @@ a.param-doc-link::before {
             score_func: callable, default=f_classif<br><br>Function taking two arrays X and y, and returning a pair of arrays<br>(scores, pvalues) or a single array with scores.<br>Default is f_classif (see below &quot;See Also&quot;). The default function only<br>works with classification tasks.<br><br>.. versionadded:: 0.18</span>
         </a>
     </td>
-            <td class="value">&lt;function chi...x7fa89c13d430&gt;</td>
+            <td class="value">&lt;function chi...x7c10daf02da0&gt;</td>
         </tr>
 
 
@@ -8822,13 +8810,12 @@ forceTheme('sk-container-id-87');</script></body>
 <br />
 <br /><p>Calling ‘fit’ triggers the cross-validated search for the best
 hyper-parameters combination:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">search_cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Best params:"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">search_cv</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
-<span class="n">search_cv</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">search_cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Best params:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="n">search_cv</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span><span class="w">
+</span><span class="n">search_cv</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Best params:
 {'preprocessor__num__imputer__strategy': 'mean', 'preprocessor__cat__selector__percentile': 30, 'classifier__C': 100}
 </pre></div>
@@ -9545,13 +9532,13 @@ a.param-doc-link::before {
                                                                                                 SimpleImputer(strategy=&#x27;median&#x27;)),
                                                                                                (&#x27;scaler&#x27;,
                                                                                                 StandardScaler())]),
-                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7fa873b323f0&gt;),
+                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7c107d92f350&gt;),
                                                                               (&#x27;cat&#x27;,
                                                                                Pipeline(steps=[(&#x27;encoder&#x27;,
                                                                                                 OneHotEncoder(handle_unknown=&#x27;ignore&#x27;,
                                                                                                               spars...
-                                                                                                                 score_func=&lt;function chi2 at 0x7fa89c13d430&gt;))]),
-                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7fa835f01c10&gt;)])),
+                                                                                                                 score_func=&lt;function chi2 at 0x7c10daf02da0&gt;))]),
+                                                                               &lt;sklearn.compose._column_transformer.make_column_selector object at 0x7c107d92cad0&gt;)])),
                                              (&#x27;classifier&#x27;,
                                               LogisticRegression())]),
                    param_distributions={&#x27;classifier__C&#x27;: [0.1, 1.0, 10, 100],
@@ -10015,7 +10002,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">float</td>
-           <td>0.0206</td>
+           <td>0.01835</td>
 
 
        </tr>
@@ -10252,7 +10239,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">Bunch</td>
-           <td>{&#x27;num&#x27;: Pipel...9c13d430&gt;))])}</td>
+           <td>{&#x27;num&#x27;: Pipel...daf02da0&gt;))])}</td>
 
 
        </tr>
@@ -10306,7 +10293,7 @@ a.param-doc-link::before {
         </a>
     </td>
            <td class="fitted-att-type">list</td>
-           <td>[(&#x27;num&#x27;, Pipeline(step...ardScaler())]), [&#x27;pclass&#x27;, &#x27;age&#x27;, &#x27;fare&#x27;]), (&#x27;cat&#x27;, Pipeline(step...89c13d430&gt;))]), [&#x27;em...ed&#x27;, &#x27;sex&#x27;])]</td>
+           <td>[(&#x27;num&#x27;, Pipeline(step...ardScaler())]), [&#x27;pclass&#x27;, &#x27;age&#x27;, &#x27;fare&#x27;]), (&#x27;cat&#x27;, Pipeline(step...0daf02da0&gt;))]), [&#x27;em...ed&#x27;, &#x27;sex&#x27;])]</td>
 
 
        </tr>
@@ -11149,7 +11136,7 @@ a.param-doc-link::before {
             score_func: callable, default=f_classif<br><br>Function taking two arrays X and y, and returning a pair of arrays<br>(scores, pvalues) or a single array with scores.<br>Default is f_classif (see below &quot;See Also&quot;). The default function only<br>works with classification tasks.<br><br>.. versionadded:: 0.18</span>
         </a>
     </td>
-            <td class="value">&lt;function chi...x7fa89c13d430&gt;</td>
+            <td class="value">&lt;function chi...x7c10daf02da0&gt;</td>
         </tr>
 
 
@@ -11924,28 +11911,26 @@ forceTheme('sk-container-id-88');</script></body>
 </div>
 <br />
 <br /><p>The internal cross-validation scores obtained by those parameters is:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Internal CV score: </span><span class="si">{</span><span class="n">search_cv</span><span class="o">.</span><span class="n">best_score_</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Internal CV score: </span><span class="si">{</span><span class="n">search_cv</span><span class="o">.</span><span class="n">best_score_</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Internal CV score: 0.786
 </pre></div>
 </div>
 <p>We can also introspect the top grid search results as a pandas dataframe:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-
-<span class="n">cv_results</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">search_cv</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
-<span class="n">cv_results</span> <span class="o">=</span> <span class="n">cv_results</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"mean_test_score"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">cv_results</span><span class="p">[</span>
-    <span class="p">[</span>
-        <span class="s2">"mean_test_score"</span><span class="p">,</span>
-        <span class="s2">"std_test_score"</span><span class="p">,</span>
-        <span class="s2">"param_preprocessor__num__imputer__strategy"</span><span class="p">,</span>
-        <span class="s2">"param_preprocessor__cat__selector__percentile"</span><span class="p">,</span>
-        <span class="s2">"param_classifier__C"</span><span class="p">,</span>
-    <span class="p">]</span>
-<span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="w">
+</span><span class="w">
+</span><span class="n">cv_results</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">search_cv</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span><span class="w">
+</span><span class="n">cv_results</span> <span class="o">=</span> <span class="n">cv_results</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">mean_test_score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="w">
+</span><span class="n">cv_results</span><span class="p">[</span><span class="w">
+</span>    <span class="p">[</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">mean_test_score</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">std_test_score</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">param_preprocessor__num__imputer__strategy</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">param_preprocessor__cat__selector__percentile</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">param_classifier__C</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="p">]</span><span class="w">
+</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <div>
 <style scoped>
@@ -12021,16 +12006,15 @@ forceTheme('sk-container-id-88');</script></body>
 <br /><p>The best hyper-parameters have be used to re-fit a final model on the full
 training set. We can evaluate that final model on held out test data that was
 not used for hyperparameter tuning.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
-    <span class="s2">"accuracy of the best model from randomized search: "</span>
-    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">search_cv</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span>
-<span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="nb">print</span><span class="p">(</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">accuracy of the best model from randomized search: </span><span class="s2">&quot;</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">search_cv</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>accuracy of the best model from randomized search: 0.798
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.133 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.891 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-compose-plot-column-transformer-mixed-types-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/compose/plot_column_transformer_mixed_types.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo6.svg" style="width: 150px;" />
@@ -12060,7 +12044,7 @@ not used for hyperparameter tuning.</p>
 </div><div class="sphx-glr-thumbcontainer" tooltip="In this example, we compare the training times and prediction performances of HistGradientBoostingRegressor with different encoding strategies for categorical features. In particular, we evaluate:"><img alt="" src="../../_images/sphx_glr_plot_gradient_boosting_categorical_thumb.png" />
 <p><a class="reference internal" href="../ensemble/plot_gradient_boosting_categorical.html"><span class="doc">Categorical Feature Support in Gradient Boosting</span></a></p>
   <div class="sphx-glr-thumbnail-title">Categorical Feature Support in Gradient Boosting</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.2! Many bug fixes and improvements were added, as well as some new key features. We detail below a few of the major features of this release. For an exhaustive list of all the changes, please refer to the release notes &lt;release_notes_1_2&gt;."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_2_0_thumb.png" />
+</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.2! Many bug fixes and improvements were added, as well as some new key features. We detail below a few of the major features of this release. For an exhaustive list of all the changes, please refer to the release notes."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_2_0_thumb.png" />
 <p><a class="reference internal" href="../release_highlights/plot_release_highlights_1_2_0.html"><span class="doc">Release Highlights for scikit-learn 1.2</span></a></p>
   <div class="sphx-glr-thumbnail-title">Release Highlights for scikit-learn 1.2</div>
 </div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>

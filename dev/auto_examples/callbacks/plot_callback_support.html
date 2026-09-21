@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1070,168 +1070,164 @@ for calling the callback hooks at the right time.</p>
 meta-estimator class to make them compliant with the scikit-learn callback
 infrastructure.</p>
 <p>First a few imports and some random data for the rest of the script.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-</pre></div>
-</div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">,</span> <span class="n">clone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.callback</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.callback.CallbackSupportMixin.html#sklearn.callback.CallbackSupportMixin" title="sklearn.callback.CallbackSupportMixin" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">CallbackSupportMixin</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ProgressBar</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.callback.with_callbacks.html#sklearn.callback.with_callbacks" title="sklearn.callback.with_callbacks" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-function"><span class="n">with_callbacks</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">euclidean_distances</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.check_cv.html#sklearn.model_selection.check_cv" title="sklearn.model_selection.check_cv" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">check_cv</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state" class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-function"><span class="n">check_random_state</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.parallel</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.utils.parallel.Parallel.html#sklearn.utils.parallel.Parallel" title="sklearn.utils.parallel.Parallel" class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Parallel</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.utils.parallel.delayed.html#sklearn.utils.parallel.delayed" title="sklearn.utils.parallel.delayed" class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-function"><span class="n">delayed</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.validation</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">validate_data</span></a>
-
-<span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">4</span>
-<span class="n">rng</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="numpy.random.RandomState" class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span></a><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span></pre></div></div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">base</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.clone"><span class="n">clone</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">callback</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.CallbackSupportMixin.html#sklearn.callback.CallbackSupportMixin" title="sklearn.callback.CallbackSupportMixin"><span class="n">CallbackSupportMixin</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><span class="n">ProgressBar</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.callback.with_callbacks.html#sklearn.callback.with_callbacks" title="sklearn.callback.with_callbacks"><span class="n">with_callbacks</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">metrics</span><span class="nn">.</span><span class="nn">pairwise</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.euclidean_distances"><span class="n">euclidean_distances</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">model_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.check_cv.html#sklearn.model_selection.check_cv" title="sklearn.model_selection.check_cv"><span class="n">check_cv</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state"><span class="n">check_random_state</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">utils</span><span class="nn">.</span><span class="nn">parallel</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.utils.parallel.Parallel.html#sklearn.utils.parallel.Parallel" title="sklearn.utils.parallel.Parallel"><span class="n">Parallel</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.parallel.delayed.html#sklearn.utils.parallel.delayed" title="sklearn.utils.parallel.delayed"><span class="n">delayed</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">utils</span><span class="nn">.</span><span class="nn">validation</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data"><span class="n">validate_data</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="w">
+</span><span class="n">rng</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="numpy.random.RandomState"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span></a><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w">
+</span><span class="n">X</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <section id="custom-estimator">
 <h2>Custom Estimator<a class="headerlink" href="#custom-estimator" title="Link to this heading">#</a></h2>
 <p>Here we demonstrate how to implement a custom estimator that supports callbacks. For
 the example, a simplified version of KMeans is presented. First, let’s implement our
 <code class="docutils literal notranslate"><span class="pre">SimpleKMeans</span></code> estimator without the callback support.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SimpleKMeans</span><span class="p">(</span><a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>  <span class="c1"># controls the centroids' initialization</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="c1"># Get the index of the closest centroid for each point in X.</span>
-        <span class="k">return</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmin.html#numpy.argmin" title="numpy.argmin" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">argmin</span></a><span class="p">(</span><span class="n">euclidean_distances</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># `y` is not used but we need to declare it to adhere to scikit-learn's</span>
-        <span class="c1"># estimators fit convention.</span>
-
-        <span class="c1"># Input validation is a good practice in estimators, for more information about</span>
-        <span class="c1"># it you can refer to</span>
-        <span class="c1"># https://scikit-learn.org/stable/developers/develop.html#input-validation.</span>
-        <span class="n">X</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">validate_data</span></a><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="n">random_state</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state" class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-function"><span class="n">check_random_state</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
-        <span class="c1"># Randomly initialize the centroids.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">):</span>
-            <span class="c1"># The fit iterations consist in getting the cluster label of each data point</span>
-            <span class="c1"># according to their closest centroid, and then updating the centroids as</span>
-            <span class="c1"># the center of each cluster.</span>
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">):</span>
-                <span class="c1"># For each centroid, if its cluster is not empty, its coordinates are</span>
-                <span class="c1"># updated with the coordinates of the cluster's center.</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">euclidean_distances</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">class</span><span class="w"> </span><span class="nc">SimpleKMeans</span><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>  <span class="c1"># controls the centroids' initialization</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="c1"># Get the index of the closest centroid for each point in X.</span><span class="w">
+</span>        <span class="k">return</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.argmin.html#numpy.argmin" title="numpy.argmin"><span class="n">np</span><span class="o">.</span><span class="n">argmin</span></a><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.euclidean_distances"><span class="n">euclidean_distances</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="c1"># `y` is not used but we need to declare it to adhere to scikit-learn's</span><span class="w">
+</span>        <span class="c1"># estimators fit convention.</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># Input validation is a good practice in estimators, for more information about</span><span class="w">
+</span>        <span class="c1"># it you can refer to</span><span class="w">
+</span>        <span class="c1"># https://scikit-learn.org/stable/developers/develop.html#input-validation.</span><span class="w">
+</span>        <span class="n">X</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data"><span class="n">validate_data</span></a><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="w">
+</span>        <span class="n">random_state</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state"><span class="n">check_random_state</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># Randomly initialize the centroids.</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="c1"># The fit iterations consist in getting the cluster label of each data point</span><span class="w">
+</span>            <span class="c1"># according to their closest centroid, and then updating the centroids as</span><span class="w">
+</span>            <span class="c1"># the center of each cluster.</span><span class="w">
+</span>            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>                <span class="c1"># For each centroid, if its cluster is not empty, its coordinates are</span><span class="w">
+</span>                <span class="c1"># updated with the coordinates of the cluster's center.</span><span class="w">
+</span>                <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>                    <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w">
+</span>        <span class="k">return</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.euclidean_distances"><span class="n">euclidean_distances</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <p>Now let’s add all the elements necessary to support callbacks.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First things first, the estimator must inherit from the `CallbackSupportMixin` class.</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">SimpleKMeans</span><span class="p">(</span><a href="../../modules/generated/sklearn.callback.CallbackSupportMixin.html#sklearn.callback.CallbackSupportMixin" title="sklearn.callback.CallbackSupportMixin" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">CallbackSupportMixin</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">):</span>  <span class="c1"># noqa: F811</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="k">return</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmin.html#numpy.argmin" title="numpy.argmin" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">argmin</span></a><span class="p">(</span><span class="n">euclidean_distances</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="c1"># Then the `fit` function must be decorated with the `with_callbacks`</span>
-    <span class="c1"># decorator, which takes care of the proper teardown of callbacks.</span>
-    <span class="nd">@with_callbacks</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">X</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">validate_data</span></a><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="n">random_state</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state" class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-function"><span class="n">check_random_state</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
-        <span class="c1"># The `CallbackContext` object must be instantiated with the</span>
-        <span class="c1"># `_init_callback_context` method provided by the mixin, which calls the</span>
-        <span class="c1"># `setup` hooks of the callbacks. This context corresponds to the root task of</span>
-        <span class="c1"># the fit function.</span>
-        <span class="n">callback_ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_callback_context</span><span class="p">(</span>
-            <span class="n">task_name</span><span class="o">=</span><span class="s2">"fit"</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span>
-        <span class="p">)</span>
-        <span class="c1"># Then the callback context's `call_on_fit_task_begin` method must be called. It</span>
-        <span class="c1"># will call all the callbacks' `on_fit_task_begin` hooks. The `estimator`</span>
-        <span class="c1"># argument is mandatory and optional `kwargs` can be passed to provide extra</span>
-        <span class="c1"># contextual information for the callbacks, for example here `X` and `y` are</span>
-        <span class="c1"># passed. See the following note for more details on these extra `kwargs`.</span>
-        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">):</span>
-            <span class="c1"># For each sub-task of fit (here each iteration of the loop), a sub-context</span>
-            <span class="c1"># must be created with the callback context's `subcontext` method.</span>
-            <span class="n">subcontext</span> <span class="o">=</span> <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="s2">"fit iteration"</span><span class="p">)</span>
-            <span class="c1"># The sub-context corresponds to a new sub-task, so its</span>
-            <span class="c1"># `call_on_fit_task_begin` method must also be called.</span>
-            <span class="n">subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">):</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-            <span class="c1"># After each sub-task, the `call_on_fit_task_end` method of its sub-context</span>
-            <span class="c1"># must be called, also with `estimator` as a mandatory argument and optional</span>
-            <span class="c1"># `kwargs`. It will call all the callbacks' `on_fit_task_end` hooks. Here</span>
-            <span class="c1"># the extra `kwargs` contain a `reconstruction_attributes` callable,</span>
-            <span class="c1"># which returns the necessary attributes to generate an estimator instance</span>
-            <span class="c1"># ready to predict, as if the fit process just stopped at this step.</span>
-            <span class="k">if</span> <span class="n">subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span>
-                <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-                <span class="n">reconstruction_attributes</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">"cluster_centers_"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span>
-                <span class="p">},</span>
-            <span class="p">):</span>
-                <span class="c1"># The `call_on_fit_task_end` method returns a boolean, which is set</span>
-                <span class="c1"># to True if any of the callbacks' `on_fit_task_end` methods return</span>
-                <span class="c1"># True. This enables the interruption of the `fit` process by the</span>
-                <span class="c1"># callbacks, for example to implement early stopping. Thus the</span>
-                <span class="c1"># `call_on_fit_task_end` method can be used in an `if` / `break` block</span>
-                <span class="c1"># to enable such interruptions.</span>
-                <span class="k">break</span>
-
-        <span class="c1"># After the root task of the fit function is done, the `call_on_fit_task_end`</span>
-        <span class="c1"># method of its callback context must be called.</span>
-        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span>
-            <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-            <span class="n">reconstruction_attributes</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">"cluster_centers_"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">)</span>
-
-        <span class="c1"># The callbacks' `teardown` hooks are called automatically in the decorator,</span>
-        <span class="c1"># after fit finishes, even if it crashed.</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <a href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted" class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">euclidean_distances</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># First things first, the estimator must inherit from the `CallbackSupportMixin` class.</span><span class="w">
+</span><span class="k">class</span><span class="w"> </span><span class="nc">SimpleKMeans</span><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.CallbackSupportMixin.html#sklearn.callback.CallbackSupportMixin" title="sklearn.callback.CallbackSupportMixin"><span class="n">CallbackSupportMixin</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">)</span><span class="p">:</span>  <span class="c1"># noqa: F811</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_clusters</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span> <span class="o">=</span> <span class="n">n_iter</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="k">return</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.argmin.html#numpy.argmin" title="numpy.argmin"><span class="n">np</span><span class="o">.</span><span class="n">argmin</span></a><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.euclidean_distances"><span class="n">euclidean_distances</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Then the `fit` function must be decorated with the `with_callbacks`</span><span class="w">
+</span>    <span class="c1"># decorator, which takes care of the proper teardown of callbacks.</span><span class="w">
+</span>    <span class="nd">&#64;with_callbacks</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">X</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.validate_data.html#sklearn.utils.validation.validate_data" title="sklearn.utils.validation.validate_data"><span class="n">validate_data</span></a><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="w">
+</span>        <span class="n">random_state</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-utils sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.check_random_state.html#sklearn.utils.check_random_state" title="sklearn.utils.check_random_state"><span class="n">check_random_state</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># The `CallbackContext` object must be instantiated with the</span><span class="w">
+</span>        <span class="c1"># `_init_callback_context` method provided by the mixin, which calls the</span><span class="w">
+</span>        <span class="c1"># `setup` hooks of the callbacks. This context corresponds to the root task of</span><span class="w">
+</span>        <span class="c1"># the fit function.</span><span class="w">
+</span>        <span class="n">callback_ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_callback_context</span><span class="p">(</span><span class="w">
+</span>            <span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">fit</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>        <span class="c1"># Then the callback context's `call_on_fit_task_begin` method must be called. It</span><span class="w">
+</span>        <span class="c1"># will call all the callbacks' `on_fit_task_begin` hooks. The `estimator`</span><span class="w">
+</span>        <span class="c1"># argument is mandatory and optional `kwargs` can be passed to provide extra</span><span class="w">
+</span>        <span class="c1"># contextual information for the callbacks, for example here `X` and `y` are</span><span class="w">
+</span>        <span class="c1"># passed. See the following note for more details on these extra `kwargs`.</span><span class="w">
+</span>        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="c1"># For each sub-task of fit (here each iteration of the loop), a sub-context</span><span class="w">
+</span>            <span class="c1"># must be created with the callback context's `subcontext` method.</span><span class="w">
+</span>            <span class="n">subcontext</span> <span class="o">=</span> <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">fit iteration</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>            <span class="c1"># The sub-context corresponds to a new sub-task, so its</span><span class="w">
+</span>            <span class="c1"># `call_on_fit_task_begin` method must also be called.</span><span class="w">
+</span>            <span class="n">subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>                <span class="k">if</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>                    <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>            <span class="c1"># After each sub-task, the `call_on_fit_task_end` method of its sub-context</span><span class="w">
+</span>            <span class="c1"># must be called, also with `estimator` as a mandatory argument and optional</span><span class="w">
+</span>            <span class="c1"># `kwargs`. It will call all the callbacks' `on_fit_task_end` hooks. Here</span><span class="w">
+</span>            <span class="c1"># the extra `kwargs` contain a `reconstruction_attributes` callable,</span><span class="w">
+</span>            <span class="c1"># which returns the necessary attributes to generate an estimator instance</span><span class="w">
+</span>            <span class="c1"># ready to predict, as if the fit process just stopped at this step.</span><span class="w">
+</span>            <span class="k">if</span> <span class="n">subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="w">
+</span>                <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span>                <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span><span class="w">
+</span>                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="w">
+</span>                <span class="n">reconstruction_attributes</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="w">
+</span>                    <span class="s2">&quot;</span><span class="s2">cluster_centers_</span><span class="s2">&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span><span class="w">
+</span>                <span class="p">}</span><span class="p">,</span><span class="w">
+</span>            <span class="p">)</span><span class="p">:</span><span class="w">
+</span>                <span class="c1"># The `call_on_fit_task_end` method returns a boolean, which is set</span><span class="w">
+</span>                <span class="c1"># to True if any of the callbacks' `on_fit_task_end` methods return</span><span class="w">
+</span>                <span class="c1"># True. This enables the interruption of the `fit` process by the</span><span class="w">
+</span>                <span class="c1"># callbacks, for example to implement early stopping. Thus the</span><span class="w">
+</span>                <span class="c1"># `call_on_fit_task_end` method can be used in an `if` / `break` block</span><span class="w">
+</span>                <span class="c1"># to enable such interruptions.</span><span class="w">
+</span>                <span class="k">break</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># After the root task of the fit function is done, the `call_on_fit_task_end`</span><span class="w">
+</span>        <span class="c1"># method of its callback context must be called.</span><span class="w">
+</span>        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="w">
+</span>            <span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span>            <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span><span class="w">
+</span>            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="w">
+</span>            <span class="n">reconstruction_attributes</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="w">
+</span>                <span class="s2">&quot;</span><span class="s2">cluster_centers_</span><span class="s2">&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">,</span><span class="w">
+</span>            <span class="p">}</span><span class="p">,</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># The callbacks' `teardown` hooks are called automatically in the decorator,</span><span class="w">
+</span>        <span class="c1"># after fit finishes, even if it crashed.</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_labels</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-sklearn-utils-validation sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.validation.check_is_fitted.html#sklearn.utils.validation.check_is_fitted" title="sklearn.utils.validation.check_is_fitted"><span class="n">check_is_fitted</span></a><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="w">
+</span>        <span class="k">return</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.pairwise.euclidean_distances.html#sklearn.metrics.pairwise.euclidean_distances" title="sklearn.metrics.euclidean_distances"><span class="n">euclidean_distances</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>See the documentation of the methods
@@ -1246,13 +1242,12 @@ number of callbacks.</p>
 <h2>Registering callbacks to the custom estimator<a class="headerlink" href="#registering-callbacks-to-the-custom-estimator" title="Link to this heading">#</a></h2>
 <p>Now the <code class="docutils literal notranslate"><span class="pre">SimpleKMeans</span></code> estimator can be used with callbacks, for example with the
 <a class="reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a> callback to monitor progress.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">estimator</span> <span class="o">=</span> <span class="n">SimpleKMeans</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
-<span class="n">callback</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ProgressBar</span></a><span class="p">()</span>
-<span class="n">estimator</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
-<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SimpleKMeans - fit ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00.056
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">estimator</span> <span class="o">=</span> <span class="n">SimpleKMeans</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span><span class="w">
+</span><span class="n">callback</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><span class="n">ProgressBar</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">estimator</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="w">
+</span><span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SimpleKMeans - fit ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00.060
 </pre></div>
 </div>
 <div class="output_subarea output_html rendered_html output_result">
@@ -1961,7 +1956,7 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-15" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7FA87F2E8440)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-51" type="checkbox" checked><label for="sk-estimator-id-51" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+</style><body><div id="sk-container-id-15" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7C10B68B3A40)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-51" type="checkbox" checked><label for="sk-estimator-id-51" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1975,7 +1970,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">random_state</td>
-            <td class="value">RandomState(M...0x7FA87F2E8440</td>
+            <td class="value">RandomState(M...0x7C10B68B3A40</td>
         </tr>
 
 
@@ -2223,152 +2218,150 @@ For the example, we implement a simplified version of a grid search, where only 
 of parameter combinations is searched through instead of a grid, parallelizing the
 evaluation of the parameters.
 Let’s start with the implementation without the callback support.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to run in parallel, it fits and scores an estimator on the folds of a CV.</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_fit_and_score_cv</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">):</span>
-    <span class="n">scores_per_fold</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># We iterate over the folds of the CV split.</span>
-    <span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="ow">in</span> <span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-        <span class="c1"># A clone of the estimator is used for the current fold.</span>
-        <span class="n">cloned_estimator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
-        <span class="c1"># The split of the current fold is applied to the data.</span>
-        <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
-        <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="c1"># The clone of the estimator is fitted.</span>
-        <span class="n">cloned_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-        <span class="c1"># Its score is computed.</span>
-        <span class="n">scores_per_fold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score_func</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">scores_per_fold</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">SimpleGridSearch</span><span class="p">(</span><a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="c1"># the estimator to evaluate</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
-        <span class="c1"># the list of parameter combinations to iterate over</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">param_list</span> <span class="o">=</span> <span class="n">param_list</span>
-        <span class="c1"># the number of splits for the CV, or a CV splitter instance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
-        <span class="c1"># the scoring function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">score_func</span> <span class="o">=</span> <span class="n">score_func</span>
-        <span class="c1"># number of jobs for parallelization</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># We use a cross-validator instance to evaluate each parameter combination on</span>
-        <span class="c1"># multiple folds.</span>
-        <span class="n">cv</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.check_cv.html#sklearn.model_selection.check_cv" title="sklearn.model_selection.check_cv" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">check_cv</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">)</span>
-
-        <span class="c1"># We iterate over the parameter combinations in parallel, fitting an estimator</span>
-        <span class="c1"># and computing a score value for each fold.</span>
-        <span class="n">scores_per_fold</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.parallel.Parallel.html#sklearn.utils.parallel.Parallel" title="sklearn.utils.parallel.Parallel" class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Parallel</span></a><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)(</span>
-            <a href="../../modules/generated/sklearn.utils.parallel.delayed.html#sklearn.utils.parallel.delayed" title="sklearn.utils.parallel.delayed" class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-function"><span class="n">delayed</span></a><span class="p">(</span><span class="n">_fit_and_score_cv</span><span class="p">)(</span>
-                <span class="n">estimator</span><span class="o">=</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">),</span>
-                <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-                <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span>
-                <span class="n">score_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_func</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_list</span>
-        <span class="p">)</span>
-
-        <span class="c1"># The `cv_results_` attribute holds the score values for each parameter</span>
-        <span class="c1"># combination and fold, as a list of tuples, each one of the form</span>
-        <span class="c1"># (parameter combination, list of scores per fold).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cv_results_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">,</span> <span class="n">scores_per_fold</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="bp">self</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Function to run in parallel, it fits and scores an estimator on the folds of a CV.</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">_fit_and_score_cv</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">scores_per_fold</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="c1"># We iterate over the folds of the CV split.</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="ow">in</span> <span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="c1"># A clone of the estimator is used for the current fold.</span><span class="w">
+</span>        <span class="n">cloned_estimator</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.clone"><span class="n">clone</span></a><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># The split of the current fold is applied to the data.</span><span class="w">
+</span>        <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="w">
+</span>        <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># The clone of the estimator is fitted.</span><span class="w">
+</span>        <span class="n">cloned_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># Its score is computed.</span><span class="w">
+</span>        <span class="n">scores_per_fold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score_func</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">scores_per_fold</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">class</span><span class="w"> </span><span class="nc">SimpleGridSearch</span><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="c1"># the estimator to evaluate</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span><span class="w">
+</span>        <span class="c1"># the list of parameter combinations to iterate over</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">param_list</span> <span class="o">=</span> <span class="n">param_list</span><span class="w">
+</span>        <span class="c1"># the number of splits for the CV, or a CV splitter instance</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span><span class="w">
+</span>        <span class="c1"># the scoring function</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">score_func</span> <span class="o">=</span> <span class="n">score_func</span><span class="w">
+</span>        <span class="c1"># number of jobs for parallelization</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="c1"># We use a cross-validator instance to evaluate each parameter combination on</span><span class="w">
+</span>        <span class="c1"># multiple folds.</span><span class="w">
+</span>        <span class="n">cv</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.check_cv.html#sklearn.model_selection.check_cv" title="sklearn.model_selection.check_cv"><span class="n">check_cv</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># We iterate over the parameter combinations in parallel, fitting an estimator</span><span class="w">
+</span>        <span class="c1"># and computing a score value for each fold.</span><span class="w">
+</span>        <span class="n">scores_per_fold</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.utils.parallel.Parallel.html#sklearn.utils.parallel.Parallel" title="sklearn.utils.parallel.Parallel"><span class="n">Parallel</span></a><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)</span><span class="p">(</span><span class="w">
+</span>            <a class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.parallel.delayed.html#sklearn.utils.parallel.delayed" title="sklearn.utils.parallel.delayed"><span class="n">delayed</span></a><span class="p">(</span><span class="n">_fit_and_score_cv</span><span class="p">)</span><span class="p">(</span><span class="w">
+</span>                <span class="n">estimator</span><span class="o">=</span><a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.clone"><span class="n">clone</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">*</span><span class="o">*</span><span class="n">params</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>                <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span><span class="w">
+</span>                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="w">
+</span>                <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span><span class="w">
+</span>                <span class="n">score_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_func</span><span class="p">,</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># The `cv_results_` attribute holds the score values for each parameter</span><span class="w">
+</span>        <span class="c1"># combination and fold, as a list of tuples, each one of the form</span><span class="w">
+</span>        <span class="c1"># (parameter combination, list of scores per fold).</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">cv_results_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">,</span> <span class="n">scores_per_fold</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="w">
+</span></pre></div></div>
 <p>Now let’s update the class to support callbacks.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># The parallelized function needs to receive the callback context corresponding to its</span>
-<span class="c1"># task and the instance calling it.</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_fit_and_score_cv</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">outer_subcontext</span><span class="p">,</span> <span class="n">caller</span><span class="p">):</span>
-    <span class="c1"># The outer sub-context's `call_on_fit_task_begin` must be called.</span>
-    <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-    <span class="n">scores_per_fold</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
-        <span class="n">cloned_estimator</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
-        <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span>
-        <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="c1"># For each inner iteration a sub-context must be created.</span>
-        <span class="n">inner_subcontext</span> <span class="o">=</span> <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"fold </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="c1"># Since a sub-estimator is fitted in this task, the callbacks must be propagated</span>
-        <span class="c1"># to that estimator with the `propagate_callback_context` context manager. Note</span>
-        <span class="c1"># that only the callbacks following the `AutoPropagatedCallback` protocol can be</span>
-        <span class="c1"># propagated.</span>
-        <span class="k">with</span> <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">propagate_callback_context</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">):</span>
-            <span class="c1"># After the propagation, the inner sub-context's `call_on_fit_task_begin`</span>
-            <span class="c1"># method must be called.</span>
-            <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span>
-                <span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span>
-            <span class="p">)</span>
-            <span class="n">cloned_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-            <span class="n">scores_per_fold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score_func</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
-            <span class="c1"># The inner sub-context's `call_on_fit_task_end` method must be called.</span>
-            <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span>
-                <span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span>
-            <span class="p">)</span>
-    <span class="c1"># The outer sub-context's `call_on_fit_task_end` method must be called.</span>
-    <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">scores_per_fold</span>
-
-
-<span class="c1"># The class must inherit from `CallbackSupportMixin`.</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">SimpleGridSearch</span><span class="p">(</span><a href="../../modules/generated/sklearn.callback.CallbackSupportMixin.html#sklearn.callback.CallbackSupportMixin" title="sklearn.callback.CallbackSupportMixin" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">CallbackSupportMixin</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator" class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BaseEstimator</span></a><span class="p">):</span>  <span class="c1"># noqa: F811</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">param_list</span> <span class="o">=</span> <span class="n">param_list</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">score_func</span> <span class="o">=</span> <span class="n">score_func</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
-
-    <span class="c1"># The `fit` method must be decorated.</span>
-    <span class="nd">@with_callbacks</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">cv</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.check_cv.html#sklearn.model_selection.check_cv" title="sklearn.model_selection.check_cv" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">check_cv</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">)</span>
-        <span class="c1"># The callback context must be instantiated, which also calls the `setup` hooks</span>
-        <span class="c1"># of the callbacks.</span>
-        <span class="n">callback_ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_callback_context</span><span class="p">(</span>
-            <span class="n">task_name</span><span class="o">=</span><span class="s2">"fit"</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="c1"># The `call_on_fit_task_begin` method of this context must be called.</span>
-        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="c1"># The sub-tasks of the `fit` function are nested on two levels : the outer</span>
-        <span class="c1"># iterations over parameter combinations and the inner iterations over CV folds.</span>
-        <span class="c1"># Sub-contexts must be created for each of these levels. For the outer level,</span>
-        <span class="c1"># the sub-contexts are instantiated outside of the parallelized function. In</span>
-        <span class="c1"># order to prevent any racing condition during their creation, these</span>
-        <span class="c1"># sub-contexts must be all created before the parallelization.</span>
-        <span class="n">outer_subcontexts</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span>
-                <span class="n">task_name</span><span class="o">=</span><span class="s2">"param iteration"</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">))</span>
-        <span class="p">]</span>
-
-        <span class="n">scores_per_fold</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.utils.parallel.Parallel.html#sklearn.utils.parallel.Parallel" title="sklearn.utils.parallel.Parallel" class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">Parallel</span></a><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)(</span>
-            <a href="../../modules/generated/sklearn.utils.parallel.delayed.html#sklearn.utils.parallel.delayed" title="sklearn.utils.parallel.delayed" class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-function"><span class="n">delayed</span></a><span class="p">(</span><span class="n">_fit_and_score_cv</span><span class="p">)(</span>
-                <span class="n">estimator</span><span class="o">=</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">),</span>
-                <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-                <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span>
-                <span class="n">score_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_func</span><span class="p">,</span>
-                <span class="n">outer_subcontext</span><span class="o">=</span><span class="n">outer_subcontexts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">caller</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">cv_results_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">,</span> <span class="n">scores_per_fold</span><span class="p">))</span>
-
-        <span class="c1"># The root context's `call_on_fit_task_end` must be called.</span>
-        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="c1"># The callbacks' `teardown` hooks are called automatically in the decorator.</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># The parallelized function needs to receive the callback context corresponding to its</span><span class="w">
+</span><span class="c1"># task and the instance calling it.</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">_fit_and_score_cv</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">outer_subcontext</span><span class="p">,</span> <span class="n">caller</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="c1"># The outer sub-context's `call_on_fit_task_begin` must be called.</span><span class="w">
+</span>    <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span>    <span class="n">scores_per_fold</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">cloned_estimator</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.clone"><span class="n">clone</span></a><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="w">
+</span>        <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="w">
+</span>        <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">]</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># For each inner iteration a sub-context must be created.</span><span class="w">
+</span>        <span class="n">inner_subcontext</span> <span class="o">=</span> <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">fold </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># Since a sub-estimator is fitted in this task, the callbacks must be propagated</span><span class="w">
+</span>        <span class="c1"># to that estimator with the `propagate_callback_context` context manager. Note</span><span class="w">
+</span>        <span class="c1"># that only the callbacks following the `AutoPropagatedCallback` protocol can be</span><span class="w">
+</span>        <span class="c1"># propagated.</span><span class="w">
+</span>        <span class="k">with</span> <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">propagate_callback_context</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="c1"># After the propagation, the inner sub-context's `call_on_fit_task_begin`</span><span class="w">
+</span>            <span class="c1"># method must be called.</span><span class="w">
+</span>            <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="w">
+</span>                <span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="n">cloned_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span>            <span class="n">scores_per_fold</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score_func</span><span class="p">(</span><span class="n">cloned_estimator</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>            <span class="c1"># The inner sub-context's `call_on_fit_task_end` method must be called.</span><span class="w">
+</span>            <span class="n">inner_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="w">
+</span>                <span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>    <span class="c1"># The outer sub-context's `call_on_fit_task_end` method must be called.</span><span class="w">
+</span>    <span class="n">outer_subcontext</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">caller</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">scores_per_fold</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># The class must inherit from `CallbackSupportMixin`.</span><span class="w">
+</span><span class="k">class</span><span class="w"> </span><span class="nc">SimpleGridSearch</span><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.CallbackSupportMixin.html#sklearn.callback.CallbackSupportMixin" title="sklearn.callback.CallbackSupportMixin"><span class="n">CallbackSupportMixin</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-base sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.base.BaseEstimator.html#sklearn.base.BaseEstimator" title="sklearn.base.BaseEstimator"><span class="n">BaseEstimator</span></a><span class="p">)</span><span class="p">:</span>  <span class="c1"># noqa: F811</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">cv</span><span class="p">,</span> <span class="n">score_func</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">param_list</span> <span class="o">=</span> <span class="n">param_list</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">score_func</span> <span class="o">=</span> <span class="n">score_func</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># The `fit` method must be decorated.</span><span class="w">
+</span>    <span class="nd">&#64;with_callbacks</span><span class="w">
+</span>    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">cv</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.check_cv.html#sklearn.model_selection.check_cv" title="sklearn.model_selection.check_cv"><span class="n">check_cv</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># The callback context must be instantiated, which also calls the `setup` hooks</span><span class="w">
+</span>        <span class="c1"># of the callbacks.</span><span class="w">
+</span>        <span class="n">callback_ctx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_callback_context</span><span class="p">(</span><span class="w">
+</span>            <span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">fit</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>        <span class="c1"># The `call_on_fit_task_begin` method of this context must be called.</span><span class="w">
+</span>        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_begin</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># The sub-tasks of the `fit` function are nested on two levels : the outer</span><span class="w">
+</span>        <span class="c1"># iterations over parameter combinations and the inner iterations over CV folds.</span><span class="w">
+</span>        <span class="c1"># Sub-contexts must be created for each of these levels. For the outer level,</span><span class="w">
+</span>        <span class="c1"># the sub-contexts are instantiated outside of the parallelized function. In</span><span class="w">
+</span>        <span class="c1"># order to prevent any racing condition during their creation, these</span><span class="w">
+</span>        <span class="c1"># sub-contexts must be all created before the parallelization.</span><span class="w">
+</span>        <span class="n">outer_subcontexts</span> <span class="o">=</span> <span class="p">[</span><span class="w">
+</span>            <span class="n">callback_ctx</span><span class="o">.</span><span class="n">subcontext</span><span class="p">(</span><span class="w">
+</span>                <span class="n">task_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">param iteration</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">max_subtasks</span><span class="o">=</span><span class="n">cv</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>        <span class="p">]</span><span class="w">
+</span><span class="w">
+</span>        <span class="n">scores_per_fold</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.utils.parallel.Parallel.html#sklearn.utils.parallel.Parallel" title="sklearn.utils.parallel.Parallel"><span class="n">Parallel</span></a><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)</span><span class="p">(</span><span class="w">
+</span>            <a class="sphx-glr-backref-module-sklearn-utils-parallel sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.utils.parallel.delayed.html#sklearn.utils.parallel.delayed" title="sklearn.utils.parallel.delayed"><span class="n">delayed</span></a><span class="p">(</span><span class="n">_fit_and_score_cv</span><span class="p">)</span><span class="p">(</span><span class="w">
+</span>                <span class="n">estimator</span><span class="o">=</span><a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="sklearn.clone"><span class="n">clone</span></a><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">*</span><span class="o">*</span><span class="n">params</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>                <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span><span class="w">
+</span>                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="w">
+</span>                <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span><span class="w">
+</span>                <span class="n">score_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">score_func</span><span class="p">,</span><span class="w">
+</span>                <span class="n">outer_subcontext</span><span class="o">=</span><span class="n">outer_subcontexts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>                <span class="n">caller</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">)</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">cv_results_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_list</span><span class="p">,</span> <span class="n">scores_per_fold</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># The root context's `call_on_fit_task_end` must be called.</span><span class="w">
+</span>        <span class="n">callback_ctx</span><span class="o">.</span><span class="n">call_on_fit_task_end</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="c1"># The callbacks' `teardown` hooks are called automatically in the decorator.</span><span class="w">
+</span>        <span class="k">return</span> <span class="bp">self</span><span class="w">
+</span></pre></div></div>
 <p>The main difference with a simple estimator is that the callbacks must be propagated
 to the sub-estimators through the corresponding callback sub-context’s
 <a class="reference internal" href="../../modules/generated/sklearn.callback.CallbackContext.html#sklearn.callback.CallbackContext.propagate_callback_context" title="sklearn.callback.CallbackContext.propagate_callback_context"><code class="xref py py-meth docutils literal notranslate"><span class="pre">propagate_callback_context</span></code></a> context manager.</p>
@@ -2384,29 +2377,28 @@ and the callbacks are ignored in the sub-estimator.</p>
 <p>Callbacks are registered to a meta-estimator the same way as to regular estimators.
 The callbacks which respect the <a class="reference internal" href="../../modules/generated/sklearn.callback.AutoPropagatedCallback.html#sklearn.callback.AutoPropagatedCallback" title="sklearn.callback.AutoPropagatedCallback"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoPropagatedCallback</span></code></a> protocol (such as
 <a class="reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a>) are propagated to the sub-estimators.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">param_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"n_clusters"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"n_iter"</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="s2">"n_clusters"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"n_iter"</span><span class="p">:</span> <span class="mi">50</span><span class="p">}]</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">score_func</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-
-
-<span class="n">sub_estimator</span> <span class="o">=</span> <span class="n">SimpleKMeans</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span>
-<span class="n">meta_estimator</span> <span class="o">=</span> <span class="n">SimpleGridSearch</span><span class="p">(</span>
-    <span class="n">estimator</span><span class="o">=</span><span class="n">sub_estimator</span><span class="p">,</span> <span class="n">param_list</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">score_func</span><span class="o">=</span><span class="n">score_func</span>
-<span class="p">)</span>
-<span class="n">callback</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar" class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">ProgressBar</span></a><span class="p">()</span>
-<span class="n">meta_estimator</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
-<span class="n">meta_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">param_list</span> <span class="o">=</span> <span class="p">[</span><span class="p">{</span><span class="s2">&quot;</span><span class="s2">n_clusters</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">n_iter</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;</span><span class="s2">n_clusters</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">n_iter</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">score_func</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="k">return</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html#numpy.sum" title="numpy.sum"><span class="n">np</span><span class="o">.</span><span class="n">sum</span></a><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">sub_estimator</span> <span class="o">=</span> <span class="n">SimpleKMeans</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">rng</span><span class="p">)</span><span class="w">
+</span><span class="n">meta_estimator</span> <span class="o">=</span> <span class="n">SimpleGridSearch</span><span class="p">(</span><span class="w">
+</span>    <span class="n">estimator</span><span class="o">=</span><span class="n">sub_estimator</span><span class="p">,</span> <span class="n">param_list</span><span class="o">=</span><span class="n">param_list</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">score_func</span><span class="o">=</span><span class="n">score_func</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">callback</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-callback sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.callback.ProgressBar.html#sklearn.callback.ProgressBar" title="sklearn.callback.ProgressBar"><span class="n">ProgressBar</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">meta_estimator</span><span class="o">.</span><span class="n">set_callbacks</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="w">
+</span><span class="n">meta_estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>SimpleGridSearch - fit                                ━━━━━━━━━━ 100% 0:00:00.1…
   SimpleGridSearch - param iteration #0               ━━━━━━━━━━ 100% 0:00:00.0…
     SimpleGridSearch - fold 0 | SimpleKMeans - fit #0 ━━━━━━━━━━ 100% 0:00:00.0…
     SimpleGridSearch - fold 1 | SimpleKMeans - fit #1 ━━━━━━━━━━ 100% 0:00:00.0…
     SimpleGridSearch - fold 2 | SimpleKMeans - fit #2 ━━━━━━━━━━ 100% 0:00:00.0…
     SimpleGridSearch - fold 3 | SimpleKMeans - fit #3 ━━━━━━━━━━ 100% 0:00:00.0…
-  SimpleGridSearch - param iteration #1               ━━━━━━━━━━ 100% 0:00:00.0…
+  SimpleGridSearch - param iteration #1               ━━━━━━━━━━ 100% 0:00:00.1…
     SimpleGridSearch - fold 0 | SimpleKMeans - fit #0 ━━━━━━━━━━ 100% 0:00:00.0…
     SimpleGridSearch - fold 1 | SimpleKMeans - fit #1 ━━━━━━━━━━ 100% 0:00:00.0…
     SimpleGridSearch - fold 2 | SimpleKMeans - fit #2 ━━━━━━━━━━ 100% 0:00:00.0…
@@ -3120,10 +3112,10 @@ a.param-doc-link::before {
   margin-top: 0.5em;
 }
 </style><body><div id="sk-container-id-16" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleGridSearch(cv=4,
-                 estimator=SimpleKMeans(random_state=RandomState(MT19937) at 0x7FA87F2E8440),
+                 estimator=SimpleKMeans(random_state=RandomState(MT19937) at 0x7C10B68B3A40),
                  param_list=[{&#x27;n_clusters&#x27;: 5, &#x27;n_iter&#x27;: 20},
                              {&#x27;n_clusters&#x27;: 4, &#x27;n_iter&#x27;: 50}],
-                 score_func=&lt;function score_func at 0x7fa87f20c250&gt;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-52" type="checkbox" ><label for="sk-estimator-id-52" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleGridSearch</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+                 score_func=&lt;function score_func at 0x7c10ca5535e0&gt;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-52" type="checkbox" ><label for="sk-estimator-id-52" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleGridSearch</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3137,7 +3129,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">estimator</td>
-            <td class="value">SimpleKMeans(...x7FA87F2E8440)</td>
+            <td class="value">SimpleKMeans(...x7C10B68B3A40)</td>
         </tr>
 
 
@@ -3170,7 +3162,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">score_func</td>
-            <td class="value">&lt;function sco...x7fa87f20c250&gt;</td>
+            <td class="value">&lt;function sco...x7c10ca5535e0&gt;</td>
         </tr>
 
 
@@ -3212,7 +3204,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-53" type="checkbox" ><label for="sk-estimator-id-53" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7FA87F2E8440)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-54" type="checkbox" ><label for="sk-estimator-id-54" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-53" type="checkbox" ><label for="sk-estimator-id-53" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7C10B68B3A40)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-54" type="checkbox" ><label for="sk-estimator-id-54" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3226,7 +3218,7 @@ a.param-doc-link::before {
                           this.parentElement.nextElementSibling)"
             ></button></td>
             <td class="param">random_state</td>
-            <td class="value">RandomState(M...0x7FA87F2E8440</td>
+            <td class="value">RandomState(M...0x7C10B68B3A40</td>
         </tr>
 
 
@@ -3428,7 +3420,7 @@ function forceTheme(elementId) {
 forceTheme('sk-container-id-16');</script></body>
 </div>
 <br />
-<br /><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.254 seconds)</p>
+<br /><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.266 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-callbacks-plot-callback-support-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/callbacks/plot_callback_support.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo3.svg" style="width: 150px;" />
@@ -3455,7 +3447,7 @@ forceTheme('sk-container-id-16');</script></body>
 </div><div class="sphx-glr-thumbcontainer" tooltip="The __sklearn_is_fitted__ method is a convention used in scikit-learn for checking whether an estimator object has been fitted or not. This method is typically implemented in custom estimator classes that are built on top of scikit-learn&#x27;s base classes like BaseEstimator or its subclasses."><img alt="" src="../../_images/sphx_glr_sklearn_is_fitted_thumb.png" />
 <p><a class="reference internal" href="../developing_estimators/sklearn_is_fitted.html"><span class="doc">__sklearn_is_fitted__ as Developer API</span></a></p>
   <div class="sphx-glr-thumbnail-title">__sklearn_is_fitted__ as Developer API</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.9! Many bug fixes and improvements were added, as well as some key new features. Below we detail the highlights of this release. For an exhaustive list of all the changes, please refer to the release notes &lt;release_notes_1_9&gt;."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_9_0_thumb.png" />
+</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.9! Many bug fixes and improvements were added, as well as some key new features. Below we detail the highlights of this release. For an exhaustive list of all the changes, please refer to the release notes."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_9_0_thumb.png" />
 <p><a class="reference internal" href="../release_highlights/plot_release_highlights_1_9_0.html"><span class="doc">Release Highlights for scikit-learn 1.9</span></a></p>
   <div class="sphx-glr-thumbnail-title">Release Highlights for scikit-learn 1.9</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="This example compares non-nested and nested cross-validation strategies on a classifier of the iris data set. Nested cross-validation (CV) is often used to train a model in which hyperparameters also need to be optimized. Nested CV estimates the generalization error of the underlying model and its (hyper)parameter search. Choosing the parameters that maximize non-nested CV biases the model to the dataset, yielding an overly-optimistic score."><img alt="" src="../../_images/sphx_glr_plot_nested_cross_validation_iris_thumb.png" />

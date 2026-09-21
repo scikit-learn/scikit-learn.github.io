@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1057,177 +1057,171 @@ Here the computation is achieved thanks to Martinsson’s Randomized SVD
 algorithm implemented in scikit-learn.</p>
 <p>The graph data is fetched from the DBpedia dumps. DBpedia is an extraction
 of the latent structured data of the Wikipedia content.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-</pre></div>
-</div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bz2</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="bz2.BZ2File" class="sphx-glr-backref-module-bz2 sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BZ2File</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint" class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function"><span class="n">pprint</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.fetch_file.html#sklearn.datasets.fetch_file" title="sklearn.datasets.fetch_file" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_file</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">randomized_svd</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span></pre></div></div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">bz2</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-bz2 sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="bz2.BZ2File"><span class="n">BZ2File</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><a class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint"><span class="nn">pprint</span></a><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint"><span class="n">pprint</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><a class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/time.html#time.time" title="time.time"><span class="nn">time</span></a><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/time.html#time.time" title="time.time"><span class="n">time</span></a><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_file.html#sklearn.datasets.fetch_file" title="sklearn.datasets.fetch_file"><span class="n">fetch_file</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">randomized_svd</span><span class="w">
+</span></pre></div></div>
 <section id="download-data">
 <h2>Download data<a class="headerlink" href="#download-data" title="Link to this heading">#</a></h2>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">redirects_url</span> <span class="o">=</span> <span class="s2">"https://downloads.dbpedia.org/3.5.1/en/redirects_en.nt.bz2"</span>
-<span class="n">redirects_filename</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_file.html#sklearn.datasets.fetch_file" title="sklearn.datasets.fetch_file" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_file</span></a><span class="p">(</span><span class="n">redirects_url</span><span class="p">)</span>
-
-<span class="n">page_links_url</span> <span class="o">=</span> <span class="s2">"https://downloads.dbpedia.org/3.5.1/en/page_links_en.nt.bz2"</span>
-<span class="n">page_links_filename</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_file.html#sklearn.datasets.fetch_file" title="sklearn.datasets.fetch_file" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_file</span></a><span class="p">(</span><span class="n">page_links_url</span><span class="p">)</span>
-
-<span class="n">resources</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="n">redirects_url</span><span class="p">,</span> <span class="n">redirects_filename</span><span class="p">),</span>
-    <span class="p">(</span><span class="n">page_links_url</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">),</span>
-<span class="p">]</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">redirects_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">https://downloads.dbpedia.org/3.5.1/en/redirects_en.nt.bz2</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">redirects_filename</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_file.html#sklearn.datasets.fetch_file" title="sklearn.datasets.fetch_file"><span class="n">fetch_file</span></a><span class="p">(</span><span class="n">redirects_url</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">page_links_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">https://downloads.dbpedia.org/3.5.1/en/page_links_en.nt.bz2</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">page_links_filename</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_file.html#sklearn.datasets.fetch_file" title="sklearn.datasets.fetch_file"><span class="n">fetch_file</span></a><span class="p">(</span><span class="n">page_links_url</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">resources</span> <span class="o">=</span> <span class="p">[</span><span class="w">
+</span>    <span class="p">(</span><span class="n">redirects_url</span><span class="p">,</span> <span class="n">redirects_filename</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="p">(</span><span class="n">page_links_url</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="loading-the-redirect-files">
 <h2>Loading the redirect files<a class="headerlink" href="#loading-the-redirect-files" title="Link to this heading">#</a></h2>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Find the index of an article name after redirect resolution"""</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="n">redirects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">index_map</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">))</span>
-
-
-<span class="n">DBPEDIA_RESOURCE_PREFIX_LEN</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="s2">"http://dbpedia.org/resource/"</span><span class="p">)</span>
-<span class="n">SHORTNAME_SLICE</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">DBPEDIA_RESOURCE_PREFIX_LEN</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">short_name</span><span class="p">(</span><span class="n">nt_uri</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Remove the &lt; and &gt; URI markers and the common URI prefix"""</span>
-    <span class="k">return</span> <span class="n">nt_uri</span><span class="p">[</span><span class="n">SHORTNAME_SLICE</span><span class="p">]</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">get_redirects</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Parse the redirections and build a transitively closed map out of it"""</span>
-    <span class="n">redirects</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Parsing the NT redirect file"</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><a href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="bz2.BZ2File" class="sphx-glr-backref-module-bz2 sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BZ2File</span></a><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)):</span>
-        <span class="n">split</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"ignoring malformed line: "</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
-            <span class="k">continue</span>
-        <span class="n">redirects</span><span class="p">[</span><span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now" class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">l</span><span class="p">))</span>
-
-    <span class="c1"># compute the transitive closure</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Computing the transitive closure of the redirect relation"</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">redirects</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-        <span class="n">transitive_target</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">redirects</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
-        <span class="n">seen</span> <span class="o">=</span> <span class="p">{</span><span class="n">source</span><span class="p">}</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">transitive_target</span> <span class="o">=</span> <span class="n">target</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">redirects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        <span class="n">redirects</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">transitive_target</span>
-        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now" class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">l</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">redirects</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the index of an article name after redirect resolution&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">k</span> <span class="o">=</span> <span class="n">redirects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">index_map</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">DBPEDIA_RESOURCE_PREFIX_LEN</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">http://dbpedia.org/resource/</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">SHORTNAME_SLICE</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">DBPEDIA_RESOURCE_PREFIX_LEN</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">short_name</span><span class="p">(</span><span class="n">nt_uri</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove the &lt; and &gt; URI markers and the common URI prefix&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">nt_uri</span><span class="p">[</span><span class="n">SHORTNAME_SLICE</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_redirects</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse the redirections and build a transitively closed map out of it&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">redirects</span> <span class="o">=</span> <span class="p">{</span><span class="p">}</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Parsing the NT redirect file</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><a class="sphx-glr-backref-module-bz2 sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="bz2.BZ2File"><span class="n">BZ2File</span></a><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">split</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span><span class="w">
+</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">ignoring malformed line: </span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span><span class="w">
+</span>            <span class="k">continue</span><span class="w">
+</span>        <span class="n">redirects</span><span class="p">[</span><span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">]</span> <span class="o">=</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">(</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># compute the transitive closure</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Computing the transitive closure of the redirect relation</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">source</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">redirects</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">transitive_target</span> <span class="o">=</span> <span class="kc">None</span><span class="w">
+</span>        <span class="n">target</span> <span class="o">=</span> <span class="n">redirects</span><span class="p">[</span><span class="n">source</span><span class="p">]</span><span class="w">
+</span>        <span class="n">seen</span> <span class="o">=</span> <span class="p">{</span><span class="n">source</span><span class="p">}</span><span class="w">
+</span>        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span><span class="w">
+</span>            <span class="n">transitive_target</span> <span class="o">=</span> <span class="n">target</span><span class="w">
+</span>            <span class="n">target</span> <span class="o">=</span> <span class="n">redirects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="w">
+</span>            <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span><span class="w">
+</span>                <span class="k">break</span><span class="w">
+</span>            <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="w">
+</span>        <span class="n">redirects</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">transitive_target</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">(</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">redirects</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="computing-the-adjacency-matrix">
 <h2>Computing the Adjacency matrix<a class="headerlink" href="#computing-the-adjacency-matrix" title="Link to this heading">#</a></h2>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_adjacency_matrix</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Extract the adjacency graph as a scipy sparse matrix</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">get_adjacency_matrix</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the adjacency graph as a scipy sparse matrix
 
-<span class="sd">    Redirects are resolved first.</span>
+    Redirects are resolved first.
 
-<span class="sd">    Returns X, the scipy sparse adjacency matrix, redirects as python</span>
-<span class="sd">    dict from article names to article names and index_map a python dict</span>
-<span class="sd">    from article names to python int (article indexes).</span>
-<span class="sd">    """</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Computing the redirect map"</span><span class="p">)</span>
-    <span class="n">redirects</span> <span class="o">=</span> <span class="n">get_redirects</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Computing the integer index map"</span><span class="p">)</span>
-    <span class="n">index_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><a href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="bz2.BZ2File" class="sphx-glr-backref-module-bz2 sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">BZ2File</span></a><span class="p">(</span><span class="n">page_links_filename</span><span class="p">)):</span>
-        <span class="n">split</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"ignoring malformed line: "</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
-            <span class="k">continue</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="n">j</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-        <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now" class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">l</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="n">limit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">break</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Computing the adjacency matrix"</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">)</span>
-    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="numpy.array" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int32" title="numpy.int32" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">int32</span></a><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-    <span class="k">del</span> <span class="n">links</span>
-    <span class="n">data</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html#numpy.ones" title="numpy.ones" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32" title="numpy.float32" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">float32</span></a><span class="p">)</span>
-    <span class="n">X</span> <span class="o">=</span> <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array" title="scipy.sparse.csr_array" class="sphx-glr-backref-module-scipy-sparse sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">sparse</span><span class="o">.</span><span class="n">csr_array</span></a><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-    <span class="c1"># Multiple links between the same pair of pages must still count as a</span>
-    <span class="c1"># single edge, so we set the data to 1 after the CSR matrix constructor</span>
-    <span class="c1"># which sums duplicate (row, col) entries.</span>
-    <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">1.0</span>
-    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span>
-
-
-<span class="c1"># stop after 3M links so parsing stays fast and the graph stays small enough in memory.</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span> <span class="o">=</span> <span class="n">get_adjacency_matrix</span><span class="p">(</span>
-    <span class="n">redirects_filename</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3000000</span>
-<span class="p">)</span>
-<span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_map</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-</pre></div>
-</div>
+    Returns X, the scipy sparse adjacency matrix, redirects as python
+    dict from article names to article names and index_map a python dict
+    from article names to python int (article indexes).
+    &quot;&quot;&quot;</span><span class="w">
+</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Computing the redirect map</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="n">redirects</span> <span class="o">=</span> <span class="n">get_redirects</span><span class="p">(</span><span class="n">redirects_filename</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Computing the integer index map</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="n">index_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>    <span class="n">links</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><a class="sphx-glr-backref-module-bz2 sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/bz2.html#bz2.BZ2File" title="bz2.BZ2File"><span class="n">BZ2File</span></a><span class="p">(</span><span class="n">page_links_filename</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">split</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span><span class="w">
+</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">ignoring malformed line: </span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span><span class="w">
+</span>            <span class="k">continue</span><span class="w">
+</span>        <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>        <span class="n">j</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="p">,</span> <span class="n">short_name</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>        <span class="n">links</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">l</span> <span class="o">%</span> <span class="mi">1000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">[</span><span class="si">%s</span><span class="s2">] line: </span><span class="si">%08d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a class="sphx-glr-backref-module-datetime-datetime sphx-glr-backref-type-py-method reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime.now" title="datetime.datetime.now"><span class="n">datetime</span><span class="o">.</span><span class="n">now</span></a><span class="p">(</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">l</span> <span class="o">&gt;</span><span class="o">=</span> <span class="n">limit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="w">
+</span>            <span class="k">break</span><span class="w">
+</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Computing the adjacency matrix</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_map</span><span class="p">)</span><span class="w">
+</span>    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="numpy.array"><span class="n">np</span><span class="o">.</span><span class="n">array</span></a><span class="p">(</span><span class="n">links</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.int32" title="numpy.int32"><span class="n">np</span><span class="o">.</span><span class="n">int32</span></a><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="w">
+</span>    <span class="k">del</span> <span class="n">links</span><span class="w">
+</span>    <span class="n">data</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html#numpy.ones" title="numpy.ones"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32" title="numpy.float32"><span class="n">np</span><span class="o">.</span><span class="n">float32</span></a><span class="p">)</span><span class="w">
+</span>    <span class="n">X</span> <span class="o">=</span> <a class="sphx-glr-backref-module-scipy-sparse sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_array.html#scipy.sparse.csr_array" title="scipy.sparse.csr_array"><span class="n">sparse</span><span class="o">.</span><span class="n">csr_array</span></a><span class="p">(</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span><span class="p">)</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>    <span class="c1"># Multiple links between the same pair of pages must still count as a</span><span class="w">
+</span>    <span class="c1"># single edge, so we set the data to 1 after the CSR matrix constructor</span><span class="w">
+</span>    <span class="c1"># which sums duplicate (row, col) entries.</span><span class="w">
+</span>    <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="p">:</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># stop after 3M links so parsing stays fast and the graph stays small enough in memory.</span><span class="w">
+</span><span class="n">X</span><span class="p">,</span> <span class="n">redirects</span><span class="p">,</span> <span class="n">index_map</span> <span class="o">=</span> <span class="n">get_adjacency_matrix</span><span class="p">(</span><span class="w">
+</span>    <span class="n">redirects_filename</span><span class="p">,</span> <span class="n">page_links_filename</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3000000</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">names</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_map</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="p">)</span><span class="p">}</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing the redirect map
 Parsing the NT redirect file
-[2026-09-21T10:05:57.753257] line: 00000000
-[2026-09-21T10:06:05.487162] line: 01000000
-[2026-09-21T10:06:13.240329] line: 02000000
-[2026-09-21T10:06:22.306149] line: 03000000
-[2026-09-21T10:06:31.535577] line: 04000000
+[2026-09-21T11:54:29.026806] line: 00000000
+[2026-09-21T11:54:37.725463] line: 01000000
+[2026-09-21T11:54:48.845878] line: 02000000
+[2026-09-21T11:54:59.740309] line: 03000000
+[2026-09-21T11:55:08.538205] line: 04000000
 Computing the transitive closure of the redirect relation
-[2026-09-21T10:06:32.370425] line: 00000000
-[2026-09-21T10:06:33.062424] line: 01000000
-[2026-09-21T10:06:33.805082] line: 02000000
-[2026-09-21T10:06:34.645388] line: 03000000
-[2026-09-21T10:06:35.508233] line: 04000000
+[2026-09-21T11:55:09.307826] line: 00000000
+[2026-09-21T11:55:10.000367] line: 01000000
+[2026-09-21T11:55:10.736442] line: 02000000
+[2026-09-21T11:55:11.514950] line: 03000000
+[2026-09-21T11:55:12.314005] line: 04000000
 Computing the integer index map
-[2026-09-21T10:06:35.591237] line: 00000000
-[2026-09-21T10:06:43.829962] line: 01000000
-[2026-09-21T10:06:51.625401] line: 02000000
+[2026-09-21T11:55:12.390782] line: 00000000
+[2026-09-21T11:55:19.594346] line: 01000000
+[2026-09-21T11:55:27.659295] line: 02000000
 Computing the adjacency matrix
 </pre></div>
 </div>
 </section>
 <section id="computing-principal-singular-vector-using-randomized-svd">
 <h2>Computing Principal Singular Vector using Randomized SVD<a class="headerlink" href="#computing-principal-singular-vector-using-randomized-svd" title="Link to this heading">#</a></h2>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Computing the principal singular vectors using randomized_svd"</span><span class="p">)</span>
-<span class="n">t0</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
-<span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">randomized_svd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"done in </span><span class="si">%0.3f</span><span class="s2">s"</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
-
-<span class="c1"># print the names of the wikipedia related strongest components of the</span>
-<span class="c1"># principal singular vector which should be similar to the highest eigenvector</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Top wikipedia pages according to principal singular vectors"</span><span class="p">)</span>
-<a href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint" class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function"><span class="n">pprint</span></a><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]])</span>
-<a href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint" class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function"><span class="n">pprint</span></a><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]])</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Computing the principal singular vectors using randomized_svd</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">t0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/time.html#time.time" title="time.time"><span class="n">time</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">randomized_svd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">done in </span><span class="si">%0.3f</span><span class="s2">s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/time.html#time.time" title="time.time"><span class="n">time</span></a><span class="p">(</span><span class="p">)</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># print the names of the wikipedia related strongest components of the</span><span class="w">
+</span><span class="c1"># principal singular vector which should be similar to the highest eigenvector</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Top wikipedia pages according to principal singular vectors</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint"><span class="n">pprint</span></a><span class="p">(</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="p">)</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="p">]</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint"><span class="n">pprint</span></a><span class="p">(</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="p">)</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="p">]</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing the principal singular vectors using randomized_svd
-done in 3.637s
+done in 3.351s
 Top wikipedia pages according to principal singular vectors
 [b'1980',
  b'1990',
@@ -1254,56 +1248,55 @@ Top wikipedia pages according to principal singular vectors
 </section>
 <section id="computing-centrality-scores">
 <h2>Computing Centrality scores<a class="headerlink" href="#computing-centrality-scores" title="Link to this heading">#</a></h2>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">centrality_scores</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Power iteration computation of the principal eigenvector</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">centrality_scores</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Power iteration computation of the principal eigenvector
 
-<span class="sd">    This method is also known as Google PageRank and the implementation</span>
-<span class="sd">    is based on the one from the NetworkX project (BSD licensed too)</span>
-<span class="sd">    with copyrights by:</span>
+    This method is also known as Google PageRank and the implementation
+    is based on the one from the NetworkX project (BSD licensed too)
+    with copyrights by:
 
-<span class="sd">      Aric Hagberg &lt;hagberg@lanl.gov&gt;</span>
-<span class="sd">      Dan Schult &lt;dschult@colgate.edu&gt;</span>
-<span class="sd">      Pieter Swart &lt;swart@lanl.gov&gt;</span>
-<span class="sd">    """</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">incoming_counts</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="numpy.asarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">asarray</span></a><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Normalizing the graph"</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">incoming_counts</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span>
-        <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">incoming_counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">dangle</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="numpy.asarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">asarray</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.where.html#numpy.where" title="numpy.where" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">where</span></a><span class="p">(</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="numpy.isclose" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">isclose</span></a><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-
-    <span class="n">scores</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.full.html#numpy.full" title="numpy.full" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">full</span></a><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32" title="numpy.float32" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute"><span class="n">np</span><span class="o">.</span><span class="n">float32</span></a><span class="p">)</span>  <span class="c1"># initial guess</span>
-    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"power iteration #</span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
-        <span class="n">prev_scores</span> <span class="o">=</span> <span class="n">scores</span>
-        <span class="n">scores</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">scores</span> <span class="o">@</span> <span class="n">X</span> <span class="o">+</span> <span class="n">dangle</span> <span class="o">@</span> <span class="n">prev_scores</span><span class="p">)</span>
-            <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">prev_scores</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n</span>
-        <span class="p">)</span>
-        <span class="c1"># check convergence: normalized l_inf norm</span>
-        <span class="n">scores_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">scores_max</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="n">scores_max</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span> <span class="o">-</span> <span class="n">prev_scores</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="n">scores_max</span>
-        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"error: </span><span class="si">%0.6f</span><span class="s2">"</span> <span class="o">%</span> <span class="n">err</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">tol</span><span class="p">:</span>
-            <span class="k">break</span>
-
-    <span class="k">return</span> <span class="n">scores</span><span class="p">,</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="numpy.asarray" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">asarray</span></a><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
-
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Computing principal eigenvector score using a power iteration method"</span><span class="p">)</span>
-<span class="n">t0</span> <span class="o">=</span> <a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span>
-<span class="n">scores</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">centrality_scores</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"done in </span><span class="si">%0.3f</span><span class="s2">s"</span> <span class="o">%</span> <span class="p">(</span><a href="https://docs.python.org/3/library/time.html#time.time" title="time.time" class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function"><span class="n">time</span></a><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">))</span>
-<span class="n">top_abs_score_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
-<a href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint" class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function"><span class="n">pprint</span></a><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_abs_score_indices</span><span class="p">])</span>
-</pre></div>
-</div>
+      Aric Hagberg &lt;hagberg&#64;lanl.gov&gt;
+      Dan Schult &lt;dschult&#64;colgate.edu&gt;
+      Pieter Swart &lt;swart&#64;lanl.gov&gt;
+    &quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w">
+</span>    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>    <span class="n">incoming_counts</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="numpy.asarray"><span class="n">np</span><span class="o">.</span><span class="n">asarray</span></a><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Normalizing the graph</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">incoming_counts</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="p">)</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">:</span><span class="w">
+</span>        <span class="n">X</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">]</span> <span class="o">*</span><span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">incoming_counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">
+</span>    <span class="n">dangle</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="numpy.asarray"><span class="n">np</span><span class="o">.</span><span class="n">asarray</span></a><span class="p">(</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.where.html#numpy.where" title="numpy.where"><span class="n">np</span><span class="o">.</span><span class="n">where</span></a><span class="p">(</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="numpy.isclose"><span class="n">np</span><span class="o">.</span><span class="n">isclose</span></a><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">scores</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.full.html#numpy.full" title="numpy.full"><span class="n">np</span><span class="o">.</span><span class="n">full</span></a><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-attribute reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float32" title="numpy.float32"><span class="n">np</span><span class="o">.</span><span class="n">float32</span></a><span class="p">)</span>  <span class="c1"># initial guess</span><span class="w">
+</span>    <span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">power iteration #</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span><span class="w">
+</span>        <span class="n">prev_scores</span> <span class="o">=</span> <span class="n">scores</span><span class="w">
+</span>        <span class="n">scores</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>            <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">scores</span> <span class="o">&#64;</span> <span class="n">X</span> <span class="o">+</span> <span class="n">dangle</span> <span class="o">&#64;</span> <span class="n">prev_scores</span><span class="p">)</span><span class="w">
+</span>            <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">prev_scores</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>        <span class="c1"># check convergence: normalized l_inf norm</span><span class="w">
+</span>        <span class="n">scores_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">scores_max</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span><span class="w">
+</span>            <span class="n">scores_max</span> <span class="o">=</span> <span class="mf">1.0</span><span class="w">
+</span>        <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span> <span class="o">-</span> <span class="n">prev_scores</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="p">)</span> <span class="o">/</span> <span class="n">scores_max</span><span class="w">
+</span>        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w">
+</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">error: </span><span class="si">%0.6f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">err</span><span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">err</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">*</span> <span class="n">tol</span><span class="p">:</span><span class="w">
+</span>            <span class="k">break</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">scores</span><span class="p">,</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.asarray.html#numpy.asarray" title="numpy.asarray"><span class="n">np</span><span class="o">.</span><span class="n">asarray</span></a><span class="p">(</span><span class="n">errors</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Computing principal eigenvector score using a power iteration method</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">t0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/time.html#time.time" title="time.time"><span class="n">time</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">scores</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">centrality_scores</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">done in </span><span class="si">%0.3f</span><span class="s2">s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><a class="sphx-glr-backref-module-time sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/time.html#time.time" title="time.time"><span class="n">time</span></a><span class="p">(</span><span class="p">)</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">top_abs_score_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="p">)</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="p">]</span><span class="w">
+</span><a class="sphx-glr-backref-module-pprint sphx-glr-backref-type-py-function reference external" href="https://docs.python.org/3/library/pprint.html#pprint.pprint" title="pprint.pprint"><span class="n">pprint</span></a><span class="p">(</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_abs_score_indices</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Computing principal eigenvector score using a power iteration method
 Normalizing the graph
 power iteration #0
@@ -1400,30 +1393,28 @@ power iteration #45
 error: 0.000089
 power iteration #46
 error: 0.000075
-done in 1.273s
+done in 1.305s
 [b'Philosophy', b'New_York_City', b'World_War_I', b'France', b'United_States']
 </pre></div>
 </div>
 </section>
 <section id="plot-results">
 <h2>Plot results<a class="headerlink" href="#plot-results" title="Link to this heading">#</a></h2>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">errors</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"power iteration"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"convergence error (normalized $</span><span class="se">\\</span><span class="s2">ell_</span><span class="se">\\</span><span class="s2">infty$)"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"PageRank power-iteration convergence"</span><span class="p">)</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
-<img src="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_001.png" srcset="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_001.png" alt="PageRank power-iteration convergence" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">([</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_abs_score_indices</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">top_abs_score_indices</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"PageRank score"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Wikipedia pages with the highest eigenvector centrality"</span><span class="p">)</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
-<img src="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" srcset="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" alt="Wikipedia pages with the highest eigenvector centrality" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 8.201 seconds)</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">power iteration</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">convergence error (normalized $</span><span class="se">\\</span><span class="s2">ell_</span><span class="se">\\</span><span class="s2">infty$)</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">PageRank power-iteration convergence</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_001.png" srcset="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_001.png" alt="PageRank power-iteration convergence" class = "sphx-glr-single-img"/><div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html#matplotlib.pyplot.subplots" title="matplotlib.pyplot.subplots"><span class="n">plt</span><span class="o">.</span><span class="n">subplots</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="p">[</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_abs_score_indices</span><span class="p">]</span><span class="p">,</span> <span class="n">scores</span><span class="p">[</span><span class="n">top_abs_score_indices</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">PageRank score</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Wikipedia pages with the highest eigenvector centrality</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" srcset="../../_images/sphx_glr_plot_wikipedia_principal_eigenvector_002.png" alt="Wikipedia pages with the highest eigenvector centrality" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 12.834 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-applications-plot-wikipedia-principal-eigenvector-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/applications/plot_wikipedia_principal_eigenvector.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo.svg" style="width: 150px;" />

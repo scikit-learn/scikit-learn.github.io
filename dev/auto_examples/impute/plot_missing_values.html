@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1062,10 +1062,9 @@ of
 <a class="reference internal" href="../../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomForestRegressor</span></code></a> on the full original dataset
 is then compared the performance on the altered datasets with the artificially
 missing values imputed using different techniques.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span></pre></div></div>
 <section id="download-the-data-and-make-missing-values-sets">
 <h2>Download the data and make missing values sets<a class="headerlink" href="#download-the-data-and-make-missing-values-sets" title="Link to this heading">#</a></h2>
 <p>First we download the two datasets. Diabetes dataset is shipped with
@@ -1073,45 +1072,44 @@ scikit-learn. It has 442 entries, each with 10 features. California housing
 dataset is much larger with 20640 entries and 8 features. It needs to be
 downloaded. We will only use the first 300 entries for the sake of speeding
 up the calculations but feel free to use the whole dataset.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.datasets.fetch_california_housing.html#sklearn.datasets.fetch_california_housing" title="sklearn.datasets.fetch_california_housing" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_california_housing</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.datasets.load_diabetes.html#sklearn.datasets.load_diabetes" title="sklearn.datasets.load_diabetes" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">load_diabetes</span></a>
-
-<span class="n">X_diabetes</span><span class="p">,</span> <span class="n">y_diabetes</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.load_diabetes.html#sklearn.datasets.load_diabetes" title="sklearn.datasets.load_diabetes" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">load_diabetes</span></a><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_california</span><span class="p">,</span> <span class="n">y_california</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.datasets.fetch_california_housing.html#sklearn.datasets.fetch_california_housing" title="sklearn.datasets.fetch_california_housing" class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function"><span class="n">fetch_california_housing</span></a><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">X_diabetes</span> <span class="o">=</span> <span class="n">X_diabetes</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span>
-<span class="n">y_diabetes</span> <span class="o">=</span> <span class="n">y_diabetes</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span>
-<span class="n">X_california</span> <span class="o">=</span> <span class="n">X_california</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span>
-<span class="n">y_california</span> <span class="o">=</span> <span class="n">y_california</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">add_missing_values</span><span class="p">(</span><span class="n">X_full</span><span class="p">,</span> <span class="n">y_full</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
-    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">shape</span>
-
-    <span class="c1"># Add missing values in 75% of the lines</span>
-    <span class="n">missing_rate</span> <span class="o">=</span> <span class="mf">0.75</span>
-    <span class="n">n_missing_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">*</span> <span class="n">missing_rate</span><span class="p">)</span>
-
-    <span class="n">missing_samples</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-    <span class="n">missing_samples</span><span class="p">[:</span><span class="n">n_missing_samples</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">missing_samples</span><span class="p">)</span>
-    <span class="n">missing_features</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_missing_samples</span><span class="p">)</span>
-    <span class="n">X_missing</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">X_missing</span><span class="p">[</span><span class="n">missing_samples</span><span class="p">,</span> <span class="n">missing_features</span><span class="p">]</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/constants.html#numpy.nan" title="numpy.nan" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data"><span class="n">np</span><span class="o">.</span><span class="n">nan</span></a>
-    <span class="n">y_missing</span> <span class="o">=</span> <span class="n">y_full</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">X_missing</span><span class="p">,</span> <span class="n">y_missing</span>
-
-
-<span class="n">rng</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="numpy.random.RandomState" class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span></a><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-<span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span> <span class="o">=</span> <span class="n">add_missing_values</span><span class="p">(</span><span class="n">X_diabetes</span><span class="p">,</span> <span class="n">y_diabetes</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
-<span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span> <span class="o">=</span> <span class="n">add_missing_values</span><span class="p">(</span>
-    <span class="n">X_california</span><span class="p">,</span> <span class="n">y_california</span><span class="p">,</span> <span class="n">rng</span>
-<span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_california_housing.html#sklearn.datasets.fetch_california_housing" title="sklearn.datasets.fetch_california_housing"><span class="n">fetch_california_housing</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.load_diabetes.html#sklearn.datasets.load_diabetes" title="sklearn.datasets.load_diabetes"><span class="n">load_diabetes</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">X_diabetes</span><span class="p">,</span> <span class="n">y_diabetes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.load_diabetes.html#sklearn.datasets.load_diabetes" title="sklearn.datasets.load_diabetes"><span class="n">load_diabetes</span></a><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="n">X_california</span><span class="p">,</span> <span class="n">y_california</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.fetch_california_housing.html#sklearn.datasets.fetch_california_housing" title="sklearn.datasets.fetch_california_housing"><span class="n">fetch_california_housing</span></a><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">X_diabetes</span> <span class="o">=</span> <span class="n">X_diabetes</span><span class="p">[</span><span class="p">:</span><span class="mi">300</span><span class="p">]</span><span class="w">
+</span><span class="n">y_diabetes</span> <span class="o">=</span> <span class="n">y_diabetes</span><span class="p">[</span><span class="p">:</span><span class="mi">300</span><span class="p">]</span><span class="w">
+</span><span class="n">X_california</span> <span class="o">=</span> <span class="n">X_california</span><span class="p">[</span><span class="p">:</span><span class="mi">300</span><span class="p">]</span><span class="w">
+</span><span class="n">y_california</span> <span class="o">=</span> <span class="n">y_california</span><span class="p">[</span><span class="p">:</span><span class="mi">300</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">add_missing_values</span><span class="p">(</span><span class="n">X_full</span><span class="p">,</span> <span class="n">y_full</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">shape</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># Add missing values in 75% of the lines</span><span class="w">
+</span>    <span class="n">missing_rate</span> <span class="o">=</span> <span class="mf">0.75</span><span class="w">
+</span>    <span class="n">n_missing_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">*</span> <span class="n">missing_rate</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">missing_samples</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span><span class="w">
+</span>    <span class="n">missing_samples</span><span class="p">[</span><span class="p">:</span><span class="n">n_missing_samples</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">missing_samples</span><span class="p">)</span><span class="w">
+</span>    <span class="n">missing_features</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">n_missing_samples</span><span class="p">)</span><span class="w">
+</span>    <span class="n">X_missing</span> <span class="o">=</span> <span class="n">X_full</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>    <span class="n">X_missing</span><span class="p">[</span><span class="n">missing_samples</span><span class="p">,</span> <span class="n">missing_features</span><span class="p">]</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data reference external" href="https://numpy.org/doc/stable/reference/constants.html#numpy.nan" title="numpy.nan"><span class="n">np</span><span class="o">.</span><span class="n">nan</span></a><span class="w">
+</span>    <span class="n">y_missing</span> <span class="o">=</span> <span class="n">y_full</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">X_missing</span><span class="p">,</span> <span class="n">y_missing</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">rng</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="numpy.random.RandomState"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span></a><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w">
+</span><span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span> <span class="o">=</span> <span class="n">add_missing_values</span><span class="p">(</span><span class="n">X_diabetes</span><span class="p">,</span> <span class="n">y_diabetes</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span><span class="w">
+</span><span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span> <span class="o">=</span> <span class="n">add_missing_values</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_california</span><span class="p">,</span> <span class="n">y_california</span><span class="p">,</span> <span class="n">rng</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="impute-the-missing-data-and-score">
 <h2>Impute the missing data and score<a class="headerlink" href="#impute-the-missing-data-and-score" title="Link to this heading">#</a></h2>
@@ -1119,71 +1117,67 @@ up the calculations but feel free to use the whole dataset.</p>
 imputed data, including the case of no imputation for full data.
 We will use <a class="reference internal" href="../../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomForestRegressor</span></code></a> for the target
 regression.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor" class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomForestRegressor</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.impute.IterativeImputer.html#sklearn.impute.IterativeImputer" title="sklearn.impute.IterativeImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">IterativeImputer</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.impute.KNNImputer.html#sklearn.impute.KNNImputer" title="sklearn.impute.KNNImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">KNNImputer</span></a><span class="p">,</span> <a href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimpleImputer</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.cross_val_score.html#sklearn.model_selection.cross_val_score" title="sklearn.model_selection.cross_val_score" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_val_score</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler" title="sklearn.preprocessing.RobustScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RobustScaler</span></a>
-
-<span class="n">N_SPLITS</span> <span class="o">=</span> <span class="mi">4</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">get_score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">imputer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">regressor</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor" class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RandomForestRegressor</span></a><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">imputer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">estimator</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span><span class="n">imputer</span><span class="p">,</span> <span class="n">regressor</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">estimator</span> <span class="o">=</span> <span class="n">regressor</span>
-    <span class="n">scores</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.cross_val_score.html#sklearn.model_selection.cross_val_score" title="sklearn.model_selection.cross_val_score" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">cross_val_score</span></a><span class="p">(</span>
-        <span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"neg_mean_squared_error"</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">N_SPLITS</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-
-
-<span class="n">x_labels</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="n">mses_diabetes</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">stds_diabetes</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">mses_california</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">stds_california</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">ensemble</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor"><span class="n">RandomForestRegressor</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">impute</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.IterativeImputer.html#sklearn.impute.IterativeImputer" title="sklearn.impute.IterativeImputer"><span class="n">IterativeImputer</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.KNNImputer.html#sklearn.impute.KNNImputer" title="sklearn.impute.KNNImputer"><span class="n">KNNImputer</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer"><span class="n">SimpleImputer</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">model_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.cross_val_score.html#sklearn.model_selection.cross_val_score" title="sklearn.model_selection.cross_val_score"><span class="n">cross_val_score</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline"><span class="n">make_pipeline</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">preprocessing</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler" title="sklearn.preprocessing.RobustScaler"><span class="n">RobustScaler</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">N_SPLITS</span> <span class="o">=</span> <span class="mi">4</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">imputer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">regressor</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-ensemble sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.ensemble.RandomForestRegressor.html#sklearn.ensemble.RandomForestRegressor" title="sklearn.ensemble.RandomForestRegressor"><span class="n">RandomForestRegressor</span></a><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span>    <span class="k">if</span> <span class="n">imputer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span><span class="w">
+</span>        <span class="n">estimator</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline"><span class="n">make_pipeline</span></a><span class="p">(</span><span class="n">imputer</span><span class="p">,</span> <span class="n">regressor</span><span class="p">)</span><span class="w">
+</span>    <span class="k">else</span><span class="p">:</span><span class="w">
+</span>        <span class="n">estimator</span> <span class="o">=</span> <span class="n">regressor</span><span class="w">
+</span>    <span class="n">scores</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.cross_val_score.html#sklearn.model_selection.cross_val_score" title="sklearn.model_selection.cross_val_score"><span class="n">cross_val_score</span></a><span class="p">(</span><span class="w">
+</span>        <span class="n">estimator</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">neg_mean_squared_error</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">N_SPLITS</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">x_labels</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">mses_diabetes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span><span class="n">stds_diabetes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_california</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span><span class="n">stds_california</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.zeros.html#numpy.zeros" title="numpy.zeros"><span class="n">np</span><span class="o">.</span><span class="n">zeros</span></a><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <section id="estimate-the-score">
 <h3>Estimate the score<a class="headerlink" href="#estimate-the-score" title="Link to this heading">#</a></h3>
 <p>First, we want to estimate the score on the original data:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="n">X_diabetes</span><span class="p">,</span> <span class="n">y_diabetes</span><span class="p">)</span>
-<span class="n">mses_california</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="n">X_california</span><span class="p">,</span> <span class="n">y_california</span><span class="p">)</span>
-<span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Full Data"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="n">X_diabetes</span><span class="p">,</span> <span class="n">y_diabetes</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_california</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="n">X_california</span><span class="p">,</span> <span class="n">y_california</span><span class="p">)</span><span class="w">
+</span><span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Full Data</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="replace-missing-values-by-0">
 <h3>Replace missing values by 0<a class="headerlink" href="#replace-missing-values-by-0" title="Link to this heading">#</a></h3>
 <p>Now we will estimate the score on the data where the missing values are
 replaced by 0:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">imputer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimpleImputer</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"constant"</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span>
-<span class="p">)</span>
-<span class="n">mses_california</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <span class="n">imputer</span>
-<span class="p">)</span>
-<span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Zero Imputation"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">imputer</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer"><span class="n">SimpleImputer</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">constant</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_california</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <span class="n">imputer</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Zero Imputation</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="impute-missing-values-with-mean">
 <h3>Impute missing values with mean<a class="headerlink" href="#impute-missing-values-with-mean" title="Link to this heading">#</a></h3>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">imputer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">SimpleImputer</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span> <span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span>
-<span class="p">)</span>
-<span class="n">mses_california</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <span class="n">imputer</span>
-<span class="p">)</span>
-<span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Mean Imputation"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">imputer</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.SimpleImputer.html#sklearn.impute.SimpleImputer" title="sklearn.impute.SimpleImputer"><span class="n">SimpleImputer</span></a><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">mean</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_california</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <span class="n">imputer</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Mean Imputation</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="knn-imputation-of-the-missing-values">
 <h3>kNN-imputation of the missing values<a class="headerlink" href="#knn-imputation-of-the-missing-values" title="Link to this heading">#</a></h3>
@@ -1191,16 +1185,15 @@ replaced by 0:</p>
 or unweighted mean of the desired number of nearest neighbors. If your features
 have vastly different scales (as in the California housing dataset),
 consider re-scaling them to potentially improve performance.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">imputer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.impute.KNNImputer.html#sklearn.impute.KNNImputer" title="sklearn.impute.KNNImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">KNNImputer</span></a><span class="p">(</span><span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span>
-<span class="p">)</span>
-<span class="n">mses_california</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span><a href="../../modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler" title="sklearn.preprocessing.RobustScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RobustScaler</span></a><span class="p">(),</span> <span class="n">imputer</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"KNN Imputation"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">imputer</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.KNNImputer.html#sklearn.impute.KNNImputer" title="sklearn.impute.KNNImputer"><span class="n">KNNImputer</span></a><span class="p">(</span><span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_california</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline"><span class="n">make_pipeline</span></a><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler" title="sklearn.preprocessing.RobustScaler"><span class="n">RobustScaler</span></a><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">imputer</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">KNN Imputation</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="iterative-imputation-of-the-missing-values">
 <h3>Iterative imputation of the missing values<a class="headerlink" href="#iterative-imputation-of-the-missing-values" title="Link to this heading">#</a></h3>
@@ -1211,77 +1204,75 @@ of the regressor model (<a class="reference internal" href="../../modules/genera
 to predict missing feature values. The performance of the predictor
 may be negatively affected by vastly different scales of the features,
 so we re-scale the features in the California housing dataset.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">imputer</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.impute.IterativeImputer.html#sklearn.impute.IterativeImputer" title="sklearn.impute.IterativeImputer" class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">IterativeImputer</span></a><span class="p">(</span><span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span>
-<span class="p">)</span>
-<span class="n">mses_california</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span>
-    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <a href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline" class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function"><span class="n">make_pipeline</span></a><span class="p">(</span><a href="../../modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler" title="sklearn.preprocessing.RobustScaler" class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">RobustScaler</span></a><span class="p">(),</span> <span class="n">imputer</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Iterative Imputation"</span><span class="p">)</span>
-
-<span class="n">mses_diabetes</span> <span class="o">=</span> <span class="n">mses_diabetes</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
-<span class="n">mses_california</span> <span class="o">=</span> <span class="n">mses_california</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">imputer</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-impute sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.impute.IterativeImputer.html#sklearn.impute.IterativeImputer" title="sklearn.impute.IterativeImputer"><span class="n">IterativeImputer</span></a><span class="p">(</span><span class="n">add_indicator</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">mses_diabetes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_diabetes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_diabetes</span><span class="p">,</span> <span class="n">y_miss_diabetes</span><span class="p">,</span> <span class="n">imputer</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">mses_california</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="p">,</span> <span class="n">stds_california</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_score</span><span class="p">(</span><span class="w">
+</span>    <span class="n">X_miss_california</span><span class="p">,</span> <span class="n">y_miss_california</span><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-pipeline sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline" title="sklearn.pipeline.make_pipeline"><span class="n">make_pipeline</span></a><span class="p">(</span><a class="sphx-glr-backref-module-sklearn-preprocessing sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler" title="sklearn.preprocessing.RobustScaler"><span class="n">RobustScaler</span></a><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">imputer</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">x_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Iterative Imputation</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">mses_diabetes</span> <span class="o">=</span> <span class="n">mses_diabetes</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="w">
+</span><span class="n">mses_california</span> <span class="o">=</span> <span class="n">mses_california</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="w">
+</span></pre></div></div>
 </section>
 </section>
 <section id="plot-the-results">
 <h2>Plot the results<a class="headerlink" href="#plot-the-results" title="Link to this heading">#</a></h2>
 <p>Finally we are going to visualize the score:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">n_bars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mses_diabetes</span><span class="p">)</span>
-<span class="n">xval</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="n">n_bars</span><span class="p">)</span>
-
-<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"r"</span><span class="p">,</span> <span class="s2">"g"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"orange"</span><span class="p">,</span> <span class="s2">"black"</span><span class="p">]</span>
-
-<span class="c1"># plot diabetes results</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="matplotlib.pyplot.figure" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">ax1</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xval</span><span class="p">:</span>
-    <span class="n">ax1</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span>
-        <span class="n">j</span><span class="p">,</span>
-        <span class="n">mses_diabetes</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-        <span class="n">xerr</span><span class="o">=</span><span class="n">stds_diabetes</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-        <span class="n">align</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span>
-    <span class="p">)</span>
-
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Imputation Techniques with Diabetes Data"</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.min.html#numpy.min" title="numpy.min" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">min</span></a><span class="p">(</span><span class="n">mses_diabetes</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><a href="https://numpy.org/doc/stable/reference/generated/numpy.max.html#numpy.max" title="numpy.max" class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function"><span class="n">np</span><span class="o">.</span><span class="n">max</span></a><span class="p">(</span><span class="n">mses_diabetes</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">xval</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"MSE"</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">x_labels</span><span class="p">)</span>
-
-<span class="c1"># plot california dataset results</span>
-<span class="n">ax2</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xval</span><span class="p">:</span>
-    <span class="n">ax2</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span>
-        <span class="n">j</span><span class="p">,</span>
-        <span class="n">mses_california</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-        <span class="n">xerr</span><span class="o">=</span><span class="n">stds_california</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
-        <span class="n">align</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span>
-    <span class="p">)</span>
-
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Imputation Techniques with California Data"</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">xval</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"MSE"</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s2">""</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_bars</span><span class="p">)</span>
-
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="w">
+</span><span class="n">n_bars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mses_diabetes</span><span class="p">)</span><span class="w">
+</span><span class="n">xval</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="numpy.arange"><span class="n">np</span><span class="o">.</span><span class="n">arange</span></a><span class="p">(</span><span class="n">n_bars</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">b</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">orange</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">black</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># plot diabetes results</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure" title="matplotlib.pyplot.figure"><span class="n">plt</span><span class="o">.</span><span class="n">figure</span></a><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">ax1</span> <span class="o">=</span> <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">121</span><span class="p">)</span><span class="w">
+</span><span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xval</span><span class="p">:</span><span class="w">
+</span>    <span class="n">ax1</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="w">
+</span>        <span class="n">j</span><span class="p">,</span><span class="w">
+</span>        <span class="n">mses_diabetes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">xerr</span><span class="o">=</span><span class="n">stds_diabetes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span><span class="w">
+</span>        <span class="n">align</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">center</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Imputation Techniques with Diabetes Data</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.min.html#numpy.min" title="numpy.min"><span class="n">np</span><span class="o">.</span><span class="n">min</span></a><span class="p">(</span><span class="n">mses_diabetes</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.9</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.max.html#numpy.max" title="numpy.max"><span class="n">np</span><span class="o">.</span><span class="n">max</span></a><span class="p">(</span><span class="n">mses_diabetes</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span><span class="w">
+</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">xval</span><span class="p">)</span><span class="w">
+</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">MSE</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax1</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">x_labels</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># plot california dataset results</span><span class="w">
+</span><span class="n">ax2</span> <span class="o">=</span> <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot.html#matplotlib.pyplot.subplot" title="matplotlib.pyplot.subplot"><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span></a><span class="p">(</span><span class="mi">122</span><span class="p">)</span><span class="w">
+</span><span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xval</span><span class="p">:</span><span class="w">
+</span>    <span class="n">ax2</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="w">
+</span>        <span class="n">j</span><span class="p">,</span><span class="w">
+</span>        <span class="n">mses_california</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">xerr</span><span class="o">=</span><span class="n">stds_california</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span><span class="w">
+</span>        <span class="n">align</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">center</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Imputation Techniques with California Data</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">xval</span><span class="p">)</span><span class="w">
+</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">MSE</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax2</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_bars</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <img src="../../_images/sphx_glr_plot_missing_values_001.png" srcset="../../_images/sphx_glr_plot_missing_values_001.png" alt="Imputation Techniques with Diabetes Data, Imputation Techniques with California Data" class = "sphx-glr-single-img"/><p>You can also try different techniques. For instance, the median is a more
 robust estimator for data with high magnitude variables which could dominate
 results (otherwise known as a ‘long tail’).</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 8.163 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 9.486 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-impute-plot-missing-values-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/impute/plot_missing_values.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo16.svg" style="width: 150px;" />
@@ -1305,13 +1296,13 @@ results (otherwise known as a ‘long tail’).</p>
 <div class="sphx-glr-thumbnails"><div class="sphx-glr-thumbcontainer" tooltip="The IterativeImputer class is very flexible - it can be used with a variety of estimators to do round-robin regression, treating every variable as an output in turn."><img alt="" src="../../_images/sphx_glr_plot_iterative_imputer_variants_comparison_thumb.png" />
 <p><a class="reference internal" href="plot_iterative_imputer_variants_comparison.html"><span class="doc">Imputing missing values with variants of IterativeImputer</span></a></p>
   <div class="sphx-glr-thumbnail-title">Imputing missing values with variants of IterativeImputer</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 0.22, which comes with many bug fixes and new features! We detail below a few of the major features of this release. For an exhaustive list of all the changes, please refer to the release notes &lt;release_notes_0_22&gt;."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_0_22_0_thumb.png" />
+</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 0.22, which comes with many bug fixes and new features! We detail below a few of the major features of this release. For an exhaustive list of all the changes, please refer to the release notes."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_0_22_0_thumb.png" />
 <p><a class="reference internal" href="../release_highlights/plot_release_highlights_0_22_0.html"><span class="doc">Release Highlights for scikit-learn 0.22</span></a></p>
   <div class="sphx-glr-thumbnail-title">Release Highlights for scikit-learn 0.22</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip="This example plots the ellipsoids obtained from a toy dataset (mixture of three Gaussians) fitted by the BayesianGaussianMixture class models with a Dirichlet distribution prior (``weight_concentration_prior_type=&#x27;dirichlet_distribution&#x27;``) and a Dirichlet process prior (``weight_concentration_prior_type=&#x27;dirichlet_process&#x27;``). On each figure, we plot the results for three different values of the weight concentration prior."><img alt="" src="../../_images/sphx_glr_plot_concentration_prior_thumb.png" />
 <p><a class="reference internal" href="../mixture/plot_concentration_prior.html"><span class="doc">Concentration Prior Type Analysis of Variation Bayesian Gaussian Mixture</span></a></p>
   <div class="sphx-glr-thumbnail-title">Concentration Prior Type Analysis of Variation Bayesian Gaussian Mixture</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.5! Many bug fixes and improvements were added, as well as some key new features. Below we detail the highlights of this release. For an exhaustive list of all the changes, please refer to the release notes &lt;release_notes_1_5&gt;."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_5_0_thumb.png" />
+</div><div class="sphx-glr-thumbcontainer" tooltip="We are pleased to announce the release of scikit-learn 1.5! Many bug fixes and improvements were added, as well as some key new features. Below we detail the highlights of this release. For an exhaustive list of all the changes, please refer to the release notes."><img alt="" src="../../_images/sphx_glr_plot_release_highlights_1_5_0_thumb.png" />
 <p><a class="reference internal" href="../release_highlights/plot_release_highlights_1_5_0.html"><span class="doc">Release Highlights for scikit-learn 1.5</span></a></p>
   <div class="sphx-glr-thumbnail-title">Release Highlights for scikit-learn 1.5</div>
 </div></div><p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>

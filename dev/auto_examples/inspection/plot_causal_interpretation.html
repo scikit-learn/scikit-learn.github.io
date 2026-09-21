@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Vibur" />
     <link rel="stylesheet" type="text/css" href="../../_static/jupyterlite_sphinx.css?v=f676e775" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
@@ -1050,10 +1050,9 @@ of the most important questions in economics of education: <strong>what is the c
 effect of earning a college degree on hourly wages?</strong> Although the answer to
 this question is crucial to policy makers, <a class="reference external" href="https://en.wikipedia.org/wiki/Omitted-variable_bias">Omitted-Variable Biases</a> (OVB) prevent us from
 identifying that causal effect.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Authors: The scikit-learn developers</span>
-<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># Authors: The scikit-learn developers</span><span class="w">
+</span><span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span><span class="w">
+</span></pre></div></div>
 <section id="the-dataset-simulated-hourly-wages">
 <h2>The dataset: simulated hourly wages<a class="headerlink" href="#the-dataset-simulated-hourly-wages" title="Link to this heading">#</a></h2>
 <p>The data generating process is laid out in the code below. Work experience in
@@ -1063,110 +1062,105 @@ create an indicator of college degree which is positively impacted by ability
 and parental hourly wage. Finally, we model hourly wages as a linear function
 of all the previous variables and a random component. Note that all variables
 have a positive effect on hourly wages.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-
-<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10_000</span>
-<span class="n">rng</span> <span class="o">=</span> <a href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="numpy.random.RandomState" class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span></a><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
-
-<span class="n">experiences</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="n">experiences</span><span class="p">[</span><span class="n">experiences</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">abilities</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
-<span class="n">parent_hourly_wages</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
-<span class="n">parent_hourly_wages</span><span class="p">[</span><span class="n">parent_hourly_wages</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">college_degrees</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="mi">9</span> <span class="o">*</span> <span class="n">abilities</span> <span class="o">+</span> <span class="mf">0.02</span> <span class="o">*</span> <span class="n">parent_hourly_wages</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.7</span>
-<span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-
-<span class="n">true_coef</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="pandas.Series" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">Series</span></a><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">"college degree"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
-        <span class="s2">"ability"</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
-        <span class="s2">"experience"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
-        <span class="s2">"parent hourly wage"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">)</span>
-<span class="n">hourly_wages</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">true_coef</span><span class="p">[</span><span class="s2">"experience"</span><span class="p">]</span> <span class="o">*</span> <span class="n">experiences</span>
-    <span class="o">+</span> <span class="n">true_coef</span><span class="p">[</span><span class="s2">"parent hourly wage"</span><span class="p">]</span> <span class="o">*</span> <span class="n">parent_hourly_wages</span>
-    <span class="o">+</span> <span class="n">true_coef</span><span class="p">[</span><span class="s2">"college degree"</span><span class="p">]</span> <span class="o">*</span> <span class="n">college_degrees</span>
-    <span class="o">+</span> <span class="n">true_coef</span><span class="p">[</span><span class="s2">"ability"</span><span class="p">]</span> <span class="o">*</span> <span class="n">abilities</span>
-    <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">hourly_wages</span><span class="p">[</span><span class="n">hourly_wages</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="w">
+</span><span class="w">
+</span><span class="n">n_samples</span> <span class="o">=</span> <span class="mi">10_000</span><span class="w">
+</span><span class="n">rng</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy-random sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://numpy.org/doc/stable/reference/random/legacy.html#numpy.random.RandomState" title="numpy.random.RandomState"><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span></a><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">experiences</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="w">
+</span><span class="n">experiences</span><span class="p">[</span><span class="n">experiences</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="w">
+</span><span class="n">abilities</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span><span class="w">
+</span><span class="n">parent_hourly_wages</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span><span class="w">
+</span><span class="n">parent_hourly_wages</span><span class="p">[</span><span class="n">parent_hourly_wages</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="w">
+</span><span class="n">college_degrees</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>    <span class="mi">9</span> <span class="o">*</span> <span class="n">abilities</span> <span class="o">+</span> <span class="mf">0.02</span> <span class="o">*</span> <span class="n">parent_hourly_wages</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">true_coef</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="pandas.Series"><span class="n">pd</span><span class="o">.</span><span class="n">Series</span></a><span class="p">(</span><span class="w">
+</span>    <span class="p">{</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">college degree</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">ability</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">experience</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">parent hourly wage</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span><span class="w">
+</span>    <span class="p">}</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">hourly_wages</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>    <span class="n">true_coef</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">experience</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">experiences</span><span class="w">
+</span>    <span class="o">+</span> <span class="n">true_coef</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">parent hourly wage</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">parent_hourly_wages</span><span class="w">
+</span>    <span class="o">+</span> <span class="n">true_coef</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">college degree</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">college_degrees</span><span class="w">
+</span>    <span class="o">+</span> <span class="n">true_coef</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">ability</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">abilities</span><span class="w">
+</span>    <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">hourly_wages</span><span class="p">[</span><span class="n">hourly_wages</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="description-of-the-simulated-data">
 <h2>Description of the simulated data<a class="headerlink" href="#description-of-the-simulated-data" title="Link to this heading">#</a></h2>
 <p>The following plot shows the distribution of each variable, and pairwise
 scatter plots. Key to our OVB story is the positive relationship between
 ability and college degree.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-
-<span class="n">df</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">"college degree"</span><span class="p">:</span> <span class="n">college_degrees</span><span class="p">,</span>
-        <span class="s2">"ability"</span><span class="p">:</span> <span class="n">abilities</span><span class="p">,</span>
-        <span class="s2">"hourly wage"</span><span class="p">:</span> <span class="n">hourly_wages</span><span class="p">,</span>
-        <span class="s2">"experience"</span><span class="p">:</span> <span class="n">experiences</span><span class="p">,</span>
-        <span class="s2">"parent hourly wage"</span><span class="p">:</span> <span class="n">parent_hourly_wages</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">)</span>
-
-<span class="n">grid</span> <span class="o">=</span> <a href="https://seaborn.pydata.org/generated/seaborn.pairplot.html#seaborn.pairplot" title="seaborn.pairplot" class="sphx-glr-backref-module-seaborn sphx-glr-backref-type-py-function"><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span></a><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">"kde"</span><span class="p">,</span> <span class="n">corner</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span><span class="w">
+</span><span class="w">
+</span><span class="n">df</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="w">
+</span>    <span class="p">{</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">college degree</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">college_degrees</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">ability</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">abilities</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">hourly wage</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">hourly_wages</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">experience</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">experiences</span><span class="p">,</span><span class="w">
+</span>        <span class="s2">&quot;</span><span class="s2">parent hourly wage</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">parent_hourly_wages</span><span class="p">,</span><span class="w">
+</span>    <span class="p">}</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">grid</span> <span class="o">=</span> <a class="sphx-glr-backref-module-seaborn sphx-glr-backref-type-py-function reference external" href="https://seaborn.pydata.org/generated/seaborn.pairplot.html#seaborn.pairplot" title="seaborn.pairplot"><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span></a><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">kde</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">corner</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <img src="../../_images/sphx_glr_plot_causal_interpretation_001.png" srcset="../../_images/sphx_glr_plot_causal_interpretation_001.png" alt="plot causal interpretation" class = "sphx-glr-single-img"/><p>In the next section, we train predictive models and we therefore split the
 target column from over features and we split the data into a training and a
 testing set.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">train_test_split</span></a>
-
-<span class="n">target_name</span> <span class="o">=</span> <span class="s2">"hourly wage"</span>
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">target_name</span><span class="p">),</span> <span class="n">df</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split" class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function"><span class="n">train_test_split</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">model_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><span class="n">train_test_split</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">target_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">hourly wage</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">target_name</span><span class="p">)</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="w">
+</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><span class="n">train_test_split</span></a><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 </section>
 <section id="income-prediction-with-fully-observed-variables">
 <h2>Income prediction with fully observed variables<a class="headerlink" href="#income-prediction-with-fully-observed-variables" title="Link to this heading">#</a></h2>
 <p>First, we train a predictive model, a
 <a class="reference internal" href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearRegression</span></code></a> model. In this experiment,
 we assume that all variables used by the true generative model are available.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LinearRegression</span></a>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <a href="../../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">r2_score</span></a>
-
-<span class="n">features_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"experience"</span><span class="p">,</span> <span class="s2">"parent hourly wage"</span><span class="p">,</span> <span class="s2">"college degree"</span><span class="p">,</span> <span class="s2">"ability"</span><span class="p">]</span>
-
-<span class="n">regressor_with_ability</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LinearRegression</span></a><span class="p">()</span>
-<span class="n">regressor_with_ability</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">features_names</span><span class="p">],</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">y_pred_with_ability</span> <span class="o">=</span> <span class="n">regressor_with_ability</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">features_names</span><span class="p">])</span>
-<span class="n">R2_with_ability</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">r2_score</span></a><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_with_ability</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R2 score with ability: </span><span class="si">{</span><span class="n">R2_with_ability</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">linear_model</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><span class="n">LinearRegression</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">metrics</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><span class="n">r2_score</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">features_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">experience</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">parent hourly wage</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">college degree</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">ability</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">regressor_with_ability</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><span class="n">LinearRegression</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">regressor_with_ability</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">features_names</span><span class="p">]</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span><span class="n">y_pred_with_ability</span> <span class="o">=</span> <span class="n">regressor_with_ability</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">features_names</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">R2_with_ability</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><span class="n">r2_score</span></a><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_with_ability</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">R2 score with ability: </span><span class="si">{</span><span class="n">R2_with_ability</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>R2 score with ability: 0.975
 </pre></div>
 </div>
 <p>This model predicts well the hourly wages as shown by the high R2 score. We
 plot the model coefficients to show that we exactly recover the values of
 the true generative model.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">model_coef</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="pandas.Series" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">Series</span></a><span class="p">(</span><span class="n">regressor_with_ability</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">features_names</span><span class="p">)</span>
-<span class="n">coef</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.concat.html#pandas.concat" title="pandas.concat" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function"><span class="n">pd</span><span class="o">.</span><span class="n">concat</span></a><span class="p">(</span>
-    <span class="p">[</span><span class="n">true_coef</span><span class="p">[</span><span class="n">features_names</span><span class="p">],</span> <span class="n">model_coef</span><span class="p">],</span>
-    <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"Coefficients of true generative model"</span><span class="p">,</span> <span class="s2">"Model coefficients"</span><span class="p">],</span>
-    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">coef</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">barh</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Coefficient values"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Coefficients of the linear regression including the ability features"</span><span class="p">)</span>
-<span class="n">_</span> <span class="o">=</span> <a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="w">
+</span><span class="n">model_coef</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="pandas.Series"><span class="n">pd</span><span class="o">.</span><span class="n">Series</span></a><span class="p">(</span><span class="n">regressor_with_ability</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">features_names</span><span class="p">)</span><span class="w">
+</span><span class="n">coef</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.concat.html#pandas.concat" title="pandas.concat"><span class="n">pd</span><span class="o">.</span><span class="n">concat</span></a><span class="p">(</span><span class="w">
+</span>    <span class="p">[</span><span class="n">true_coef</span><span class="p">[</span><span class="n">features_names</span><span class="p">]</span><span class="p">,</span> <span class="n">model_coef</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Coefficients of true generative model</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">Model coefficients</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">coef</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Coefficient values</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Coefficients of the linear regression including the ability features</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">_</span> <span class="o">=</span> <a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <img src="../../_images/sphx_glr_plot_causal_interpretation_002.png" srcset="../../_images/sphx_glr_plot_causal_interpretation_002.png" alt="Coefficients of the linear regression including the ability features" class = "sphx-glr-single-img"/></section>
 <section id="income-prediction-with-partial-observations">
 <h2>Income prediction with partial observations<a class="headerlink" href="#income-prediction-with-partial-observations" title="Link to this heading">#</a></h2>
@@ -1174,35 +1168,33 @@ the true generative model.</p>
 from proxies that inadvertently measure education as well (e.g. by IQ tests).
 But omitting the “ability” feature from a linear model inflates the estimate
 via a positive OVB.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">features_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"experience"</span><span class="p">,</span> <span class="s2">"parent hourly wage"</span><span class="p">,</span> <span class="s2">"college degree"</span><span class="p">]</span>
-
-<span class="n">regressor_without_ability</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression" class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">LinearRegression</span></a><span class="p">()</span>
-<span class="n">regressor_without_ability</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">features_names</span><span class="p">],</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">y_pred_without_ability</span> <span class="o">=</span> <span class="n">regressor_without_ability</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">features_names</span><span class="p">])</span>
-<span class="n">R2_without_ability</span> <span class="o">=</span> <a href="../../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score" class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function"><span class="n">r2_score</span></a><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_without_ability</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"R2 score without ability: </span><span class="si">{</span><span class="n">R2_without_ability</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">features_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="s2">experience</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">parent hourly wage</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">college degree</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">regressor_without_ability</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><span class="n">LinearRegression</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">regressor_without_ability</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="n">features_names</span><span class="p">]</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span><span class="n">y_pred_without_ability</span> <span class="o">=</span> <span class="n">regressor_without_ability</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">[</span><span class="n">features_names</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">R2_without_ability</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.r2_score.html#sklearn.metrics.r2_score" title="sklearn.metrics.r2_score"><span class="n">r2_score</span></a><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_without_ability</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">R2 score without ability: </span><span class="si">{</span><span class="n">R2_without_ability</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>R2 score without ability: 0.968
 </pre></div>
 </div>
 <p>The predictive power of our model is similar when we omit the ability feature
 in terms of R2 score. We now check if the coefficient of the model are
 different from the true generative model.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">model_coef</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="pandas.Series" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance"><span class="n">pd</span><span class="o">.</span><span class="n">Series</span></a><span class="p">(</span><span class="n">regressor_without_ability</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">features_names</span><span class="p">)</span>
-<span class="n">coef</span> <span class="o">=</span> <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.concat.html#pandas.concat" title="pandas.concat" class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function"><span class="n">pd</span><span class="o">.</span><span class="n">concat</span></a><span class="p">(</span>
-    <span class="p">[</span><span class="n">true_coef</span><span class="p">[</span><span class="n">features_names</span><span class="p">],</span> <span class="n">model_coef</span><span class="p">],</span>
-    <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"Coefficients of true generative model"</span><span class="p">,</span> <span class="s2">"Model coefficients"</span><span class="p">],</span>
-    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">coef</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">barh</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Coefficient values"</span><span class="p">)</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Coefficients of the linear regression excluding the ability feature"</span><span class="p">)</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">()</span>
-<a href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show" class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">()</span>
-</pre></div>
-</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">model_coef</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="pandas.Series"><span class="n">pd</span><span class="o">.</span><span class="n">Series</span></a><span class="p">(</span><span class="n">regressor_without_ability</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">features_names</span><span class="p">)</span><span class="w">
+</span><span class="n">coef</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-function reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.concat.html#pandas.concat" title="pandas.concat"><span class="n">pd</span><span class="o">.</span><span class="n">concat</span></a><span class="p">(</span><span class="w">
+</span>    <span class="p">[</span><span class="n">true_coef</span><span class="p">[</span><span class="n">features_names</span><span class="p">]</span><span class="p">,</span> <span class="n">model_coef</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Coefficients of true generative model</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">Model coefficients</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">coef</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Coefficient values</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Coefficients of the linear regression excluding the ability feature</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
 <img src="../../_images/sphx_glr_plot_causal_interpretation_003.png" srcset="../../_images/sphx_glr_plot_causal_interpretation_003.png" alt="Coefficients of the linear regression excluding the ability feature" class = "sphx-glr-single-img"/><p>To compensate for the omitted variable, the model inflates the coefficient of
 the college degree feature. Therefore, interpreting this coefficient value
 as a causal effect of the true generative model is incorrect.</p>
@@ -1223,7 +1215,7 @@ college degree) is randomized. When an experiment is prohibitively expensive
 or unethical, researchers can sometimes use other causal inference techniques
 such as <a class="reference external" href="https://en.wikipedia.org/wiki/Instrumental_variables_estimation">Instrumental Variables</a> (IV)
 estimations.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.888 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.785 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-inspection-plot-causal-interpretation-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/inspection/plot_causal_interpretation.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo17.svg" style="width: 150px;" />
