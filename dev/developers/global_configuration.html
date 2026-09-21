@@ -762,7 +762,7 @@ float64 data.</p>
 </section>
 <section id="sklearn-warnings-as-errors">
 <h3><code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS</span></code><a class="headerlink" href="#sklearn-warnings-as-errors" title="Link to this heading">#</a></h3>
-<p>This environment variable is used to turn warnings into errors in tests and
+<p>This environment variable is used to turn Python warnings into errors in tests and
 documentation build.</p>
 <p>Some CI (Continuous Integration) builds set <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS=1</span></code>, for
 example to make sure that we catch deprecation warnings from our dependencies
@@ -775,10 +775,11 @@ you can set <code class="docutils literal notranslate"><span class="pre">SKLEARN
 since sometimes warnings originate from third-party libraries and there is not
 much we can do about it. You can see the warning filters in the
 <code class="docutils literal notranslate"><span class="pre">_get_warnings_filters_info_list</span></code> function in <code class="docutils literal notranslate"><span class="pre">sklearn/utils/_testing.py</span></code>.</p>
-<p>Note that for documentation build, <code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS=1</span></code> is checking
-that the documentation build, in particular running examples, does not produce
-any warnings. This is different from the <code class="docutils literal notranslate"><span class="pre">-W</span></code> <code class="docutils literal notranslate"><span class="pre">sphinx-build</span></code> argument that
-catches syntax warnings in the rst files.</p>
+<p>Note that Sphinx warnings, like undefined references, documents missing from a toctree,
+etc., are handled separately and are not controlled by this environment variable. Pull
+requests fail if a Sphinx warning or error mentions a file changed in the PR. Pushes to
+<code class="docutils literal notranslate"><span class="pre">main</span></code> and maintenance branches turn all Sphinx warnings from the <code class="docutils literal notranslate"><span class="pre">doc</span></code> CircleCI job
+into errors.</p>
 </section>
 </section>
 <section id="build-and-debug">
