@@ -11,10 +11,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://scikit-learn/stable/metadata_routing.html" />
 <meta property="og:site_name" content="scikit-learn" />
-<meta property="og:description" content="This guide demonstrates how metadata can be routed and passed between objects in scikit-learn. If you are developing a scikit-learn compatible estimator or meta-estimator, you can check our related..." />
+<meta property="og:description" content="This guide demonstrates how metadata can be routed and passed between objects in scikit-learn. If you are developing a scikit-learn compatible estimator or meta-estimator, check our related develop..." />
 <meta property="og:image" content="https://scikit-learn.org/stable/_static/scikit-learn-logo-notext.png" />
 <meta property="og:image:alt" content="scikit-learn" />
-<meta name="description" content="This guide demonstrates how metadata can be routed and passed between objects in scikit-learn. If you are developing a scikit-learn compatible estimator or meta-estimator, you can check our related..." />
+<meta name="description" content="This guide demonstrates how metadata can be routed and passed between objects in scikit-learn. If you are developing a scikit-learn compatible estimator or meta-estimator, check our related develop..." />
 
     <title>4. Metadata Routing &#8212; scikit-learn 1.10.dev0 documentation</title>
   
@@ -753,16 +753,21 @@ anything.</p>
 </div>
 <p>This guide demonstrates how <a class="reference internal" href="glossary.html#term-metadata"><span class="xref std std-term">metadata</span></a> can be routed and passed between objects in
 scikit-learn. If you are developing a scikit-learn compatible estimator or
-meta-estimator, you can check our related developer guide:
-<a class="reference internal" href="auto_examples/miscellaneous/plot_metadata_routing.html#sphx-glr-auto-examples-miscellaneous-plot-metadata-routing-py"><span class="std std-ref">Developing Estimators Compliant with Metadata Routing</span></a>.</p>
+meta-estimator, check our related developer guide:
+<a class="reference internal" href="auto_examples/miscellaneous/plot_metadata_routing.html#sphx-glr-auto-examples-miscellaneous-plot-metadata-routing-py"><span class="std std-ref">Developing Estimators Compliant with Metadata Routing</span></a>. For a narrative
+introduction to metadata routing, see this blog post on <a class="reference external" href="https://blog.probabl.ai/update-on-scikit-learn-metadata-routing-api">Scikit-learn’s Metadata Routing
+API</a>.</p>
 <p>Metadata is data that an estimator, scorer, or CV splitter takes into account if the
 user explicitly passes it as a parameter. For instance, <a class="reference internal" href="modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans" title="sklearn.cluster.KMeans"><code class="xref py py-class docutils literal notranslate"><span class="pre">KMeans</span></code></a> accepts
 <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> in its <code class="docutils literal notranslate"><span class="pre">fit()</span></code> method and considers it to calculate its centroids.
 <code class="docutils literal notranslate"><span class="pre">classes</span></code> are consumed by some classifiers and <code class="docutils literal notranslate"><span class="pre">groups</span></code> are used in some splitters, but
 any data that is passed into an object’s methods apart from X and y can be considered as
-metadata. Prior to scikit-learn version 1.3, there was no single API for passing
-metadata like that if these objects were used in conjunction with other objects, e.g. a
-scorer accepting <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> inside a <a class="reference internal" href="modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>.</p>
+metadata. The most used metadata in scikit-learn is <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>. If you are new to
+it and want to understand when <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> is useful, see this tutorial on
+<a class="reference external" href="https://www.youtube.com/watch?v=REIg5NH2SNc">Improving models via subsets</a>.</p>
+<p>Prior to scikit-learn version 1.3, there was no single API for passing metadata even if
+these were used in conjunction with other objects, e.g. a scorer accepting
+<code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> inside a <a class="reference internal" href="modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>.</p>
 <p>With the Metadata Routing API, we can transfer metadata to estimators, scorers, and CV
 splitters using <a class="reference internal" href="glossary.html#term-meta-estimators"><span class="xref std std-term">meta-estimators</span></a> (such as <a class="reference internal" href="modules/generated/sklearn.pipeline.Pipeline.html#sklearn.pipeline.Pipeline" title="sklearn.pipeline.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> or
 <a class="reference internal" href="modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>) or functions such as
@@ -772,10 +777,9 @@ must <em>request</em> it. This is done via <code class="docutils literal notrans
 is substituted by the name of the method that requests the metadata. For instance,
 estimators that use the metadata in their <code class="docutils literal notranslate"><span class="pre">fit()</span></code> method would use <code class="docutils literal notranslate"><span class="pre">set_fit_request()</span></code>,
 and scorers would use <code class="docutils literal notranslate"><span class="pre">set_score_request()</span></code>. These methods allow us to specify which
-metadata to request, for instance <code class="docutils literal notranslate"><span class="pre">set_fit_request(sample_weight=True)</span></code>.</p>
-<p>For grouped splitters such as <a class="reference internal" href="modules/generated/sklearn.model_selection.GroupKFold.html#sklearn.model_selection.GroupKFold" title="sklearn.model_selection.GroupKFold"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupKFold</span></code></a>, a
-<code class="docutils literal notranslate"><span class="pre">groups</span></code> parameter is requested by default. This is best demonstrated by the
-following examples.</p>
+metadata to request, for instance <code class="docutils literal notranslate"><span class="pre">set_fit_request(sample_weight=True)</span></code>. For grouped
+splitters such as <a class="reference internal" href="modules/generated/sklearn.model_selection.GroupKFold.html#sklearn.model_selection.GroupKFold" title="sklearn.model_selection.GroupKFold"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupKFold</span></code></a>, a <code class="docutils literal notranslate"><span class="pre">groups</span></code> parameter is
+requested by default.</p>
 <section id="usage-examples">
 <h2><span class="section-number">4.1. </span>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading">#</a></h2>
 <p>Here we present a few examples to show some common use-cases. Our goal is to pass
