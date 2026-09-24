@@ -867,8 +867,8 @@ cross-validation split:</p>
 <ol class="arabic simple">
 <li><p>a clone of <code class="docutils literal notranslate"><span class="pre">base_estimator</span></code> is trained on the train subset</p></li>
 <li><p>the trained <code class="docutils literal notranslate"><span class="pre">base_estimator</span></code> makes predictions on the test subset</p></li>
-<li><p>the predictions are used to fit a calibrator (either a sigmoid or isotonic
-regressor) (when the data is multiclass, a calibrator is fit for every class)</p></li>
+<li><p>the predictions are used to fit a calibrator (when the data is multiclass,
+one calibrator is fit for each class)</p></li>
 </ol>
 <p>This results in an
 ensemble of <span class="math notranslate nohighlight">\(k\)</span> <code class="docutils literal notranslate"><span class="pre">(classifier,</span> <span class="pre">calibrator)</span></code> couples where each calibrator maps
@@ -907,18 +907,20 @@ pair, decreases the final model size and increases prediction speed.</p>
 <a class="reference internal" href="generated/sklearn.frozen.FrozenEstimator.html#sklearn.frozen.FrozenEstimator" title="sklearn.frozen.FrozenEstimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrozenEstimator</span></code></a> as
 <code class="docutils literal notranslate"><span class="pre">CalibratedClassifierCV(estimator=FrozenEstimator(estimator))</span></code>.
 It is up to the user to make sure that the data used for fitting the classifier
-is disjoint from the data used for fitting the regressor.</p>
-<p><a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> supports the use of two regression techniques
-for calibration via the <code class="docutils literal notranslate"><span class="pre">method</span></code> parameter: <code class="docutils literal notranslate"><span class="pre">&quot;sigmoid&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;isotonic&quot;</span></code>.</p>
+is disjoint from the data used for fitting the calibrator.</p>
+<p><a class="reference internal" href="generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalibratedClassifierCV</span></code></a> supports the use of three regression techniques for
+calibration via the <code class="docutils literal notranslate"><span class="pre">method</span></code> parameter: <code class="docutils literal notranslate"><span class="pre">&quot;sigmoid&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;isotonic&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;temperature&quot;</span></code>.</p>
 <section id="sigmoid">
 <span id="sigmoid-regressor"></span><h3><span class="section-number">1.16.3.1. </span>Sigmoid<a class="headerlink" href="#sigmoid" title="Link to this heading">#</a></h3>
 <p>The sigmoid regressor, <code class="docutils literal notranslate"><span class="pre">method=&quot;sigmoid&quot;</span></code> is based on Platt’s logistic model <a class="footnote-reference brackets" href="#id18" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[p(y_i = 1 | f_i) = \frac{1}{1 + \exp(A f_i + B)} \,,\]</div>
 <p>where <span class="math notranslate nohighlight">\(y_i\)</span> is the true label of sample <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(f_i\)</span>
-is the output of the un-calibrated classifier for sample <span class="math notranslate nohighlight">\(i\)</span>. <span class="math notranslate nohighlight">\(A\)</span>
-and <span class="math notranslate nohighlight">\(B\)</span> are real numbers to be determined when fitting the regressor via
-maximum likelihood.</p>
+is the uncalibrated classifier output for that sample. When the classifier
+implements <a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a>, <span class="math notranslate nohighlight">\(f_i = \text{logit}(\hat{p}_i)\)</span> is the
+logit of the predicted probability; otherwise, <span class="math notranslate nohighlight">\(f_i\)</span> is the value from
+<a class="reference internal" href="../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a>. <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are real numbers to be
+determined when fitting via maximum likelihood.</p>
 <p>The sigmoid method assumes the <a class="reference internal" href="#calibration-curve"><span class="std std-ref">calibration curve</span></a>
 can be corrected by applying a sigmoid function to the raw predictions. This
 assumption has been empirically justified in the case of <a class="reference internal" href="svm.html#svm"><span class="std std-ref">Support Vector Machines</span></a> with
@@ -939,10 +941,11 @@ a step-wise non-decreasing function, see <a class="reference internal" href="../
 <div class="math notranslate nohighlight">
 \[\sum_{i=1}^{n} (y_i - \hat{f}_i)^2\]</div>
 <p>subject to <span class="math notranslate nohighlight">\(\hat{f}_i \geq \hat{f}_j\)</span> whenever
-<span class="math notranslate nohighlight">\(f_i \geq f_j\)</span>. <span class="math notranslate nohighlight">\(y_i\)</span> is the true
-label of sample <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(\hat{f}_i\)</span> is the output of the
-calibrated classifier for sample <span class="math notranslate nohighlight">\(i\)</span> (i.e., the calibrated probability).
-This method is more general when compared to <code class="docutils literal notranslate"><span class="pre">'sigmoid'</span></code> as the only restriction
+<span class="math notranslate nohighlight">\(f_i \geq f_j\)</span>. Here <span class="math notranslate nohighlight">\(y_i\)</span> is the true label of sample
+<span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(f_i\)</span> is the uncalibrated predicted probability from
+<a class="reference internal" href="../glossary.html#term-predict_proba"><span class="xref std std-term">predict_proba</span></a> or score from <a class="reference internal" href="../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a>,
+and <span class="math notranslate nohighlight">\(\hat{f}_i\)</span> is the recalibrated probability.</p>
+<p>This method is more general when compared to <code class="docutils literal notranslate"><span class="pre">'sigmoid'</span></code> as the only restriction
 is that the mapping function is monotonically increasing. It is thus more
 powerful as it can correct any monotonic distortion of the un-calibrated model.
 However, it is more prone to overfitting, especially on small datasets <a class="footnote-reference brackets" href="#id20" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</p>

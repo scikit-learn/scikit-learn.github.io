@@ -1053,20 +1053,29 @@ classifier will also be demonstrated.</p>
 </span></pre></div></div>
 <section id="dataset">
 <h2>Dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h2>
-<p>We will use a synthetic binary classification dataset with 100,000 samples
-and 20 features. Of the 20 features, only 2 are informative, 10 are
-redundant (random combinations of the informative features) and the
-remaining 8 are uninformative (random numbers). Of the 100,000 samples, 1,000
-will be used for model fitting and the rest for testing.</p>
+<p>We use a synthetic binary classification dataset with 100,000 samples and 20
+features. Of the 20 features, only 2 are informative, 10 are redundant
+(random combinations of the informative features) and the remaining 8 are
+uninformative (random numbers). Of the 100,000 samples, 1,000 will be used
+for model fitting (possibly shared with post-hoc calibration) and the rest
+for evaluation.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification"><span class="n">make_classification</span></a><span class="w">
 </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">model_selection</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><span class="n">train_test_split</span></a><span class="w">
 </span><span class="w">
-</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification"><span class="n">make_classification</span></a><span class="p">(</span><span class="w">
-</span>    <span class="n">n_samples</span><span class="o">=</span><span class="mi">100_000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="w">
-</span><span class="p">)</span><span class="w">
+</span><span class="n">n_samples_total</span> <span class="o">=</span> <span class="mi">100_000</span><span class="w">
+</span><span class="n">n_samples_train</span> <span class="o">=</span> <span class="mi">1_000</span><span class="w">
 </span><span class="w">
+</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-datasets sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.datasets.make_classification.html#sklearn.datasets.make_classification" title="sklearn.datasets.make_classification"><span class="n">make_classification</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples_total</span><span class="p">,</span><span class="w">
+</span>    <span class="n">n_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="w">
+</span>    <span class="n">n_informative</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w">
+</span>    <span class="n">n_redundant</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w">
+</span>    <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mf">0.666</span><span class="p">,</span> <span class="mf">0.333</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w">
+</span>    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
 </span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-model_selection sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split" title="sklearn.model_selection.train_test_split"><span class="n">train_test_split</span></a><span class="p">(</span><span class="w">
-</span>    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="w">
+</span>    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="n">n_samples_train</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="w">
 </span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 </section>
@@ -1076,7 +1085,7 @@ will be used for model fitting and the rest for testing.</p>
 <h3>Gaussian Naive Bayes<a class="headerlink" href="#gaussian-naive-bayes" title="Link to this heading">#</a></h3>
 <p>First, we will compare:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a> (used as baseline
+<li><p><a class="reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegressionCV</span></code></a> (used as baseline
 since very often, properly regularized logistic regression is well
 calibrated by default thanks to the use of the log-loss)</p></li>
 <li><p>Uncalibrated <a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a></p></li>
@@ -1090,13 +1099,15 @@ classes in each bin on the y-axis.</p>
 </span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">gridspec</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-matplotlib-gridspec sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.gridspec.GridSpec.html#matplotlib.gridspec.GridSpec" title="matplotlib.gridspec.GridSpec"><span class="n">GridSpec</span></a><span class="w">
 </span><span class="w">
 </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">calibration</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">,</span> <span class="n">CalibrationDisplay</span><span class="w">
-</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">linear_model</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">linear_model</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><span class="n">LogisticRegressionCV</span></a><span class="w">
 </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="nn">.</span><span class="nn">naive_bayes</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-sklearn-naive_bayes sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><span class="n">GaussianNB</span></a><span class="w">
 </span><span class="w">
-</span><span class="n">lr</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span><span class="w">
+</span><span class="n">lr</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><span class="n">LogisticRegressionCV</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">Cs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">neg_log_loss</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">l1_ratios</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="p">)</span><span class="p">,</span> <span class="n">use_legacy_attributes</span><span class="o">=</span><span class="kc">False</span><span class="w">
+</span><span class="p">)</span><span class="w">
 </span><span class="n">gnb</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-naive_bayes sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><span class="n">GaussianNB</span></a><span class="p">(</span><span class="p">)</span><span class="w">
-</span><span class="n">gnb_isotonic</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">(</span><span class="n">gnb</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isotonic</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
-</span><span class="n">gnb_sigmoid</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">(</span><span class="n">gnb</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">sigmoid</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">gnb_isotonic</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">(</span><span class="n">gnb</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isotonic</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">gnb_sigmoid</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">(</span><span class="n">gnb</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">sigmoid</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
 </span><span class="w">
 </span><span class="n">clf_list</span> <span class="o">=</span> <span class="p">[</span><span class="w">
 </span>    <span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">Logistic</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">,</span><span class="w">
@@ -1118,6 +1129,7 @@ classes in each bin on the y-axis.</p>
 </span>        <span class="n">X_test</span><span class="p">,</span><span class="w">
 </span>        <span class="n">y_test</span><span class="p">,</span><span class="w">
 </span>        <span class="n">n_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w">
+</span>        <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">quantile</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
 </span>        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="w">
 </span>        <span class="n">ax</span><span class="o">=</span><span class="n">ax_calibration_curve</span><span class="p">,</span><span class="w">
 </span>        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">,</span><span class="w">
@@ -1145,22 +1157,23 @@ classes in each bin on the y-axis.</p>
 </span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">(</span><span class="p">)</span><span class="w">
 </span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
-<img src="../../_images/sphx_glr_plot_calibration_curve_001.png" srcset="../../_images/sphx_glr_plot_calibration_curve_001.png" alt="Calibration plots (Naive Bayes), Logistic, Naive Bayes, Naive Bayes + Isotonic, Naive Bayes + Sigmoid" class = "sphx-glr-single-img"/><p>Uncalibrated <a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a> is poorly calibrated
-because of
-the redundant features which violate the assumption of feature-independence
-and result in an overly confident classifier, which is indicated by the
-typical transposed-sigmoid curve. Calibration of the probabilities of
-<a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a> with <a class="reference internal" href="../../modules/isotonic.html#isotonic"><span class="std std-ref">Isotonic regression</span></a> can fix
-this issue as can be seen from the nearly diagonal calibration curve.
-<a class="reference internal" href="../../modules/calibration.html#sigmoid-regressor"><span class="std std-ref">Sigmoid regression</span></a> also improves calibration
-slightly,
-albeit not as strongly as the non-parametric isotonic regression. This can be
-attributed to the fact that we have plenty of calibration data such that the
-greater flexibility of the non-parametric model can be exploited.</p>
-<p>Below we will make a quantitative analysis considering several classification
-metrics: <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a>, <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>,
-<a class="reference internal" href="../../modules/model_evaluation.html#precision-recall-f-measure-metrics"><span class="std std-ref">precision, recall, F1 score</span></a> and
-<a class="reference internal" href="../../modules/model_evaluation.html#roc-metrics"><span class="std std-ref">ROC AUC</span></a>.</p>
+<img src="../../_images/sphx_glr_plot_calibration_curve_001.png" srcset="../../_images/sphx_glr_plot_calibration_curve_001.png" alt="Calibration plots (Naive Bayes), Logistic, Naive Bayes, Naive Bayes + Isotonic, Naive Bayes + Sigmoid" class = "sphx-glr-single-img"/><p>The logistic regression classifier is well calibrated by default, as
+indicated by the diagonal calibration curve. This is not surprising since we
+adjusted the regularization parameter to minimize the <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a> via
+internal cross-validation.</p>
+<p>On the contrary <a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a> is poorly calibrated
+because of the redundant features which violate the assumption of
+feature-independence. It results in an <strong>overly confident</strong> classifier, which
+is indicated by the typical transposed-sigmoid calibration curve.</p>
+<p>Post-hoc calibration of the predicted probabilities of
+<a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a> with <a class="reference internal" href="../../modules/isotonic.html#isotonic"><span class="std std-ref">Isotonic regression</span></a> or
+<a class="reference internal" href="../../modules/calibration.html#sigmoid-regressor"><span class="std std-ref">Sigmoid regression</span></a> fix this issue to a good extent as
+can be seen from the nearly diagonal calibration curve. Neither method is perfect
+because of the limited amount of training and calibration data (1,000 samples
+for both).</p>
+<p>Below we make a quantitative analysis considering several classification
+metrics: <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a>, <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>, <a class="reference internal" href="../../modules/model_evaluation.html#precision-recall-f-measure-metrics"><span class="std std-ref">precision, recall,
+F1 score</span></a> and <a class="reference internal" href="../../modules/model_evaluation.html#roc-metrics"><span class="std std-ref">ROC AUC</span></a>.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-collections sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="collections.defaultdict"><span class="n">defaultdict</span></a><span class="w">
 </span><span class="w">
 </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span><span class="w">
@@ -1174,25 +1187,32 @@ metrics: <a class="reference internal" href="../../modules/model_evaluation.html
 </span>    <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score" title="sklearn.metrics.roc_auc_score"><span class="n">roc_auc_score</span></a><span class="p">,</span><span class="w">
 </span><span class="p">)</span><span class="w">
 </span><span class="w">
-</span><span class="n">scores</span> <span class="o">=</span> <a class="sphx-glr-backref-module-collections sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="collections.defaultdict"><span class="n">defaultdict</span></a><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="w">
-</span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clf_list</span><span class="p">)</span><span class="p">:</span><span class="w">
-</span>    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
-</span>    <span class="n">y_prob</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w">
-</span>    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w">
-</span>    <span class="n">scores</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Classifier</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w">
 </span><span class="w">
-</span>    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.brier_score_loss.html#sklearn.metrics.brier_score_loss" title="sklearn.metrics.brier_score_loss"><span class="n">brier_score_loss</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.log_loss.html#sklearn.metrics.log_loss" title="sklearn.metrics.log_loss"><span class="n">log_loss</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score" title="sklearn.metrics.roc_auc_score"><span class="n">roc_auc_score</span></a><span class="p">]</span><span class="p">:</span><span class="w">
-</span>        <span class="n">score_name</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">_</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2"> </span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(</span><span class="p">)</span><span class="w">
-</span>        <span class="n">scores</span><span class="p">[</span><span class="n">score_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">[</span><span class="p">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">compute_metrics</span><span class="p">(</span><span class="n">clf_list</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">scores</span> <span class="o">=</span> <a class="sphx-glr-backref-module-collections sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="collections.defaultdict"><span class="n">defaultdict</span></a><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clf_list</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
+</span>        <span class="n">y_prob</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w">
+</span>        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w">
+</span>        <span class="n">scores</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Classifier</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w">
 </span><span class="w">
-</span>    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.precision_score.html#sklearn.metrics.precision_score" title="sklearn.metrics.precision_score"><span class="n">precision_score</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score" title="sklearn.metrics.recall_score"><span class="n">recall_score</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score" title="sklearn.metrics.f1_score"><span class="n">f1_score</span></a><span class="p">]</span><span class="p">:</span><span class="w">
-</span>        <span class="n">score_name</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">_</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2"> </span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(</span><span class="p">)</span><span class="w">
-</span>        <span class="n">scores</span><span class="p">[</span><span class="n">score_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.brier_score_loss.html#sklearn.metrics.brier_score_loss" title="sklearn.metrics.brier_score_loss"><span class="n">brier_score_loss</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.log_loss.html#sklearn.metrics.log_loss" title="sklearn.metrics.log_loss"><span class="n">log_loss</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score" title="sklearn.metrics.roc_auc_score"><span class="n">roc_auc_score</span></a><span class="p">]</span><span class="p">:</span><span class="w">
+</span>            <span class="n">score_name</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>                <span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">_</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2"> </span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="n">scores</span><span class="p">[</span><span class="n">score_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">[</span><span class="p">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.precision_score.html#sklearn.metrics.precision_score" title="sklearn.metrics.precision_score"><span class="n">precision_score</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score" title="sklearn.metrics.recall_score"><span class="n">recall_score</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score" title="sklearn.metrics.f1_score"><span class="n">f1_score</span></a><span class="p">]</span><span class="p">:</span><span class="w">
+</span>            <span class="n">score_name</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>                <span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">_</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2"> </span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="n">scores</span><span class="p">[</span><span class="n">score_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span><span class="p">)</span><span class="w">
 </span><span class="w">
 </span>    <span class="n">score_df</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Classifier</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
-</span>    <span class="n">score_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">score_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w">
 </span><span class="w">
-</span><span class="n">score_df</span><span class="w">
+</span><span class="w">
+</span><span class="n">compute_metrics</span><span class="p">(</span><span class="n">clf_list</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <div>
@@ -1233,66 +1253,69 @@ metrics: <a class="reference internal" href="../../modules/model_evaluation.html
   <tbody>
     <tr>
       <th>Logistic</th>
-      <td>0.098932</td>
-      <td>0.323200</td>
-      <td>0.937443</td>
-      <td>0.871965</td>
-      <td>0.851348</td>
-      <td>0.861533</td>
+      <td>0.090</td>
+      <td>0.296</td>
+      <td>0.938</td>
+      <td>0.841</td>
+      <td>0.776</td>
+      <td>0.807</td>
     </tr>
     <tr>
       <th>Naive Bayes</th>
-      <td>0.117608</td>
-      <td>0.782755</td>
-      <td>0.940373</td>
-      <td>0.857400</td>
-      <td>0.875941</td>
-      <td>0.866571</td>
+      <td>0.115</td>
+      <td>0.774</td>
+      <td>0.940</td>
+      <td>0.773</td>
+      <td>0.857</td>
+      <td>0.813</td>
     </tr>
     <tr>
       <th>Naive Bayes + Isotonic</th>
-      <td>0.098332</td>
-      <td>0.370738</td>
-      <td>0.938613</td>
-      <td>0.883065</td>
-      <td>0.836224</td>
-      <td>0.859007</td>
+      <td>0.091</td>
+      <td>0.340</td>
+      <td>0.939</td>
+      <td>0.842</td>
+      <td>0.778</td>
+      <td>0.808</td>
     </tr>
     <tr>
       <th>Naive Bayes + Sigmoid</th>
-      <td>0.108880</td>
-      <td>0.368896</td>
-      <td>0.940201</td>
-      <td>0.861106</td>
-      <td>0.871277</td>
-      <td>0.866161</td>
+      <td>0.090</td>
+      <td>0.294</td>
+      <td>0.940</td>
+      <td>0.849</td>
+      <td>0.764</td>
+      <td>0.804</td>
     </tr>
   </tbody>
 </table>
 </div>
 </div>
 <br />
-<br /><p>Notice that although calibration improves the <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a> (a
-metric composed
-of calibration term and refinement term) and <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>, it does not
-significantly alter the prediction accuracy measures (precision, recall and
-F1 score).
-This is because calibration should not significantly change prediction
-probabilities at the location of the decision threshold (at x = 0.5 on the
-graph). Calibration should however, make the predicted probabilities more
-accurate and thus more useful for making allocation decisions under
-uncertainty.
-Further, ROC AUC, should not change at all because calibration is a
-monotonic transformation. Indeed, no rank metrics are affected by
-calibration.</p>
+<br /><p>Post-hoc calibration improves the <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a> and <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>.
+Both metrics can be decomposed into calibration and refinement terms
+and are thus sensitive to the calibration of the predicted probabilities.</p>
+<p>The ROC AUC score is a pure ranking metric. It is not changed by a strictly
+monotonic transformation of the predicted probabilities, like the sigmoid
+calibration. However, the isotonic calibration method can degrade the ROC AUC
+score a bit because it is not a <strong>strictly</strong> monotonic transformation, only a
+monotonic one (constant piecewise transformation).</p>
+<p>Post-hoc calibration can significantly alter metrics computed on discrete
+predictions such as precision, recall and F1 score. This is because
+calibration change prediction probabilities at the location of the default
+decision threshold (at x = 0.5 on the graph), especially when the
+classification problem is not balanced.
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FixedThresholder</span></code> and
+<a class="reference internal" href="../../modules/generated/sklearn.model_selection.TunedThresholdClassifierCV.html#sklearn.model_selection.TunedThresholdClassifierCV" title="sklearn.model_selection.TunedThresholdClassifierCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">TunedThresholdClassifierCV</span></code></a> can help assess
+the impact of different decision thresholds on the value of F1 score.</p>
 </section>
 <section id="linear-support-vector-classifier">
 <h3>Linear support vector classifier<a class="headerlink" href="#linear-support-vector-classifier" title="Link to this heading">#</a></h3>
 <p>Next, we will compare:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a> (baseline)</p></li>
-<li><p>Uncalibrated <a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a>. Since SVC does not output
-probabilities by default, we naively scale the output of the
+<li><p><a class="reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegressionCV</span></code></a> (baseline)</p></li>
+<li><p>Uncalibrated <a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a>. Since support vector machines
+do not output probabilities by default, we naively scale the output of the
 <a class="reference internal" href="../../glossary.html#term-decision_function"><span class="xref std std-term">decision_function</span></a> into [0, 1] by applying min-max scaling.</p></li>
 <li><p><a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a> with isotonic and sigmoid
 calibration (see <a class="reference internal" href="../../modules/calibration.html#calibration"><span class="std std-ref">User Guide</span></a>)</p></li>
@@ -1321,8 +1344,7 @@ calibration (see <a class="reference internal" href="../../modules/calibration.h
 </span>        <span class="n">proba</span> <span class="o">=</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-data reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.c_.html#numpy.c_" title="numpy.c_"><span class="n">np</span><span class="o">.</span><span class="n">c_</span></a><span class="p">[</span><span class="n">proba_neg_class</span><span class="p">,</span> <span class="n">proba_pos_class</span><span class="p">]</span><span class="w">
 </span>        <span class="k">return</span> <span class="n">proba</span><span class="w">
 </span></pre></div></div>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">lr</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-linear_model sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><span class="n">LogisticRegression</span></a><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span><span class="w">
-</span><span class="n">svc</span> <span class="o">=</span> <span class="n">NaivelyCalibratedLinearSVC</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10_000</span><span class="p">)</span><span class="w">
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">svc</span> <span class="o">=</span> <span class="n">NaivelyCalibratedLinearSVC</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">10_000</span><span class="p">)</span><span class="w">
 </span><span class="n">svc_isotonic</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">(</span><span class="n">svc</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isotonic</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
 </span><span class="n">svc_sigmoid</span> <span class="o">=</span> <a class="sphx-glr-backref-module-sklearn-calibration sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../../modules/generated/sklearn.calibration.CalibratedClassifierCV.html#sklearn.calibration.CalibratedClassifierCV" title="sklearn.calibration.CalibratedClassifierCV"><span class="n">CalibratedClassifierCV</span></a><span class="p">(</span><span class="n">svc</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">sigmoid</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
 </span><span class="w">
@@ -1346,6 +1368,7 @@ calibration (see <a class="reference internal" href="../../modules/calibration.h
 </span>        <span class="n">y_test</span><span class="p">,</span><span class="w">
 </span>        <span class="n">n_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w">
 </span>        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="w">
+</span>        <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">quantile</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
 </span>        <span class="n">ax</span><span class="o">=</span><span class="n">ax_calibration_curve</span><span class="p">,</span><span class="w">
 </span>        <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="p">,</span><span class="w">
 </span>    <span class="p">)</span><span class="w">
@@ -1372,7 +1395,7 @@ calibration (see <a class="reference internal" href="../../modules/calibration.h
 </span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.tight_layout.html#matplotlib.pyplot.tight_layout" title="matplotlib.pyplot.tight_layout"><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span></a><span class="p">(</span><span class="p">)</span><span class="w">
 </span><a class="sphx-glr-backref-module-matplotlib-pyplot sphx-glr-backref-type-py-function reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html#matplotlib.pyplot.show" title="matplotlib.pyplot.show"><span class="n">plt</span><span class="o">.</span><span class="n">show</span></a><span class="p">(</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
-<img src="../../_images/sphx_glr_plot_calibration_curve_002.png" srcset="../../_images/sphx_glr_plot_calibration_curve_002.png" alt="Calibration plots (SVC), Logistic, SVC, SVC + Isotonic, SVC + Sigmoid" class = "sphx-glr-single-img"/><p><a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a> shows the opposite
+<img src="../../_images/sphx_glr_plot_calibration_curve_002.png" srcset="../../_images/sphx_glr_plot_calibration_curve_002.png" alt="Calibration plots (SVC), Logistic, SVC, SVC + Isotonic, SVC + Sigmoid" class = "sphx-glr-single-img"/><p>The raw <a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a> classifier shows the opposite
 behavior to <a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a>; the calibration
 curve has a sigmoid shape, which is typical for an under-confident
 classifier. In the case of <a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a>, this is caused
@@ -1388,25 +1411,7 @@ yield similar results.</p>
 <p>As before, we show the <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a>, <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>,
 <a class="reference internal" href="../../modules/model_evaluation.html#precision-recall-f-measure-metrics"><span class="std std-ref">precision, recall, F1 score</span></a> and
 <a class="reference internal" href="../../modules/model_evaluation.html#roc-metrics"><span class="std std-ref">ROC AUC</span></a>.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">scores</span> <span class="o">=</span> <a class="sphx-glr-backref-module-collections sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="collections.defaultdict"><span class="n">defaultdict</span></a><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="w">
-</span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">clf_list</span><span class="p">)</span><span class="p">:</span><span class="w">
-</span>    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span><span class="w">
-</span>    <span class="n">y_prob</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w">
-</span>    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w">
-</span>    <span class="n">scores</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Classifier</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w">
-</span><span class="w">
-</span>    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.brier_score_loss.html#sklearn.metrics.brier_score_loss" title="sklearn.metrics.brier_score_loss"><span class="n">brier_score_loss</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.log_loss.html#sklearn.metrics.log_loss" title="sklearn.metrics.log_loss"><span class="n">log_loss</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score" title="sklearn.metrics.roc_auc_score"><span class="n">roc_auc_score</span></a><span class="p">]</span><span class="p">:</span><span class="w">
-</span>        <span class="n">score_name</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">_</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2"> </span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(</span><span class="p">)</span><span class="w">
-</span>        <span class="n">scores</span><span class="p">[</span><span class="n">score_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">[</span><span class="p">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
-</span><span class="w">
-</span>    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.precision_score.html#sklearn.metrics.precision_score" title="sklearn.metrics.precision_score"><span class="n">precision_score</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score" title="sklearn.metrics.recall_score"><span class="n">recall_score</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-sklearn-metrics sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score" title="sklearn.metrics.f1_score"><span class="n">f1_score</span></a><span class="p">]</span><span class="p">:</span><span class="w">
-</span>        <span class="n">score_name</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">_</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2"> </span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">score</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(</span><span class="p">)</span><span class="w">
-</span>        <span class="n">scores</span><span class="p">[</span><span class="n">score_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span><span class="p">)</span><span class="w">
-</span><span class="w">
-</span>    <span class="n">score_df</span> <span class="o">=</span> <a class="sphx-glr-backref-module-pandas sphx-glr-backref-type-py-class sphx-glr-backref-instance reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="pandas.DataFrame"><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span></a><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Classifier</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
-</span>    <span class="n">score_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w">
-</span><span class="w">
-</span><span class="n">score_df</span><span class="w">
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">compute_metrics</span><span class="p">(</span><span class="n">clf_list</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="output_subarea output_html rendered_html output_result">
 <div>
@@ -1447,39 +1452,39 @@ yield similar results.</p>
   <tbody>
     <tr>
       <th>Logistic</th>
-      <td>0.098932</td>
-      <td>0.323200</td>
-      <td>0.937443</td>
-      <td>0.871965</td>
-      <td>0.851348</td>
-      <td>0.861533</td>
+      <td>0.090</td>
+      <td>0.296</td>
+      <td>0.938</td>
+      <td>0.841</td>
+      <td>0.776</td>
+      <td>0.807</td>
     </tr>
     <tr>
       <th>SVC</th>
-      <td>0.144943</td>
-      <td>0.465660</td>
-      <td>0.937597</td>
-      <td>0.872186</td>
-      <td>0.851792</td>
-      <td>0.861868</td>
+      <td>0.142</td>
+      <td>0.458</td>
+      <td>0.938</td>
+      <td>0.834</td>
+      <td>0.782</td>
+      <td>0.807</td>
     </tr>
     <tr>
       <th>SVC + Isotonic</th>
-      <td>0.099820</td>
-      <td>0.376999</td>
-      <td>0.936480</td>
-      <td>0.853174</td>
-      <td>0.877981</td>
-      <td>0.865400</td>
+      <td>0.092</td>
+      <td>0.376</td>
+      <td>0.936</td>
+      <td>0.826</td>
+      <td>0.792</td>
+      <td>0.809</td>
     </tr>
     <tr>
       <th>SVC + Sigmoid</th>
-      <td>0.098758</td>
-      <td>0.321301</td>
-      <td>0.937532</td>
-      <td>0.873724</td>
-      <td>0.848743</td>
-      <td>0.861053</td>
+      <td>0.091</td>
+      <td>0.299</td>
+      <td>0.938</td>
+      <td>0.842</td>
+      <td>0.770</td>
+      <td>0.805</td>
     </tr>
   </tbody>
 </table>
@@ -1487,18 +1492,22 @@ yield similar results.</p>
 </div>
 <br />
 <br /><p>As with <a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a> above, calibration improves
-both <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a> and <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a> but does not alter the
-prediction accuracy measures (precision, recall and F1 score) much.</p>
+both <a class="reference internal" href="../../modules/model_evaluation.html#brier-score-loss"><span class="std std-ref">Brier score loss</span></a> and <a class="reference internal" href="../../modules/model_evaluation.html#log-loss"><span class="std std-ref">Log loss</span></a>. ROC AUC is not affected by
+the sigmoid calibration and slightly degraded by isotonic calibration for the
+same reason as above.</p>
+<p>Again, metrics computed on thresholded predictions (e.g.  such as precision,
+recall and F1 score) can be impacted because thresholding the predicted
+probabilities at 0.5 has a different effect before and after calibration.</p>
 </section>
 </section>
 <section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <p>Parametric sigmoid calibration can deal with situations where the calibration
-curve of the base classifier is sigmoid (e.g., for
-<a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a>) but not where it is transposed-sigmoid
-(e.g., <a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a>). Non-parametric
-isotonic calibration can deal with both situations but may require more
-data to produce good results.</p>
+curve of the base classifier is sigmoid (e.g. the underconfident
+<a class="reference internal" href="../../modules/generated/sklearn.svm.LinearSVC.html#sklearn.svm.LinearSVC" title="sklearn.svm.LinearSVC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearSVC</span></code></a>) or transposed-sigmoid (e.g. the overconfident
+<a class="reference internal" href="../../modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB" title="sklearn.naive_bayes.GaussianNB"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianNB</span></code></a>). Non-parametric isotonic calibration
+can also fix the calibration problem but may require more data to produce good
+results.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
@@ -1509,14 +1518,14 @@ data to produce good results.</p>
 A. Niculescu-Mizil &amp; R. Caruana, ICML 2005</p>
 </aside>
 </aside>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 1.103 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 2.147 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-calibration-plot-calibration-curve-py">
 <div class="binder-badge docutils container">
-<a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/calibration/plot_calibration_curve.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo2.svg" style="width: 150px;" />
+<a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/calibration/plot_calibration_curve.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo10.svg" style="width: 150px;" />
 </a>
 </div>
 <div class="lite-badge docutils container">
-<a class="reference external image-reference" href="../../lite/lab/index.html?path=auto_examples/calibration/plot_calibration_curve.ipynb"><img alt="Launch JupyterLite" src="../../_images/jupyterlite_badge_logo2.svg" style="width: 150px;" />
+<a class="reference external image-reference" href="../../lite/lab/index.html?path=auto_examples/calibration/plot_calibration_curve.ipynb"><img alt="Launch JupyterLite" src="../../_images/jupyterlite_badge_logo10.svg" style="width: 150px;" />
 </a>
 </div>
 <div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
@@ -1536,7 +1545,7 @@ A. Niculescu-Mizil &amp; R. Caruana, ICML 2005</p>
 </div><div class="sphx-glr-thumbcontainer" tooltip="Well calibrated classifiers are probabilistic classifiers for which the output of predict_proba can be directly interpreted as a confidence level. For instance, a well calibrated (binary) classifier should classify the samples such that for the samples to which it gave a predict_proba value close to 0.8, approximately 80% actually belong to the positive class."><img alt="" src="../../_images/sphx_glr_plot_compare_calibration_thumb.png" />
 <p><a class="reference internal" href="plot_compare_calibration.html"><span class="doc">Comparison of Calibration of Classifiers</span></a></p>
   <div class="sphx-glr-thumbnail-title">Comparison of Calibration of Classifiers</div>
-</div><div class="sphx-glr-thumbcontainer" tooltip="This example illustrates how sigmoid calibration changes predicted probabilities for a 3-class classification problem. Illustrated is the standard 2-simplex, where the three corners correspond to the three classes. Arrows point from the probability vectors predicted by an uncalibrated classifier to the probability vectors predicted by the same classifier after sigmoid calibration on a hold-out validation set. Colors indicate the true class of an instance (red: class 1, green: class 2, blue: class 3)."><img alt="" src="../../_images/sphx_glr_plot_calibration_multiclass_thumb.png" />
+</div><div class="sphx-glr-thumbcontainer" tooltip="This example illustrates how post-hoc calibration changes predicted probabilities for a 3-class classification problem. Illustrated is the standard 2-simplex, where the three corners correspond to the three classes. Arrows point from the probability vectors predicted by an uncalibrated classifier to the probability vectors predicted by the same classifier after calibration on a hold-out validation set. Colors indicate the true class of an instance (red: class 1, green: class 2, blue: class 3)."><img alt="" src="../../_images/sphx_glr_plot_calibration_multiclass_thumb.png" />
 <p><a class="reference internal" href="plot_calibration_multiclass.html"><span class="doc">Probability Calibration for 3-class classification</span></a></p>
   <div class="sphx-glr-thumbnail-title">Probability Calibration for 3-class classification</div>
 </div><div class="sphx-glr-thumbcontainer" tooltip=" The purpose of this example is three-fold:"><img alt="" src="../../_images/sphx_glr_plot_scoring_monitor_thumb.png" />
@@ -1651,7 +1660,7 @@ A. Niculescu-Mizil &amp; R. Caruana, ICML 2005</p>
       
         <div class="sphx-glr-sidebar-item lite-badge-sidebar">
           <a href="../../lite/lab/index.html?path=auto_examples/calibration/plot_calibration_curve.ipynb">
-            <img src="../../_images/jupyterlite_badge_logo2.svg" alt="Launch JupyterLite">
+            <img src="../../_images/jupyterlite_badge_logo10.svg" alt="Launch JupyterLite">
           </a>
         </div>
       
@@ -1659,7 +1668,7 @@ A. Niculescu-Mizil &amp; R. Caruana, ICML 2005</p>
       
         <div class="sphx-glr-sidebar-item binder-badge-sidebar">
           <a href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/calibration/plot_calibration_curve.ipynb">
-            <img src="../../_images/binder_badge_logo2.svg" alt="Launch binder">
+            <img src="../../_images/binder_badge_logo10.svg" alt="Launch binder">
           </a>
         </div>
       
