@@ -710,6 +710,19 @@ affecting the result depending on the requested percentiles).
 By <a class="reference external" href="https://github.com/cakedev0">Arthur Lacote</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34928">#34928</a></p></li>
 </ul>
 </section>
+<section id="changes-impacting-many-modules">
+<h3>Changes impacting many modules<a class="headerlink" href="#changes-impacting-many-modules" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><span class="raw-html"><span class="badge text-bg-info">Efficiency</span></span>  Hot-loop NaN checks in <a class="reference internal" href="../api/sklearn.tree.html#module-sklearn.tree" title="sklearn.tree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.tree</span></code></a> and
+<a class="reference internal" href="../api/sklearn.ensemble.html#module-sklearn.ensemble" title="sklearn.ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.ensemble</span></code></a> (histogram gradient boosting) now use a
+scikit-learn-local, always-inlined <code class="docutils literal notranslate"><span class="pre">isnan</span></code> helper instead of
+<code class="docutils literal notranslate"><span class="pre">libc.math.isnan()</span></code>, avoiding a non-inlined libm call on platforms/libc
+versions where the compiler cannot inline it (notably affecting fit
+performance of <a class="reference internal" href="../modules/generated/sklearn.ensemble.ExtraTreesRegressor.html#sklearn.ensemble.ExtraTreesRegressor" title="sklearn.ensemble.ExtraTreesRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.ExtraTreesRegressor</span></code></a> and
+<a class="reference internal" href="../modules/generated/sklearn.ensemble.ExtraTreesClassifier.html#sklearn.ensemble.ExtraTreesClassifier" title="sklearn.ensemble.ExtraTreesClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ensemble.ExtraTreesClassifier</span></code></a> on some conda-forge builds).
+By <a class="reference external" href="https://github.com/cakedev0">Arthur Lacote</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34876">#34876</a></p></li>
+</ul>
+</section>
 <section id="support-for-array-api">
 <h3>Support for Array API<a class="headerlink" href="#support-for-array-api" title="Link to this heading">#</a></h3>
 <p>Additional estimators and functions have been updated to include support for all
@@ -1163,6 +1176,7 @@ the project since version 1.9, including:</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-1-10-dev0">Version 1.10.dev0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changed-models">Changed models</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-impacting-many-modules">Changes impacting many modules</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#support-for-array-api">Support for Array API</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-routing">Metadata routing</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#callbacks">Callbacks</a></li>
