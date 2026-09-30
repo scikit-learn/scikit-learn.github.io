@@ -406,6 +406,9 @@ categorical feature in gradient boosting.
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -431,15 +434,20 @@ categorical feature in gradient boosting.
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -537,35 +545,42 @@ categorical feature in gradient boosting.
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -595,65 +610,57 @@ categorical feature in gradient boosting.
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -707,7 +714,7 @@ categorical feature in gradient boosting.
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -716,14 +723,15 @@ categorical feature in gradient boosting.
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -733,8 +741,7 @@ categorical feature in gradient boosting.
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -767,45 +774,15 @@ categorical feature in gradient boosting.
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -860,10 +837,19 @@ categorical feature in gradient boosting.
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -882,11 +868,6 @@ categorical feature in gradient boosting.
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -903,14 +884,6 @@ categorical feature in gradient boosting.
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -954,7 +927,9 @@ categorical feature in gradient boosting.
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -972,14 +947,8 @@ categorical feature in gradient boosting.
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -993,13 +962,15 @@ categorical feature in gradient boosting.
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -1011,15 +982,6 @@ categorical feature in gradient boosting.
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -1062,9 +1024,16 @@ categorical feature in gradient boosting.
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -1077,10 +1046,6 @@ categorical feature in gradient boosting.
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -1096,7 +1061,7 @@ categorical feature in gradient boosting.
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-13" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;columntransformer&#x27;,
+    </style><body><div id="sk-container-id-20" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;columntransformer&#x27;,
                      ColumnTransformer(transformers=[(&#x27;numerical&#x27;, &#x27;passthrough&#x27;,
                                                       [&#x27;price&#x27;]),
                                                      (&#x27;high_cardinality&#x27;,
@@ -1109,7 +1074,7 @@ categorical feature in gradient boosting.
                                        verbose_feature_names_out=False)),
                     (&#x27;histgradientboostingregressor&#x27;,
                      HistGradientBoostingRegressor(categorical_features=Index([&#x27;country&#x27;, &#x27;region_2&#x27;], dtype=&#x27;str&#x27;),
-                                                   max_iter=20, random_state=0))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-44" type="checkbox" ><label for="sk-estimator-id-44" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></div></label><div class="sk-toggleable__content " data-param-prefix="">
+                                                   max_iter=20, random_state=0))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>Pipeline</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1127,7 +1092,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-steps;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples">
                 steps
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-steps;">
                 steps: list of tuples<br><br>List of (name of step, estimator) tuples that are to be chained in<br>sequential order. To be compatible with the scikit-learn API, all steps<br>must define `fit`. All non-last steps must also define `transform`. See<br>:ref:`Combining Estimators &lt;combining_estimators&gt;` for more details.</span>
             </a>
@@ -1147,7 +1112,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-transform_input;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-tuple%20or%20list%20of%20str%2C%20default%3D%28%22X_val%22%2C%29">
                 transform_input
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transform_input;">
                 transform_input: tuple or list of str, default=(&quot;X_val&quot;,)<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>By default, the validation set `X_val` is always transformed.<br><br>You can only use this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6<br><br>.. versionchanged:: 1.10<br>    The default changed from `None` to `(&quot;X_val&quot;,)`.</span>
             </a>
@@ -1167,7 +1132,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-memory;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone">
                 memory
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-memory;">
                 memory: str or object with the joblib.Memory interface, default=None<br><br>Used to cache the fitted transformers of the pipeline. The last step<br>will never be cached, even if it is a transformer. By default, no<br>caching is performed. If a string is given, it is the path to the<br>caching directory. Enabling caching triggers a clone of the transformers<br>before fitting. Therefore, the transformer instance given to the<br>pipeline cannot be inspected directly. Use the attribute ``named_steps``<br>or ``steps`` to inspect estimators within the pipeline. Caching the<br>transformers is advantageous when fitting is time consuming. See<br>:ref:`sphx_glr_auto_examples_neighbors_plot_caching_nearest_neighbors.py`<br>for an example on how to enable caching.</span>
             </a>
@@ -1187,7 +1152,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>If True, the time elapsed while fitting each step will be printed as it<br>is completed.</span>
             </a>
@@ -1199,7 +1164,7 @@ categorical feature in gradient boosting.
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-serial"><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-45" type="checkbox" ><label for="sk-estimator-id-45" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>columntransformer: ColumnTransformer</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html">?<span>Documentation for columntransformer: ColumnTransformer</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__">
+        </div></details></div></div><div class="sk-serial"><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>columntransformer: ColumnTransformer</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html">?<span>Documentation for columntransformer: ColumnTransformer</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1217,7 +1182,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-transformers;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=transformers,-list%20of%20tuples">
                 transformers
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transformers;">
                 transformers: list of tuples<br><br>List of (name, transformer, columns) tuples specifying the<br>transformer objects to be applied to subsets of the data.<br><br>name : str<br>    Like in Pipeline and FeatureUnion, this allows the transformer and<br>    its parameters to be set using ``set_params`` and searched in grid<br>    search.<br>transformer : {&#x27;drop&#x27;, &#x27;passthrough&#x27;} or estimator<br>    Estimator must support :term:`fit` and :term:`transform`.<br>    Special-cased strings &#x27;drop&#x27; and &#x27;passthrough&#x27; are accepted as<br>    well, to indicate to drop the columns or to pass them through<br>    untransformed, respectively.<br>columns :  str, array-like of str, int, array-like of int,                 array-like of bool, slice or callable<br>    Indexes the data on its second axis. Integers are interpreted as<br>    positional columns, while strings can reference DataFrame columns<br>    by name.  A scalar string or int should be used where<br>    ``transformer`` expects X to be a 1d array-like (vector),<br>    otherwise a 2d array will be passed to the transformer.<br>    A callable is passed the input data `X` and can return any of the<br>    above. To select multiple columns by name or dtype, you can use<br>    :obj:`make_column_selector`.</span>
             </a>
@@ -1237,7 +1202,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-verbose_feature_names_out;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=verbose_feature_names_out,-bool%2C%20str%20or%20Callable%5B%5Bstr%2C%20str%5D%2C%20str%5D%2C%20default%3DTrue">
                 verbose_feature_names_out
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose_feature_names_out;">
                 verbose_feature_names_out: bool, str or Callable[[str, str], str], default=True<br><br>- If True, :meth:`ColumnTransformer.get_feature_names_out` will prefix<br>  all feature names with the name of the transformer that generated that<br>  feature. It is equivalent to setting<br>  `verbose_feature_names_out=&quot;{transformer_name}__{feature_name}&quot;`.<br>- If False, :meth:`ColumnTransformer.get_feature_names_out` will not<br>  prefix any feature names and will error if feature names are not<br>  unique.<br>- If ``Callable[[str, str], str]``,<br>  :meth:`ColumnTransformer.get_feature_names_out` will rename all the features<br>  using the name of the transformer. The first argument of the callable is the<br>  transformer name and the second argument is the feature name. The returned<br>  string will be the new feature name.<br>- If ``str``, it must be a string ready for formatting. The given string will<br>  be formatted using two field names: ``transformer_name`` and ``feature_name``.<br>  e.g. ``&quot;{feature_name}__{transformer_name}&quot;``. See :meth:`str.format` method<br>  from the standard library for more info.<br><br>.. versionadded:: 1.0<br><br>.. versionchanged:: 1.6<br>    `verbose_feature_names_out` can be a callable or a string to be formatted.</span>
             </a>
@@ -1257,7 +1222,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-remainder;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=remainder,-%7B%27drop%27%2C%20%27passthrough%27%7D%20or%20estimator%2C%20default%3D%27drop%27">
                 remainder
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-remainder;">
                 remainder: {&#x27;drop&#x27;, &#x27;passthrough&#x27;} or estimator, default=&#x27;drop&#x27;<br><br>By default, only the specified columns in `transformers` are<br>transformed and combined in the output, and the non-specified<br>columns are dropped. (default of ``&#x27;drop&#x27;``).<br>By specifying ``remainder=&#x27;passthrough&#x27;``, all remaining columns that<br>were not specified in `transformers`, but present in the data passed<br>to `fit` will be automatically passed through. This subset of columns<br>is concatenated with the output of the transformers. For dataframes,<br>extra columns not seen during `fit` will be excluded from the output<br>of `transform`.<br>By setting ``remainder`` to be an estimator, the remaining<br>non-specified columns will use the ``remainder`` estimator. The<br>estimator must support :term:`fit` and :term:`transform`.<br>Note that using this feature requires that the DataFrame columns<br>input at :term:`fit` and :term:`transform` have identical order.</span>
             </a>
@@ -1277,7 +1242,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-sparse_threshold;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=sparse_threshold,-float%2C%20default%3D0.3">
                 sparse_threshold
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-sparse_threshold;">
                 sparse_threshold: float, default=0.3<br><br>If the output of the different transformers contains sparse matrices,<br>these will be stacked as a sparse matrix if the overall density is<br>lower than this value. Use ``sparse_threshold=0`` to always return<br>dense.  When the transformed output consists of all dense data, the<br>stacked result will be dense, and this keyword will be ignored.</span>
             </a>
@@ -1297,7 +1262,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-n_jobs;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=n_jobs,-int%2C%20default%3DNone">
                 n_jobs
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_jobs;">
                 n_jobs: int, default=None<br><br>Number of jobs to run in parallel.<br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.</span>
             </a>
@@ -1317,7 +1282,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-transformer_weights;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=transformer_weights,-dict%2C%20default%3DNone">
                 transformer_weights
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transformer_weights;">
                 transformer_weights: dict, default=None<br><br>Multiplicative weights for features per transformer. The output of the<br>transformer is multiplied by these weights. Keys are transformer names,<br>values the weights.</span>
             </a>
@@ -1337,7 +1302,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>If True, the time elapsed while fitting each transformer will be<br>printed as it is completed.</span>
             </a>
@@ -1349,7 +1314,7 @@ categorical feature in gradient boosting.
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-46" type="checkbox" ><label for="sk-estimator-id-46" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>numerical</div></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__numerical__"><pre>[&#x27;price&#x27;]</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-47" type="checkbox" ><label for="sk-estimator-id-47" class="sk-toggleable__label  "><div><div>passthrough</div></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__numerical__"><pre></pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-48" type="checkbox" ><label for="sk-estimator-id-48" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>high_cardinality</div></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__high_cardinality__"><pre>Index([&#x27;winery&#x27;, &#x27;region_1&#x27;, &#x27;variety&#x27;, &#x27;province&#x27;], dtype=&#x27;str&#x27;)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-49" type="checkbox" ><label for="sk-estimator-id-49" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>TargetEncoder</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html">?<span>Documentation for TargetEncoder</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__high_cardinality__">
+        </div></details></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>numerical</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__numerical__"><pre>[&#x27;price&#x27;]</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label  sk-toggleable__label--no-marker"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>passthrough</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__numerical__"><pre></pre></div></details></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>high_cardinality</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__high_cardinality__"><pre>Index([&#x27;winery&#x27;, &#x27;region_1&#x27;, &#x27;variety&#x27;, &#x27;province&#x27;], dtype=&#x27;str&#x27;)</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>TargetEncoder</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html">?<span>Documentation for TargetEncoder</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__high_cardinality__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1367,7 +1332,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-target_type;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html#:~:text=target_type,-%7B%22auto%22%2C%20%22continuous%22%2C%20%22binary%22%2C%20%22multiclass%22%7D%2C%20default%3D%22auto%22">
                 target_type
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-target_type;">
                 target_type: {&quot;auto&quot;, &quot;continuous&quot;, &quot;binary&quot;, &quot;multiclass&quot;}, default=&quot;auto&quot;<br><br>Type of target.<br><br>- `&quot;auto&quot;` : Type of target is inferred with<br>  :func:`~sklearn.utils.multiclass.type_of_target`.<br>- `&quot;continuous&quot;` : Continuous target<br>- `&quot;binary&quot;` : Binary target<br>- `&quot;multiclass&quot;` : Multiclass target<br><br>.. note::<br>    The type of target inferred with `&quot;auto&quot;` may not be the desired target<br>    type used for modeling. For example, if the target consisted of integers<br>    between 0 and 100, then :func:`~sklearn.utils.multiclass.type_of_target`<br>    will infer the target as `&quot;multiclass&quot;`. In this case, setting<br>    `target_type=&quot;continuous&quot;` will specify the target as a regression<br>    problem. The `target_type_` attribute gives the target type used by the<br>    encoder.<br><br>.. versionchanged:: 1.4<br>   Added the option &#x27;multiclass&#x27;.</span>
             </a>
@@ -1387,7 +1352,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html#:~:text=categories,-%22auto%22%20or%20list%20of%20shape%20%28n_features%2C%29%20of%20array-like%2C%20default%3D%22auto%22">
                 categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-categories;">
                 categories: &quot;auto&quot; or list of shape (n_features,) of array-like, default=&quot;auto&quot;<br><br>Categories (unique values) per feature:<br><br>- `&quot;auto&quot;` : Determine categories automatically from the training data.<br>- list : `categories[i]` holds the categories expected in the i-th column. The<br>  passed categories should not mix strings and numeric values within a single<br>  feature, and should be sorted in case of numeric values.<br><br>The used categories are stored in the `categories_` fitted attribute.</span>
             </a>
@@ -1407,7 +1372,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-smooth;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html#:~:text=smooth,-%22auto%22%20or%20float%2C%20default%3D%22auto%22">
                 smooth
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-smooth;">
                 smooth: &quot;auto&quot; or float, default=&quot;auto&quot;<br><br>The amount of mixing of the target mean conditioned on the value of the<br>category with the global target mean. A larger `smooth` value will put<br>more weight on the global target mean.<br>If `&quot;auto&quot;`, then `smooth` is set to an empirical Bayes estimate.</span>
             </a>
@@ -1427,7 +1392,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-cv;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html#:~:text=cv,-int%2C%20cross-validation%20generator%20or%20an%20iterable%2C%20default%3D5">
                 cv
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-cv;">
                 cv: int, cross-validation generator or an iterable, default=5<br><br>Determines the splitting strategy used in the internal :term:`cross fitting`<br>during :meth:`fit_transform`. Splitters where each sample index doesn&#x27;t appear<br>in the validation fold exactly once, raise a `ValueError`.<br>Possible inputs for cv are:<br><br>- `None`, to use a 5-fold cross-validation chosen internally based on<br>    `target_type`,<br>- integer, to specify the number of folds for the cross-validation chosen<br>    internally based on `target_type`,<br>- :term:`CV splitter` that does not repeat samples across validation folds,<br>- an iterable yielding (train, test) splits as arrays of indices.<br><br>For integer/None inputs, if `target_type` is `&quot;continuous&quot;`, :class:`KFold` is<br>used, otherwise :class:`StratifiedKFold` is used.<br><br>Refer :ref:`User Guide &lt;cross_validation&gt;` for more information on<br>cross-validation strategies.<br><br>.. versionchanged:: 1.9<br>    Cross-validation generators and iterables can also be passed as `cv`.</span>
             </a>
@@ -1447,7 +1412,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-shuffle;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html#:~:text=shuffle,-bool%2C%20default%3DTrue">
                 shuffle
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-shuffle;">
                 shuffle: bool, default=True<br><br>Whether to shuffle the data in :meth:`fit_transform` before splitting into<br>folds. Note that the samples within each split will not be shuffled. Only<br>applies if `cv` is an int or `None`. If `cv` is a cross-validation generator or<br>an iterable, `shuffle` is ignored.<br><br>.. deprecated:: 1.9<br>    `shuffle` is deprecated and will be removed in 1.11. Pass a cross-validation<br>    generator as `cv` argument to specify the shuffling instead.</span>
             </a>
@@ -1467,7 +1432,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-random_state;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.TargetEncoder.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone">
                 random_state
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-random_state;">
                 random_state: int, RandomState instance or None, default=None<br><br>When `shuffle` is True, `random_state` affects the ordering of the<br>indices, which controls the randomness of each fold. Otherwise, this<br>parameter has no effect.<br>Pass an int for reproducible output across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.<br><br>.. deprecated:: 1.9<br>    `random_state` is deprecated and will be removed in 1.11. Pass a<br>    cross-validation generator as `cv` argument to specify the random state of<br>    the shuffling instead.</span>
             </a>
@@ -1479,7 +1444,7 @@ categorical feature in gradient boosting.
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-50" type="checkbox" ><label for="sk-estimator-id-50" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>low_cardinality</div></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__low_cardinality__"><pre>Index([&#x27;country&#x27;, &#x27;region_2&#x27;], dtype=&#x27;str&#x27;)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-51" type="checkbox" ><label for="sk-estimator-id-51" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>OrdinalEncoder</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html">?<span>Documentation for OrdinalEncoder</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="columntransformer__low_cardinality__">
+        </div></details></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>low_cardinality</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__low_cardinality__"><pre>Index([&#x27;country&#x27;, &#x27;region_2&#x27;], dtype=&#x27;str&#x27;)</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>OrdinalEncoder</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html">?<span>Documentation for OrdinalEncoder</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="columntransformer__low_cardinality__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1497,7 +1462,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-handle_unknown;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=handle_unknown,-%7B%27error%27%2C%20%27use_encoded_value%27%7D%2C%20default%3D%27error%27">
                 handle_unknown
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-handle_unknown;">
                 handle_unknown: {&#x27;error&#x27;, &#x27;use_encoded_value&#x27;}, default=&#x27;error&#x27;<br><br>When set to &#x27;error&#x27; an error will be raised in case an unknown<br>categorical feature is present during transform. When set to<br>&#x27;use_encoded_value&#x27;, the encoded value of unknown categories will be<br>set to the value given for the parameter `unknown_value`. In<br>:meth:`inverse_transform`, an unknown category will be denoted as None.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -1517,7 +1482,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-unknown_value;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=unknown_value,-int%20or%20np.nan%2C%20default%3DNone">
                 unknown_value
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-unknown_value;">
                 unknown_value: int or np.nan, default=None<br><br>When the parameter handle_unknown is set to &#x27;use_encoded_value&#x27;, this<br>parameter is required and will set the encoded value of unknown<br>categories. It has to be distinct from the values used to encode any of<br>the categories in `fit`. If set to np.nan, the `dtype` parameter must<br>be a float dtype.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -1537,7 +1502,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=categories,-%27auto%27%20or%20a%20list%20of%20array-like%2C%20default%3D%27auto%27">
                 categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-categories;">
                 categories: &#x27;auto&#x27; or a list of array-like, default=&#x27;auto&#x27;<br><br>Categories (unique values) per feature:<br><br>- &#x27;auto&#x27; : Determine categories automatically from the training data.<br>- list : ``categories[i]`` holds the categories expected in the ith<br>  column. The passed categories should not mix strings and numeric<br>  values, and should be sorted in case of numeric values.<br><br>The used categories can be found in the ``categories_`` attribute.</span>
             </a>
@@ -1557,7 +1522,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-dtype;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=dtype,-number%20type%2C%20default%3Dnp.float64">
                 dtype
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-dtype;">
                 dtype: number type, default=np.float64<br><br>Desired dtype of output.</span>
             </a>
@@ -1577,7 +1542,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-encoded_missing_value;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=encoded_missing_value,-int%20or%20np.nan%2C%20default%3Dnp.nan">
                 encoded_missing_value
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-encoded_missing_value;">
                 encoded_missing_value: int or np.nan, default=np.nan<br><br>Encoded value of missing categories. If set to `np.nan`, then the `dtype`<br>parameter must be a float dtype.<br><br>.. versionadded:: 1.1</span>
             </a>
@@ -1597,7 +1562,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-min_frequency;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=min_frequency,-int%20or%20float%2C%20default%3DNone">
                 min_frequency
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-min_frequency;">
                 min_frequency: int or float, default=None<br><br>Specifies the minimum frequency below which a category will be<br>considered infrequent.<br><br>- If `int`, categories with a smaller cardinality will be considered<br>  infrequent.<br><br>- If `float`, categories with a smaller cardinality than<br>  `min_frequency * n_samples`  will be considered infrequent.<br><br>.. versionadded:: 1.3<br>    Read more in the :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.</span>
             </a>
@@ -1617,7 +1582,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-max_categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=max_categories,-int%2C%20default%3DNone">
                 max_categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_categories;">
                 max_categories: int, default=None<br><br>Specifies an upper limit to the number of output categories for each input<br>feature when considering infrequent categories. If there are infrequent<br>categories, `max_categories` includes the category representing the<br>infrequent categories along with the frequent categories. If `None`,<br>there is no limit to the number of output features.<br><br>`max_categories` do **not** take into account missing or unknown<br>categories. Setting `unknown_value` or `encoded_missing_value` to an<br>integer will increase the number of unique integer codes by one each.<br>This can result in up to `max_categories + 2` integer codes.<br><br>.. versionadded:: 1.3<br>    Read more in the :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.</span>
             </a>
@@ -1629,7 +1594,7 @@ categorical feature in gradient boosting.
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-52" type="checkbox" ><label for="sk-estimator-id-52" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>HistGradientBoostingRegressor</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html">?<span>Documentation for HistGradientBoostingRegressor</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="histgradientboostingregressor__">
+        </div></details></div></div></div></div></div></div></div><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>HistGradientBoostingRegressor</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html">?<span>Documentation for HistGradientBoostingRegressor</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="histgradientboostingregressor__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1647,7 +1612,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-max_iter;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=max_iter,-int%2C%20default%3D100">
                 max_iter
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_iter;">
                 max_iter: int, default=100<br><br>The maximum number of iterations of the boosting process, i.e. the<br>maximum number of trees.</span>
             </a>
@@ -1667,7 +1632,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-categorical_features;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=categorical_features,-array-like%20of%20%7Bbool%2C%20int%2C%20str%7D%20of%20shape%20%28n_features%29%20%20%20%20%20%20%20%20%20%20%20%20%20or%20shape%20%28n_categorical_features%2C%29%2C%20default%3D%27from_dtype%27">
                 categorical_features
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-categorical_features;">
                 categorical_features: array-like of {bool, int, str} of shape (n_features)             or shape (n_categorical_features,), default=&#x27;from_dtype&#x27;<br><br>Indicates the categorical features.<br><br>- None : no feature will be considered categorical.<br>- boolean array-like : boolean mask indicating categorical features.<br>- integer array-like : integer indices indicating categorical<br>  features.<br>- str array-like: names of categorical features (assuming the training<br>  data has feature names).<br>- `&quot;from_dtype&quot;`: dataframe columns with dtype &quot;Categorical&quot; and &quot;Enum&quot; are<br>  considered to be categorical features. The input must be a dataframe that<br>  is supported by narwhals (or supports it): :func:`narwhals.from_native` must<br>  work. This is the case, for instance, for pandas and polars DataFrames.<br><br>For each categorical feature, there must be at most `max_bins` unique<br>categories. Missing values for categorical features should be<br>represented by ``np.nan``; unknown categories at prediction time are<br>also treated as missing values.<br><br>Read more in the :ref:`User Guide &lt;categorical_support_gbdt&gt;` and<br>:ref:`sphx_glr_auto_examples_ensemble_plot_gradient_boosting_categorical.py`.<br><br>.. versionadded:: 0.24<br><br>.. versionchanged:: 1.2<br>   Added support for feature names.<br><br>.. versionchanged:: 1.4<br>   Added `&quot;from_dtype&quot;` option.<br><br>.. versionchanged:: 1.6<br>   The default value changed from `None` to `&quot;from_dtype&quot;`.</span>
             </a>
@@ -1687,7 +1652,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-random_state;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone">
                 random_state
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-random_state;">
                 random_state: int, RandomState instance or None, default=None<br><br>Pseudo-random number generator to control the subsampling in the<br>binning process, and the train/validation data split if early stopping<br>is enabled.<br>Pass an int for reproducible output across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.</span>
             </a>
@@ -1707,7 +1672,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-loss;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=loss,-%7B%27squared_error%27%2C%20%27absolute_error%27%2C%20%27gamma%27%2C%20%27poisson%27%2C%20%27quantile%27%7D%2C%20%20%20%20%20%20%20%20%20%20%20%20%20default%3D%27squared_error%27">
                 loss
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-loss;">
                 loss: {&#x27;squared_error&#x27;, &#x27;absolute_error&#x27;, &#x27;gamma&#x27;, &#x27;poisson&#x27;, &#x27;quantile&#x27;},             default=&#x27;squared_error&#x27;<br><br>The loss function to use in the boosting process. Note that the<br>&quot;squared error&quot;, &quot;gamma&quot; and &quot;poisson&quot; losses actually implement<br>&quot;half least squares loss&quot;, &quot;half gamma deviance&quot; and &quot;half poisson<br>deviance&quot; to simplify the computation of the gradient. Furthermore,<br>&quot;gamma&quot; and &quot;poisson&quot; losses internally use a log-link, &quot;gamma&quot;<br>requires ``y &gt; 0`` and &quot;poisson&quot; requires ``y &gt;= 0``.<br>&quot;quantile&quot; uses the pinball loss.<br><br>.. versionchanged:: 0.23<br>   Added option &#x27;poisson&#x27;.<br><br>.. versionchanged:: 1.1<br>   Added option &#x27;quantile&#x27;.<br><br>.. versionchanged:: 1.3<br>   Added option &#x27;gamma&#x27;.</span>
             </a>
@@ -1727,7 +1692,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-quantile;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=quantile,-float%2C%20default%3DNone">
                 quantile
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-quantile;">
                 quantile: float, default=None<br><br>If loss is &quot;quantile&quot;, this parameter specifies which quantile to be estimated<br>and must be between 0 and 1.</span>
             </a>
@@ -1747,7 +1712,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-learning_rate;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=learning_rate,-float%2C%20default%3D0.1">
                 learning_rate
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-learning_rate;">
                 learning_rate: float, default=0.1<br><br>The learning rate, also known as *shrinkage*. This is used as a<br>multiplicative factor for the leaves values. Use ``1`` for no<br>shrinkage.</span>
             </a>
@@ -1767,7 +1732,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-max_leaf_nodes;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=max_leaf_nodes,-int%20or%20None%2C%20default%3D31">
                 max_leaf_nodes
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_leaf_nodes;">
                 max_leaf_nodes: int or None, default=31<br><br>The maximum number of leaves for each tree. Must be strictly greater<br>than 1. If None, there is no maximum limit.</span>
             </a>
@@ -1787,7 +1752,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-max_depth;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=max_depth,-int%20or%20None%2C%20default%3DNone">
                 max_depth
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_depth;">
                 max_depth: int or None, default=None<br><br>The maximum depth of each tree. The depth of a tree is the number of<br>edges to go from the root to the deepest leaf.<br>Depth isn&#x27;t constrained by default.</span>
             </a>
@@ -1807,7 +1772,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-min_samples_leaf;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=min_samples_leaf,-int%2C%20default%3D20">
                 min_samples_leaf
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-min_samples_leaf;">
                 min_samples_leaf: int, default=20<br><br>The minimum number of samples per leaf. For small datasets with less<br>than a few hundred samples, it is recommended to lower this value<br>since only very shallow trees would be built.<br><br>This constraint is applied to the sample count (number of data rows),<br>not the sum of sample weights.</span>
             </a>
@@ -1827,7 +1792,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-l2_regularization;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=l2_regularization,-float%2C%20default%3D0">
                 l2_regularization
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-l2_regularization;">
                 l2_regularization: float, default=0<br><br>The L2 regularization parameter penalizing leaves with small hessians.<br>Use ``0`` for no regularization (default).</span>
             </a>
@@ -1847,7 +1812,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-max_features;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=max_features,-float%2C%20default%3D1.0">
                 max_features
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_features;">
                 max_features: float, default=1.0<br><br>Proportion of randomly chosen features in each and every node split.<br>This is a form of regularization, smaller values make the trees weaker<br>learners and might prevent overfitting.<br>If interaction constraints from `interaction_cst` are present, only allowed<br>features are taken into account for the subsampling.<br><br>.. versionadded:: 1.4</span>
             </a>
@@ -1867,7 +1832,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-max_bins;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=max_bins,-int%2C%20default%3D255">
                 max_bins
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_bins;">
                 max_bins: int, default=255<br><br>The maximum number of bins to use for non-missing values. Before<br>training, each feature of the input array `X` is binned into<br>integer-valued bins, which allows for a much faster training stage.<br>Features with a small number of unique values may use less than<br>``max_bins`` bins. In addition to the ``max_bins`` bins, one more bin<br>is always reserved for missing values. Must be no larger than 255.</span>
             </a>
@@ -1887,7 +1852,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-monotonic_cst;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=monotonic_cst,-array-like%20of%20int%20of%20shape%20%28n_features%29%20or%20dict%2C%20default%3DNone">
                 monotonic_cst
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-monotonic_cst;">
                 monotonic_cst: array-like of int of shape (n_features) or dict, default=None<br><br>Monotonic constraint to enforce on each feature are specified using the<br>following integer values:<br><br>- 1: monotonic increase<br>- 0: no constraint<br>- -1: monotonic decrease<br><br>If a dict with str keys, map feature to monotonic constraints by name.<br>If an array, the features are mapped to constraints by position. See<br>:ref:`monotonic_cst_features_names` for a usage example.<br><br>Read more in the :ref:`User Guide &lt;monotonic_cst_gbdt&gt;`.<br><br>.. versionadded:: 0.23<br><br>.. versionchanged:: 1.2<br>   Accept dict of constraints with feature names as keys.</span>
             </a>
@@ -1907,7 +1872,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-interaction_cst;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=interaction_cst,-%7B%22pairwise%22%2C%20%22no_interactions%22%7D%20or%20sequence%20of%20lists/tuples/sets%20%20%20%20%20%20%20%20%20%20%20%20%20of%20int%2C%20default%3DNone">
                 interaction_cst
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-interaction_cst;">
                 interaction_cst: {&quot;pairwise&quot;, &quot;no_interactions&quot;} or sequence of lists/tuples/sets             of int, default=None<br><br>Specify interaction constraints, the sets of features which can<br>interact with each other in child node splits.<br><br>Each item specifies the set of feature indices that are allowed<br>to interact with each other. If there are more features than<br>specified in these constraints, they are treated as if they were<br>specified as an additional set.<br><br>The strings &quot;pairwise&quot; and &quot;no_interactions&quot; are shorthands for<br>allowing only pairwise or no interactions, respectively.<br><br>For instance, with 5 features in total, `interaction_cst=[{0, 1}]`<br>is equivalent to `interaction_cst=[{0, 1}, {2, 3, 4}]`,<br>and specifies that each branch of a tree will either only split<br>on features 0 and 1 or only split on features 2, 3 and 4.<br><br>See :ref:`this example&lt;ice-vs-pdp&gt;` on how to use `interaction_cst`.<br><br>.. versionadded:: 1.2</span>
             </a>
@@ -1927,7 +1892,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-warm_start;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
                 warm_start
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-warm_start;">
                 warm_start: bool, default=False<br><br>When set to ``True``, reuse the solution of the previous call to fit<br>and add more estimators to the ensemble. For results to be valid, the<br>estimator should be re-trained on the same data only.<br>See :term:`the Glossary &lt;warm_start&gt;`.</span>
             </a>
@@ -1947,7 +1912,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-early_stopping;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=early_stopping,-%27auto%27%20or%20bool%2C%20default%3D%27auto%27">
                 early_stopping
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-early_stopping;">
                 early_stopping: &#x27;auto&#x27; or bool, default=&#x27;auto&#x27;<br><br>If &#x27;auto&#x27;, early stopping is enabled if the sample size is larger than<br>10000 or if `X_val` and `y_val` are passed to `fit`. If True, early stopping<br>is enabled, otherwise early stopping is disabled.<br><br>.. versionadded:: 0.23</span>
             </a>
@@ -1967,7 +1932,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-scoring;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=scoring,-str%20or%20callable%20or%20None%2C%20default%3D%27loss%27">
                 scoring
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-scoring;">
                 scoring: str or callable or None, default=&#x27;loss&#x27;<br><br>Scoring method to use for early stopping. Only used if `early_stopping`<br>is enabled. Options:<br><br>- str: see :ref:`scoring_string_names` for options.<br>- callable: a scorer callable object (e.g., function) with signature<br>  ``scorer(estimator, X, y)``. See :ref:`scoring_callable` for details.<br>- `None`: the :ref:`coefficient of determination &lt;r2_score&gt;`<br>  (:math:`R^2`) is used.<br>- &#x27;loss&#x27;: early stopping is checked w.r.t the loss value.</span>
             </a>
@@ -1987,7 +1952,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-validation_fraction;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=validation_fraction,-int%20or%20float%20or%20None%2C%20default%3D0.1">
                 validation_fraction
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-validation_fraction;">
                 validation_fraction: int or float or None, default=0.1<br><br>Proportion (or absolute size) of training data to set aside as<br>validation data for early stopping. If None, early stopping is done on<br>the training data.<br>The value is ignored if either early stopping is not performed, e.g.<br>`early_stopping=False`, or if `X_val` and `y_val` are passed to fit.</span>
             </a>
@@ -2007,7 +1972,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-n_iter_no_change;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=n_iter_no_change,-int%2C%20default%3D10">
                 n_iter_no_change
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_iter_no_change;">
                 n_iter_no_change: int, default=10<br><br>Used to determine when to &quot;early stop&quot;. The fitting process is<br>stopped when none of the last ``n_iter_no_change`` scores are better<br>than the ``n_iter_no_change - 1`` -th-to-last one, up to some<br>tolerance. Only used if early stopping is performed.</span>
             </a>
@@ -2027,7 +1992,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-tol;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=tol,-float%2C%20default%3D1e-7">
                 tol
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-tol;">
                 tol: float, default=1e-7<br><br>The absolute tolerance to use when comparing scores during early<br>stopping. The higher the tolerance, the more likely we are to early<br>stop: higher tolerance means that it will be harder for subsequent<br>iterations to be considered an improvement upon the reference score.</span>
             </a>
@@ -2047,7 +2012,7 @@ categorical feature in gradient boosting.
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#:~:text=verbose,-int%2C%20default%3D0">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: int, default=0<br><br>The verbosity level. If not zero, print some information about the<br>fitting process. ``1`` prints only summary info, ``2`` prints info per<br>iteration.</span>
             </a>
@@ -2059,7 +2024,7 @@ categorical feature in gradient boosting.
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -2139,12 +2104,15 @@ categorical feature in gradient boosting.
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -2159,6 +2127,39 @@ categorical feature in gradient boosting.
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -2218,7 +2219,6 @@ categorical feature in gradient boosting.
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
         if (estimatorElement === null) {
@@ -2229,7 +2229,7 @@ categorical feature in gradient boosting.
         }
     }
 
-    forceTheme('sk-container-id-13');</script></body>
+    forceTheme('sk-container-id-20');</script></body>
     </div>
     <br />
     <br />
@@ -2335,7 +2335,7 @@ can be explained as follows:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 10.165 seconds)
+   **Total running time of the script:** (0 minutes 10.354 seconds)
 
 
 .. _sphx_glr_download_auto_examples_preprocessing_plot_target_encoder.py:

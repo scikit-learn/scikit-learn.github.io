@@ -312,7 +312,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
 
  .. code-block:: none
 
-    SimpleKMeans - fit ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00.016
+    SimpleKMeans - fit ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 0:00:00.017
 
 
 .. raw:: html
@@ -333,6 +333,9 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -358,15 +361,20 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -464,35 +472,42 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -522,65 +537,57 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -634,7 +641,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -643,14 +650,15 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -660,8 +668,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -694,45 +701,15 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -787,10 +764,19 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -809,11 +795,6 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -830,14 +811,6 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -881,7 +854,9 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -899,14 +874,8 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -920,13 +889,15 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -938,15 +909,6 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -989,9 +951,16 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -1004,10 +973,6 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -1023,7 +988,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-2" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7C3A8907F140)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-4" type="checkbox" checked><label for="sk-estimator-id-4" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+    </style><body><div id="sk-container-id-2" tabindex="0" role="region" aria-label="SimpleKMeans estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x796CF2FBB140)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" open><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>SimpleKMeans</span></span><span><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1037,7 +1002,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
                               this.parentElement.nextElementSibling)"
                 ></button></td>
                 <td class="param">random_state</td>
-                <td class="value">RandomState(M...0x7C3A8907F140</td>
+                <td class="value">RandomState(M...0x796CF2FBB140</td>
             </tr>
     
 
@@ -1079,7 +1044,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
                             </tr>
                         
            <tr class="default">
-               <td class="param"><a class="param-doc-link" style="text-decoration:none;">cluster_centers_</a></td>
+               <td class="param">cluster_centers_</td>
                <td class="fitted-att-type">ndarray[float64](6, 4)</td>
                <td>[[0.2 ,0.71,0.57,0.71],
      [0.21,0.42,0.25,0.16],
@@ -1093,7 +1058,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
     
 
            <tr class="default">
-               <td class="param"><a class="param-doc-link" style="text-decoration:none;">n_features_in_</a></td>
+               <td class="param">n_features_in_</td>
                <td class="fitted-att-type">int</td>
                <td>4</td>
 
@@ -1104,7 +1069,7 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -1184,12 +1149,15 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -1204,6 +1172,39 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -1262,7 +1263,6 @@ Now the `SimpleKMeans` estimator can be used with callbacks, for example with th
         // Fallback to system preference
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-
 
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
@@ -1545,6 +1545,9 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -1570,15 +1573,20 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -1676,35 +1684,42 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -1734,65 +1749,57 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -1846,7 +1853,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -1855,14 +1862,15 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1872,8 +1880,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1906,45 +1913,15 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -1999,10 +1976,19 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -2021,11 +2007,6 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -2042,14 +2023,6 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -2093,7 +2066,9 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -2111,14 +2086,8 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -2132,13 +2101,15 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -2150,15 +2121,6 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -2201,9 +2163,16 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -2216,10 +2185,6 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -2235,11 +2200,11 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-3" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleGridSearch(cv=4,
-                     estimator=SimpleKMeans(random_state=RandomState(MT19937) at 0x7C3A8907F140),
+    </style><body><div id="sk-container-id-3" tabindex="0" role="region" aria-label="SimpleGridSearch estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>SimpleGridSearch(cv=4,
+                     estimator=SimpleKMeans(random_state=RandomState(MT19937) at 0x796CF2FBB140),
                      param_list=[{&#x27;n_clusters&#x27;: 5, &#x27;n_iter&#x27;: 20},
                                  {&#x27;n_clusters&#x27;: 4, &#x27;n_iter&#x27;: 50}],
-                     score_func=&lt;function score_func at 0x7c3a8617a350&gt;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-5" type="checkbox" ><label for="sk-estimator-id-5" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleGridSearch</div></div><div><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+                     score_func=&lt;function score_func at 0x796cf2de52d0&gt;)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>SimpleGridSearch</span></span><span><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -2253,7 +2218,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
                               this.parentElement.nextElementSibling)"
                 ></button></td>
                 <td class="param">estimator</td>
-                <td class="value">SimpleKMeans(...x7C3A8907F140)</td>
+                <td class="value">SimpleKMeans(...x796CF2FBB140)</td>
             </tr>
     
 
@@ -2286,7 +2251,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
                               this.parentElement.nextElementSibling)"
                 ></button></td>
                 <td class="param">score_func</td>
-                <td class="value">&lt;function sco...x7c3a8617a350&gt;</td>
+                <td class="value">&lt;function sco...x796cf2de52d0&gt;</td>
             </tr>
     
 
@@ -2317,7 +2282,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
                             </tr>
                         
            <tr class="default">
-               <td class="param"><a class="param-doc-link" style="text-decoration:none;">cv_results_</a></td>
+               <td class="param">cv_results_</td>
                <td class="fitted-att-type">list</td>
                <td>[({&#x27;n_...rs&#x27;: 5, &#x27;n_iter&#x27;: 20}, [np.float64(10.914245817017562), np.float64(11.359114841755348), np.float64(10.79790424790404), np.float64(10.874941524888662)]), ({&#x27;n_...rs&#x27;: 4, &#x27;n_iter&#x27;: 50}, [np.float64(11.69140640975051), np.float64(11.73823101129824), np.float64(11.369672628451896), np.float64(11.974176461029863)])]</td>
 
@@ -2328,7 +2293,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-6" type="checkbox" ><label for="sk-estimator-id-6" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>estimator: SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x7C3A8907F140)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-7" type="checkbox" ><label for="sk-estimator-id-7" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SimpleKMeans</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
+        </div></details></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>estimator: SimpleKMeans</span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="estimator__"><pre>SimpleKMeans(random_state=RandomState(MT19937) at 0x796CF2FBB140)</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>SimpleKMeans</span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="estimator__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -2342,7 +2307,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
                               this.parentElement.nextElementSibling)"
                 ></button></td>
                 <td class="param">random_state</td>
-                <td class="value">RandomState(M...0x7C3A8907F140</td>
+                <td class="value">RandomState(M...0x796CF2FBB140</td>
             </tr>
     
 
@@ -2371,7 +2336,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -2451,12 +2416,15 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -2471,6 +2439,39 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -2530,7 +2531,6 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
         if (estimatorElement === null) {
@@ -2549,7 +2549,7 @@ The callbacks which respect the :class:`~AutoPropagatedCallback` protocol (such 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.076 seconds)
+   **Total running time of the script:** (0 minutes 0.079 seconds)
 
 
 .. _sphx_glr_download_auto_examples_callbacks_plot_callback_support.py:

@@ -262,6 +262,9 @@ its fluctuations.
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -287,15 +290,20 @@ its fluctuations.
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -393,35 +401,42 @@ its fluctuations.
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -451,65 +466,57 @@ its fluctuations.
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -563,7 +570,7 @@ its fluctuations.
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -572,14 +579,15 @@ its fluctuations.
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -589,8 +597,7 @@ its fluctuations.
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -623,45 +630,15 @@ its fluctuations.
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -716,10 +693,19 @@ its fluctuations.
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -738,11 +724,6 @@ its fluctuations.
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -759,14 +740,6 @@ its fluctuations.
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -810,7 +783,9 @@ its fluctuations.
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -828,14 +803,8 @@ its fluctuations.
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -849,13 +818,15 @@ its fluctuations.
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -867,15 +838,6 @@ its fluctuations.
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -918,9 +880,16 @@ its fluctuations.
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -933,10 +902,6 @@ its fluctuations.
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -952,8 +917,8 @@ its fluctuations.
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-16" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>GraphicalLassoCV(alphas=array([ 0.03162278,  0.05994843,  0.11364637,  0.21544347,  0.40842387,
-            0.77426368,  1.46779927,  2.7825594 ,  5.27499706, 10.        ]))</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-42" type="checkbox" checked><label for="sk-estimator-id-42" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>GraphicalLassoCV</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html">?<span>Documentation for GraphicalLassoCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+    </style><body><div id="sk-container-id-11" tabindex="0" role="region" aria-label="GraphicalLassoCV estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>GraphicalLassoCV(alphas=array([ 0.03162278,  0.05994843,  0.11364637,  0.21544347,  0.40842387,
+            0.77426368,  1.46779927,  2.7825594 ,  5.27499706, 10.        ]))</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" open><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>GraphicalLassoCV</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html">?<span>Documentation for GraphicalLassoCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -971,7 +936,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-alphas;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=alphas,-int%20or%20array-like%20of%20shape%20%28n_alphas%2C%29%2C%20dtype%3Dfloat%2C%20default%3D4">
                 alphas
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-alphas;">
                 alphas: int or array-like of shape (n_alphas,), dtype=float, default=4<br><br>If an integer is given, it fixes the number of points on the<br>grids of alpha to be used. If a list is given, it gives the<br>grid to be used. See the notes in the class docstring for<br>more details. Range is [1, inf) for an integer.<br>Range is (0, inf] for an array-like of floats.</span>
             </a>
@@ -991,7 +956,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-n_refinements;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=n_refinements,-int%2C%20default%3D4">
                 n_refinements
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_refinements;">
                 n_refinements: int, default=4<br><br>The number of times the grid is refined. Not used if explicit<br>values of alphas are passed. Range is [1, inf).</span>
             </a>
@@ -1011,7 +976,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-cv;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=cv,-int%2C%20cross-validation%20generator%20or%20iterable%2C%20default%3DNone">
                 cv
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-cv;">
                 cv: int, cross-validation generator or iterable, default=None<br><br>Determines the cross-validation splitting strategy.<br>Possible inputs for cv are:<br><br>- None, to use the default 5-fold cross-validation,<br>- integer, to specify the number of folds,<br>- :term:`CV splitter`,<br>- an iterable yielding (train, test) splits as arrays of indices.<br><br>For integer/None inputs :class:`~sklearn.model_selection.KFold` is used.<br><br>Refer :ref:`User Guide &lt;cross_validation&gt;` for the various<br>cross-validation strategies that can be used here.<br><br>.. versionchanged:: 0.20<br>    ``cv`` default value if None changed from 3-fold to 5-fold.</span>
             </a>
@@ -1031,7 +996,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-tol;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=tol,-float%2C%20default%3D1e-4">
                 tol
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-tol;">
                 tol: float, default=1e-4<br><br>The tolerance to declare convergence: if the dual gap goes below<br>this value, iterations are stopped. Range is (0, inf].</span>
             </a>
@@ -1051,7 +1016,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-enet_tol;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=enet_tol,-float%2C%20default%3D1e-4">
                 enet_tol
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-enet_tol;">
                 enet_tol: float, default=1e-4<br><br>The tolerance for the elastic net solver used to calculate the descent<br>direction. This parameter controls the accuracy of the search direction<br>for a given column update, not of the overall parameter estimate. Only<br>used for mode=&#x27;cd&#x27;. Range is (0, inf].</span>
             </a>
@@ -1071,7 +1036,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-max_iter;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=max_iter,-int%2C%20default%3D100">
                 max_iter
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_iter;">
                 max_iter: int, default=100<br><br>Maximum number of iterations.</span>
             </a>
@@ -1091,7 +1056,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-mode;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=mode,-%7B%27cd%27%2C%20%27lars%27%7D%2C%20default%3D%27cd%27">
                 mode
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-mode;">
                 mode: {&#x27;cd&#x27;, &#x27;lars&#x27;}, default=&#x27;cd&#x27;<br><br>The Lasso solver to use: coordinate descent or LARS. Use LARS for<br>very sparse underlying graphs, where number of features is greater<br>than number of samples. Elsewhere prefer cd which is more numerically<br>stable.</span>
             </a>
@@ -1111,7 +1076,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-n_jobs;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=n_jobs,-int%2C%20default%3DNone">
                 n_jobs
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_jobs;">
                 n_jobs: int, default=None<br><br>Number of jobs to run in parallel.<br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.<br><br>.. versionchanged:: v0.20<br>   `n_jobs` default changed from 1 to None</span>
             </a>
@@ -1131,7 +1096,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>If verbose is True, the objective function and duality gap are<br>printed at each iteration.</span>
             </a>
@@ -1151,7 +1116,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-eps;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=eps,-float%2C%20default%3Deps">
                 eps
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-eps;">
                 eps: float, default=eps<br><br>The machine-precision regularization in the computation of the<br>Cholesky diagonal factors. Increase this for very ill-conditioned<br>systems. Default is `np.finfo(np.float64).eps`.<br><br>.. versionadded:: 1.3</span>
             </a>
@@ -1171,7 +1136,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-assume_centered;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=assume_centered,-bool%2C%20default%3DFalse">
                 assume_centered
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-assume_centered;">
                 assume_centered: bool, default=False<br><br>If True, data are not centered before computation.<br>Useful when working with data whose mean is almost, but not exactly<br>zero.<br>If False, data are centered before computation.</span>
             </a>
@@ -1201,7 +1166,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-alpha_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=alpha_,-float">
                 alpha_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-alpha_;">
                 alpha_: float<br><br>Penalization parameter selected.</span>
             </a>
@@ -1219,7 +1184,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-costs_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=costs_,-list%20of%20%28objective%2C%20dual_gap%29%20pairs">
                 costs_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-costs_;">
                 costs_: list of (objective, dual_gap) pairs<br><br>The list of values of the objective function and the dual gap at<br>each iteration. Returned only if return_costs is True.<br><br>.. versionadded:: 1.3</span>
             </a>
@@ -1237,7 +1202,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-covariance_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=covariance_,-ndarray%20of%20shape%20%28n_features%2C%20n_features%29">
                 covariance_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-covariance_;">
                 covariance_: ndarray of shape (n_features, n_features)<br><br>Estimated covariance matrix.</span>
             </a>
@@ -1261,7 +1226,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-cv_results_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=cv_results_,-dict%20of%20ndarrays">
                 cv_results_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-cv_results_;">
                 cv_results_: dict of ndarrays<br><br>A dict with keys:<br><br>alphas : ndarray of shape (n_alphas,)<br>    All penalization parameters explored.<br><br>split(k)_test_score : ndarray of shape (n_alphas,)<br>    Log-likelihood score on left-out data across (k)th fold.<br><br>    .. versionadded:: 1.0<br><br>mean_test_score : ndarray of shape (n_alphas,)<br>    Mean of scores over the folds.<br><br>    .. versionadded:: 1.0<br><br>std_test_score : ndarray of shape (n_alphas,)<br>    Standard deviation of scores over the folds.<br><br>    .. versionadded:: 1.0</span>
             </a>
@@ -1279,7 +1244,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-location_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=location_,-ndarray%20of%20shape%20%28n_features%2C%29">
                 location_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-location_;">
                 location_: ndarray of shape (n_features,)<br><br>Estimated location, i.e. the estimated mean.</span>
             </a>
@@ -1297,7 +1262,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-n_features_in_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=n_features_in_,-int">
                 n_features_in_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
                 n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -1315,7 +1280,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-n_iter_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=n_iter_,-int">
                 n_iter_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_iter_;">
                 n_iter_: int<br><br>Number of iterations run for the optimal alpha.</span>
             </a>
@@ -1333,7 +1298,7 @@ its fluctuations.
                 style="anchor-name: --doc-link-precision_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.covariance.GraphicalLassoCV.html#:~:text=precision_,-ndarray%20of%20shape%20%28n_features%2C%20n_features%29">
                 precision_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-precision_;">
                 precision_: ndarray of shape (n_features, n_features)<br><br>Estimated precision matrix (inverse covariance).</span>
             </a>
@@ -1354,7 +1319,7 @@ its fluctuations.
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -1434,12 +1399,15 @@ its fluctuations.
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -1454,6 +1422,39 @@ its fluctuations.
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -1513,7 +1514,6 @@ its fluctuations.
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
         if (estimatorElement === null) {
@@ -1524,7 +1524,7 @@ its fluctuations.
         }
     }
 
-    forceTheme('sk-container-id-16');</script></body>
+    forceTheme('sk-container-id-11');</script></body>
     </div>
     <br />
     <br />
@@ -1734,7 +1734,7 @@ axis.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.275 seconds)
+   **Total running time of the script:** (0 minutes 5.453 seconds)
 
 
 .. _sphx_glr_download_auto_examples_applications_plot_stock_market.py:

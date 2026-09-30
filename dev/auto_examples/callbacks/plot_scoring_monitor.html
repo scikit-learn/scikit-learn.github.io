@@ -1108,8 +1108,8 @@ the standard scaler and the logistic regression.</p>
 </span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>GridSearchCV - fit                                                 ━━━ 100% 0:0…
   GridSearchCV - search #0                                         ━━━ 100% 0:0…
-    GridSearchCV - candidate-split-evaluation | Pipeline - fit #0  ━━━ 100% 0:0…
     GridSearchCV - candidate-split-evaluation | Pipeline - fit #1  ━━━ 100% 0:0…
+    GridSearchCV - candidate-split-evaluation | Pipeline - fit #0  ━━━ 100% 0:0…
     GridSearchCV - candidate-split-evaluation | Pipeline - fit #2  ━━━ 100% 0:0…
     GridSearchCV - candidate-split-evaluation | Pipeline - fit #3  ━━━ 100% 0:0…
     GridSearchCV - candidate-split-evaluation | Pipeline - fit #4  ━━━ 100% 0:0…
@@ -1157,6 +1157,9 @@ the standard scaler and the logistic regression.</p>
   --sklearn-color-fitted-level-1: #d4ebff;
   --sklearn-color-fitted-level-2: #b3dbfd;
   --sklearn-color-fitted-level-3: cornflowerblue;
+  /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+  background (in both light and dark themes). */
+  --sklearn-color-focus: #8f3ce0;
 }
 
 .sk-global.light {
@@ -1182,15 +1185,20 @@ the standard scaler and the logistic regression.</p>
   padding: 0;
 }
 
-.sk-global input.sk-hidden--visually {
-  border: 0;
-  clip-path: inset(100%);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
+/* The first selector is the scrollable container itself which is focusable. */
+.sk-global:focus-visible,
+.sk-global :focus-visible {
+  outline: 2px solid var(--sklearn-color-focus);
+  outline-offset: -2px;
+  border-radius: 0.25em;
+}
+
+/* Focus ring sits outside copy-paste icon.
+   The outline is repeated because notebooks sets it. We need
+   a more specific selector than the generic rule above. */
+.sk-global .copy-paste-icon:focus-visible {
+    outline: 2px solid var(--sklearn-color-focus);
+    outline-offset: 2px;
 }
 
 .sk-global div.sk-dashed-wrapped {
@@ -1288,35 +1296,42 @@ clickable and can be expanded/collapsed.
 }
 
 /* Toggleable label */
-.sk-global label.sk-toggleable__label {
+.sk-global summary.sk-toggleable__label {
   cursor: pointer;
-  display: flex;
+  text-align: center;
   width: 100%;
   margin-bottom: 0;
   padding: 0.5em;
   box-sizing: border-box;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
 }
 
-.sk-global label.sk-toggleable__label .caption {
+.sk-global summary::marker {
+  color: var(--sklearn-color-icon)
+}
+
+.sk-global summary.sk-toggleable__label--no-marker {
+  list-style: none;
+}
+
+/* Lay out the label content (name + doc link) in a row next to the marker. */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-left: 0.5em;
+}
+
+/* Stack the estimator name/caption with flex, since they are spans.
+  <summary> only accepts phrasing content */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-global summary.sk-toggleable__label .caption {
   font-size: 0.6rem;
   font-weight: lighter;
   color: var(--sklearn-color-text-muted);
-}
-
-.sk-global label.sk-toggleable__label-arrow:before {
-  /* Arrow on the left of the label */
-  content: "▸";
-  float: left;
-  margin-right: 0.25em;
-  color: var(--sklearn-color-icon);
-}
-
-.sk-global label.sk-toggleable__label-arrow:hover:before {
-  color: var(--sklearn-color-text);
 }
 
 /* Toggleable content - dropdown */
@@ -1346,65 +1361,57 @@ clickable and can be expanded/collapsed.
   background-color: var(--sklearn-color-fitted-level-0);
 }
 
-.sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+.sk-global details[open] > div.sk-toggleable__content {
   /* Expand drop-down */
   display: block;
   width: 100%;
   overflow: visible;
 }
 
-.sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-  content: "▾";
-}
-
 /* Pipeline/ColumnTransformer-specific style */
 
-.sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label details[open] > summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
 /* Estimator-specific style */
 
 /* Colorize estimator box */
-.sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
-.sk-global div.sk-label label.sk-toggleable__label,
+/* Estimator label */
+.sk-global div.sk-label summary.sk-toggleable__label,
 .sk-global div.sk-label label {
   /* The background is the default theme color */
   color: var(--sklearn-color-text-on-default-background);
+  font-family: monospace;
+  font-weight: bold;
+  line-height: 1.2em;
 }
 
 /* On hover, darken the color of the background */
-.sk-global div.sk-label:hover label.sk-toggleable__label {
+.sk-global div.sk-label:hover summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
 /* Label box, darken color on hover, fitted */
-.sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+.sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-fitted-level-2);
-}
-
-/* Estimator label */
-
-.sk-global div.sk-label label {
-  font-family: monospace;
-  font-weight: bold;
-  line-height: 1.2em;
 }
 
 .sk-global div.sk-label-container {
@@ -1458,7 +1465,7 @@ a:visited.sk-estimator-doc-link {
   text-align: center;
   /* unfitted */
   border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-  color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
 .sk-estimator-doc-link.fitted,
@@ -1467,14 +1474,15 @@ a:visited.sk-estimator-doc-link.fitted {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-0);
   border: var(--sklearn-color-fitted-level-3) 1pt solid;
-  color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
-/* On hover */
+/* On hover.
+   The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+   above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
 div.sk-estimator:hover .sk-estimator-doc-link:hover,
 .sk-estimator-doc-link:hover,
-div.sk-label-container:hover .sk-estimator-doc-link:hover,
-.sk-estimator-doc-link:hover {
+div.sk-label-container:hover .sk-estimator-doc-link:hover {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1484,8 +1492,7 @@ div.sk-label-container:hover .sk-estimator-doc-link:hover,
 
 div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
 .sk-estimator-doc-link.fitted:hover,
-div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-.sk-estimator-doc-link.fitted:hover {
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1518,45 +1525,15 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   border: var(--sklearn-color-fitted-level-3);
 }
 
-.sk-estimator-doc-link:hover span {
+.sk-estimator-doc-link:hover span,
+.sk-estimator-doc-link:focus-visible span {
   display: block;
 }
 
-/* "?"-specific style due to the `<a>` HTML tag */
-
-.sk-global a.estimator_doc_link {
-  float: right;
-  font-size: 1rem;
-  line-height: 1em;
-  font-family: monospace;
-  background-color: var(--sklearn-color-unfitted-level-0);
-  border-radius: 1rem;
-  height: 1rem;
-  width: 1rem;
-  text-decoration: none;
-  /* unfitted */
-  color: var(--sklearn-color-unfitted-level-1);
-  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-}
-
-.sk-global a.estimator_doc_link.fitted {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-0);
-  border: var(--sklearn-color-fitted-level-1) 1pt solid;
-  color: var(--sklearn-color-fitted-level-1);
-}
-
-/* On hover */
-.sk-global a.estimator_doc_link:hover {
-  /* unfitted */
-  background-color: var(--sklearn-color-unfitted-level-3);
-  color: var(--sklearn-color-background);
-  text-decoration: none;
-}
-
-.sk-global a.estimator_doc_link.fitted:hover {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-3);
+/* Focus ring round and outside of the small circular icon */
+.sk-global .sk-estimator-doc-link:focus-visible {
+  border-radius: 1em;
+  outline-offset: 1px;
 }
 
 .sk-top-container.sk-global {
@@ -1611,10 +1588,19 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 /*
     `table td`is set in notebook with right text-align.
     We need to overwrite it.
+    Padding added here so params without a doc link look like params
+    with a link.
 */
 .estimator-table table td.param {
     text-align: left;
     position: relative;
+    padding: .5em;
+}
+
+/*
+    When the cell holds a link, the link brings its own padding
+*/
+.estimator-table table td.param:has(a.param-doc-link) {
     padding: 0;
 }
 
@@ -1633,11 +1619,6 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
     text-align: left !important;
 }
 
-.user-set td i,
-.default td i {
-    color: black;
-}
-
 td.fitted-att-type {
     white-space: preserve nowrap;
 }
@@ -1654,14 +1635,6 @@ a.param-doc-link:visited {
     color: inherit;
     display: block;
     padding: .5em;
-}
-
-@supports(anchor-name: --doc-link) {
-    a.param-doc-link,
-    a.param-doc-link:link,
-    a.param-doc-link:visited {
-    anchor-name: --doc-link;
-    }
 }
 
 /* "hack" to make the entire area of the cell containing the link clickable */
@@ -1705,7 +1678,9 @@ a.param-doc-link::before {
     border: thin solid var(--sklearn-color-fitted-level-3);
 }
 
-.param-doc-link:hover .param-doc-description {
+/* The tooltip is shown on hover and when the link takes keyboard focus. */
+.param-doc-link:hover .param-doc-description,
+.param-doc-link:focus .param-doc-description {
     display: block;
 }
 
@@ -1723,14 +1698,8 @@ a.param-doc-link::before {
     background-color: transparent;
 }
 
-.copy-paste-icon:focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: 1px;
-}
-
 .features {
   font-family: monospace;
-  cursor: pointer;
   background-color: var(--sklearn-color-unfitted-level-0);
   border: 1px dotted var(--sklearn-color-border-box);
   border-radius: .20em;
@@ -1744,13 +1713,15 @@ a.param-doc-link::before {
 
 .features summary {
   cursor: pointer;
-  display: flex;
   margin-bottom: 0;
   text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
   padding: .25em;
+}
+
+.features summary .features-summary-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
 .features details[open] > summary {
@@ -1762,15 +1733,6 @@ a.param-doc-link::before {
 .features.fitted details[open] > summary {
   background-color: var(--sklearn-color-fitted-level-2);
   border-radius: .20em 0 0 0;
-}
-
-.features details > summary .arrow::before {
-  content: "▸";
-  color: grey;
-}
-
-.features details[open] > summary .arrow::before {
-  content: "▾";
 }
 
 .features details:hover > summary {
@@ -1813,9 +1775,16 @@ a.param-doc-link::before {
   filter: grayscale(100%) opacity(60%);
 }
 
+/* The grayscale filter above also applies to the focus ring. Reset it.
+  The copy-paste buttons ring's style lives in estimator.css. */
+.features .copy-paste-icon:focus-visible {
+  filter: none;
+}
+
 .features .features-container table {
   width: 100%;
   margin: 0.01em;
+  table-layout: inherit;
 }
 
 .features .features-container table tr:nth-child(odd) {
@@ -1828,10 +1797,6 @@ a.param-doc-link::before {
 
 .features .features-container table tr:hover {
   background-color: #e0e0e0;
-}
-
-.features .features-container table {
-  table-layout: inherit;
 }
 
 .features .features-container table td {
@@ -1847,7 +1812,7 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-7" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5, error_score=&#x27;raise&#x27;,
+</style><body><div id="sk-container-id-7" tabindex="0" role="region" aria-label="GridSearchCV estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>GridSearchCV(cv=5, error_score=&#x27;raise&#x27;,
              estimator=Pipeline(steps=[(&#x27;standardscaler&#x27;, StandardScaler()),
                                        (&#x27;logisticregression&#x27;,
                                         LogisticRegression(max_iter=1000))]),
@@ -1855,7 +1820,7 @@ a.param-doc-link::before {
              param_grid={&#x27;logisticregression__C&#x27;: array([1.e-02, 1.e+00, 1.e+02]),
                          &#x27;standardscaler__with_std&#x27;: [True, False]},
              refit=&#x27;d2_log_loss_score&#x27;,
-             scoring=[&#x27;d2_log_loss_score&#x27;, &#x27;accuracy&#x27;, &#x27;average_precision&#x27;])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-13" type="checkbox" ><label for="sk-estimator-id-13" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>GridSearchCV</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html">?<span>Documentation for GridSearchCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+             scoring=[&#x27;d2_log_loss_score&#x27;, &#x27;accuracy&#x27;, &#x27;average_precision&#x27;])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>GridSearchCV</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html">?<span>Documentation for GridSearchCV</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1873,7 +1838,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-estimator;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=estimator,-estimator%20object">
             estimator
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-estimator;">
             estimator: estimator object<br><br>This is assumed to implement the scikit-learn estimator interface.<br>Either estimator needs to provide a ``score`` function,<br>or ``scoring`` must be passed.</span>
         </a>
@@ -1893,7 +1858,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-param_grid;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=param_grid,-dict%20or%20list%20of%20dictionaries">
             param_grid
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-param_grid;">
             param_grid: dict or list of dictionaries<br><br>Dictionary with parameters names (`str`) as keys and lists of<br>parameter settings to try as values, or a list of such<br>dictionaries, in which case the grids spanned by each dictionary<br>in the list are explored. This enables searching over any sequence<br>of parameter settings.</span>
         </a>
@@ -1913,7 +1878,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-scoring;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scoring,-str%2C%20callable%2C%20list%2C%20tuple%20or%20dict%2C%20default%3DNone">
             scoring
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-scoring;">
             scoring: str, callable, list, tuple or dict, default=None<br><br>Strategy to evaluate the performance of the cross-validated model on<br>the test set.<br><br>If `scoring` represents a single score, one can use:<br><br>- a single string (see :ref:`scoring_string_names`);<br>- a callable (see :ref:`scoring_callable`) that returns a single value;<br>- `None`, the `estimator`&#x27;s<br>  :ref:`default evaluation criterion &lt;scoring_api_overview&gt;` is used.<br><br>If `scoring` represents multiple scores, one can use:<br><br>- a list or tuple of unique strings;<br>- a callable returning a dictionary where the keys are the metric<br>  names and the values are the metric scores;<br>- a dictionary with metric names as keys and callables as values.<br><br>See :ref:`multimetric_grid_search` for an example.</span>
         </a>
@@ -1933,7 +1898,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>Number of jobs to run in parallel.<br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.<br><br>.. versionchanged:: v0.20<br>   `n_jobs` default changed from 1 to None</span>
         </a>
@@ -1953,7 +1918,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-refit;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=refit,-bool%2C%20str%2C%20or%20callable%2C%20default%3DTrue">
             refit
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-refit;">
             refit: bool, str, or callable, default=True<br><br>Refit an estimator using the best found parameters on the whole<br>dataset.<br><br>For multiple metric evaluation, this needs to be a `str` denoting the<br>scorer that would be used to find the best parameters for refitting<br>the estimator at the end.<br><br>Where there are considerations other than maximum score in<br>choosing a best estimator, ``refit`` can be set to a function which<br>returns the selected ``best_index_`` given ``cv_results_``. In that<br>case, the ``best_estimator_`` and ``best_params_`` will be set<br>according to the returned ``best_index_`` while the ``best_score_``<br>attribute will not be available.<br><br>The refitted estimator is made available at the ``best_estimator_``<br>attribute and permits using ``predict`` directly on this<br>``GridSearchCV`` instance.<br><br>Also for multiple metric evaluation, the attributes ``best_index_``,<br>``best_score_`` and ``best_params_`` will only be available if<br>``refit`` is set and all of them will be determined w.r.t this specific<br>scorer.<br><br>See ``scoring`` parameter to know more about multiple metric<br>evaluation.<br><br>See :ref:`sphx_glr_auto_examples_model_selection_plot_grid_search_digits.py`<br>to see how to design a custom selection strategy using a callable<br>via `refit`.<br><br>See :ref:`this example<br>&lt;sphx_glr_auto_examples_model_selection_plot_grid_search_refit_callable.py&gt;`<br>for an example of how to use ``refit=callable`` to balance model<br>complexity and cross-validated score.<br><br>.. versionchanged:: 0.20<br>    Support for callable added.</span>
         </a>
@@ -1973,7 +1938,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-cv;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=cv,-int%2C%20cross-validation%20generator%20or%20an%20iterable%2C%20default%3DNone">
             cv
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-cv;">
             cv: int, cross-validation generator or an iterable, default=None<br><br>Determines the cross-validation splitting strategy.<br>Possible inputs for cv are:<br><br>- None, to use the default 5-fold cross validation,<br>- integer, to specify the number of folds in a `(Stratified)KFold`,<br>- :term:`CV splitter`,<br>- an iterable yielding (train, test) splits as arrays of indices.<br><br>For integer/None inputs, if the estimator is a classifier and ``y`` is<br>either binary or multiclass, :class:`StratifiedKFold` is used. In all<br>other cases, :class:`KFold` is used. These splitters are instantiated<br>with `shuffle=False` so the splits will be the same across calls.<br><br>Refer :ref:`User Guide &lt;cross_validation&gt;` for the various<br>cross-validation strategies that can be used here.<br><br>.. versionchanged:: 0.22<br>    ``cv`` default value if None changed from 3-fold to 5-fold.</span>
         </a>
@@ -1993,7 +1958,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-error_score;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=error_score,-%27raise%27%20or%20numeric%2C%20default%3Dnp.nan">
             error_score
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-error_score;">
             error_score: &#x27;raise&#x27; or numeric, default=np.nan<br><br>Value to assign to the score if an error occurs in estimator fitting.<br>If set to &#x27;raise&#x27;, the error is raised. If a numeric value is given,<br>FitFailedWarning is raised. This parameter does not affect the refit<br>step, which will always raise the error.</span>
         </a>
@@ -2013,7 +1978,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>Controls the verbosity of information printed during fitting, with higher<br>values yielding more detailed logging.<br><br>- 0 : no messages are printed;<br>- &gt;=1 : summary of the total number of fits;<br>- &gt;=2 : computation time for each fold and parameter candidate;<br>- &gt;=3 : fold indices and scores;<br>- &gt;=10 : parameter candidate indices and START messages before each fit.</span>
         </a>
@@ -2033,7 +1998,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-pre_dispatch;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=pre_dispatch,-int%2C%20or%20str%2C%20default%3D%272%2An_jobs%27">
             pre_dispatch
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-pre_dispatch;">
             pre_dispatch: int, or str, default=&#x27;2*n_jobs&#x27;<br><br>Controls the number of jobs that get dispatched during parallel<br>execution. Reducing this number can be useful to avoid an<br>explosion of memory consumption when more jobs get dispatched<br>than CPUs can process. This parameter can be:<br><br>- None, in which case all the jobs are immediately created and spawned. Use<br>  this for lightweight and fast-running jobs, to avoid delays due to on-demand<br>  spawning of the jobs<br>- An int, giving the exact number of total jobs that are spawned<br>- A str, giving an expression as a function of n_jobs, as in &#x27;2*n_jobs&#x27;</span>
         </a>
@@ -2053,7 +2018,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-return_train_score;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=return_train_score,-bool%2C%20default%3DFalse">
             return_train_score
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-return_train_score;">
             return_train_score: bool, default=False<br><br>If ``False``, the ``cv_results_`` attribute will not include training<br>scores.<br>Computing training scores is used to get insights on how different<br>parameter settings impact the overfitting/underfitting trade-off.<br>However computing the scores on the training set can be computationally<br>expensive and is not strictly required to select the parameters that<br>yield the best generalization performance.<br><br>.. versionadded:: 0.19<br><br>.. versionchanged:: 0.21<br>    Default value was changed from ``True`` to ``False``</span>
         </a>
@@ -2083,7 +2048,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-best_estimator_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=best_estimator_,-estimator">
             best_estimator_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-best_estimator_;">
             best_estimator_: estimator<br><br>Estimator that was chosen by the search, i.e. estimator<br>which gave highest score (or smallest loss if specified)<br>on the left out data. Not available if ``refit=False``.<br><br>See ``refit`` parameter for more information on allowed values.</span>
         </a>
@@ -2101,7 +2066,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-best_index_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=best_index_,-int">
             best_index_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-best_index_;">
             best_index_: int<br><br>The index (of the ``cv_results_`` arrays) which corresponds to the best<br>candidate parameter setting.<br><br>The dict at ``search.cv_results_[&#x27;params&#x27;][search.best_index_]`` gives<br>the parameter setting for the best model, that gives the highest<br>mean score (``search.best_score_``).<br><br>For multi-metric evaluation, this is present only if ``refit`` is<br>specified.</span>
         </a>
@@ -2119,7 +2084,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-best_params_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=best_params_,-dict">
             best_params_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-best_params_;">
             best_params_: dict<br><br>Parameter setting that gave the best results on the hold out data.<br><br>For multi-metric evaluation, this is present only if ``refit`` is<br>specified.</span>
         </a>
@@ -2137,7 +2102,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-best_score_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=best_score_,-float">
             best_score_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-best_score_;">
             best_score_: float<br><br>Mean cross-validated score of the best_estimator<br><br>For multi-metric evaluation, this is present only if ``refit`` is<br>specified.<br><br>This attribute is not available if ``refit`` is a function.</span>
         </a>
@@ -2155,7 +2120,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes,)<br><br>The classes labels. This is present only if ``refit`` is specified and<br>the underlying estimator is a classifier.</span>
         </a>
@@ -2173,13 +2138,13 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-cv_results_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=cv_results_,-dict%20of%20numpy%20%28masked%29%20ndarrays">
             cv_results_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-cv_results_;">
             cv_results_: dict of numpy (masked) ndarrays<br><br>A dict with keys as column headers and values as columns, that can be<br>imported into a pandas ``DataFrame``.<br><br>For instance the below given table<br><br>+------------+-----------+------------+-----------------+---+---------+<br>|param_kernel|param_gamma|param_degree|split0_test_score|...|rank_t...|<br>+============+===========+============+=================+===+=========+<br>|  &#x27;poly&#x27;    |     --    |      2     |       0.80      |...|    2    |<br>+------------+-----------+------------+-----------------+---+---------+<br>|  &#x27;poly&#x27;    |     --    |      3     |       0.70      |...|    4    |<br>+------------+-----------+------------+-----------------+---+---------+<br>|  &#x27;rbf&#x27;     |     0.1   |     --     |       0.80      |...|    3    |<br>+------------+-----------+------------+-----------------+---+---------+<br>|  &#x27;rbf&#x27;     |     0.2   |     --     |       0.93      |...|    1    |<br>+------------+-----------+------------+-----------------+---+---------+<br><br>will be represented by a ``cv_results_`` dict of::<br><br>    {<br>    &#x27;param_kernel&#x27;: masked_array(data = [&#x27;poly&#x27;, &#x27;poly&#x27;, &#x27;rbf&#x27;, &#x27;rbf&#x27;],<br>                                 mask = [False False False False]...)<br>    &#x27;param_gamma&#x27;: masked_array(data = [-- -- 0.1 0.2],<br>                                mask = [ True  True False False]...),<br>    &#x27;param_degree&#x27;: masked_array(data = [2.0 3.0 -- --],<br>                                 mask = [False False  True  True]...),<br>    &#x27;split0_test_score&#x27;  : [0.80, 0.70, 0.80, 0.93],<br>    &#x27;split1_test_score&#x27;  : [0.82, 0.50, 0.70, 0.78],<br>    &#x27;mean_test_score&#x27;    : [0.81, 0.60, 0.75, 0.85],<br>    &#x27;std_test_score&#x27;     : [0.01, 0.10, 0.05, 0.08],<br>    &#x27;rank_test_score&#x27;    : [2, 4, 3, 1],<br>    &#x27;split0_train_score&#x27; : [0.80, 0.92, 0.70, 0.93],<br>    &#x27;split1_train_score&#x27; : [0.82, 0.55, 0.70, 0.87],<br>    &#x27;mean_train_score&#x27;   : [0.81, 0.74, 0.70, 0.90],<br>    &#x27;std_train_score&#x27;    : [0.01, 0.19, 0.00, 0.03],<br>    &#x27;mean_fit_time&#x27;      : [0.73, 0.63, 0.43, 0.49],<br>    &#x27;std_fit_time&#x27;       : [0.01, 0.02, 0.01, 0.01],<br>    &#x27;mean_score_time&#x27;    : [0.01, 0.06, 0.04, 0.04],<br>    &#x27;std_score_time&#x27;     : [0.00, 0.00, 0.00, 0.01],<br>    &#x27;params&#x27;             : [{&#x27;kernel&#x27;: &#x27;poly&#x27;, &#x27;degree&#x27;: 2}, ...],<br>    }<br><br>For an example of visualization and interpretation of GridSearch results,<br>see :ref:`sphx_glr_auto_examples_model_selection_plot_grid_search_stats.py`.<br><br>NOTE<br><br>The key ``&#x27;params&#x27;`` is used to store a list of parameter<br>settings dicts for all the parameter candidates.<br><br>The ``mean_fit_time``, ``std_fit_time``, ``mean_score_time`` and<br>``std_score_time`` are all in seconds.<br><br>For multi-metric evaluation, the scores for all the scorers are<br>available in the ``cv_results_`` dict at the keys ending with that<br>scorer&#x27;s name (``&#x27;_&lt;scorer_name&gt;&#x27;``) instead of ``&#x27;_score&#x27;`` shown<br>above. (&#x27;split0_test_precision&#x27;, &#x27;mean_train_precision&#x27; etc.)</span>
         </a>
     </td>
            <td class="fitted-att-type">dict</td>
-           <td>{&#x27;me...me&#x27;: array([0.0893...  1.81601272]), &#x27;me...me&#x27;: array([0.0084...  0.00586638]), &#x27;me...cy&#x27;: array([0.296,...0.26 , 0.259]), &#x27;me...on&#x27;: array([0.2980...  0.26786088]), ...}</td>
+           <td>{&#x27;me...me&#x27;: array([0.0926...  1.82691326]), &#x27;me...me&#x27;: array([0.0065...  0.00606413]), &#x27;me...cy&#x27;: array([0.296,...0.26 , 0.259]), &#x27;me...on&#x27;: array([0.2980...  0.26786088]), ...}</td>
 
 
        </tr>
@@ -2191,7 +2156,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-multimetric_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool">
             multimetric_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-multimetric_;">
             multimetric_: bool<br><br>Whether or not the scorers compute several metrics.</span>
         </a>
@@ -2209,7 +2174,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`. Only defined if<br>`best_estimator_` is defined (see the documentation for the `refit`<br>parameter for more details) and that `best_estimator_` exposes<br>`n_features_in_` when fit.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -2227,7 +2192,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_splits_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=n_splits_,-int">
             n_splits_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_splits_;">
             n_splits_: int<br><br>The number of cross-validation splits (folds/iterations).</span>
         </a>
@@ -2245,13 +2210,13 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-refit_time_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=refit_time_,-float">
             refit_time_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-refit_time_;">
             refit_time_: float<br><br>Seconds used for refitting the best model on the whole dataset.<br><br>This is present only if ``refit`` is not False.<br><br>.. versionadded:: 0.20</span>
         </a>
     </td>
            <td class="fitted-att-type">float</td>
-           <td>0.413</td>
+           <td>0.4134</td>
 
 
        </tr>
@@ -2263,7 +2228,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-scorer_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict">
             scorer_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-scorer_;">
             scorer_: function or a dict<br><br>Scorer function used on the held out data to choose the best<br>parameters for the model.<br><br>For multi-metric evaluation, this attribute holds the validated<br>``scoring`` dict which maps the scorer key to the scorer callable.</span>
         </a>
@@ -2278,7 +2243,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-14" type="checkbox" ><label for="sk-estimator-id-14" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>best_estimator_: Pipeline</div></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___"></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-15" type="checkbox" ><label for="sk-estimator-id-15" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>StandardScaler</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___standardscaler__">
+    </div></details></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>best_estimator_: Pipeline</span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___"></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>StandardScaler</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___standardscaler__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -2296,7 +2261,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_std;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue">
             with_std
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_std;">
             with_std: bool, default=True<br><br>If True, scale the data to unit variance (or equivalently,<br>unit standard deviation).</span>
         </a>
@@ -2316,7 +2281,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-copy;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue">
             copy
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-copy;">
             copy: bool, default=True<br><br>If False, try to avoid a copy and do inplace scaling instead.<br>This is not guaranteed to always work inplace; e.g. if the data is<br>not a NumPy array or scipy.sparse CSR matrix, a copy may still be<br>returned.</span>
         </a>
@@ -2336,7 +2301,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_mean;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue">
             with_mean
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_mean;">
             with_mean: bool, default=True<br><br>If True, center the data before scaling.<br>This does not work (and will raise an exception) when attempted on<br>sparse matrices, because centering them entails building a dense<br>matrix which in common use cases is likely to be too large to fit in<br>memory.</span>
         </a>
@@ -2366,7 +2331,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-mean_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=mean_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             mean_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-mean_;">
             mean_: ndarray of shape (n_features,) or None<br><br>The mean value for each feature in the training set.<br>Equal to ``None`` when ``with_mean=False`` and ``with_std=False``.</span>
         </a>
@@ -2384,7 +2349,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -2402,7 +2367,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_samples_seen_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_samples_seen_,-int%20or%20ndarray%20of%20shape%20%28n_features%2C%29">
             n_samples_seen_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_samples_seen_;">
             n_samples_seen_: int or ndarray of shape (n_features,)<br><br>The number of samples processed by the estimator for each feature.<br>If there are no missing samples, the ``n_samples_seen`` will be an<br>integer, otherwise it will be an array of dtype int. If<br>`sample_weights` are used it will be a float (if no missing data)<br>or an array of dtype float that sums the weights seen so far.<br>Will be reset on new calls to fit, but increments across<br>``partial_fit`` calls.</span>
         </a>
@@ -2420,7 +2385,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-scale_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=scale_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             scale_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-scale_;">
             scale_: ndarray of shape (n_features,) or None<br><br>Per feature relative scaling of the data to achieve zero mean and unit<br>variance. Generally this is calculated using `np.sqrt(var_)`. If a<br>variance is zero, we can&#x27;t achieve unit variance, and the data is left<br>as-is, giving a scaling factor of 1. `scale_` is equal to `None`<br>when `with_std=False`.<br><br>.. versionadded:: 0.17<br>   *scale_*</span>
         </a>
@@ -2438,7 +2403,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-var_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=var_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             var_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-var_;">
             var_: ndarray of shape (n_features,) or None<br><br>The variance for each feature in the training set. Used to compute<br>`scale_`. Equal to ``None`` when ``with_mean=False`` and<br>``with_std=False``.</span>
         </a>
@@ -2453,24 +2418,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>100 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>100 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -2981,7 +2947,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-16" type="checkbox" ><label for="sk-estimator-id-16" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>LogisticRegression</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___logisticregression__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>LogisticRegression</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="best_estimator___logisticregression__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -2999,7 +2965,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-C;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
             C
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-C;">
             C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
         </a>
@@ -3019,7 +2985,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_iter;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=max_iter,-int%2C%20default%3D100">
             max_iter
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_iter;">
             max_iter: int, default=100<br><br>Maximum number of iterations taken for the solvers to converge.</span>
         </a>
@@ -3039,7 +3005,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-penalty;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=penalty,-%7B%27l1%27%2C%20%27l2%27%2C%20%27elasticnet%27%2C%20None%7D%2C%20default%3D%27l2%27">
             penalty
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-penalty;">
             penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. versionadded:: 0.19<br>   l1 penalty with SAGA solver (allowing &#x27;multinomial&#x27; + L1)<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
         </a>
@@ -3059,7 +3025,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-l1_ratio;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=l1_ratio,-float%2C%20default%3D0.0">
             l1_ratio
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-l1_ratio;">
             l1_ratio: float, default=0.0<br><br>The Elastic-Net mixing parameter, with `0 &lt;= l1_ratio &lt;= 1`. Setting<br>`l1_ratio=1` gives a pure L1-penalty, setting `l1_ratio=0` gives a pure<br>L2-penalty. Any value between 0 and 1 gives an Elastic-Net penalty of the form<br>`l1_ratio * L1 + (1 - l1_ratio) * L2`.<br><br>.. warning::<br>   Certain values of `l1_ratio`, i.e. some penalties, may not work with some<br>   solvers. See the parameter `solver` below, to know the compatibility between<br>   the penalty and solver.<br><br>.. versionchanged:: 1.8<br>    Default value changed from None to 0.0.<br><br>.. deprecated:: 1.8<br>    `None` is deprecated and will be removed in version 1.10. Always use<br>    `l1_ratio` to specify the penalty type.</span>
         </a>
@@ -3079,7 +3045,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-dual;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=dual,-bool%2C%20default%3DFalse">
             dual
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-dual;">
             dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.</span>
         </a>
@@ -3099,7 +3065,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-tol;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=tol,-float%2C%20default%3D1e-4">
             tol
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-tol;">
             tol: float, default=1e-4<br><br>Tolerance for stopping criteria.</span>
         </a>
@@ -3119,7 +3085,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-fit_intercept;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=fit_intercept,-bool%2C%20default%3DTrue">
             fit_intercept
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-fit_intercept;">
             fit_intercept: bool, default=True<br><br>Specifies if a constant (a.k.a. bias or intercept) should be<br>added to the decision function.</span>
         </a>
@@ -3139,7 +3105,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_scaling;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_scaling,-float%2C%20default%3D1">
             intercept_scaling
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_scaling;">
             intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.</span>
         </a>
@@ -3159,7 +3125,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-class_weight;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone">
             class_weight
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-class_weight;">
             class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.<br><br>.. versionadded:: 0.17<br>   *class_weight=&#x27;balanced&#x27;*</span>
         </a>
@@ -3179,7 +3145,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=random_state,-int%2C%20RandomState%20instance%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance, default=None<br><br>Only used for `solver` == &#x27;sag&#x27;, &#x27;saga&#x27; or &#x27;liblinear&#x27; to shuffle the<br>data. It has no effect on the other solvers.<br>See :term:`Glossary &lt;random_state&gt;` for details.</span>
         </a>
@@ -3199,7 +3165,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-solver;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=solver,-%7B%27lbfgs%27%2C%20%27liblinear%27%2C%20%27newton-cd%27%2C%20%27newton-cd-gram%27%2C%20%27newton-cg%27%2C%20%20%20%20%20%20%20%20%20%20%20%20%20%27newton-cholesky%27%2C%20%27sag%27%2C%20%27saga%27%7D%2C%20default%3D%27lbfgs%27">
             solver
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-solver;">
             solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           no<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 0.17<br>   Stochastic Average Gradient (SAG) descent solver. Multinomial support in<br>   version 0.18.<br>.. versionadded:: 0.19<br>   SAGA solver.<br>.. versionchanged:: 0.22<br>   The default solver changed from &#x27;liblinear&#x27; to &#x27;lbfgs&#x27; in 0.22.<br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
         </a>
@@ -3219,7 +3185,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>For the liblinear and lbfgs solvers set verbose to any positive<br>number for verbosity.</span>
         </a>
@@ -3239,7 +3205,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-warm_start;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
             warm_start
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-warm_start;">
             warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.<br><br>.. versionadded:: 0.17<br>   *warm_start* to support *lbfgs*, *newton-cg*, *sag*, *saga* solvers.</span>
         </a>
@@ -3259,7 +3225,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>Does not have any effect.<br><br>.. deprecated:: 1.8<br>   `n_jobs` is deprecated in version 1.8 and will be removed in 1.10.</span>
         </a>
@@ -3289,7 +3255,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%20%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes, )<br><br>A list of class labels known to the classifier.</span>
         </a>
@@ -3307,7 +3273,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-coef_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=coef_,-ndarray%20or%20CSR%20matrix%20of%20shape%20%281%2C%20n_features%29%20or%20%28n_classes%2C%20n_features%29">
             coef_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-coef_;">
             coef_: ndarray or CSR matrix of shape (1, n_features) or (n_classes, n_features)<br><br>Coefficients of the features in the decision function.<br><br>`coef_` is of shape (1, n_features) when the given problem is binary.<br><br>By default, it will be created as a dense array, but can be turned to<br>sparse (CSR format) through :meth:`sparsify` (which can be beneficial<br>under L1 regularization when many coefficients are zero), and back to<br>dense through :meth:`densify`.</span>
         </a>
@@ -3331,7 +3297,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_,-ndarray%20of%20shape%20%281%2C%29%20or%20%28n_classes%2C%29">
             intercept_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_;">
             intercept_: ndarray of shape (1,) or (n_classes,)<br><br>Intercept (a.k.a. bias) added to the decision function.<br><br>If `fit_intercept` is set to False, the intercept is set to zero.<br>`intercept_` is of shape (1,) when the given problem is binary.</span>
         </a>
@@ -3349,7 +3315,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -3367,7 +3333,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_iter_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_iter_,-ndarray%20of%20shape%20%281%2C%20%29">
             n_iter_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_iter_;">
             n_iter_: ndarray of shape (1, )<br><br>Actual number of iterations for all classes.<br><br>.. versionchanged:: 0.20<br><br>    In SciPy &lt;= 1.0.0 the number of lbfgs iterations may exceed<br>    ``max_iter``. ``n_iter_`` will now report at most ``max_iter``.</span>
         </a>
@@ -3382,7 +3348,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+    </div></details></div></div></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
  SPDX-License-Identifier: BSD-3-Clause
 */
 
@@ -3462,12 +3428,15 @@ function copyFeatureNamesToClipboard(element) {
 
     navigator.clipboard.writeText(formattedText)
         .then(() => {
-            element.style.display = 'none';
-            element.parentElement.appendChild(copyMark);
+            /* Hide only the icon image: display none would remove the
+             * focused button and drop keyboard focus to the page body. */
+            element.style.backgroundImage = 'none';
+            element.appendChild(copyMark);
 
             setTimeout(() => {
                 copyMark.remove();
                 element.innerHTML = originalHTML;
+                element.style.backgroundImage = '';
                 element.style = originalStyle;
             }, 1000);
         })
@@ -3482,6 +3451,39 @@ function copyFeatureNamesToClipboard(element) {
         });
     return false;
 }
+
+/* Prevent keys pressed inside a diagram from triggering notebook actions
+ * (entering edit mode, moving the cell selection, scrolling the notebook).
+ * The listener is on `window` in the capture phase because the notebook
+ * processes its shortcuts on the document during capture, before any
+ * listener attached inside the page body would run.
+ */
+if (!window.skEstimatorKeydownGuard) {
+    window.skEstimatorKeydownGuard = true;
+    window.addEventListener('keydown', function(event) {
+        const container = event.target instanceof Element
+            ? event.target.closest('.sk-top-container') : null;
+        if (container === null) {
+            return;
+        }
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.stopPropagation();
+            /* Space only has a native action on summaries and buttons.
+             * Anywhere else its default is to scroll the notebook, which
+             * moves the focused element out of view. */
+            if (event.key === ' ' && !event.target.matches('summary, button')) {
+                event.preventDefault();
+            }
+        } else if (event.key === 'Escape') {
+            /* Step back out to the diagram itself, so the keyboard position
+             * stays inside it instead of dropping to the page body. */
+            event.target.blur();
+            container.focus();
+            event.stopPropagation();
+        }
+    }, true);
+}
+
 /**
  * Adapted from Skrub
  * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -3540,7 +3542,6 @@ function detectTheme(element) {
     // Fallback to system preference
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
-
 
 function forceTheme(elementId) {
     const estimatorElement = document.querySelector(`#${elementId}`);
@@ -3626,10 +3627,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
   <tbody>
     <tr>
       <th>1</th>
-      <td>0.643935</td>
-      <td>0.007741</td>
-      <td>0.006275</td>
-      <td>0.000127</td>
+      <td>0.650454</td>
+      <td>0.004433</td>
+      <td>0.006417</td>
+      <td>0.000190</td>
       <td>0.01</td>
       <td>False</td>
       <td>{'logisticregression__C': 0.01, 'standardscale...</td>
@@ -3660,10 +3661,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>0</th>
-      <td>0.089393</td>
-      <td>0.004408</td>
-      <td>0.008490</td>
-      <td>0.001394</td>
+      <td>0.092698</td>
+      <td>0.006102</td>
+      <td>0.006594</td>
+      <td>0.000359</td>
       <td>0.01</td>
       <td>True</td>
       <td>{'logisticregression__C': 0.01, 'standardscale...</td>
@@ -3694,10 +3695,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.221113</td>
-      <td>0.007873</td>
-      <td>0.006300</td>
-      <td>0.000156</td>
+      <td>0.221569</td>
+      <td>0.009351</td>
+      <td>0.006292</td>
+      <td>0.000289</td>
       <td>1.00</td>
       <td>True</td>
       <td>{'logisticregression__C': 1.0, 'standardscaler...</td>
@@ -3728,10 +3729,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>3</th>
-      <td>1.719463</td>
-      <td>0.060737</td>
-      <td>0.006486</td>
-      <td>0.000337</td>
+      <td>1.722103</td>
+      <td>0.060783</td>
+      <td>0.006446</td>
+      <td>0.000195</td>
       <td>1.00</td>
       <td>False</td>
       <td>{'logisticregression__C': 1.0, 'standardscaler...</td>
@@ -3762,10 +3763,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.258219</td>
-      <td>0.014932</td>
-      <td>0.006564</td>
-      <td>0.000278</td>
+      <td>0.257342</td>
+      <td>0.014820</td>
+      <td>0.006178</td>
+      <td>0.000167</td>
       <td>100.00</td>
       <td>True</td>
       <td>{'logisticregression__C': 100.0, 'standardscal...</td>
@@ -3796,10 +3797,10 @@ visible as the “refit-with-best-params” task in the output above.</p>
     </tr>
     <tr>
       <th>5</th>
-      <td>1.816013</td>
-      <td>0.332375</td>
-      <td>0.005866</td>
-      <td>0.000721</td>
+      <td>1.826913</td>
+      <td>0.335893</td>
+      <td>0.006064</td>
+      <td>0.000926</td>
       <td>100.00</td>
       <td>False</td>
       <td>{'logisticregression__C': 100.0, 'standardscal...</td>
@@ -4144,7 +4145,7 @@ deprecation cycle.</p>
 “Rethinking Early Stopping: Refine, Then Calibrate” (2025).</a></p>
 </aside>
 </aside>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 12.910 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 12.960 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-callbacks-plot-scoring-monitor-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/callbacks/plot_scoring_monitor.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo3.svg" style="width: 150px;" />

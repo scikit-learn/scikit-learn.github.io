@@ -1155,6 +1155,9 @@ the transition regions affected by noise.</p>
   --sklearn-color-fitted-level-1: #d4ebff;
   --sklearn-color-fitted-level-2: #b3dbfd;
   --sklearn-color-fitted-level-3: cornflowerblue;
+  /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+  background (in both light and dark themes). */
+  --sklearn-color-focus: #8f3ce0;
 }
 
 .sk-global.light {
@@ -1180,15 +1183,20 @@ the transition regions affected by noise.</p>
   padding: 0;
 }
 
-.sk-global input.sk-hidden--visually {
-  border: 0;
-  clip-path: inset(100%);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
+/* The first selector is the scrollable container itself which is focusable. */
+.sk-global:focus-visible,
+.sk-global :focus-visible {
+  outline: 2px solid var(--sklearn-color-focus);
+  outline-offset: -2px;
+  border-radius: 0.25em;
+}
+
+/* Focus ring sits outside copy-paste icon.
+   The outline is repeated because notebooks sets it. We need
+   a more specific selector than the generic rule above. */
+.sk-global .copy-paste-icon:focus-visible {
+    outline: 2px solid var(--sklearn-color-focus);
+    outline-offset: 2px;
 }
 
 .sk-global div.sk-dashed-wrapped {
@@ -1286,35 +1294,42 @@ clickable and can be expanded/collapsed.
 }
 
 /* Toggleable label */
-.sk-global label.sk-toggleable__label {
+.sk-global summary.sk-toggleable__label {
   cursor: pointer;
-  display: flex;
+  text-align: center;
   width: 100%;
   margin-bottom: 0;
   padding: 0.5em;
   box-sizing: border-box;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
 }
 
-.sk-global label.sk-toggleable__label .caption {
+.sk-global summary::marker {
+  color: var(--sklearn-color-icon)
+}
+
+.sk-global summary.sk-toggleable__label--no-marker {
+  list-style: none;
+}
+
+/* Lay out the label content (name + doc link) in a row next to the marker. */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-left: 0.5em;
+}
+
+/* Stack the estimator name/caption with flex, since they are spans.
+  <summary> only accepts phrasing content */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-global summary.sk-toggleable__label .caption {
   font-size: 0.6rem;
   font-weight: lighter;
   color: var(--sklearn-color-text-muted);
-}
-
-.sk-global label.sk-toggleable__label-arrow:before {
-  /* Arrow on the left of the label */
-  content: "▸";
-  float: left;
-  margin-right: 0.25em;
-  color: var(--sklearn-color-icon);
-}
-
-.sk-global label.sk-toggleable__label-arrow:hover:before {
-  color: var(--sklearn-color-text);
 }
 
 /* Toggleable content - dropdown */
@@ -1344,65 +1359,57 @@ clickable and can be expanded/collapsed.
   background-color: var(--sklearn-color-fitted-level-0);
 }
 
-.sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+.sk-global details[open] > div.sk-toggleable__content {
   /* Expand drop-down */
   display: block;
   width: 100%;
   overflow: visible;
 }
 
-.sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-  content: "▾";
-}
-
 /* Pipeline/ColumnTransformer-specific style */
 
-.sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label details[open] > summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
 /* Estimator-specific style */
 
 /* Colorize estimator box */
-.sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
-.sk-global div.sk-label label.sk-toggleable__label,
+/* Estimator label */
+.sk-global div.sk-label summary.sk-toggleable__label,
 .sk-global div.sk-label label {
   /* The background is the default theme color */
   color: var(--sklearn-color-text-on-default-background);
+  font-family: monospace;
+  font-weight: bold;
+  line-height: 1.2em;
 }
 
 /* On hover, darken the color of the background */
-.sk-global div.sk-label:hover label.sk-toggleable__label {
+.sk-global div.sk-label:hover summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
 /* Label box, darken color on hover, fitted */
-.sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+.sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-fitted-level-2);
-}
-
-/* Estimator label */
-
-.sk-global div.sk-label label {
-  font-family: monospace;
-  font-weight: bold;
-  line-height: 1.2em;
 }
 
 .sk-global div.sk-label-container {
@@ -1456,7 +1463,7 @@ a:visited.sk-estimator-doc-link {
   text-align: center;
   /* unfitted */
   border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-  color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
 .sk-estimator-doc-link.fitted,
@@ -1465,14 +1472,15 @@ a:visited.sk-estimator-doc-link.fitted {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-0);
   border: var(--sklearn-color-fitted-level-3) 1pt solid;
-  color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
-/* On hover */
+/* On hover.
+   The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+   above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
 div.sk-estimator:hover .sk-estimator-doc-link:hover,
 .sk-estimator-doc-link:hover,
-div.sk-label-container:hover .sk-estimator-doc-link:hover,
-.sk-estimator-doc-link:hover {
+div.sk-label-container:hover .sk-estimator-doc-link:hover {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1482,8 +1490,7 @@ div.sk-label-container:hover .sk-estimator-doc-link:hover,
 
 div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
 .sk-estimator-doc-link.fitted:hover,
-div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-.sk-estimator-doc-link.fitted:hover {
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1516,45 +1523,15 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   border: var(--sklearn-color-fitted-level-3);
 }
 
-.sk-estimator-doc-link:hover span {
+.sk-estimator-doc-link:hover span,
+.sk-estimator-doc-link:focus-visible span {
   display: block;
 }
 
-/* "?"-specific style due to the `<a>` HTML tag */
-
-.sk-global a.estimator_doc_link {
-  float: right;
-  font-size: 1rem;
-  line-height: 1em;
-  font-family: monospace;
-  background-color: var(--sklearn-color-unfitted-level-0);
-  border-radius: 1rem;
-  height: 1rem;
-  width: 1rem;
-  text-decoration: none;
-  /* unfitted */
-  color: var(--sklearn-color-unfitted-level-1);
-  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-}
-
-.sk-global a.estimator_doc_link.fitted {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-0);
-  border: var(--sklearn-color-fitted-level-1) 1pt solid;
-  color: var(--sklearn-color-fitted-level-1);
-}
-
-/* On hover */
-.sk-global a.estimator_doc_link:hover {
-  /* unfitted */
-  background-color: var(--sklearn-color-unfitted-level-3);
-  color: var(--sklearn-color-background);
-  text-decoration: none;
-}
-
-.sk-global a.estimator_doc_link.fitted:hover {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-3);
+/* Focus ring round and outside of the small circular icon */
+.sk-global .sk-estimator-doc-link:focus-visible {
+  border-radius: 1em;
+  outline-offset: 1px;
 }
 
 .sk-top-container.sk-global {
@@ -1609,10 +1586,19 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 /*
     `table td`is set in notebook with right text-align.
     We need to overwrite it.
+    Padding added here so params without a doc link look like params
+    with a link.
 */
 .estimator-table table td.param {
     text-align: left;
     position: relative;
+    padding: .5em;
+}
+
+/*
+    When the cell holds a link, the link brings its own padding
+*/
+.estimator-table table td.param:has(a.param-doc-link) {
     padding: 0;
 }
 
@@ -1631,11 +1617,6 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
     text-align: left !important;
 }
 
-.user-set td i,
-.default td i {
-    color: black;
-}
-
 td.fitted-att-type {
     white-space: preserve nowrap;
 }
@@ -1652,14 +1633,6 @@ a.param-doc-link:visited {
     color: inherit;
     display: block;
     padding: .5em;
-}
-
-@supports(anchor-name: --doc-link) {
-    a.param-doc-link,
-    a.param-doc-link:link,
-    a.param-doc-link:visited {
-    anchor-name: --doc-link;
-    }
 }
 
 /* "hack" to make the entire area of the cell containing the link clickable */
@@ -1703,7 +1676,9 @@ a.param-doc-link::before {
     border: thin solid var(--sklearn-color-fitted-level-3);
 }
 
-.param-doc-link:hover .param-doc-description {
+/* The tooltip is shown on hover and when the link takes keyboard focus. */
+.param-doc-link:hover .param-doc-description,
+.param-doc-link:focus .param-doc-description {
     display: block;
 }
 
@@ -1721,14 +1696,8 @@ a.param-doc-link::before {
     background-color: transparent;
 }
 
-.copy-paste-icon:focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: 1px;
-}
-
 .features {
   font-family: monospace;
-  cursor: pointer;
   background-color: var(--sklearn-color-unfitted-level-0);
   border: 1px dotted var(--sklearn-color-border-box);
   border-radius: .20em;
@@ -1742,13 +1711,15 @@ a.param-doc-link::before {
 
 .features summary {
   cursor: pointer;
-  display: flex;
   margin-bottom: 0;
   text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
   padding: .25em;
+}
+
+.features summary .features-summary-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
 .features details[open] > summary {
@@ -1760,15 +1731,6 @@ a.param-doc-link::before {
 .features.fitted details[open] > summary {
   background-color: var(--sklearn-color-fitted-level-2);
   border-radius: .20em 0 0 0;
-}
-
-.features details > summary .arrow::before {
-  content: "▸";
-  color: grey;
-}
-
-.features details[open] > summary .arrow::before {
-  content: "▾";
 }
 
 .features details:hover > summary {
@@ -1811,9 +1773,16 @@ a.param-doc-link::before {
   filter: grayscale(100%) opacity(60%);
 }
 
+/* The grayscale filter above also applies to the focus ring. Reset it.
+  The copy-paste buttons ring's style lives in estimator.css. */
+.features .copy-paste-icon:focus-visible {
+  filter: none;
+}
+
 .features .features-container table {
   width: 100%;
   margin: 0.01em;
+  table-layout: inherit;
 }
 
 .features .features-container table tr:nth-child(odd) {
@@ -1826,10 +1795,6 @@ a.param-doc-link::before {
 
 .features .features-container table tr:hover {
   background-color: #e0e0e0;
-}
-
-.features .features-container table {
-  table-layout: inherit;
 }
 
 .features .features-container table td {
@@ -1845,7 +1810,7 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-13" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>VotingClassifier(estimators=[(&#x27;constant splines model&#x27;,
+</style><body><div id="sk-container-id-8" tabindex="0" role="region" aria-label="VotingClassifier estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>VotingClassifier(estimators=[(&#x27;constant splines model&#x27;,
                               Pipeline(steps=[(&#x27;splinetransformer&#x27;,
                                                SplineTransformer(degree=2,
                                                                  n_knots=2)),
@@ -1870,7 +1835,7 @@ a.param-doc-link::before {
                                                         random_state=0)),
                                               (&#x27;logisticregression&#x27;,
                                                LogisticRegression(C=10))]))],
-                 voting=&#x27;soft&#x27;, weights=[2, 1, 3])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-22" type="checkbox" ><label for="sk-estimator-id-22" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>VotingClassifier</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html">?<span>Documentation for VotingClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+                 voting=&#x27;soft&#x27;, weights=[2, 1, 3])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>VotingClassifier</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html">?<span>Documentation for VotingClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1888,7 +1853,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-estimators;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=estimators,-list%20of%20%28str%2C%20estimator%29%20tuples">
             estimators
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-estimators;">
             estimators: list of (str, estimator) tuples<br><br>Invoking the ``fit`` method on the ``VotingClassifier`` will fit clones<br>of those original estimators that will be stored in the class attribute<br>``self.estimators_``. An estimator can be set to ``&#x27;drop&#x27;`` using<br>:meth:`set_params`.<br><br>.. versionchanged:: 0.21<br>    ``&#x27;drop&#x27;`` is accepted. Using None was deprecated in 0.22 and<br>    support was removed in 0.24.</span>
         </a>
@@ -1908,7 +1873,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-voting;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=voting,-%7B%27hard%27%2C%20%27soft%27%7D%2C%20default%3D%27hard%27">
             voting
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-voting;">
             voting: {&#x27;hard&#x27;, &#x27;soft&#x27;}, default=&#x27;hard&#x27;<br><br>If &#x27;hard&#x27;, uses predicted class labels for majority rule voting.<br>Else if &#x27;soft&#x27;, predicts the class label based on the argmax of<br>the sums of the predicted probabilities, which is recommended for<br>an ensemble of well-calibrated classifiers.</span>
         </a>
@@ -1928,7 +1893,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-weights;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=weights,-array-like%20of%20shape%20%28n_classifiers%2C%29%2C%20default%3DNone">
             weights
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-weights;">
             weights: array-like of shape (n_classifiers,), default=None<br><br>Sequence of weights (`float` or `int`) to weight the occurrences of<br>predicted class labels (`hard` voting) or class probabilities<br>before averaging (`soft` voting). Uses uniform weights if `None`.</span>
         </a>
@@ -1948,7 +1913,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>The number of jobs to run in parallel for ``fit``.<br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.<br><br>.. versionadded:: 0.18</span>
         </a>
@@ -1968,7 +1933,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-flatten_transform;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=flatten_transform,-bool%2C%20default%3DTrue">
             flatten_transform
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-flatten_transform;">
             flatten_transform: bool, default=True<br><br>Affects shape of transform output only when voting=&#x27;soft&#x27;<br>If voting=&#x27;soft&#x27; and flatten_transform=True, transform method returns<br>matrix with shape (n_samples, n_classifiers * n_classes). If<br>flatten_transform=False, it returns<br>(n_classifiers, n_samples, n_classes).</span>
         </a>
@@ -1988,7 +1953,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=verbose,-bool%2C%20default%3DFalse">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: bool, default=False<br><br>If True, the time elapsed while fitting will be printed as it<br>is completed.<br><br>.. versionadded:: 0.23</span>
         </a>
@@ -2018,7 +1983,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes,)<br><br>The classes labels.</span>
         </a>
@@ -2036,7 +2001,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-estimators_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=estimators_,-list%20of%20classifiers">
             estimators_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-estimators_;">
             estimators_: list of classifiers<br><br>The collection of fitted sub-estimators as defined in ``estimators``<br>that are not &#x27;drop&#x27;. Note that sub-estimators are always fitted on<br>integer-encoded labels (see ``le_`` attribute). When ``y`` contains<br>non-integer class labels (e.g. strings), use ``le_.inverse_transform``<br>to map predictions back to the original label space.</span>
         </a>
@@ -2054,7 +2019,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-feature_names_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=feature_names_in_,-ndarray%20of%20shape%20%28n_features_in_%2C%29">
             feature_names_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-feature_names_in_;">
             feature_names_in_: ndarray of shape (`n_features_in_`,)<br><br>Names of features seen during :term:`fit`. Only defined if the<br>underlying estimators expose such an attribute when fit.<br><br>.. versionadded:: 1.0</span>
         </a>
@@ -2072,7 +2037,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-le_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=le_,-%3Aclass%3A~sklearn.preprocessing.LabelEncoder">
             le_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-le_;">
             le_: :class:`~sklearn.preprocessing.LabelEncoder`<br><br>Transformer used to encode the labels during fit and decode during<br>prediction. Sub-estimators in ``estimators_`` are fitted on the<br>integer-encoded labels produced by this encoder.</span>
         </a>
@@ -2090,7 +2055,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`. Only defined if the<br>underlying classifier exposes such an attribute when fit.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -2108,7 +2073,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-named_estimators_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.VotingClassifier.html#:~:text=named_estimators_,-%3Aclass%3A~sklearn.utils.Bunch">
             named_estimators_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-named_estimators_;">
             named_estimators_: :class:`~sklearn.utils.Bunch`<br><br>Attribute to access any fitted sub-estimators by name.<br><br>.. versionadded:: 0.20</span>
         </a>
@@ -2123,7 +2088,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><label>constant splines model</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-23" type="checkbox" ><label for="sk-estimator-id-23" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SplineTransformer</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html">?<span>Documentation for SplineTransformer</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="constant splines model__splinetransformer__">
+    </div></details></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><label>constant splines model</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>SplineTransformer</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html">?<span>Documentation for SplineTransformer</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="constant splines model__splinetransformer__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -2141,7 +2106,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_knots;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=n_knots,-int%2C%20default%3D5">
             n_knots
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_knots;">
             n_knots: int, default=5<br><br>Number of knots of the splines if `knots` equals one of<br>{&#x27;uniform&#x27;, &#x27;quantile&#x27;}. Must be larger or equal 2. Ignored if `knots`<br>is array-like.</span>
         </a>
@@ -2161,7 +2126,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-degree;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=degree,-int%2C%20default%3D3">
             degree
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-degree;">
             degree: int, default=3<br><br>The polynomial degree of the spline basis. Must be a non-negative<br>integer.</span>
         </a>
@@ -2181,7 +2146,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-knots;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=knots,-int%2C%20default%3D5">
             knots
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-knots;">
             knots: {&#x27;uniform&#x27;, &#x27;quantile&#x27;} or array-like of shape         (n_knots, n_features), default=&#x27;uniform&#x27;<br><br>Set knot positions such that first knot &lt;= features &lt;= last knot.<br><br>- If &#x27;uniform&#x27;, `n_knots` number of knots are distributed uniformly<br>  from min to max values of the features.<br>- If &#x27;quantile&#x27;, they are distributed uniformly along the quantiles of<br>  the features.<br>- If an array-like is given, it directly specifies the sorted knot<br>  positions including the boundary knots. Note that, internally,<br>  `degree` number of knots are added before the first knot, the same<br>  after the last knot.</span>
         </a>
@@ -2201,7 +2166,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-extrapolation;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=extrapolation,-%7B%27error%27%2C%20%27constant%27%2C%20%27linear%27%2C%20%27continue%27%2C%20%27periodic%27%7D%2C%20%20%20%20%20%20%20%20%20default%3D%27constant%27">
             extrapolation
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-extrapolation;">
             extrapolation: {&#x27;error&#x27;, &#x27;constant&#x27;, &#x27;linear&#x27;, &#x27;continue&#x27;, &#x27;periodic&#x27;},         default=&#x27;constant&#x27;<br><br>If &#x27;error&#x27;, values outside the min and max values of the training<br>features raises a `ValueError`. If &#x27;constant&#x27;, the value of the<br>splines at minimum and maximum value of the features is used as<br>constant extrapolation. If &#x27;linear&#x27;, a linear extrapolation is used.<br>If &#x27;continue&#x27;, the splines are extrapolated as is, i.e. option<br>`extrapolate=True` in :class:`scipy.interpolate.BSpline`. If<br>&#x27;periodic&#x27;, periodic splines with a periodicity equal to the distance<br>between the first and last knot are used. Periodic splines enforce<br>equal function values and derivatives at the first and last knot.<br>For example, this makes it possible to avoid introducing an arbitrary<br>jump between Dec 31st and Jan 1st in spline features derived from a<br>naturally periodic &quot;day-of-year&quot; input feature. In this case it is<br>recommended to manually set the knot values to control the period.</span>
         </a>
@@ -2221,7 +2186,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-include_bias;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=include_bias,-bool%2C%20default%3DTrue">
             include_bias
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-include_bias;">
             include_bias: bool, default=True<br><br>If False, then the last spline element inside the data range<br>of a feature is dropped. As B-splines sum to one over the spline basis<br>functions for each data point, they implicitly include a bias term,<br>i.e. a column of ones. It acts as an intercept term in a linear models.</span>
         </a>
@@ -2241,7 +2206,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-order;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=order,-%7B%27C%27%2C%20%27F%27%7D%2C%20default%3D%27C%27">
             order
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-order;">
             order: {&#x27;C&#x27;, &#x27;F&#x27;}, default=&#x27;C&#x27;<br><br>Order of output array in the dense case. `&#x27;F&#x27;` order is faster to compute, but<br>may slow down subsequent estimators.</span>
         </a>
@@ -2261,7 +2226,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-handle_missing;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=handle_missing,-%7B%27error%27%2C%20%27zeros%27%7D%2C%20default%3D%27error%27">
             handle_missing
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-handle_missing;">
             handle_missing: {&#x27;error&#x27;, &#x27;zeros&#x27;}, default=&#x27;error&#x27;<br><br>Specifies the way missing values are handled.<br><br>- &#x27;error&#x27; : Raise an error if `np.nan` values are present during :meth:`fit`.<br>- &#x27;zeros&#x27; : Encode splines of missing values with values `0`.<br><br>Note that `handle_missing=&#x27;zeros&#x27;` differs from first imputing missing values<br>with zeros and then creating the spline basis. The latter creates spline basis<br>functions which have non-zero values at the missing values<br>whereas this option simply sets all spline basis function values to zero at the<br>missing values.<br><br>.. versionadded:: 1.8</span>
         </a>
@@ -2281,7 +2246,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-sparse_output;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=sparse_output,-bool%2C%20default%3DFalse">
             sparse_output
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-sparse_output;">
             sparse_output: bool, default=False<br><br>Will return sparse CSR matrix if set True else will return an array.<br><br>.. versionadded:: 1.2</span>
         </a>
@@ -2311,13 +2276,13 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-bsplines_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=bsplines_,-list%20of%20shape%20%28n_features%2C%29">
             bsplines_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-bsplines_;">
             bsplines_: list of shape (n_features,)<br><br>List of BSplines objects, one for each feature.</span>
         </a>
     </td>
            <td class="fitted-att-type">list</td>
-           <td>[&lt;scipy.interp...x7182eee3eb10&gt;, &lt;scipy.interp...x7182eee3c050&gt;]</td>
+           <td>[&lt;scipy.interp...x70fa486151f0&gt;, &lt;scipy.interp...x70fa48616630&gt;]</td>
 
 
        </tr>
@@ -2329,7 +2294,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-feature_names_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=feature_names_in_,-ndarray%20of%20shape%20%28n_features_in_%2C%29">
             feature_names_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-feature_names_in_;">
             feature_names_in_: ndarray of shape (`n_features_in_`,)<br><br>Names of features seen during :term:`fit`. Defined only when `X`<br>has feature names that are all strings.<br><br>.. versionadded:: 1.0</span>
         </a>
@@ -2347,7 +2312,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>The total number of input features.</span>
         </a>
@@ -2365,7 +2330,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_out_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=n_features_out_,-int">
             n_features_out_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_out_;">
             n_features_out_: int<br><br>The total number of output features, which is computed as<br>`n_features * n_splines`, where `n_splines` is<br>the number of bases elements of the B-splines,<br>`n_knots + degree - 1` for non-periodic splines and<br>`n_knots - 1` for periodic ones.<br>If `include_bias=False`, then it is only<br>`n_features * (n_splines - 1)`.</span>
         </a>
@@ -2380,24 +2345,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>6 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>6 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -2438,7 +2404,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-24" type="checkbox" ><label for="sk-estimator-id-24" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>PolynomialFeatures</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html">?<span>Documentation for PolynomialFeatures</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="constant splines model__polynomialfeatures__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>PolynomialFeatures</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html">?<span>Documentation for PolynomialFeatures</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="constant splines model__polynomialfeatures__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -2456,7 +2422,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-interaction_only;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=interaction_only,-bool%2C%20default%3DFalse">
             interaction_only
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-interaction_only;">
             interaction_only: bool, default=False<br><br>If `True`, only interaction features are produced: features that are<br>products of at most `degree` *distinct* input features, i.e. terms with<br>power of 2 or higher of the same input feature are excluded:<br><br>- included: `x[0]`, `x[1]`, `x[0] * x[1]`, etc.<br>- excluded: `x[0] ** 2`, `x[0] ** 2 * x[1]`, etc.</span>
         </a>
@@ -2476,7 +2442,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-degree;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=degree,-int%20or%20tuple%20%28min_degree%2C%20max_degree%29%2C%20default%3D2">
             degree
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-degree;">
             degree: int or tuple (min_degree, max_degree), default=2<br><br>If a single int is given, it specifies the maximal degree of the<br>polynomial features. If a tuple `(min_degree, max_degree)` is passed,<br>then `min_degree` is the minimum and `max_degree` is the maximum<br>polynomial degree of the generated features. Note that `min_degree=0`<br>and `min_degree=1` are equivalent as outputting the degree zero term is<br>determined by `include_bias`.</span>
         </a>
@@ -2496,7 +2462,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-include_bias;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=include_bias,-bool%2C%20default%3DTrue">
             include_bias
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-include_bias;">
             include_bias: bool, default=True<br><br>If `True` (default), then include a bias column, the feature in which<br>all polynomial powers are zero (i.e. a column of ones - acts as an<br>intercept term in a linear model).</span>
         </a>
@@ -2516,7 +2482,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-order;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=order,-%7B%27C%27%2C%20%27F%27%7D%2C%20default%3D%27C%27">
             order
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-order;">
             order: {&#x27;C&#x27;, &#x27;F&#x27;}, default=&#x27;C&#x27;<br><br>Order of output array in the dense case. `&#x27;F&#x27;` order is faster to<br>compute, but may slow down subsequent estimators.<br><br>.. versionadded:: 0.21</span>
         </a>
@@ -2546,7 +2512,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -2564,7 +2530,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_output_features_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=n_output_features_,-int">
             n_output_features_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_output_features_;">
             n_output_features_: int<br><br>The total number of polynomial output features. The number of output<br>features is computed by iterating over all suitably sized combinations<br>of input features.</span>
         </a>
@@ -2582,7 +2548,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-powers_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=powers_,-ndarray%20of%20shape%20%28n_output_features_%2C%20n_features_in_%29">
             powers_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-powers_;">
             powers_: ndarray of shape (`n_output_features_`, `n_features_in_`)<br><br>`powers_[i, j]` is the exponent of the jth input in the ith output.</span>
         </a>
@@ -2603,24 +2569,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>22 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>22 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -2741,7 +2708,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-25" type="checkbox" ><label for="sk-estimator-id-25" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>LogisticRegression</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="constant splines model__logisticregression__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>LogisticRegression</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="constant splines model__logisticregression__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -2759,7 +2726,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-C;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
             C
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-C;">
             C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
         </a>
@@ -2779,7 +2746,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-penalty;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=penalty,-%7B%27l1%27%2C%20%27l2%27%2C%20%27elasticnet%27%2C%20None%7D%2C%20default%3D%27l2%27">
             penalty
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-penalty;">
             penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. versionadded:: 0.19<br>   l1 penalty with SAGA solver (allowing &#x27;multinomial&#x27; + L1)<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
         </a>
@@ -2799,7 +2766,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-l1_ratio;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=l1_ratio,-float%2C%20default%3D0.0">
             l1_ratio
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-l1_ratio;">
             l1_ratio: float, default=0.0<br><br>The Elastic-Net mixing parameter, with `0 &lt;= l1_ratio &lt;= 1`. Setting<br>`l1_ratio=1` gives a pure L1-penalty, setting `l1_ratio=0` gives a pure<br>L2-penalty. Any value between 0 and 1 gives an Elastic-Net penalty of the form<br>`l1_ratio * L1 + (1 - l1_ratio) * L2`.<br><br>.. warning::<br>   Certain values of `l1_ratio`, i.e. some penalties, may not work with some<br>   solvers. See the parameter `solver` below, to know the compatibility between<br>   the penalty and solver.<br><br>.. versionchanged:: 1.8<br>    Default value changed from None to 0.0.<br><br>.. deprecated:: 1.8<br>    `None` is deprecated and will be removed in version 1.10. Always use<br>    `l1_ratio` to specify the penalty type.</span>
         </a>
@@ -2819,7 +2786,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-dual;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=dual,-bool%2C%20default%3DFalse">
             dual
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-dual;">
             dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.</span>
         </a>
@@ -2839,7 +2806,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-tol;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=tol,-float%2C%20default%3D1e-4">
             tol
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-tol;">
             tol: float, default=1e-4<br><br>Tolerance for stopping criteria.</span>
         </a>
@@ -2859,7 +2826,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-fit_intercept;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=fit_intercept,-bool%2C%20default%3DTrue">
             fit_intercept
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-fit_intercept;">
             fit_intercept: bool, default=True<br><br>Specifies if a constant (a.k.a. bias or intercept) should be<br>added to the decision function.</span>
         </a>
@@ -2879,7 +2846,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_scaling;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_scaling,-float%2C%20default%3D1">
             intercept_scaling
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_scaling;">
             intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.</span>
         </a>
@@ -2899,7 +2866,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-class_weight;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone">
             class_weight
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-class_weight;">
             class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.<br><br>.. versionadded:: 0.17<br>   *class_weight=&#x27;balanced&#x27;*</span>
         </a>
@@ -2919,7 +2886,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=random_state,-int%2C%20RandomState%20instance%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance, default=None<br><br>Only used for `solver` == &#x27;sag&#x27;, &#x27;saga&#x27; or &#x27;liblinear&#x27; to shuffle the<br>data. It has no effect on the other solvers.<br>See :term:`Glossary &lt;random_state&gt;` for details.</span>
         </a>
@@ -2939,7 +2906,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-solver;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=solver,-%7B%27lbfgs%27%2C%20%27liblinear%27%2C%20%27newton-cd%27%2C%20%27newton-cd-gram%27%2C%20%27newton-cg%27%2C%20%20%20%20%20%20%20%20%20%20%20%20%20%27newton-cholesky%27%2C%20%27sag%27%2C%20%27saga%27%7D%2C%20default%3D%27lbfgs%27">
             solver
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-solver;">
             solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           no<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 0.17<br>   Stochastic Average Gradient (SAG) descent solver. Multinomial support in<br>   version 0.18.<br>.. versionadded:: 0.19<br>   SAGA solver.<br>.. versionchanged:: 0.22<br>   The default solver changed from &#x27;liblinear&#x27; to &#x27;lbfgs&#x27; in 0.22.<br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
         </a>
@@ -2959,7 +2926,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_iter;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=max_iter,-int%2C%20default%3D100">
             max_iter
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_iter;">
             max_iter: int, default=100<br><br>Maximum number of iterations taken for the solvers to converge.</span>
         </a>
@@ -2979,7 +2946,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>For the liblinear and lbfgs solvers set verbose to any positive<br>number for verbosity.</span>
         </a>
@@ -2999,7 +2966,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-warm_start;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
             warm_start
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-warm_start;">
             warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.<br><br>.. versionadded:: 0.17<br>   *warm_start* to support *lbfgs*, *newton-cg*, *sag*, *saga* solvers.</span>
         </a>
@@ -3019,7 +2986,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>Does not have any effect.<br><br>.. deprecated:: 1.8<br>   `n_jobs` is deprecated in version 1.8 and will be removed in 1.10.</span>
         </a>
@@ -3049,7 +3016,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%20%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes, )<br><br>A list of class labels known to the classifier.</span>
         </a>
@@ -3067,7 +3034,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-coef_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=coef_,-ndarray%20or%20CSR%20matrix%20of%20shape%20%281%2C%20n_features%29%20or%20%28n_classes%2C%20n_features%29">
             coef_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-coef_;">
             coef_: ndarray or CSR matrix of shape (1, n_features) or (n_classes, n_features)<br><br>Coefficients of the features in the decision function.<br><br>`coef_` is of shape (1, n_features) when the given problem is binary.<br><br>By default, it will be created as a dense array, but can be turned to<br>sparse (CSR format) through :meth:`sparsify` (which can be beneficial<br>under L1 regularization when many coefficients are zero), and back to<br>dense through :meth:`densify`.</span>
         </a>
@@ -3085,7 +3052,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_,-ndarray%20of%20shape%20%281%2C%29%20or%20%28n_classes%2C%29">
             intercept_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_;">
             intercept_: ndarray of shape (1,) or (n_classes,)<br><br>Intercept (a.k.a. bias) added to the decision function.<br><br>If `fit_intercept` is set to False, the intercept is set to zero.<br>`intercept_` is of shape (1,) when the given problem is binary.</span>
         </a>
@@ -3103,7 +3070,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -3121,7 +3088,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_iter_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_iter_,-ndarray%20of%20shape%20%281%2C%20%29">
             n_iter_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_iter_;">
             n_iter_: ndarray of shape (1, )<br><br>Actual number of iterations for all classes.<br><br>.. versionchanged:: 0.20<br><br>    In SciPy &lt;= 1.0.0 the number of lbfgs iterations may exceed<br>    ``max_iter``. ``n_iter_`` will now report at most ``max_iter``.</span>
         </a>
@@ -3136,7 +3103,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><label>periodic splines model</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-26" type="checkbox" ><label for="sk-estimator-id-26" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>SplineTransformer</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html">?<span>Documentation for SplineTransformer</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="periodic splines model__splinetransformer__">
+    </div></details></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><label>periodic splines model</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>SplineTransformer</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html">?<span>Documentation for SplineTransformer</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="periodic splines model__splinetransformer__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3154,7 +3121,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_knots;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=n_knots,-int%2C%20default%3D5">
             n_knots
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_knots;">
             n_knots: int, default=5<br><br>Number of knots of the splines if `knots` equals one of<br>{&#x27;uniform&#x27;, &#x27;quantile&#x27;}. Must be larger or equal 2. Ignored if `knots`<br>is array-like.</span>
         </a>
@@ -3174,7 +3141,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-degree;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=degree,-int%2C%20default%3D3">
             degree
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-degree;">
             degree: int, default=3<br><br>The polynomial degree of the spline basis. Must be a non-negative<br>integer.</span>
         </a>
@@ -3194,7 +3161,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-extrapolation;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=extrapolation,-%7B%27error%27%2C%20%27constant%27%2C%20%27linear%27%2C%20%27continue%27%2C%20%27periodic%27%7D%2C%20%20%20%20%20%20%20%20%20default%3D%27constant%27">
             extrapolation
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-extrapolation;">
             extrapolation: {&#x27;error&#x27;, &#x27;constant&#x27;, &#x27;linear&#x27;, &#x27;continue&#x27;, &#x27;periodic&#x27;},         default=&#x27;constant&#x27;<br><br>If &#x27;error&#x27;, values outside the min and max values of the training<br>features raises a `ValueError`. If &#x27;constant&#x27;, the value of the<br>splines at minimum and maximum value of the features is used as<br>constant extrapolation. If &#x27;linear&#x27;, a linear extrapolation is used.<br>If &#x27;continue&#x27;, the splines are extrapolated as is, i.e. option<br>`extrapolate=True` in :class:`scipy.interpolate.BSpline`. If<br>&#x27;periodic&#x27;, periodic splines with a periodicity equal to the distance<br>between the first and last knot are used. Periodic splines enforce<br>equal function values and derivatives at the first and last knot.<br>For example, this makes it possible to avoid introducing an arbitrary<br>jump between Dec 31st and Jan 1st in spline features derived from a<br>naturally periodic &quot;day-of-year&quot; input feature. In this case it is<br>recommended to manually set the knot values to control the period.</span>
         </a>
@@ -3214,7 +3181,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-knots;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=knots,-int%2C%20default%3D5">
             knots
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-knots;">
             knots: {&#x27;uniform&#x27;, &#x27;quantile&#x27;} or array-like of shape         (n_knots, n_features), default=&#x27;uniform&#x27;<br><br>Set knot positions such that first knot &lt;= features &lt;= last knot.<br><br>- If &#x27;uniform&#x27;, `n_knots` number of knots are distributed uniformly<br>  from min to max values of the features.<br>- If &#x27;quantile&#x27;, they are distributed uniformly along the quantiles of<br>  the features.<br>- If an array-like is given, it directly specifies the sorted knot<br>  positions including the boundary knots. Note that, internally,<br>  `degree` number of knots are added before the first knot, the same<br>  after the last knot.</span>
         </a>
@@ -3234,7 +3201,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-include_bias;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=include_bias,-bool%2C%20default%3DTrue">
             include_bias
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-include_bias;">
             include_bias: bool, default=True<br><br>If False, then the last spline element inside the data range<br>of a feature is dropped. As B-splines sum to one over the spline basis<br>functions for each data point, they implicitly include a bias term,<br>i.e. a column of ones. It acts as an intercept term in a linear models.</span>
         </a>
@@ -3254,7 +3221,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-order;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=order,-%7B%27C%27%2C%20%27F%27%7D%2C%20default%3D%27C%27">
             order
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-order;">
             order: {&#x27;C&#x27;, &#x27;F&#x27;}, default=&#x27;C&#x27;<br><br>Order of output array in the dense case. `&#x27;F&#x27;` order is faster to compute, but<br>may slow down subsequent estimators.</span>
         </a>
@@ -3274,7 +3241,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-handle_missing;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=handle_missing,-%7B%27error%27%2C%20%27zeros%27%7D%2C%20default%3D%27error%27">
             handle_missing
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-handle_missing;">
             handle_missing: {&#x27;error&#x27;, &#x27;zeros&#x27;}, default=&#x27;error&#x27;<br><br>Specifies the way missing values are handled.<br><br>- &#x27;error&#x27; : Raise an error if `np.nan` values are present during :meth:`fit`.<br>- &#x27;zeros&#x27; : Encode splines of missing values with values `0`.<br><br>Note that `handle_missing=&#x27;zeros&#x27;` differs from first imputing missing values<br>with zeros and then creating the spline basis. The latter creates spline basis<br>functions which have non-zero values at the missing values<br>whereas this option simply sets all spline basis function values to zero at the<br>missing values.<br><br>.. versionadded:: 1.8</span>
         </a>
@@ -3294,7 +3261,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-sparse_output;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=sparse_output,-bool%2C%20default%3DFalse">
             sparse_output
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-sparse_output;">
             sparse_output: bool, default=False<br><br>Will return sparse CSR matrix if set True else will return an array.<br><br>.. versionadded:: 1.2</span>
         </a>
@@ -3324,13 +3291,13 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-bsplines_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=bsplines_,-list%20of%20shape%20%28n_features%2C%29">
             bsplines_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-bsplines_;">
             bsplines_: list of shape (n_features,)<br><br>List of BSplines objects, one for each feature.</span>
         </a>
     </td>
            <td class="fitted-att-type">list</td>
-           <td>[&lt;scipy.interp...x7182ec81deb0&gt;, &lt;scipy.interp...x7182eee75480&gt;]</td>
+           <td>[&lt;scipy.interp...x70fa48614a10&gt;, &lt;scipy.interp...x70fa48a52cf0&gt;]</td>
 
 
        </tr>
@@ -3342,7 +3309,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-feature_names_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=feature_names_in_,-ndarray%20of%20shape%20%28n_features_in_%2C%29">
             feature_names_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-feature_names_in_;">
             feature_names_in_: ndarray of shape (`n_features_in_`,)<br><br>Names of features seen during :term:`fit`. Defined only when `X`<br>has feature names that are all strings.<br><br>.. versionadded:: 1.0</span>
         </a>
@@ -3360,7 +3327,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>The total number of input features.</span>
         </a>
@@ -3378,7 +3345,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_out_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.SplineTransformer.html#:~:text=n_features_out_,-int">
             n_features_out_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_out_;">
             n_features_out_: int<br><br>The total number of output features, which is computed as<br>`n_features * n_splines`, where `n_splines` is<br>the number of bases elements of the B-splines,<br>`n_knots + degree - 1` for non-periodic splines and<br>`n_knots - 1` for periodic ones.<br>If `include_bias=False`, then it is only<br>`n_features * (n_splines - 1)`.</span>
         </a>
@@ -3393,24 +3360,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>6 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>6 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -3451,7 +3419,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-27" type="checkbox" ><label for="sk-estimator-id-27" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>PolynomialFeatures</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html">?<span>Documentation for PolynomialFeatures</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="periodic splines model__polynomialfeatures__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>PolynomialFeatures</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html">?<span>Documentation for PolynomialFeatures</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="periodic splines model__polynomialfeatures__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3469,7 +3437,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-interaction_only;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=interaction_only,-bool%2C%20default%3DFalse">
             interaction_only
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-interaction_only;">
             interaction_only: bool, default=False<br><br>If `True`, only interaction features are produced: features that are<br>products of at most `degree` *distinct* input features, i.e. terms with<br>power of 2 or higher of the same input feature are excluded:<br><br>- included: `x[0]`, `x[1]`, `x[0] * x[1]`, etc.<br>- excluded: `x[0] ** 2`, `x[0] ** 2 * x[1]`, etc.</span>
         </a>
@@ -3489,7 +3457,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-degree;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=degree,-int%20or%20tuple%20%28min_degree%2C%20max_degree%29%2C%20default%3D2">
             degree
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-degree;">
             degree: int or tuple (min_degree, max_degree), default=2<br><br>If a single int is given, it specifies the maximal degree of the<br>polynomial features. If a tuple `(min_degree, max_degree)` is passed,<br>then `min_degree` is the minimum and `max_degree` is the maximum<br>polynomial degree of the generated features. Note that `min_degree=0`<br>and `min_degree=1` are equivalent as outputting the degree zero term is<br>determined by `include_bias`.</span>
         </a>
@@ -3509,7 +3477,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-include_bias;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=include_bias,-bool%2C%20default%3DTrue">
             include_bias
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-include_bias;">
             include_bias: bool, default=True<br><br>If `True` (default), then include a bias column, the feature in which<br>all polynomial powers are zero (i.e. a column of ones - acts as an<br>intercept term in a linear model).</span>
         </a>
@@ -3529,7 +3497,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-order;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=order,-%7B%27C%27%2C%20%27F%27%7D%2C%20default%3D%27C%27">
             order
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-order;">
             order: {&#x27;C&#x27;, &#x27;F&#x27;}, default=&#x27;C&#x27;<br><br>Order of output array in the dense case. `&#x27;F&#x27;` order is faster to<br>compute, but may slow down subsequent estimators.<br><br>.. versionadded:: 0.21</span>
         </a>
@@ -3559,7 +3527,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -3577,7 +3545,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_output_features_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=n_output_features_,-int">
             n_output_features_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_output_features_;">
             n_output_features_: int<br><br>The total number of polynomial output features. The number of output<br>features is computed by iterating over all suitably sized combinations<br>of input features.</span>
         </a>
@@ -3595,7 +3563,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-powers_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.PolynomialFeatures.html#:~:text=powers_,-ndarray%20of%20shape%20%28n_output_features_%2C%20n_features_in_%29">
             powers_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-powers_;">
             powers_: ndarray of shape (`n_output_features_`, `n_features_in_`)<br><br>`powers_[i, j]` is the exponent of the jth input in the ith output.</span>
         </a>
@@ -3616,24 +3584,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>22 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>22 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -3754,7 +3723,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-28" type="checkbox" ><label for="sk-estimator-id-28" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>LogisticRegression</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="periodic splines model__logisticregression__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>LogisticRegression</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="periodic splines model__logisticregression__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3772,7 +3741,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-C;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
             C
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-C;">
             C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
         </a>
@@ -3792,7 +3761,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-penalty;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=penalty,-%7B%27l1%27%2C%20%27l2%27%2C%20%27elasticnet%27%2C%20None%7D%2C%20default%3D%27l2%27">
             penalty
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-penalty;">
             penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. versionadded:: 0.19<br>   l1 penalty with SAGA solver (allowing &#x27;multinomial&#x27; + L1)<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
         </a>
@@ -3812,7 +3781,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-l1_ratio;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=l1_ratio,-float%2C%20default%3D0.0">
             l1_ratio
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-l1_ratio;">
             l1_ratio: float, default=0.0<br><br>The Elastic-Net mixing parameter, with `0 &lt;= l1_ratio &lt;= 1`. Setting<br>`l1_ratio=1` gives a pure L1-penalty, setting `l1_ratio=0` gives a pure<br>L2-penalty. Any value between 0 and 1 gives an Elastic-Net penalty of the form<br>`l1_ratio * L1 + (1 - l1_ratio) * L2`.<br><br>.. warning::<br>   Certain values of `l1_ratio`, i.e. some penalties, may not work with some<br>   solvers. See the parameter `solver` below, to know the compatibility between<br>   the penalty and solver.<br><br>.. versionchanged:: 1.8<br>    Default value changed from None to 0.0.<br><br>.. deprecated:: 1.8<br>    `None` is deprecated and will be removed in version 1.10. Always use<br>    `l1_ratio` to specify the penalty type.</span>
         </a>
@@ -3832,7 +3801,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-dual;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=dual,-bool%2C%20default%3DFalse">
             dual
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-dual;">
             dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.</span>
         </a>
@@ -3852,7 +3821,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-tol;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=tol,-float%2C%20default%3D1e-4">
             tol
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-tol;">
             tol: float, default=1e-4<br><br>Tolerance for stopping criteria.</span>
         </a>
@@ -3872,7 +3841,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-fit_intercept;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=fit_intercept,-bool%2C%20default%3DTrue">
             fit_intercept
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-fit_intercept;">
             fit_intercept: bool, default=True<br><br>Specifies if a constant (a.k.a. bias or intercept) should be<br>added to the decision function.</span>
         </a>
@@ -3892,7 +3861,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_scaling;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_scaling,-float%2C%20default%3D1">
             intercept_scaling
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_scaling;">
             intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.</span>
         </a>
@@ -3912,7 +3881,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-class_weight;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone">
             class_weight
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-class_weight;">
             class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.<br><br>.. versionadded:: 0.17<br>   *class_weight=&#x27;balanced&#x27;*</span>
         </a>
@@ -3932,7 +3901,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=random_state,-int%2C%20RandomState%20instance%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance, default=None<br><br>Only used for `solver` == &#x27;sag&#x27;, &#x27;saga&#x27; or &#x27;liblinear&#x27; to shuffle the<br>data. It has no effect on the other solvers.<br>See :term:`Glossary &lt;random_state&gt;` for details.</span>
         </a>
@@ -3952,7 +3921,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-solver;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=solver,-%7B%27lbfgs%27%2C%20%27liblinear%27%2C%20%27newton-cd%27%2C%20%27newton-cd-gram%27%2C%20%27newton-cg%27%2C%20%20%20%20%20%20%20%20%20%20%20%20%20%27newton-cholesky%27%2C%20%27sag%27%2C%20%27saga%27%7D%2C%20default%3D%27lbfgs%27">
             solver
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-solver;">
             solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           no<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 0.17<br>   Stochastic Average Gradient (SAG) descent solver. Multinomial support in<br>   version 0.18.<br>.. versionadded:: 0.19<br>   SAGA solver.<br>.. versionchanged:: 0.22<br>   The default solver changed from &#x27;liblinear&#x27; to &#x27;lbfgs&#x27; in 0.22.<br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
         </a>
@@ -3972,7 +3941,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_iter;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=max_iter,-int%2C%20default%3D100">
             max_iter
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_iter;">
             max_iter: int, default=100<br><br>Maximum number of iterations taken for the solvers to converge.</span>
         </a>
@@ -3992,7 +3961,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>For the liblinear and lbfgs solvers set verbose to any positive<br>number for verbosity.</span>
         </a>
@@ -4012,7 +3981,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-warm_start;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
             warm_start
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-warm_start;">
             warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.<br><br>.. versionadded:: 0.17<br>   *warm_start* to support *lbfgs*, *newton-cg*, *sag*, *saga* solvers.</span>
         </a>
@@ -4032,7 +4001,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>Does not have any effect.<br><br>.. deprecated:: 1.8<br>   `n_jobs` is deprecated in version 1.8 and will be removed in 1.10.</span>
         </a>
@@ -4062,7 +4031,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%20%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes, )<br><br>A list of class labels known to the classifier.</span>
         </a>
@@ -4080,7 +4049,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-coef_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=coef_,-ndarray%20or%20CSR%20matrix%20of%20shape%20%281%2C%20n_features%29%20or%20%28n_classes%2C%20n_features%29">
             coef_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-coef_;">
             coef_: ndarray or CSR matrix of shape (1, n_features) or (n_classes, n_features)<br><br>Coefficients of the features in the decision function.<br><br>`coef_` is of shape (1, n_features) when the given problem is binary.<br><br>By default, it will be created as a dense array, but can be turned to<br>sparse (CSR format) through :meth:`sparsify` (which can be beneficial<br>under L1 regularization when many coefficients are zero), and back to<br>dense through :meth:`densify`.</span>
         </a>
@@ -4098,7 +4067,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_,-ndarray%20of%20shape%20%281%2C%29%20or%20%28n_classes%2C%29">
             intercept_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_;">
             intercept_: ndarray of shape (1,) or (n_classes,)<br><br>Intercept (a.k.a. bias) added to the decision function.<br><br>If `fit_intercept` is set to False, the intercept is set to zero.<br>`intercept_` is of shape (1,) when the given problem is binary.</span>
         </a>
@@ -4116,7 +4085,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -4134,7 +4103,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_iter_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_iter_,-ndarray%20of%20shape%20%281%2C%20%29">
             n_iter_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_iter_;">
             n_iter_: ndarray of shape (1, )<br><br>Actual number of iterations for all classes.<br><br>.. versionchanged:: 0.20<br><br>    In SciPy &lt;= 1.0.0 the number of lbfgs iterations may exceed<br>    ``max_iter``. ``n_iter_`` will now report at most ``max_iter``.</span>
         </a>
@@ -4149,7 +4118,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><label>nystroem model</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-29" type="checkbox" ><label for="sk-estimator-id-29" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>StandardScaler</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="nystroem model__standardscaler__">
+    </div></details></div></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><label>nystroem model</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>StandardScaler</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="nystroem model__standardscaler__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -4167,7 +4136,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-copy;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue">
             copy
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-copy;">
             copy: bool, default=True<br><br>If False, try to avoid a copy and do inplace scaling instead.<br>This is not guaranteed to always work inplace; e.g. if the data is<br>not a NumPy array or scipy.sparse CSR matrix, a copy may still be<br>returned.</span>
         </a>
@@ -4187,7 +4156,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_mean;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue">
             with_mean
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_mean;">
             with_mean: bool, default=True<br><br>If True, center the data before scaling.<br>This does not work (and will raise an exception) when attempted on<br>sparse matrices, because centering them entails building a dense<br>matrix which in common use cases is likely to be too large to fit in<br>memory.</span>
         </a>
@@ -4207,7 +4176,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_std;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue">
             with_std
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_std;">
             with_std: bool, default=True<br><br>If True, scale the data to unit variance (or equivalently,<br>unit standard deviation).</span>
         </a>
@@ -4237,7 +4206,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-feature_names_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=feature_names_in_,-ndarray%20of%20shape%20%28n_features_in_%2C%29">
             feature_names_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-feature_names_in_;">
             feature_names_in_: ndarray of shape (`n_features_in_`,)<br><br>Names of features seen during :term:`fit`. Defined only when `X`<br>has feature names that are all strings.<br><br>.. versionadded:: 1.0</span>
         </a>
@@ -4255,7 +4224,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-mean_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=mean_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             mean_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-mean_;">
             mean_: ndarray of shape (n_features,) or None<br><br>The mean value for each feature in the training set.<br>Equal to ``None`` when ``with_mean=False`` and ``with_std=False``.</span>
         </a>
@@ -4273,7 +4242,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -4291,7 +4260,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_samples_seen_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_samples_seen_,-int%20or%20ndarray%20of%20shape%20%28n_features%2C%29">
             n_samples_seen_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_samples_seen_;">
             n_samples_seen_: int or ndarray of shape (n_features,)<br><br>The number of samples processed by the estimator for each feature.<br>If there are no missing samples, the ``n_samples_seen`` will be an<br>integer, otherwise it will be an array of dtype int. If<br>`sample_weights` are used it will be a float (if no missing data)<br>or an array of dtype float that sums the weights seen so far.<br>Will be reset on new calls to fit, but increments across<br>``partial_fit`` calls.</span>
         </a>
@@ -4309,7 +4278,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-scale_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=scale_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             scale_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-scale_;">
             scale_: ndarray of shape (n_features,) or None<br><br>Per feature relative scaling of the data to achieve zero mean and unit<br>variance. Generally this is calculated using `np.sqrt(var_)`. If a<br>variance is zero, we can&#x27;t achieve unit variance, and the data is left<br>as-is, giving a scaling factor of 1. `scale_` is equal to `None`<br>when `with_std=False`.<br><br>.. versionadded:: 0.17<br>   *scale_*</span>
         </a>
@@ -4327,7 +4296,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-var_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=var_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             var_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-var_;">
             var_: ndarray of shape (n_features,) or None<br><br>The variance for each feature in the training set. Used to compute<br>`scale_`. Equal to ``None`` when ``with_mean=False`` and<br>``with_std=False``.</span>
         </a>
@@ -4342,24 +4311,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>2 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>2 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -4380,7 +4350,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-30" type="checkbox" ><label for="sk-estimator-id-30" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Nystroem</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html">?<span>Documentation for Nystroem</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="nystroem model__nystroem__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>Nystroem</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html">?<span>Documentation for Nystroem</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="nystroem model__nystroem__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -4398,7 +4368,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-gamma;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=gamma,-float%2C%20default%3DNone">
             gamma
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-gamma;">
             gamma: float, default=None<br><br>Gamma parameter for the RBF, laplacian, polynomial, exponential chi2<br>and sigmoid kernels. Interpretation of the default value is left to<br>the kernel; see the documentation for sklearn.metrics.pairwise.<br>Ignored by other kernels.</span>
         </a>
@@ -4418,7 +4388,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance or None, default=None<br><br>Pseudo-random number generator to control the uniform sampling without<br>replacement of `n_components` of the training data to construct the<br>basis kernel.<br>Pass an int for reproducible output across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.</span>
         </a>
@@ -4438,7 +4408,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-kernel;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=kernel,-str%20or%20callable%2C%20default%3D%27rbf%27">
             kernel
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-kernel;">
             kernel: str or callable, default=&#x27;rbf&#x27;<br><br>Kernel map to be approximated. A callable should accept two arguments<br>and the keyword arguments passed to this object as `kernel_params`, and<br>should return a floating point number.</span>
         </a>
@@ -4458,7 +4428,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-coef0;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=coef0,-float%2C%20default%3DNone">
             coef0
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-coef0;">
             coef0: float, default=None<br><br>Zero coefficient for polynomial and sigmoid kernels.<br>Ignored by other kernels.</span>
         </a>
@@ -4478,7 +4448,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-degree;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=degree,-float%2C%20default%3DNone">
             degree
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-degree;">
             degree: float, default=None<br><br>Degree of the polynomial kernel. Ignored by other kernels.</span>
         </a>
@@ -4498,7 +4468,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-kernel_params;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=kernel_params,-dict%2C%20default%3DNone">
             kernel_params
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-kernel_params;">
             kernel_params: dict, default=None<br><br>Additional parameters (keyword arguments) for kernel function passed<br>as callable object.</span>
         </a>
@@ -4518,7 +4488,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_components;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=n_components,-int%2C%20default%3D100">
             n_components
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_components;">
             n_components: int, default=100<br><br>Number of features to construct.<br>How many data points will be used to construct the mapping.</span>
         </a>
@@ -4538,7 +4508,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>The number of jobs to use for the computation. This works by breaking<br>down the kernel matrix into `n_jobs` even slices and computing them in<br>parallel.<br><br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -4568,7 +4538,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-component_indices_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=component_indices_,-ndarray%20of%20shape%20%28n_components%29">
             component_indices_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-component_indices_;">
             component_indices_: ndarray of shape (n_components)<br><br>Indices of ``components_`` in the training set.</span>
         </a>
@@ -4586,7 +4556,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-components_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=components_,-ndarray%20of%20shape%20%28n_components%2C%20n_features%29">
             components_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-components_;">
             components_: ndarray of shape (n_components, n_features)<br><br>Subset of training points used to construct the feature map.</span>
         </a>
@@ -4610,7 +4580,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -4628,7 +4598,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-normalization_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.kernel_approximation.Nystroem.html#:~:text=normalization_,-ndarray%20of%20shape%20%28n_components%2C%20n_components%29">
             normalization_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-normalization_;">
             normalization_: ndarray of shape (n_components, n_components)<br><br>Normalization matrix needed for embedding.<br>Square root of the kernel matrix on ``components_``.</span>
         </a>
@@ -4649,24 +4619,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>100 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>100 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -5177,7 +5148,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-31" type="checkbox" ><label for="sk-estimator-id-31" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>LogisticRegression</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="nystroem model__logisticregression__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>LogisticRegression</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="nystroem model__logisticregression__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -5195,7 +5166,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-C;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
             C
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-C;">
             C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
         </a>
@@ -5215,7 +5186,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-penalty;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=penalty,-%7B%27l1%27%2C%20%27l2%27%2C%20%27elasticnet%27%2C%20None%7D%2C%20default%3D%27l2%27">
             penalty
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-penalty;">
             penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. versionadded:: 0.19<br>   l1 penalty with SAGA solver (allowing &#x27;multinomial&#x27; + L1)<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
         </a>
@@ -5235,7 +5206,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-l1_ratio;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=l1_ratio,-float%2C%20default%3D0.0">
             l1_ratio
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-l1_ratio;">
             l1_ratio: float, default=0.0<br><br>The Elastic-Net mixing parameter, with `0 &lt;= l1_ratio &lt;= 1`. Setting<br>`l1_ratio=1` gives a pure L1-penalty, setting `l1_ratio=0` gives a pure<br>L2-penalty. Any value between 0 and 1 gives an Elastic-Net penalty of the form<br>`l1_ratio * L1 + (1 - l1_ratio) * L2`.<br><br>.. warning::<br>   Certain values of `l1_ratio`, i.e. some penalties, may not work with some<br>   solvers. See the parameter `solver` below, to know the compatibility between<br>   the penalty and solver.<br><br>.. versionchanged:: 1.8<br>    Default value changed from None to 0.0.<br><br>.. deprecated:: 1.8<br>    `None` is deprecated and will be removed in version 1.10. Always use<br>    `l1_ratio` to specify the penalty type.</span>
         </a>
@@ -5255,7 +5226,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-dual;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=dual,-bool%2C%20default%3DFalse">
             dual
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-dual;">
             dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.</span>
         </a>
@@ -5275,7 +5246,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-tol;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=tol,-float%2C%20default%3D1e-4">
             tol
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-tol;">
             tol: float, default=1e-4<br><br>Tolerance for stopping criteria.</span>
         </a>
@@ -5295,7 +5266,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-fit_intercept;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=fit_intercept,-bool%2C%20default%3DTrue">
             fit_intercept
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-fit_intercept;">
             fit_intercept: bool, default=True<br><br>Specifies if a constant (a.k.a. bias or intercept) should be<br>added to the decision function.</span>
         </a>
@@ -5315,7 +5286,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_scaling;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_scaling,-float%2C%20default%3D1">
             intercept_scaling
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_scaling;">
             intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.</span>
         </a>
@@ -5335,7 +5306,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-class_weight;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone">
             class_weight
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-class_weight;">
             class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.<br><br>.. versionadded:: 0.17<br>   *class_weight=&#x27;balanced&#x27;*</span>
         </a>
@@ -5355,7 +5326,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=random_state,-int%2C%20RandomState%20instance%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance, default=None<br><br>Only used for `solver` == &#x27;sag&#x27;, &#x27;saga&#x27; or &#x27;liblinear&#x27; to shuffle the<br>data. It has no effect on the other solvers.<br>See :term:`Glossary &lt;random_state&gt;` for details.</span>
         </a>
@@ -5375,7 +5346,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-solver;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=solver,-%7B%27lbfgs%27%2C%20%27liblinear%27%2C%20%27newton-cd%27%2C%20%27newton-cd-gram%27%2C%20%27newton-cg%27%2C%20%20%20%20%20%20%20%20%20%20%20%20%20%27newton-cholesky%27%2C%20%27sag%27%2C%20%27saga%27%7D%2C%20default%3D%27lbfgs%27">
             solver
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-solver;">
             solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           no<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 0.17<br>   Stochastic Average Gradient (SAG) descent solver. Multinomial support in<br>   version 0.18.<br>.. versionadded:: 0.19<br>   SAGA solver.<br>.. versionchanged:: 0.22<br>   The default solver changed from &#x27;liblinear&#x27; to &#x27;lbfgs&#x27; in 0.22.<br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
         </a>
@@ -5395,7 +5366,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_iter;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=max_iter,-int%2C%20default%3D100">
             max_iter
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_iter;">
             max_iter: int, default=100<br><br>Maximum number of iterations taken for the solvers to converge.</span>
         </a>
@@ -5415,7 +5386,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>For the liblinear and lbfgs solvers set verbose to any positive<br>number for verbosity.</span>
         </a>
@@ -5435,7 +5406,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-warm_start;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
             warm_start
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-warm_start;">
             warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.<br><br>.. versionadded:: 0.17<br>   *warm_start* to support *lbfgs*, *newton-cg*, *sag*, *saga* solvers.</span>
         </a>
@@ -5455,7 +5426,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>Does not have any effect.<br><br>.. deprecated:: 1.8<br>   `n_jobs` is deprecated in version 1.8 and will be removed in 1.10.</span>
         </a>
@@ -5485,7 +5456,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%20%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes, )<br><br>A list of class labels known to the classifier.</span>
         </a>
@@ -5503,7 +5474,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-coef_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=coef_,-ndarray%20or%20CSR%20matrix%20of%20shape%20%281%2C%20n_features%29%20or%20%28n_classes%2C%20n_features%29">
             coef_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-coef_;">
             coef_: ndarray or CSR matrix of shape (1, n_features) or (n_classes, n_features)<br><br>Coefficients of the features in the decision function.<br><br>`coef_` is of shape (1, n_features) when the given problem is binary.<br><br>By default, it will be created as a dense array, but can be turned to<br>sparse (CSR format) through :meth:`sparsify` (which can be beneficial<br>under L1 regularization when many coefficients are zero), and back to<br>dense through :meth:`densify`.</span>
         </a>
@@ -5521,7 +5492,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_,-ndarray%20of%20shape%20%281%2C%29%20or%20%28n_classes%2C%29">
             intercept_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_;">
             intercept_: ndarray of shape (1,) or (n_classes,)<br><br>Intercept (a.k.a. bias) added to the decision function.<br><br>If `fit_intercept` is set to False, the intercept is set to zero.<br>`intercept_` is of shape (1,) when the given problem is binary.</span>
         </a>
@@ -5539,7 +5510,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -5557,7 +5528,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_iter_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_iter_,-ndarray%20of%20shape%20%281%2C%20%29">
             n_iter_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_iter_;">
             n_iter_: ndarray of shape (1, )<br><br>Actual number of iterations for all classes.<br><br>.. versionchanged:: 0.20<br><br>    In SciPy &lt;= 1.0.0 the number of lbfgs iterations may exceed<br>    ``max_iter``. ``n_iter_`` will now report at most ``max_iter``.</span>
         </a>
@@ -5572,24 +5543,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div></div></div></div></div></div></div><div class='total_features'>
+    </div></details></div></div></div></div></div></div></div></div><div class='total_features'>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>6 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>6 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -5710,12 +5682,15 @@ function copyFeatureNamesToClipboard(element) {
 
     navigator.clipboard.writeText(formattedText)
         .then(() => {
-            element.style.display = 'none';
-            element.parentElement.appendChild(copyMark);
+            /* Hide only the icon image: display none would remove the
+             * focused button and drop keyboard focus to the page body. */
+            element.style.backgroundImage = 'none';
+            element.appendChild(copyMark);
 
             setTimeout(() => {
                 copyMark.remove();
                 element.innerHTML = originalHTML;
+                element.style.backgroundImage = '';
                 element.style = originalStyle;
             }, 1000);
         })
@@ -5730,6 +5705,39 @@ function copyFeatureNamesToClipboard(element) {
         });
     return false;
 }
+
+/* Prevent keys pressed inside a diagram from triggering notebook actions
+ * (entering edit mode, moving the cell selection, scrolling the notebook).
+ * The listener is on `window` in the capture phase because the notebook
+ * processes its shortcuts on the document during capture, before any
+ * listener attached inside the page body would run.
+ */
+if (!window.skEstimatorKeydownGuard) {
+    window.skEstimatorKeydownGuard = true;
+    window.addEventListener('keydown', function(event) {
+        const container = event.target instanceof Element
+            ? event.target.closest('.sk-top-container') : null;
+        if (container === null) {
+            return;
+        }
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.stopPropagation();
+            /* Space only has a native action on summaries and buttons.
+             * Anywhere else its default is to scroll the notebook, which
+             * moves the focused element out of view. */
+            if (event.key === ' ' && !event.target.matches('summary, button')) {
+                event.preventDefault();
+            }
+        } else if (event.key === 'Escape') {
+            /* Step back out to the diagram itself, so the keyboard position
+             * stays inside it instead of dropping to the page body. */
+            event.target.blur();
+            container.focus();
+            event.stopPropagation();
+        }
+    }, true);
+}
+
 /**
  * Adapted from Skrub
  * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -5789,7 +5797,6 @@ function detectTheme(element) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-
 function forceTheme(elementId) {
     const estimatorElement = document.querySelector(`#${elementId}`);
     if (estimatorElement === null) {
@@ -5800,7 +5807,7 @@ function forceTheme(elementId) {
     }
 }
 
-forceTheme('sk-container-id-13');</script></body>
+forceTheme('sk-container-id-8');</script></body>
 </div>
 <br />
 <br /><p>Finally we use <a class="reference internal" href="../../modules/generated/sklearn.inspection.DecisionBoundaryDisplay.html#sklearn.inspection.DecisionBoundaryDisplay" title="sklearn.inspection.DecisionBoundaryDisplay"><code class="xref py py-class docutils literal notranslate"><span class="pre">DecisionBoundaryDisplay</span></code></a> to plot the
@@ -5913,7 +5920,7 @@ probability.</p>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Predicted class of thresholded VotingClassifier: [0]
 </pre></div>
 </div>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.304 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.322 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-ensemble-plot-voting-decision-regions-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/ensemble/plot_voting_decision_regions.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo12.svg" style="width: 150px;" />

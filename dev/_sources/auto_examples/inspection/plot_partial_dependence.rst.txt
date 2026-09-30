@@ -387,6 +387,9 @@ numerical features and encode the categorical features with a
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -412,15 +415,20 @@ numerical features and encode the categorical features with a
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -518,35 +526,42 @@ numerical features and encode the categorical features with a
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -576,65 +591,57 @@ numerical features and encode the categorical features with a
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -688,7 +695,7 @@ numerical features and encode the categorical features with a
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -697,14 +704,15 @@ numerical features and encode the categorical features with a
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -714,8 +722,7 @@ numerical features and encode the categorical features with a
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -748,45 +755,15 @@ numerical features and encode the categorical features with a
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -841,10 +818,19 @@ numerical features and encode the categorical features with a
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -863,11 +849,6 @@ numerical features and encode the categorical features with a
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -884,14 +865,6 @@ numerical features and encode the categorical features with a
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -935,7 +908,9 @@ numerical features and encode the categorical features with a
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -953,14 +928,8 @@ numerical features and encode the categorical features with a
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -974,13 +943,15 @@ numerical features and encode the categorical features with a
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -992,15 +963,6 @@ numerical features and encode the categorical features with a
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -1043,9 +1005,16 @@ numerical features and encode the categorical features with a
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -1058,10 +1027,6 @@ numerical features and encode the categorical features with a
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -1077,13 +1042,13 @@ numerical features and encode the categorical features with a
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>ColumnTransformer(transformers=[(&#x27;num&#x27;, QuantileTransformer(n_quantiles=100),
+    </style><body><div id="sk-container-id-1" tabindex="0" role="region" aria-label="ColumnTransformer estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>ColumnTransformer(transformers=[(&#x27;num&#x27;, QuantileTransformer(n_quantiles=100),
                                      [&#x27;temp&#x27;, &#x27;feel_temp&#x27;, &#x27;humidity&#x27;,
                                       &#x27;windspeed&#x27;]),
                                     (&#x27;cat&#x27;, OneHotEncoder(handle_unknown=&#x27;ignore&#x27;),
                                      Index([&#x27;season&#x27;, &#x27;month&#x27;, &#x27;hour&#x27;, &#x27;holiday&#x27;, &#x27;weekday&#x27;, &#x27;workingday&#x27;,
            &#x27;weather&#x27;],
-          dtype=&#x27;str&#x27;))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" ><label for="sk-estimator-id-1" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>ColumnTransformer</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html">?<span>Documentation for ColumnTransformer</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></div></label><div class="sk-toggleable__content " data-param-prefix="">
+          dtype=&#x27;str&#x27;))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>ColumnTransformer</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html">?<span>Documentation for ColumnTransformer</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1101,7 +1066,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-transformers;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=transformers,-list%20of%20tuples">
                 transformers
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transformers;">
                 transformers: list of tuples<br><br>List of (name, transformer, columns) tuples specifying the<br>transformer objects to be applied to subsets of the data.<br><br>name : str<br>    Like in Pipeline and FeatureUnion, this allows the transformer and<br>    its parameters to be set using ``set_params`` and searched in grid<br>    search.<br>transformer : {&#x27;drop&#x27;, &#x27;passthrough&#x27;} or estimator<br>    Estimator must support :term:`fit` and :term:`transform`.<br>    Special-cased strings &#x27;drop&#x27; and &#x27;passthrough&#x27; are accepted as<br>    well, to indicate to drop the columns or to pass them through<br>    untransformed, respectively.<br>columns :  str, array-like of str, int, array-like of int,                 array-like of bool, slice or callable<br>    Indexes the data on its second axis. Integers are interpreted as<br>    positional columns, while strings can reference DataFrame columns<br>    by name.  A scalar string or int should be used where<br>    ``transformer`` expects X to be a 1d array-like (vector),<br>    otherwise a 2d array will be passed to the transformer.<br>    A callable is passed the input data `X` and can return any of the<br>    above. To select multiple columns by name or dtype, you can use<br>    :obj:`make_column_selector`.</span>
             </a>
@@ -1121,7 +1086,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-remainder;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=remainder,-%7B%27drop%27%2C%20%27passthrough%27%7D%20or%20estimator%2C%20default%3D%27drop%27">
                 remainder
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-remainder;">
                 remainder: {&#x27;drop&#x27;, &#x27;passthrough&#x27;} or estimator, default=&#x27;drop&#x27;<br><br>By default, only the specified columns in `transformers` are<br>transformed and combined in the output, and the non-specified<br>columns are dropped. (default of ``&#x27;drop&#x27;``).<br>By specifying ``remainder=&#x27;passthrough&#x27;``, all remaining columns that<br>were not specified in `transformers`, but present in the data passed<br>to `fit` will be automatically passed through. This subset of columns<br>is concatenated with the output of the transformers. For dataframes,<br>extra columns not seen during `fit` will be excluded from the output<br>of `transform`.<br>By setting ``remainder`` to be an estimator, the remaining<br>non-specified columns will use the ``remainder`` estimator. The<br>estimator must support :term:`fit` and :term:`transform`.<br>Note that using this feature requires that the DataFrame columns<br>input at :term:`fit` and :term:`transform` have identical order.</span>
             </a>
@@ -1141,7 +1106,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-sparse_threshold;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=sparse_threshold,-float%2C%20default%3D0.3">
                 sparse_threshold
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-sparse_threshold;">
                 sparse_threshold: float, default=0.3<br><br>If the output of the different transformers contains sparse matrices,<br>these will be stacked as a sparse matrix if the overall density is<br>lower than this value. Use ``sparse_threshold=0`` to always return<br>dense.  When the transformed output consists of all dense data, the<br>stacked result will be dense, and this keyword will be ignored.</span>
             </a>
@@ -1161,7 +1126,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-n_jobs;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=n_jobs,-int%2C%20default%3DNone">
                 n_jobs
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_jobs;">
                 n_jobs: int, default=None<br><br>Number of jobs to run in parallel.<br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.</span>
             </a>
@@ -1181,7 +1146,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-transformer_weights;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=transformer_weights,-dict%2C%20default%3DNone">
                 transformer_weights
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transformer_weights;">
                 transformer_weights: dict, default=None<br><br>Multiplicative weights for features per transformer. The output of the<br>transformer is multiplied by these weights. Keys are transformer names,<br>values the weights.</span>
             </a>
@@ -1201,7 +1166,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>If True, the time elapsed while fitting each transformer will be<br>printed as it is completed.</span>
             </a>
@@ -1221,7 +1186,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-verbose_feature_names_out;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=verbose_feature_names_out,-bool%2C%20str%20or%20Callable%5B%5Bstr%2C%20str%5D%2C%20str%5D%2C%20default%3DTrue">
                 verbose_feature_names_out
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose_feature_names_out;">
                 verbose_feature_names_out: bool, str or Callable[[str, str], str], default=True<br><br>- If True, :meth:`ColumnTransformer.get_feature_names_out` will prefix<br>  all feature names with the name of the transformer that generated that<br>  feature. It is equivalent to setting<br>  `verbose_feature_names_out=&quot;{transformer_name}__{feature_name}&quot;`.<br>- If False, :meth:`ColumnTransformer.get_feature_names_out` will not<br>  prefix any feature names and will error if feature names are not<br>  unique.<br>- If ``Callable[[str, str], str]``,<br>  :meth:`ColumnTransformer.get_feature_names_out` will rename all the features<br>  using the name of the transformer. The first argument of the callable is the<br>  transformer name and the second argument is the feature name. The returned<br>  string will be the new feature name.<br>- If ``str``, it must be a string ready for formatting. The given string will<br>  be formatted using two field names: ``transformer_name`` and ``feature_name``.<br>  e.g. ``&quot;{feature_name}__{transformer_name}&quot;``. See :meth:`str.format` method<br>  from the standard library for more info.<br><br>.. versionadded:: 1.0<br><br>.. versionchanged:: 1.6<br>    `verbose_feature_names_out` can be a callable or a string to be formatted.</span>
             </a>
@@ -1233,7 +1198,7 @@ numerical features and encode the categorical features with a
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-2" type="checkbox" ><label for="sk-estimator-id-2" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>num</div></div></label><div class="sk-toggleable__content " data-param-prefix="num__"><pre>[&#x27;temp&#x27;, &#x27;feel_temp&#x27;, &#x27;humidity&#x27;, &#x27;windspeed&#x27;]</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-3" type="checkbox" ><label for="sk-estimator-id-3" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>QuantileTransformer</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html">?<span>Documentation for QuantileTransformer</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="num__">
+        </div></details></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>num</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="num__"><pre>[&#x27;temp&#x27;, &#x27;feel_temp&#x27;, &#x27;humidity&#x27;, &#x27;windspeed&#x27;]</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>QuantileTransformer</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html">?<span>Documentation for QuantileTransformer</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="num__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1251,7 +1216,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-n_quantiles;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html#:~:text=n_quantiles,-int%2C%20default%3D1000">
                 n_quantiles
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_quantiles;">
                 n_quantiles: int, default=1000<br><br>Number of quantiles to be computed. It corresponds to the number of<br>landmarks used to discretize the cumulative distribution function.<br><br>.. versionchanged:: 1.10<br>    `n_quantiles` is no longer capped according to the number of<br>    samples. The number of quantiles is now always equal to the value<br>    of `n_quantiles`.</span>
             </a>
@@ -1271,7 +1236,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-output_distribution;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html#:~:text=output_distribution,-%7B%27uniform%27%2C%20%27normal%27%7D%2C%20default%3D%27uniform%27">
                 output_distribution
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-output_distribution;">
                 output_distribution: {&#x27;uniform&#x27;, &#x27;normal&#x27;}, default=&#x27;uniform&#x27;<br><br>Marginal distribution for the transformed data. The choices are<br>&#x27;uniform&#x27; (default) or &#x27;normal&#x27;.</span>
             </a>
@@ -1291,7 +1256,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-ignore_implicit_zeros;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html#:~:text=ignore_implicit_zeros,-bool%2C%20default%3DFalse">
                 ignore_implicit_zeros
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-ignore_implicit_zeros;">
                 ignore_implicit_zeros: bool, default=False<br><br>Only applies to sparse matrices. If True, the sparse entries of the<br>matrix are discarded to compute the quantile statistics, including<br>when subsampling. If False, these entries are treated as zeros.</span>
             </a>
@@ -1311,7 +1276,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-subsample;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html#:~:text=subsample,-int%20or%20None%2C%20default%3D10_000">
                 subsample
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-subsample;">
                 subsample: int or None, default=10_000<br><br>Maximum number of samples used to estimate the quantiles for<br>computational efficiency. Note that the subsampling procedure may<br>differ for value-identical sparse and dense matrices.<br>Disable subsampling by setting `subsample=None`.<br><br>.. versionadded:: 1.5<br>   The option `None` to disable subsampling was added.</span>
             </a>
@@ -1331,7 +1296,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-random_state;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone">
                 random_state
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-random_state;">
                 random_state: int, RandomState instance or None, default=None<br><br>Determines random number generation for subsampling and smoothing<br>noise.<br>Please see ``subsample`` for more details.<br>Pass an int for reproducible results across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.</span>
             </a>
@@ -1351,7 +1316,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-copy;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.QuantileTransformer.html#:~:text=copy,-bool%2C%20default%3DTrue">
                 copy
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-copy;">
                 copy: bool, default=True<br><br>Set to False to perform inplace transformation and avoid a copy (if the<br>input is already a numpy array).</span>
             </a>
@@ -1363,9 +1328,9 @@ numerical features and encode the categorical features with a
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-4" type="checkbox" ><label for="sk-estimator-id-4" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>cat</div></div></label><div class="sk-toggleable__content " data-param-prefix="cat__"><pre>Index([&#x27;season&#x27;, &#x27;month&#x27;, &#x27;hour&#x27;, &#x27;holiday&#x27;, &#x27;weekday&#x27;, &#x27;workingday&#x27;,
+        </div></details></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>cat</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="cat__"><pre>Index([&#x27;season&#x27;, &#x27;month&#x27;, &#x27;hour&#x27;, &#x27;holiday&#x27;, &#x27;weekday&#x27;, &#x27;workingday&#x27;,
            &#x27;weather&#x27;],
-          dtype=&#x27;str&#x27;)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-5" type="checkbox" ><label for="sk-estimator-id-5" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>OneHotEncoder</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html">?<span>Documentation for OneHotEncoder</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="cat__">
+          dtype=&#x27;str&#x27;)</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>OneHotEncoder</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html">?<span>Documentation for OneHotEncoder</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="cat__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1383,7 +1348,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-handle_unknown;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=handle_unknown,-%7B%27error%27%2C%20%27ignore%27%2C%20%27infrequent_if_exist%27%2C%20%27warn%27%7D%2C%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3D%27error%27">
                 handle_unknown
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-handle_unknown;">
                 handle_unknown: {&#x27;error&#x27;, &#x27;ignore&#x27;, &#x27;infrequent_if_exist&#x27;, &#x27;warn&#x27;},                      default=&#x27;error&#x27;<br><br>Specifies the way unknown categories are handled during :meth:`transform`.<br><br>- &#x27;error&#x27; : Raise an error if an unknown category is present during transform.<br>- &#x27;ignore&#x27; : When an unknown category is encountered during<br>  transform, the resulting one-hot encoded columns for this feature<br>  will be all zeros. In the inverse transform, an unknown category<br>  will be denoted as None.<br>- &#x27;infrequent_if_exist&#x27; : When an unknown category is encountered<br>  during transform, the resulting one-hot encoded columns for this<br>  feature will map to the infrequent category if it exists. The<br>  infrequent category will be mapped to the last position in the<br>  encoding. During inverse transform, an unknown category will be<br>  mapped to the category denoted `&#x27;infrequent&#x27;` if it exists. If the<br>  `&#x27;infrequent&#x27;` category does not exist, then :meth:`transform` and<br>  :meth:`inverse_transform` will handle an unknown category as with<br>  `handle_unknown=&#x27;ignore&#x27;`. Infrequent categories exist based on<br>  `min_frequency` and `max_categories`. Read more in the<br>  :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.<br>- &#x27;warn&#x27; : When an unknown category is encountered during transform<br>  a warning is issued, and the encoding then proceeds as described for<br>  `handle_unknown=&quot;infrequent_if_exist&quot;`.<br><br>.. versionchanged:: 1.1<br>    `&#x27;infrequent_if_exist&#x27;` was added to automatically handle unknown<br>    categories and infrequent categories.<br><br>.. versionadded:: 1.6<br>   The option `&quot;warn&quot;` was added in 1.6.</span>
             </a>
@@ -1403,7 +1368,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=categories,-%27auto%27%20or%20a%20list%20of%20array-like%2C%20default%3D%27auto%27">
                 categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-categories;">
                 categories: &#x27;auto&#x27; or a list of array-like, default=&#x27;auto&#x27;<br><br>Categories (unique values) per feature:<br><br>- &#x27;auto&#x27; : Determine categories automatically from the training data.<br>- list : ``categories[i]`` holds the categories expected in the ith<br>  column. The passed categories should not mix strings and numeric<br>  values within a single feature, and should be sorted in case of<br>  numeric values.<br><br>The used categories can be found in the ``categories_`` attribute.<br><br>.. versionadded:: 0.20</span>
             </a>
@@ -1423,7 +1388,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-drop;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=drop,-%7B%27first%27%2C%20%27if_binary%27%7D%20or%20an%20array-like%20of%20shape%20%28n_features%2C%29%2C%20%20%20%20%20%20%20%20%20%20%20%20%20default%3DNone">
                 drop
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-drop;">
                 drop: {&#x27;first&#x27;, &#x27;if_binary&#x27;} or an array-like of shape (n_features,),             default=None<br><br>Specifies a methodology to use to drop one of the categories per<br>feature. This is useful in situations where perfectly collinear<br>features cause problems, such as when feeding the resulting data<br>into an unregularized linear regression model.<br><br>However, dropping one category breaks the symmetry of the original<br>representation and can therefore induce a bias in downstream models,<br>for instance for penalized linear classification or regression models.<br><br>- None : retain all features (the default).<br>- &#x27;first&#x27; : drop the first category in each feature. If only one<br>  category is present, the feature will be dropped entirely.<br>- &#x27;if_binary&#x27; : drop the first category in each feature with two<br>  categories. Features with 1 or more than 2 categories are<br>  left intact.<br>- array : ``drop[i]`` is the category in feature ``X[:, i]`` that<br>  should be dropped.<br><br>When `max_categories` or `min_frequency` is configured to group<br>infrequent categories, the dropping behavior is handled after the<br>grouping.<br><br>.. versionadded:: 0.21<br>   The parameter `drop` was added in 0.21.<br><br>.. versionchanged:: 0.23<br>   The option `drop=&#x27;if_binary&#x27;` was added in 0.23.<br><br>.. versionchanged:: 1.1<br>    Support for dropping infrequent categories.</span>
             </a>
@@ -1443,7 +1408,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-sparse_output;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=sparse_output,-bool%2C%20default%3DTrue">
                 sparse_output
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-sparse_output;">
                 sparse_output: bool, default=True<br><br>When ``True``, it returns a SciPy sparse matrix/array<br>in &quot;Compressed Sparse Row&quot; (CSR) format.<br><br>.. versionadded:: 1.2<br>   `sparse` was renamed to `sparse_output`</span>
             </a>
@@ -1463,7 +1428,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-dtype;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=dtype,-number%20type%2C%20default%3Dnp.float64">
                 dtype
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-dtype;">
                 dtype: number type, default=np.float64<br><br>Desired dtype of output.</span>
             </a>
@@ -1483,7 +1448,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-min_frequency;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=min_frequency,-int%20or%20float%2C%20default%3DNone">
                 min_frequency
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-min_frequency;">
                 min_frequency: int or float, default=None<br><br>Specifies the minimum frequency below which a category will be<br>considered infrequent.<br><br>- If `int`, categories with a smaller cardinality will be considered<br>  infrequent.<br><br>- If `float`, categories with a smaller cardinality than<br>  `min_frequency * n_samples`  will be considered infrequent.<br><br>.. versionadded:: 1.1<br>    Read more in the :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.</span>
             </a>
@@ -1503,7 +1468,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-max_categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=max_categories,-int%2C%20default%3DNone">
                 max_categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_categories;">
                 max_categories: int, default=None<br><br>Specifies an upper limit to the number of output features for each input<br>feature when considering infrequent categories. If there are infrequent<br>categories, `max_categories` includes the category representing the<br>infrequent categories along with the frequent categories. If `None`,<br>there is no limit to the number of output features.<br><br>.. versionadded:: 1.1<br>    Read more in the :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.</span>
             </a>
@@ -1523,7 +1488,7 @@ numerical features and encode the categorical features with a
                 style="anchor-name: --doc-link-feature_name_combiner;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OneHotEncoder.html#:~:text=feature_name_combiner,-%22concat%22%20or%20callable%2C%20default%3D%22concat%22">
                 feature_name_combiner
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-feature_name_combiner;">
                 feature_name_combiner: &quot;concat&quot; or callable, default=&quot;concat&quot;<br><br>Callable with signature `def callable(input_feature, category)` that returns a<br>string. This is used to create feature names to be returned by<br>:meth:`get_feature_names_out`.<br><br>`&quot;concat&quot;` concatenates encoded feature name and category with<br>`feature + &quot;_&quot; + str(category)`.E.g. feature X with values 1, 6, 7 create<br>feature names `X_1, X_6, X_7`.<br><br>.. versionadded:: 1.3</span>
             </a>
@@ -1535,7 +1500,7 @@ numerical features and encode the categorical features with a
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -1615,12 +1580,15 @@ numerical features and encode the categorical features with a
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -1635,6 +1603,39 @@ numerical features and encode the categorical features with a
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -1693,7 +1694,6 @@ numerical features and encode the categorical features with a
         // Fallback to system preference
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-
 
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
@@ -1758,6 +1758,9 @@ encode the categorical features using a
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -1783,15 +1786,20 @@ encode the categorical features using a
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -1889,35 +1897,42 @@ encode the categorical features using a
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -1947,65 +1962,57 @@ encode the categorical features using a
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -2059,7 +2066,7 @@ encode the categorical features using a
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -2068,14 +2075,15 @@ encode the categorical features using a
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -2085,8 +2093,7 @@ encode the categorical features using a
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -2119,45 +2126,15 @@ encode the categorical features using a
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -2212,10 +2189,19 @@ encode the categorical features using a
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -2234,11 +2220,6 @@ encode the categorical features using a
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -2255,14 +2236,6 @@ encode the categorical features using a
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -2306,7 +2279,9 @@ encode the categorical features using a
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -2324,14 +2299,8 @@ encode the categorical features using a
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -2345,13 +2314,15 @@ encode the categorical features using a
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -2363,15 +2334,6 @@ encode the categorical features using a
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -2414,9 +2376,16 @@ encode the categorical features using a
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -2429,10 +2398,6 @@ encode the categorical features using a
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -2448,7 +2413,7 @@ encode the categorical features using a
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-2" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>ColumnTransformer(sparse_threshold=1,
+    </style><body><div id="sk-container-id-2" tabindex="0" role="region" aria-label="ColumnTransformer estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>ColumnTransformer(sparse_threshold=1,
                       transformers=[(&#x27;cat&#x27;, OrdinalEncoder(),
                                      Index([&#x27;season&#x27;, &#x27;month&#x27;, &#x27;hour&#x27;, &#x27;holiday&#x27;, &#x27;weekday&#x27;, &#x27;workingday&#x27;,
            &#x27;weather&#x27;],
@@ -2456,7 +2421,7 @@ encode the categorical features using a
                                     (&#x27;num&#x27;, &#x27;passthrough&#x27;,
                                      [&#x27;temp&#x27;, &#x27;feel_temp&#x27;, &#x27;humidity&#x27;,
                                       &#x27;windspeed&#x27;])],
-                      verbose_feature_names_out=False)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-6" type="checkbox" ><label for="sk-estimator-id-6" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>ColumnTransformer</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html">?<span>Documentation for ColumnTransformer</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></div></label><div class="sk-toggleable__content " data-param-prefix="">
+                      verbose_feature_names_out=False)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>ColumnTransformer</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html">?<span>Documentation for ColumnTransformer</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -2474,7 +2439,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-transformers;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=transformers,-list%20of%20tuples">
                 transformers
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transformers;">
                 transformers: list of tuples<br><br>List of (name, transformer, columns) tuples specifying the<br>transformer objects to be applied to subsets of the data.<br><br>name : str<br>    Like in Pipeline and FeatureUnion, this allows the transformer and<br>    its parameters to be set using ``set_params`` and searched in grid<br>    search.<br>transformer : {&#x27;drop&#x27;, &#x27;passthrough&#x27;} or estimator<br>    Estimator must support :term:`fit` and :term:`transform`.<br>    Special-cased strings &#x27;drop&#x27; and &#x27;passthrough&#x27; are accepted as<br>    well, to indicate to drop the columns or to pass them through<br>    untransformed, respectively.<br>columns :  str, array-like of str, int, array-like of int,                 array-like of bool, slice or callable<br>    Indexes the data on its second axis. Integers are interpreted as<br>    positional columns, while strings can reference DataFrame columns<br>    by name.  A scalar string or int should be used where<br>    ``transformer`` expects X to be a 1d array-like (vector),<br>    otherwise a 2d array will be passed to the transformer.<br>    A callable is passed the input data `X` and can return any of the<br>    above. To select multiple columns by name or dtype, you can use<br>    :obj:`make_column_selector`.</span>
             </a>
@@ -2494,7 +2459,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-sparse_threshold;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=sparse_threshold,-float%2C%20default%3D0.3">
                 sparse_threshold
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-sparse_threshold;">
                 sparse_threshold: float, default=0.3<br><br>If the output of the different transformers contains sparse matrices,<br>these will be stacked as a sparse matrix if the overall density is<br>lower than this value. Use ``sparse_threshold=0`` to always return<br>dense.  When the transformed output consists of all dense data, the<br>stacked result will be dense, and this keyword will be ignored.</span>
             </a>
@@ -2514,7 +2479,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-verbose_feature_names_out;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=verbose_feature_names_out,-bool%2C%20str%20or%20Callable%5B%5Bstr%2C%20str%5D%2C%20str%5D%2C%20default%3DTrue">
                 verbose_feature_names_out
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose_feature_names_out;">
                 verbose_feature_names_out: bool, str or Callable[[str, str], str], default=True<br><br>- If True, :meth:`ColumnTransformer.get_feature_names_out` will prefix<br>  all feature names with the name of the transformer that generated that<br>  feature. It is equivalent to setting<br>  `verbose_feature_names_out=&quot;{transformer_name}__{feature_name}&quot;`.<br>- If False, :meth:`ColumnTransformer.get_feature_names_out` will not<br>  prefix any feature names and will error if feature names are not<br>  unique.<br>- If ``Callable[[str, str], str]``,<br>  :meth:`ColumnTransformer.get_feature_names_out` will rename all the features<br>  using the name of the transformer. The first argument of the callable is the<br>  transformer name and the second argument is the feature name. The returned<br>  string will be the new feature name.<br>- If ``str``, it must be a string ready for formatting. The given string will<br>  be formatted using two field names: ``transformer_name`` and ``feature_name``.<br>  e.g. ``&quot;{feature_name}__{transformer_name}&quot;``. See :meth:`str.format` method<br>  from the standard library for more info.<br><br>.. versionadded:: 1.0<br><br>.. versionchanged:: 1.6<br>    `verbose_feature_names_out` can be a callable or a string to be formatted.</span>
             </a>
@@ -2534,7 +2499,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-remainder;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=remainder,-%7B%27drop%27%2C%20%27passthrough%27%7D%20or%20estimator%2C%20default%3D%27drop%27">
                 remainder
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-remainder;">
                 remainder: {&#x27;drop&#x27;, &#x27;passthrough&#x27;} or estimator, default=&#x27;drop&#x27;<br><br>By default, only the specified columns in `transformers` are<br>transformed and combined in the output, and the non-specified<br>columns are dropped. (default of ``&#x27;drop&#x27;``).<br>By specifying ``remainder=&#x27;passthrough&#x27;``, all remaining columns that<br>were not specified in `transformers`, but present in the data passed<br>to `fit` will be automatically passed through. This subset of columns<br>is concatenated with the output of the transformers. For dataframes,<br>extra columns not seen during `fit` will be excluded from the output<br>of `transform`.<br>By setting ``remainder`` to be an estimator, the remaining<br>non-specified columns will use the ``remainder`` estimator. The<br>estimator must support :term:`fit` and :term:`transform`.<br>Note that using this feature requires that the DataFrame columns<br>input at :term:`fit` and :term:`transform` have identical order.</span>
             </a>
@@ -2554,7 +2519,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-n_jobs;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=n_jobs,-int%2C%20default%3DNone">
                 n_jobs
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_jobs;">
                 n_jobs: int, default=None<br><br>Number of jobs to run in parallel.<br>``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.<br>``-1`` means using all processors. See :term:`Glossary &lt;n_jobs&gt;`<br>for more details.</span>
             </a>
@@ -2574,7 +2539,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-transformer_weights;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=transformer_weights,-dict%2C%20default%3DNone">
                 transformer_weights
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transformer_weights;">
                 transformer_weights: dict, default=None<br><br>Multiplicative weights for features per transformer. The output of the<br>transformer is multiplied by these weights. Keys are transformer names,<br>values the weights.</span>
             </a>
@@ -2594,7 +2559,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.compose.ColumnTransformer.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>If True, the time elapsed while fitting each transformer will be<br>printed as it is completed.</span>
             </a>
@@ -2606,9 +2571,9 @@ encode the categorical features using a
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-7" type="checkbox" ><label for="sk-estimator-id-7" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>cat</div></div></label><div class="sk-toggleable__content " data-param-prefix="cat__"><pre>Index([&#x27;season&#x27;, &#x27;month&#x27;, &#x27;hour&#x27;, &#x27;holiday&#x27;, &#x27;weekday&#x27;, &#x27;workingday&#x27;,
+        </div></details></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>cat</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="cat__"><pre>Index([&#x27;season&#x27;, &#x27;month&#x27;, &#x27;hour&#x27;, &#x27;holiday&#x27;, &#x27;weekday&#x27;, &#x27;workingday&#x27;,
            &#x27;weather&#x27;],
-          dtype=&#x27;str&#x27;)</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-8" type="checkbox" ><label for="sk-estimator-id-8" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>OrdinalEncoder</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html">?<span>Documentation for OrdinalEncoder</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="cat__">
+          dtype=&#x27;str&#x27;)</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>OrdinalEncoder</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html">?<span>Documentation for OrdinalEncoder</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="cat__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -2626,7 +2591,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=categories,-%27auto%27%20or%20a%20list%20of%20array-like%2C%20default%3D%27auto%27">
                 categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-categories;">
                 categories: &#x27;auto&#x27; or a list of array-like, default=&#x27;auto&#x27;<br><br>Categories (unique values) per feature:<br><br>- &#x27;auto&#x27; : Determine categories automatically from the training data.<br>- list : ``categories[i]`` holds the categories expected in the ith<br>  column. The passed categories should not mix strings and numeric<br>  values, and should be sorted in case of numeric values.<br><br>The used categories can be found in the ``categories_`` attribute.</span>
             </a>
@@ -2646,7 +2611,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-dtype;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=dtype,-number%20type%2C%20default%3Dnp.float64">
                 dtype
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-dtype;">
                 dtype: number type, default=np.float64<br><br>Desired dtype of output.</span>
             </a>
@@ -2666,7 +2631,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-handle_unknown;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=handle_unknown,-%7B%27error%27%2C%20%27use_encoded_value%27%7D%2C%20default%3D%27error%27">
                 handle_unknown
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-handle_unknown;">
                 handle_unknown: {&#x27;error&#x27;, &#x27;use_encoded_value&#x27;}, default=&#x27;error&#x27;<br><br>When set to &#x27;error&#x27; an error will be raised in case an unknown<br>categorical feature is present during transform. When set to<br>&#x27;use_encoded_value&#x27;, the encoded value of unknown categories will be<br>set to the value given for the parameter `unknown_value`. In<br>:meth:`inverse_transform`, an unknown category will be denoted as None.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -2686,7 +2651,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-unknown_value;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=unknown_value,-int%20or%20np.nan%2C%20default%3DNone">
                 unknown_value
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-unknown_value;">
                 unknown_value: int or np.nan, default=None<br><br>When the parameter handle_unknown is set to &#x27;use_encoded_value&#x27;, this<br>parameter is required and will set the encoded value of unknown<br>categories. It has to be distinct from the values used to encode any of<br>the categories in `fit`. If set to np.nan, the `dtype` parameter must<br>be a float dtype.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -2706,7 +2671,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-encoded_missing_value;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=encoded_missing_value,-int%20or%20np.nan%2C%20default%3Dnp.nan">
                 encoded_missing_value
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-encoded_missing_value;">
                 encoded_missing_value: int or np.nan, default=np.nan<br><br>Encoded value of missing categories. If set to `np.nan`, then the `dtype`<br>parameter must be a float dtype.<br><br>.. versionadded:: 1.1</span>
             </a>
@@ -2726,7 +2691,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-min_frequency;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=min_frequency,-int%20or%20float%2C%20default%3DNone">
                 min_frequency
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-min_frequency;">
                 min_frequency: int or float, default=None<br><br>Specifies the minimum frequency below which a category will be<br>considered infrequent.<br><br>- If `int`, categories with a smaller cardinality will be considered<br>  infrequent.<br><br>- If `float`, categories with a smaller cardinality than<br>  `min_frequency * n_samples`  will be considered infrequent.<br><br>.. versionadded:: 1.3<br>    Read more in the :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.</span>
             </a>
@@ -2746,7 +2711,7 @@ encode the categorical features using a
                 style="anchor-name: --doc-link-max_categories;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.OrdinalEncoder.html#:~:text=max_categories,-int%2C%20default%3DNone">
                 max_categories
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_categories;">
                 max_categories: int, default=None<br><br>Specifies an upper limit to the number of output categories for each input<br>feature when considering infrequent categories. If there are infrequent<br>categories, `max_categories` includes the category representing the<br>infrequent categories along with the frequent categories. If `None`,<br>there is no limit to the number of output features.<br><br>`max_categories` do **not** take into account missing or unknown<br>categories. Setting `unknown_value` or `encoded_missing_value` to an<br>integer will increase the number of unique integer codes by one each.<br>This can result in up to `max_categories + 2` integer codes.<br><br>.. versionadded:: 1.3<br>    Read more in the :ref:`User Guide &lt;encoder_infrequent_categories&gt;`.</span>
             </a>
@@ -2758,7 +2723,7 @@ encode the categorical features using a
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-9" type="checkbox" ><label for="sk-estimator-id-9" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>num</div></div></label><div class="sk-toggleable__content " data-param-prefix="num__"><pre>[&#x27;temp&#x27;, &#x27;feel_temp&#x27;, &#x27;humidity&#x27;, &#x27;windspeed&#x27;]</pre></div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-10" type="checkbox" ><label for="sk-estimator-id-10" class="sk-toggleable__label  "><div><div>passthrough</div></div></label><div class="sk-toggleable__content " data-param-prefix="num__"><pre></pre></div></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>num</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="num__"><pre>[&#x27;temp&#x27;, &#x27;feel_temp&#x27;, &#x27;humidity&#x27;, &#x27;windspeed&#x27;]</pre></div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label  sk-toggleable__label--no-marker"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>passthrough</span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="num__"><pre></pre></div></details></div></div></div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -2838,12 +2803,15 @@ encode the categorical features using a
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -2858,6 +2826,39 @@ encode the categorical features using a
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -2916,7 +2917,6 @@ encode the categorical features using a
         // Fallback to system preference
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-
 
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
@@ -2983,7 +2983,7 @@ single-variable partial dependence plots.
  .. code-block:: none
 
     Training MLPRegressor...
-    done in 0.250s
+    done in 0.232s
     Test R2 score: 0.61
 
 
@@ -3067,7 +3067,7 @@ We will plot the averaged partial dependence.
  .. code-block:: none
 
     Computing partial dependence plots...
-    done in 0.378s
+    done in 0.368s
 
 
 
@@ -3110,7 +3110,7 @@ specific preprocessor we created for this model.
  .. code-block:: none
 
     Training HistGradientBoostingRegressor...
-    done in 0.043s
+    done in 0.044s
     Test R2 score: 0.62
 
 
@@ -3167,7 +3167,7 @@ features.
  .. code-block:: none
 
     Computing partial dependence plots...
-    done in 0.641s
+    done in 0.607s
 
 
 
@@ -3245,7 +3245,7 @@ selected ICEs for the temperature and humidity features.
  .. code-block:: none
 
     Computing partial dependence plots and individual conditional expectation...
-    done in 0.325s
+    done in 0.274s
 
 
 
@@ -3366,7 +3366,7 @@ heatmap.
  .. code-block:: none
 
     Computing partial dependence plots...
-    done in 2.710s
+    done in 3.164s
 
 
 
@@ -3427,7 +3427,7 @@ non-linear feature interactions.
  .. code-block:: none
 
     Computing partial dependence plots...
-    done in 2.275s
+    done in 2.284s
 
 
 
@@ -3495,7 +3495,7 @@ the season, the weather, and the target would be as follow:
  .. code-block:: none
 
     Computing partial dependence plots...
-    done in 0.128s
+    done in 0.125s
 
 
 
@@ -3616,7 +3616,7 @@ but with custom values
  .. code-block:: none
 
     Computing partial dependence plots with custom evaluation values...
-    done in 0.359s
+    done in 0.232s
 
 
 
@@ -3624,7 +3624,7 @@ but with custom values
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 9.404 seconds)
+   **Total running time of the script:** (0 minutes 9.262 seconds)
 
 
 .. _sphx_glr_download_auto_examples_inspection_plot_partial_dependence.py:

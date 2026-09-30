@@ -84,13 +84,6 @@ dataset.
 
 
 
-.. rst-class:: sphx-glr-script-out
-
- .. code-block:: none
-
-    /home/circleci/project/sklearn/neural_network/_multilayer_perceptron.py:785: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (500) reached and the optimization hasn't converged yet.
-      warnings.warn(
-
 
 .. raw:: html
 
@@ -110,6 +103,9 @@ dataset.
       --sklearn-color-fitted-level-1: #d4ebff;
       --sklearn-color-fitted-level-2: #b3dbfd;
       --sklearn-color-fitted-level-3: cornflowerblue;
+      /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+      background (in both light and dark themes). */
+      --sklearn-color-focus: #8f3ce0;
     }
 
     .sk-global.light {
@@ -135,15 +131,20 @@ dataset.
       padding: 0;
     }
 
-    .sk-global input.sk-hidden--visually {
-      border: 0;
-      clip-path: inset(100%);
-      height: 1px;
-      margin: -1px;
-      overflow: hidden;
-      padding: 0;
-      position: absolute;
-      width: 1px;
+    /* The first selector is the scrollable container itself which is focusable. */
+    .sk-global:focus-visible,
+    .sk-global :focus-visible {
+      outline: 2px solid var(--sklearn-color-focus);
+      outline-offset: -2px;
+      border-radius: 0.25em;
+    }
+
+    /* Focus ring sits outside copy-paste icon.
+       The outline is repeated because notebooks sets it. We need
+       a more specific selector than the generic rule above. */
+    .sk-global .copy-paste-icon:focus-visible {
+        outline: 2px solid var(--sklearn-color-focus);
+        outline-offset: 2px;
     }
 
     .sk-global div.sk-dashed-wrapped {
@@ -241,35 +242,42 @@ dataset.
     }
 
     /* Toggleable label */
-    .sk-global label.sk-toggleable__label {
+    .sk-global summary.sk-toggleable__label {
       cursor: pointer;
-      display: flex;
+      text-align: center;
       width: 100%;
       margin-bottom: 0;
       padding: 0.5em;
       box-sizing: border-box;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
     }
 
-    .sk-global label.sk-toggleable__label .caption {
+    .sk-global summary::marker {
+      color: var(--sklearn-color-icon)
+    }
+
+    .sk-global summary.sk-toggleable__label--no-marker {
+      list-style: none;
+    }
+
+    /* Lay out the label content (name + doc link) in a row next to the marker. */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      margin-left: 0.5em;
+    }
+
+    /* Stack the estimator name/caption with flex, since they are spans.
+      <summary> only accepts phrasing content */
+    .sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sk-global summary.sk-toggleable__label .caption {
       font-size: 0.6rem;
       font-weight: lighter;
       color: var(--sklearn-color-text-muted);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:before {
-      /* Arrow on the left of the label */
-      content: "▸";
-      float: left;
-      margin-right: 0.25em;
-      color: var(--sklearn-color-icon);
-    }
-
-    .sk-global label.sk-toggleable__label-arrow:hover:before {
-      color: var(--sklearn-color-text);
     }
 
     /* Toggleable content - dropdown */
@@ -299,65 +307,57 @@ dataset.
       background-color: var(--sklearn-color-fitted-level-0);
     }
 
-    .sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+    .sk-global details[open] > div.sk-toggleable__content {
       /* Expand drop-down */
       display: block;
       width: 100%;
       overflow: visible;
     }
 
-    .sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-      content: "▾";
-    }
-
     /* Pipeline/ColumnTransformer-specific style */
 
-    .sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label details[open] > summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
     /* Estimator-specific style */
 
     /* Colorize estimator box */
-    .sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
-    .sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+    .sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-2);
     }
 
-    .sk-global div.sk-label label.sk-toggleable__label,
+    /* Estimator label */
+    .sk-global div.sk-label summary.sk-toggleable__label,
     .sk-global div.sk-label label {
       /* The background is the default theme color */
       color: var(--sklearn-color-text-on-default-background);
+      font-family: monospace;
+      font-weight: bold;
+      line-height: 1.2em;
     }
 
     /* On hover, darken the color of the background */
-    .sk-global div.sk-label:hover label.sk-toggleable__label {
+    .sk-global div.sk-label:hover summary.sk-toggleable__label {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-unfitted-level-2);
     }
 
     /* Label box, darken color on hover, fitted */
-    .sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+    .sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
       color: var(--sklearn-color-text);
       background-color: var(--sklearn-color-fitted-level-2);
-    }
-
-    /* Estimator label */
-
-    .sk-global div.sk-label label {
-      font-family: monospace;
-      font-weight: bold;
-      line-height: 1.2em;
     }
 
     .sk-global div.sk-label-container {
@@ -411,7 +411,7 @@ dataset.
       text-align: center;
       /* unfitted */
       border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-      color: var(--sklearn-color-unfitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
     .sk-estimator-doc-link.fitted,
@@ -420,14 +420,15 @@ dataset.
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-0);
       border: var(--sklearn-color-fitted-level-3) 1pt solid;
-      color: var(--sklearn-color-fitted-level-3);
+      color: var(--sklearn-color-text);
     }
 
-    /* On hover */
+    /* On hover.
+       The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+       above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
     div.sk-estimator:hover .sk-estimator-doc-link:hover,
     .sk-estimator-doc-link:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link:hover,
-    .sk-estimator-doc-link:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link:hover {
       /* unfitted */
       background-color: var(--sklearn-color-unfitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -437,8 +438,7 @@ dataset.
 
     div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
     .sk-estimator-doc-link.fitted:hover,
-    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-    .sk-estimator-doc-link.fitted:hover {
+    div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
       /* fitted */
       background-color: var(--sklearn-color-fitted-level-3);
       border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -471,45 +471,15 @@ dataset.
       border: var(--sklearn-color-fitted-level-3);
     }
 
-    .sk-estimator-doc-link:hover span {
+    .sk-estimator-doc-link:hover span,
+    .sk-estimator-doc-link:focus-visible span {
       display: block;
     }
 
-    /* "?"-specific style due to the `<a>` HTML tag */
-
-    .sk-global a.estimator_doc_link {
-      float: right;
-      font-size: 1rem;
-      line-height: 1em;
-      font-family: monospace;
-      background-color: var(--sklearn-color-unfitted-level-0);
-      border-radius: 1rem;
-      height: 1rem;
-      width: 1rem;
-      text-decoration: none;
-      /* unfitted */
-      color: var(--sklearn-color-unfitted-level-1);
-      border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-    }
-
-    .sk-global a.estimator_doc_link.fitted {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-0);
-      border: var(--sklearn-color-fitted-level-1) 1pt solid;
-      color: var(--sklearn-color-fitted-level-1);
-    }
-
-    /* On hover */
-    .sk-global a.estimator_doc_link:hover {
-      /* unfitted */
-      background-color: var(--sklearn-color-unfitted-level-3);
-      color: var(--sklearn-color-background);
-      text-decoration: none;
-    }
-
-    .sk-global a.estimator_doc_link.fitted:hover {
-      /* fitted */
-      background-color: var(--sklearn-color-fitted-level-3);
+    /* Focus ring round and outside of the small circular icon */
+    .sk-global .sk-estimator-doc-link:focus-visible {
+      border-radius: 1em;
+      outline-offset: 1px;
     }
 
     .sk-top-container.sk-global {
@@ -564,10 +534,19 @@ dataset.
     /*
         `table td`is set in notebook with right text-align.
         We need to overwrite it.
+        Padding added here so params without a doc link look like params
+        with a link.
     */
     .estimator-table table td.param {
         text-align: left;
         position: relative;
+        padding: .5em;
+    }
+
+    /*
+        When the cell holds a link, the link brings its own padding
+    */
+    .estimator-table table td.param:has(a.param-doc-link) {
         padding: 0;
     }
 
@@ -586,11 +565,6 @@ dataset.
         text-align: left !important;
     }
 
-    .user-set td i,
-    .default td i {
-        color: black;
-    }
-
     td.fitted-att-type {
         white-space: preserve nowrap;
     }
@@ -607,14 +581,6 @@ dataset.
         color: inherit;
         display: block;
         padding: .5em;
-    }
-
-    @supports(anchor-name: --doc-link) {
-        a.param-doc-link,
-        a.param-doc-link:link,
-        a.param-doc-link:visited {
-        anchor-name: --doc-link;
-        }
     }
 
     /* "hack" to make the entire area of the cell containing the link clickable */
@@ -658,7 +624,9 @@ dataset.
         border: thin solid var(--sklearn-color-fitted-level-3);
     }
 
-    .param-doc-link:hover .param-doc-description {
+    /* The tooltip is shown on hover and when the link takes keyboard focus. */
+    .param-doc-link:hover .param-doc-description,
+    .param-doc-link:focus .param-doc-description {
         display: block;
     }
 
@@ -676,14 +644,8 @@ dataset.
         background-color: transparent;
     }
 
-    .copy-paste-icon:focus-visible {
-        outline: 1px solid currentColor;
-        outline-offset: 1px;
-    }
-
     .features {
       font-family: monospace;
-      cursor: pointer;
       background-color: var(--sklearn-color-unfitted-level-0);
       border: 1px dotted var(--sklearn-color-border-box);
       border-radius: .20em;
@@ -697,13 +659,15 @@ dataset.
 
     .features summary {
       cursor: pointer;
-      display: flex;
       margin-bottom: 0;
       text-align: center;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5em;
       padding: .25em;
+    }
+
+    .features summary .features-summary-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
     }
 
     .features details[open] > summary {
@@ -715,15 +679,6 @@ dataset.
     .features.fitted details[open] > summary {
       background-color: var(--sklearn-color-fitted-level-2);
       border-radius: .20em 0 0 0;
-    }
-
-    .features details > summary .arrow::before {
-      content: "▸";
-      color: grey;
-    }
-
-    .features details[open] > summary .arrow::before {
-      content: "▾";
     }
 
     .features details:hover > summary {
@@ -766,9 +721,16 @@ dataset.
       filter: grayscale(100%) opacity(60%);
     }
 
+    /* The grayscale filter above also applies to the focus ring. Reset it.
+      The copy-paste buttons ring's style lives in estimator.css. */
+    .features .copy-paste-icon:focus-visible {
+      filter: none;
+    }
+
     .features .features-container table {
       width: 100%;
       margin: 0.01em;
+      table-layout: inherit;
     }
 
     .features .features-container table tr:nth-child(odd) {
@@ -781,10 +743,6 @@ dataset.
 
     .features .features-container table tr:hover {
       background-color: #e0e0e0;
-    }
-
-    .features .features-container table {
-      table-layout: inherit;
     }
 
     .features .features-container table td {
@@ -800,10 +758,10 @@ dataset.
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;standardscaler&#x27;, StandardScaler()),
+    </style><body><div id="sk-container-id-12" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;standardscaler&#x27;, StandardScaler()),
                     (&#x27;mlpregressor&#x27;,
                      MLPRegressor(hidden_layer_sizes=(100, 100), max_iter=500,
-                                  random_state=0, tol=0.01))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" ><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+                                  random_state=0, tol=0.01))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>Pipeline</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -821,7 +779,7 @@ dataset.
                 style="anchor-name: --doc-link-steps;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples">
                 steps
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-steps;">
                 steps: list of tuples<br><br>List of (name of step, estimator) tuples that are to be chained in<br>sequential order. To be compatible with the scikit-learn API, all steps<br>must define `fit`. All non-last steps must also define `transform`. See<br>:ref:`Combining Estimators &lt;combining_estimators&gt;` for more details.</span>
             </a>
@@ -841,7 +799,7 @@ dataset.
                 style="anchor-name: --doc-link-transform_input;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-tuple%20or%20list%20of%20str%2C%20default%3D%28%22X_val%22%2C%29">
                 transform_input
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-transform_input;">
                 transform_input: tuple or list of str, default=(&quot;X_val&quot;,)<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>By default, the validation set `X_val` is always transformed.<br><br>You can only use this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6<br><br>.. versionchanged:: 1.10<br>    The default changed from `None` to `(&quot;X_val&quot;,)`.</span>
             </a>
@@ -861,7 +819,7 @@ dataset.
                 style="anchor-name: --doc-link-memory;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone">
                 memory
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-memory;">
                 memory: str or object with the joblib.Memory interface, default=None<br><br>Used to cache the fitted transformers of the pipeline. The last step<br>will never be cached, even if it is a transformer. By default, no<br>caching is performed. If a string is given, it is the path to the<br>caching directory. Enabling caching triggers a clone of the transformers<br>before fitting. Therefore, the transformer instance given to the<br>pipeline cannot be inspected directly. Use the attribute ``named_steps``<br>or ``steps`` to inspect estimators within the pipeline. Caching the<br>transformers is advantageous when fitting is time consuming. See<br>:ref:`sphx_glr_auto_examples_neighbors_plot_caching_nearest_neighbors.py`<br>for an example on how to enable caching.</span>
             </a>
@@ -881,7 +839,7 @@ dataset.
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>If True, the time elapsed while fitting each step will be printed as it<br>is completed.</span>
             </a>
@@ -911,7 +869,7 @@ dataset.
                 style="anchor-name: --doc-link-feature_names_in_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=feature_names_in_,-ndarray%20of%20shape%20%28n_features_in_%2C%29">
                 feature_names_in_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-feature_names_in_;">
                 feature_names_in_: ndarray of shape (`n_features_in_`,)<br><br>Names of features seen during :term:`fit`. Only defined if the<br>underlying estimator exposes such an attribute when fit.<br><br>.. versionadded:: 1.0</span>
             </a>
@@ -929,7 +887,7 @@ dataset.
                 style="anchor-name: --doc-link-n_features_in_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=n_features_in_,-int">
                 n_features_in_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
                 n_features_in_: int<br><br>Number of features seen during :term:`fit`. Only defined if the<br>underlying first estimator in `steps` exposes such an attribute<br>when fit.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -944,7 +902,7 @@ dataset.
                     </table>
                 </details>
             </div>
-        </div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-2" type="checkbox" ><label for="sk-estimator-id-2" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>StandardScaler</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="standardscaler__">
+        </div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>StandardScaler</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="standardscaler__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -962,7 +920,7 @@ dataset.
                 style="anchor-name: --doc-link-copy;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue">
                 copy
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-copy;">
                 copy: bool, default=True<br><br>If False, try to avoid a copy and do inplace scaling instead.<br>This is not guaranteed to always work inplace; e.g. if the data is<br>not a NumPy array or scipy.sparse CSR matrix, a copy may still be<br>returned.</span>
             </a>
@@ -982,7 +940,7 @@ dataset.
                 style="anchor-name: --doc-link-with_mean;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue">
                 with_mean
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-with_mean;">
                 with_mean: bool, default=True<br><br>If True, center the data before scaling.<br>This does not work (and will raise an exception) when attempted on<br>sparse matrices, because centering them entails building a dense<br>matrix which in common use cases is likely to be too large to fit in<br>memory.</span>
             </a>
@@ -1002,7 +960,7 @@ dataset.
                 style="anchor-name: --doc-link-with_std;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue">
                 with_std
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-with_std;">
                 with_std: bool, default=True<br><br>If True, scale the data to unit variance (or equivalently,<br>unit standard deviation).</span>
             </a>
@@ -1032,7 +990,7 @@ dataset.
                 style="anchor-name: --doc-link-feature_names_in_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=feature_names_in_,-ndarray%20of%20shape%20%28n_features_in_%2C%29">
                 feature_names_in_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-feature_names_in_;">
                 feature_names_in_: ndarray of shape (`n_features_in_`,)<br><br>Names of features seen during :term:`fit`. Defined only when `X`<br>has feature names that are all strings.<br><br>.. versionadded:: 1.0</span>
             </a>
@@ -1050,7 +1008,7 @@ dataset.
                 style="anchor-name: --doc-link-mean_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=mean_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
                 mean_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-mean_;">
                 mean_: ndarray of shape (n_features,) or None<br><br>The mean value for each feature in the training set.<br>Equal to ``None`` when ``with_mean=False`` and ``with_std=False``.</span>
             </a>
@@ -1068,7 +1026,7 @@ dataset.
                 style="anchor-name: --doc-link-n_features_in_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_features_in_,-int">
                 n_features_in_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
                 n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -1086,7 +1044,7 @@ dataset.
                 style="anchor-name: --doc-link-n_samples_seen_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_samples_seen_,-int%20or%20ndarray%20of%20shape%20%28n_features%2C%29">
                 n_samples_seen_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_samples_seen_;">
                 n_samples_seen_: int or ndarray of shape (n_features,)<br><br>The number of samples processed by the estimator for each feature.<br>If there are no missing samples, the ``n_samples_seen`` will be an<br>integer, otherwise it will be an array of dtype int. If<br>`sample_weights` are used it will be a float (if no missing data)<br>or an array of dtype float that sums the weights seen so far.<br>Will be reset on new calls to fit, but increments across<br>``partial_fit`` calls.</span>
             </a>
@@ -1104,7 +1062,7 @@ dataset.
                 style="anchor-name: --doc-link-scale_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=scale_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
                 scale_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-scale_;">
                 scale_: ndarray of shape (n_features,) or None<br><br>Per feature relative scaling of the data to achieve zero mean and unit<br>variance. Generally this is calculated using `np.sqrt(var_)`. If a<br>variance is zero, we can&#x27;t achieve unit variance, and the data is left<br>as-is, giving a scaling factor of 1. `scale_` is equal to `None`<br>when `with_std=False`.<br><br>.. versionadded:: 0.17<br>   *scale_*</span>
             </a>
@@ -1122,7 +1080,7 @@ dataset.
                 style="anchor-name: --doc-link-var_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=var_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
                 var_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-var_;">
                 var_: ndarray of shape (n_features,) or None<br><br>The variance for each feature in the training set. Used to compute<br>`scale_`. Equal to ``None`` when ``with_mean=False`` and<br>``with_std=False``.</span>
             </a>
@@ -1137,24 +1095,25 @@ dataset.
                     </table>
                 </details>
             </div>
-        </div></div></div>
+        </div></details></div></div>
             <div class="features fitted">
               <details>
                 <summary>
-                  <div class="arrow"></div>
-                  <div>10 features</div>
-                  <div class="image-container">
-                    <button type="button" class="copy-paste-icon"
-                      title="Copy output features (max 100)"
-                      aria-label="Copy output features (max 100)"
-                      onclick="
-                      event.stopPropagation();
-                      event.preventDefault();
-                      copyFeatureNamesToClipboard(this);
-                      "
-                    >
-                    </button>
-                  </div>
+                  <span class="features-summary-content">
+                    <span>10 features</span>
+                    <span class="image-container">
+                      <button type="button" class="copy-paste-icon"
+                        title="Copy output features (max 100)"
+                        aria-label="Copy output features (max 100)"
+                        onclick="
+                        event.stopPropagation();
+                        event.preventDefault();
+                        copyFeatureNamesToClipboard(this);
+                        "
+                      >
+                      </button>
+                    </span>
+                  </span>
                 </summary>
                 <div class="features-container">
                     <table class="features-table">
@@ -1215,7 +1174,7 @@ dataset.
                 </div>
               </details>
             </div>
-        <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-3" type="checkbox" ><label for="sk-estimator-id-3" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>MLPRegressor</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html">?<span>Documentation for MLPRegressor</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="mlpregressor__">
+        <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>MLPRegressor</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html">?<span>Documentation for MLPRegressor</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="mlpregressor__">
             <div class="estimator-table">
                 <details>
                     <summary>Parameters</summary>
@@ -1233,7 +1192,7 @@ dataset.
                 style="anchor-name: --doc-link-hidden_layer_sizes;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=hidden_layer_sizes,-array-like%20of%20shape%28n_layers%20-%202%2C%29%2C%20default%3D%28100%2C%29">
                 hidden_layer_sizes
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-hidden_layer_sizes;">
                 hidden_layer_sizes: array-like of shape(n_layers - 2,), default=(100,)<br><br>The ith element represents the number of neurons in the ith<br>hidden layer.</span>
             </a>
@@ -1253,7 +1212,7 @@ dataset.
                 style="anchor-name: --doc-link-max_iter;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=max_iter,-int%2C%20default%3D200">
                 max_iter
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_iter;">
                 max_iter: int, default=200<br><br>Maximum number of iterations. The solver iterates until convergence<br>(determined by &#x27;tol&#x27;) or this number of iterations. For stochastic<br>solvers (&#x27;sgd&#x27;, &#x27;adam&#x27;), note that this determines the number of epochs<br>(how many times each data point will be used), not the number of<br>gradient steps.</span>
             </a>
@@ -1273,7 +1232,7 @@ dataset.
                 style="anchor-name: --doc-link-random_state;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=random_state,-int%2C%20RandomState%20instance%2C%20default%3DNone">
                 random_state
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-random_state;">
                 random_state: int, RandomState instance, default=None<br><br>Determines random number generation for weights and bias<br>initialization, train-test split if early stopping is used, and batch<br>sampling when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.<br>Pass an int for reproducible results across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.</span>
             </a>
@@ -1293,7 +1252,7 @@ dataset.
                 style="anchor-name: --doc-link-tol;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=tol,-float%2C%20default%3D1e-4">
                 tol
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-tol;">
                 tol: float, default=1e-4<br><br>Tolerance for the optimization. When the loss or score is not improving<br>by at least ``tol`` for ``n_iter_no_change`` consecutive iterations,<br>unless ``learning_rate`` is set to &#x27;adaptive&#x27;, convergence is<br>considered to be reached and training stops.</span>
             </a>
@@ -1313,7 +1272,7 @@ dataset.
                 style="anchor-name: --doc-link-loss;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=loss,-%7B%27squared_error%27%2C%20%27poisson%27%7D%2C%20default%3D%27squared_error%27">
                 loss
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-loss;">
                 loss: {&#x27;squared_error&#x27;, &#x27;poisson&#x27;}, default=&#x27;squared_error&#x27;<br><br>The loss function to use when training the weights. Note that the<br>&quot;squared error&quot; and &quot;poisson&quot; losses actually implement<br>&quot;half squares error&quot; and &quot;half poisson deviance&quot; to simplify the<br>computation of the gradient. Furthermore, the &quot;poisson&quot; loss internally uses<br>a log-link (exponential as the output activation function) and requires<br>``y &gt;= 0``.<br><br>.. versionchanged:: 1.7<br>   Added parameter `loss` and option &#x27;poisson&#x27;.</span>
             </a>
@@ -1333,7 +1292,7 @@ dataset.
                 style="anchor-name: --doc-link-activation;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=activation,-%7B%27identity%27%2C%20%27logistic%27%2C%20%27tanh%27%2C%20%27relu%27%7D%2C%20default%3D%27relu%27">
                 activation
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-activation;">
                 activation: {&#x27;identity&#x27;, &#x27;logistic&#x27;, &#x27;tanh&#x27;, &#x27;relu&#x27;}, default=&#x27;relu&#x27;<br><br>Activation function for the hidden layer.<br><br>- &#x27;identity&#x27;, no-op activation, useful to implement linear bottleneck,<br>  returns f(x) = x<br><br>- &#x27;logistic&#x27;, the logistic sigmoid function,<br>  returns f(x) = 1 / (1 + exp(-x)).<br><br>- &#x27;tanh&#x27;, the hyperbolic tan function,<br>  returns f(x) = tanh(x).<br><br>- &#x27;relu&#x27;, the rectified linear unit function,<br>  returns f(x) = max(0, x)</span>
             </a>
@@ -1353,7 +1312,7 @@ dataset.
                 style="anchor-name: --doc-link-solver;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=solver,-%7B%27lbfgs%27%2C%20%27sgd%27%2C%20%27adam%27%7D%2C%20default%3D%27adam%27">
                 solver
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-solver;">
                 solver: {&#x27;lbfgs&#x27;, &#x27;sgd&#x27;, &#x27;adam&#x27;}, default=&#x27;adam&#x27;<br><br>The solver for weight optimization.<br><br>- &#x27;lbfgs&#x27; is an optimizer in the family of quasi-Newton methods.<br><br>- &#x27;sgd&#x27; refers to stochastic gradient descent.<br><br>- &#x27;adam&#x27; refers to a stochastic gradient-based optimizer proposed by<br>  Kingma, Diederik, and Jimmy Ba<br><br>For a comparison between Adam optimizer and SGD, see<br>:ref:`sphx_glr_auto_examples_neural_networks_plot_mlp_training_curves.py`.<br><br>Note: The default solver &#x27;adam&#x27; works pretty well on relatively<br>large datasets (with thousands of training samples or more) in terms of<br>both training time and validation score.<br>For small datasets, however, &#x27;lbfgs&#x27; can converge faster and perform<br>better.</span>
             </a>
@@ -1373,7 +1332,7 @@ dataset.
                 style="anchor-name: --doc-link-alpha;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=alpha,-float%2C%20default%3D0.0001">
                 alpha
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-alpha;">
                 alpha: float, default=0.0001<br><br>Strength of the L2 regularization term. The L2 regularization term<br>is divided by the sample size when added to the loss.</span>
             </a>
@@ -1393,7 +1352,7 @@ dataset.
                 style="anchor-name: --doc-link-batch_size;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=batch_size,-int%2C%20default%3D%27auto%27">
                 batch_size
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-batch_size;">
                 batch_size: int, default=&#x27;auto&#x27;<br><br>Size of minibatches for stochastic optimizers.<br>If the solver is &#x27;lbfgs&#x27;, the regressor will not use minibatch.<br>When set to &quot;auto&quot;, `batch_size=min(200, n_samples)`.</span>
             </a>
@@ -1413,7 +1372,7 @@ dataset.
                 style="anchor-name: --doc-link-learning_rate;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=learning_rate,-%7B%27constant%27%2C%20%27invscaling%27%2C%20%27adaptive%27%7D%2C%20default%3D%27constant%27">
                 learning_rate
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-learning_rate;">
                 learning_rate: {&#x27;constant&#x27;, &#x27;invscaling&#x27;, &#x27;adaptive&#x27;}, default=&#x27;constant&#x27;<br><br>Learning rate schedule for weight updates.<br><br>- &#x27;constant&#x27; is a constant learning rate given by<br>  &#x27;learning_rate_init&#x27;.<br><br>- &#x27;invscaling&#x27; gradually decreases the learning rate ``learning_rate_``<br>  at each time step &#x27;t&#x27; using an inverse scaling exponent of &#x27;power_t&#x27;.<br>  effective_learning_rate = learning_rate_init / pow(t, power_t)<br><br>- &#x27;adaptive&#x27; keeps the learning rate constant to<br>  &#x27;learning_rate_init&#x27; as long as training loss keeps decreasing.<br>  Each time two consecutive epochs fail to decrease training loss by at<br>  least tol, or fail to increase validation score by at least tol if<br>  &#x27;early_stopping&#x27; is on, the current learning rate is divided by 5.<br><br>Only used when solver=&#x27;sgd&#x27;.</span>
             </a>
@@ -1433,7 +1392,7 @@ dataset.
                 style="anchor-name: --doc-link-learning_rate_init;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=learning_rate_init,-float%2C%20default%3D0.001">
                 learning_rate_init
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-learning_rate_init;">
                 learning_rate_init: float, default=0.001<br><br>The initial learning rate used. It controls the step-size<br>in updating the weights. Only used when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1453,7 +1412,7 @@ dataset.
                 style="anchor-name: --doc-link-power_t;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=power_t,-float%2C%20default%3D0.5">
                 power_t
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-power_t;">
                 power_t: float, default=0.5<br><br>The exponent for inverse scaling learning rate.<br>It is used in updating effective learning rate when the learning_rate<br>is set to &#x27;invscaling&#x27;. Only used when solver=&#x27;sgd&#x27;.</span>
             </a>
@@ -1473,7 +1432,7 @@ dataset.
                 style="anchor-name: --doc-link-shuffle;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=shuffle,-bool%2C%20default%3DTrue">
                 shuffle
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-shuffle;">
                 shuffle: bool, default=True<br><br>Whether to shuffle samples in each iteration. Only used when<br>solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1493,7 +1452,7 @@ dataset.
                 style="anchor-name: --doc-link-verbose;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=verbose,-bool%2C%20default%3DFalse">
                 verbose
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-verbose;">
                 verbose: bool, default=False<br><br>Whether to print progress messages to stdout.</span>
             </a>
@@ -1513,7 +1472,7 @@ dataset.
                 style="anchor-name: --doc-link-warm_start;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
                 warm_start
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-warm_start;">
                 warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous<br>call to fit as initialization, otherwise, just erase the<br>previous solution. See :term:`the Glossary &lt;warm_start&gt;`.</span>
             </a>
@@ -1533,7 +1492,7 @@ dataset.
                 style="anchor-name: --doc-link-momentum;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=momentum,-float%2C%20default%3D0.9">
                 momentum
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-momentum;">
                 momentum: float, default=0.9<br><br>Momentum for gradient descent update. Should be between 0 and 1. Only<br>used when solver=&#x27;sgd&#x27;.</span>
             </a>
@@ -1553,7 +1512,7 @@ dataset.
                 style="anchor-name: --doc-link-nesterovs_momentum;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=nesterovs_momentum,-bool%2C%20default%3DTrue">
                 nesterovs_momentum
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-nesterovs_momentum;">
                 nesterovs_momentum: bool, default=True<br><br>Whether to use Nesterov&#x27;s momentum. Only used when solver=&#x27;sgd&#x27; and<br>momentum &gt; 0.</span>
             </a>
@@ -1573,7 +1532,7 @@ dataset.
                 style="anchor-name: --doc-link-early_stopping;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=early_stopping,-bool%2C%20default%3DFalse">
                 early_stopping
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-early_stopping;">
                 early_stopping: bool, default=False<br><br>Whether to use early stopping to terminate training when validation<br>score is not improving. If set to True, it will automatically set<br>aside ``validation_fraction`` of training data as validation and<br>terminate training when validation score is not improving by at<br>least ``tol`` for ``n_iter_no_change`` consecutive epochs.<br>Only effective when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1593,7 +1552,7 @@ dataset.
                 style="anchor-name: --doc-link-validation_fraction;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=validation_fraction,-float%2C%20default%3D0.1">
                 validation_fraction
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-validation_fraction;">
                 validation_fraction: float, default=0.1<br><br>The proportion of training data to set aside as validation set for<br>early stopping. Must be between 0 and 1.<br>Only used if early_stopping is True.</span>
             </a>
@@ -1613,7 +1572,7 @@ dataset.
                 style="anchor-name: --doc-link-beta_1;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=beta_1,-float%2C%20default%3D0.9">
                 beta_1
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-beta_1;">
                 beta_1: float, default=0.9<br><br>Exponential decay rate for estimates of first moment vector in adam,<br>should be in [0, 1). Only used when solver=&#x27;adam&#x27;.</span>
             </a>
@@ -1633,7 +1592,7 @@ dataset.
                 style="anchor-name: --doc-link-beta_2;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=beta_2,-float%2C%20default%3D0.999">
                 beta_2
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-beta_2;">
                 beta_2: float, default=0.999<br><br>Exponential decay rate for estimates of second moment vector in adam,<br>should be in [0, 1). Only used when solver=&#x27;adam&#x27;.</span>
             </a>
@@ -1653,7 +1612,7 @@ dataset.
                 style="anchor-name: --doc-link-epsilon;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=epsilon,-float%2C%20default%3D1e-8">
                 epsilon
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-epsilon;">
                 epsilon: float, default=1e-8<br><br>Value for numerical stability in adam. Only used when solver=&#x27;adam&#x27;.</span>
             </a>
@@ -1673,7 +1632,7 @@ dataset.
                 style="anchor-name: --doc-link-n_iter_no_change;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=n_iter_no_change,-int%2C%20default%3D10">
                 n_iter_no_change
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_iter_no_change;">
                 n_iter_no_change: int, default=10<br><br>Maximum number of epochs to not meet ``tol`` improvement.<br>Only effective when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.<br><br>.. versionadded:: 0.20</span>
             </a>
@@ -1693,7 +1652,7 @@ dataset.
                 style="anchor-name: --doc-link-max_fun;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=max_fun,-int%2C%20default%3D15000">
                 max_fun
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-max_fun;">
                 max_fun: int, default=15000<br><br>Only used when solver=&#x27;lbfgs&#x27;. Maximum number of function calls.<br>The solver iterates until convergence (determined by ``tol``), number<br>of iterations reaches max_iter, or this number of function calls.<br>Note that number of function calls will be greater than or equal to<br>the number of iterations for the MLPRegressor.<br><br>.. versionadded:: 0.22</span>
             </a>
@@ -1723,7 +1682,7 @@ dataset.
                 style="anchor-name: --doc-link-best_loss_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=best_loss_,-float">
                 best_loss_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-best_loss_;">
                 best_loss_: float<br><br>The minimum loss reached by the solver throughout fitting.<br>If `early_stopping=True`, this attribute is set to `None`. Refer to<br>the `best_validation_score_` fitted attribute instead.<br>Only accessible when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1741,7 +1700,7 @@ dataset.
                 style="anchor-name: --doc-link-best_validation_score_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=best_validation_score_,-float%20or%20None">
                 best_validation_score_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-best_validation_score_;">
                 best_validation_score_: float or None<br><br>The best validation score (i.e. R2 score) that triggered the<br>early stopping. Only available if `early_stopping=True`, otherwise the<br>attribute is set to `None`.<br>Only accessible when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1759,7 +1718,7 @@ dataset.
                 style="anchor-name: --doc-link-coefs_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=coefs_,-list%20of%20shape%20%28n_layers%20-%201%2C%29">
                 coefs_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-coefs_;">
                 coefs_: list of shape (n_layers - 1,)<br><br>The ith element in the list represents the weight matrix corresponding<br>to layer i.</span>
             </a>
@@ -1777,7 +1736,7 @@ dataset.
                 style="anchor-name: --doc-link-intercepts_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=intercepts_,-list%20of%20shape%20%28n_layers%20-%201%2C%29">
                 intercepts_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-intercepts_;">
                 intercepts_: list of shape (n_layers - 1,)<br><br>The ith element in the list represents the bias vector corresponding to<br>layer i + 1.</span>
             </a>
@@ -1795,7 +1754,7 @@ dataset.
                 style="anchor-name: --doc-link-loss_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=loss_,-float">
                 loss_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-loss_;">
                 loss_: float<br><br>The current loss computed with the loss function.</span>
             </a>
@@ -1813,7 +1772,7 @@ dataset.
                 style="anchor-name: --doc-link-loss_curve_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=loss_curve_,-list%20of%20shape%20%28n_iter_%2C%29">
                 loss_curve_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-loss_curve_;">
                 loss_curve_: list of shape (`n_iter_`,)<br><br>Loss value evaluated at the end of each training step.<br>The ith element in the list represents the loss at the ith iteration.<br>Only accessible when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1831,7 +1790,7 @@ dataset.
                 style="anchor-name: --doc-link-n_features_in_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=n_features_in_,-int">
                 n_features_in_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
                 n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
             </a>
@@ -1849,7 +1808,7 @@ dataset.
                 style="anchor-name: --doc-link-n_iter_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=n_iter_,-int">
                 n_iter_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_iter_;">
                 n_iter_: int<br><br>The number of iterations the solver has run.</span>
             </a>
@@ -1867,7 +1826,7 @@ dataset.
                 style="anchor-name: --doc-link-n_layers_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=n_layers_,-int">
                 n_layers_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_layers_;">
                 n_layers_: int<br><br>Number of layers.</span>
             </a>
@@ -1885,7 +1844,7 @@ dataset.
                 style="anchor-name: --doc-link-n_outputs_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=n_outputs_,-int">
                 n_outputs_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_outputs_;">
                 n_outputs_: int<br><br>Number of outputs.</span>
             </a>
@@ -1903,7 +1862,7 @@ dataset.
                 style="anchor-name: --doc-link-out_activation_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=out_activation_,-str">
                 out_activation_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-out_activation_;">
                 out_activation_: str<br><br>Name of the output activation function.</span>
             </a>
@@ -1921,7 +1880,7 @@ dataset.
                 style="anchor-name: --doc-link-t_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=t_,-int">
                 t_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-t_;">
                 t_: int<br><br>The number of training samples seen by the solver during fitting.<br>Mathematically equals `n_iters * X.shape[0]`, it means<br>`time_step` and it is used by optimizer&#x27;s learning rate scheduler.</span>
             </a>
@@ -1939,7 +1898,7 @@ dataset.
                 style="anchor-name: --doc-link-validation_scores_;"
                 rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.neural_network.MLPRegressor.html#:~:text=validation_scores_,-list%20of%20shape%20%28n_iter_%2C%29%20or%20None">
                 validation_scores_
-                <span class="param-doc-description"
+                <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-validation_scores_;">
                 validation_scores_: list of shape (`n_iter_`,) or None<br><br>The score at each iteration on a held-out validation set. The score<br>reported is the R2 score. Only available if `early_stopping=True`,<br>otherwise the attribute is set to `None`.<br>Only accessible when solver=&#x27;sgd&#x27; or &#x27;adam&#x27;.</span>
             </a>
@@ -1954,7 +1913,7 @@ dataset.
                     </table>
                 </details>
             </div>
-        </div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+        </div></details></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
      SPDX-License-Identifier: BSD-3-Clause
     */
 
@@ -2034,12 +1993,15 @@ dataset.
 
         navigator.clipboard.writeText(formattedText)
             .then(() => {
-                element.style.display = 'none';
-                element.parentElement.appendChild(copyMark);
+                /* Hide only the icon image: display none would remove the
+                 * focused button and drop keyboard focus to the page body. */
+                element.style.backgroundImage = 'none';
+                element.appendChild(copyMark);
 
                 setTimeout(() => {
                     copyMark.remove();
                     element.innerHTML = originalHTML;
+                    element.style.backgroundImage = '';
                     element.style = originalStyle;
                 }, 1000);
             })
@@ -2054,6 +2016,39 @@ dataset.
             });
         return false;
     }
+
+    /* Prevent keys pressed inside a diagram from triggering notebook actions
+     * (entering edit mode, moving the cell selection, scrolling the notebook).
+     * The listener is on `window` in the capture phase because the notebook
+     * processes its shortcuts on the document during capture, before any
+     * listener attached inside the page body would run.
+     */
+    if (!window.skEstimatorKeydownGuard) {
+        window.skEstimatorKeydownGuard = true;
+        window.addEventListener('keydown', function(event) {
+            const container = event.target instanceof Element
+                ? event.target.closest('.sk-top-container') : null;
+            if (container === null) {
+                return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.stopPropagation();
+                /* Space only has a native action on summaries and buttons.
+                 * Anywhere else its default is to scroll the notebook, which
+                 * moves the focused element out of view. */
+                if (event.key === ' ' && !event.target.matches('summary, button')) {
+                    event.preventDefault();
+                }
+            } else if (event.key === 'Escape') {
+                /* Step back out to the diagram itself, so the keyboard position
+                 * stays inside it instead of dropping to the page body. */
+                event.target.blur();
+                container.focus();
+                event.stopPropagation();
+            }
+        }, true);
+    }
+
     /**
      * Adapted from Skrub
      * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -2113,7 +2108,6 @@ dataset.
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-
     function forceTheme(elementId) {
         const estimatorElement = document.querySelector(`#${elementId}`);
         if (estimatorElement === null) {
@@ -2124,7 +2118,7 @@ dataset.
         }
     }
 
-    forceTheme('sk-container-id-1');</script></body>
+    forceTheme('sk-container-id-12');</script></body>
     </div>
     <br />
     <br />
@@ -2273,7 +2267,7 @@ The length of the axes list must be equal to the number of plots drawn.
  .. code-block:: none
 
 
-    <matplotlib.legend.Legend object at 0x785491a2bb60>
+    <matplotlib.legend.Legend object at 0x70fa4a0b30e0>
 
 
 
@@ -2344,7 +2338,7 @@ plot function.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.360 seconds)
+   **Total running time of the script:** (0 minutes 1.179 seconds)
 
 
 .. _sphx_glr_download_auto_examples_inspection_plot_partial_dependence_visualization_api.py:

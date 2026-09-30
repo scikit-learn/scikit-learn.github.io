@@ -1084,6 +1084,9 @@ improved HTML representation.</p>
   --sklearn-color-fitted-level-1: #d4ebff;
   --sklearn-color-fitted-level-2: #b3dbfd;
   --sklearn-color-fitted-level-3: cornflowerblue;
+  /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+  background (in both light and dark themes). */
+  --sklearn-color-focus: #8f3ce0;
 }
 
 .sk-global.light {
@@ -1109,15 +1112,20 @@ improved HTML representation.</p>
   padding: 0;
 }
 
-.sk-global input.sk-hidden--visually {
-  border: 0;
-  clip-path: inset(100%);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
+/* The first selector is the scrollable container itself which is focusable. */
+.sk-global:focus-visible,
+.sk-global :focus-visible {
+  outline: 2px solid var(--sklearn-color-focus);
+  outline-offset: -2px;
+  border-radius: 0.25em;
+}
+
+/* Focus ring sits outside copy-paste icon.
+   The outline is repeated because notebooks sets it. We need
+   a more specific selector than the generic rule above. */
+.sk-global .copy-paste-icon:focus-visible {
+    outline: 2px solid var(--sklearn-color-focus);
+    outline-offset: 2px;
 }
 
 .sk-global div.sk-dashed-wrapped {
@@ -1215,35 +1223,42 @@ clickable and can be expanded/collapsed.
 }
 
 /* Toggleable label */
-.sk-global label.sk-toggleable__label {
+.sk-global summary.sk-toggleable__label {
   cursor: pointer;
-  display: flex;
+  text-align: center;
   width: 100%;
   margin-bottom: 0;
   padding: 0.5em;
   box-sizing: border-box;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
 }
 
-.sk-global label.sk-toggleable__label .caption {
+.sk-global summary::marker {
+  color: var(--sklearn-color-icon)
+}
+
+.sk-global summary.sk-toggleable__label--no-marker {
+  list-style: none;
+}
+
+/* Lay out the label content (name + doc link) in a row next to the marker. */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-left: 0.5em;
+}
+
+/* Stack the estimator name/caption with flex, since they are spans.
+  <summary> only accepts phrasing content */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-global summary.sk-toggleable__label .caption {
   font-size: 0.6rem;
   font-weight: lighter;
   color: var(--sklearn-color-text-muted);
-}
-
-.sk-global label.sk-toggleable__label-arrow:before {
-  /* Arrow on the left of the label */
-  content: "▸";
-  float: left;
-  margin-right: 0.25em;
-  color: var(--sklearn-color-icon);
-}
-
-.sk-global label.sk-toggleable__label-arrow:hover:before {
-  color: var(--sklearn-color-text);
 }
 
 /* Toggleable content - dropdown */
@@ -1273,65 +1288,57 @@ clickable and can be expanded/collapsed.
   background-color: var(--sklearn-color-fitted-level-0);
 }
 
-.sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+.sk-global details[open] > div.sk-toggleable__content {
   /* Expand drop-down */
   display: block;
   width: 100%;
   overflow: visible;
 }
 
-.sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-  content: "▾";
-}
-
 /* Pipeline/ColumnTransformer-specific style */
 
-.sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label details[open] > summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
 /* Estimator-specific style */
 
 /* Colorize estimator box */
-.sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
-.sk-global div.sk-label label.sk-toggleable__label,
+/* Estimator label */
+.sk-global div.sk-label summary.sk-toggleable__label,
 .sk-global div.sk-label label {
   /* The background is the default theme color */
   color: var(--sklearn-color-text-on-default-background);
+  font-family: monospace;
+  font-weight: bold;
+  line-height: 1.2em;
 }
 
 /* On hover, darken the color of the background */
-.sk-global div.sk-label:hover label.sk-toggleable__label {
+.sk-global div.sk-label:hover summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
 /* Label box, darken color on hover, fitted */
-.sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+.sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-fitted-level-2);
-}
-
-/* Estimator label */
-
-.sk-global div.sk-label label {
-  font-family: monospace;
-  font-weight: bold;
-  line-height: 1.2em;
 }
 
 .sk-global div.sk-label-container {
@@ -1385,7 +1392,7 @@ a:visited.sk-estimator-doc-link {
   text-align: center;
   /* unfitted */
   border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-  color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
 .sk-estimator-doc-link.fitted,
@@ -1394,14 +1401,15 @@ a:visited.sk-estimator-doc-link.fitted {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-0);
   border: var(--sklearn-color-fitted-level-3) 1pt solid;
-  color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
-/* On hover */
+/* On hover.
+   The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+   above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
 div.sk-estimator:hover .sk-estimator-doc-link:hover,
 .sk-estimator-doc-link:hover,
-div.sk-label-container:hover .sk-estimator-doc-link:hover,
-.sk-estimator-doc-link:hover {
+div.sk-label-container:hover .sk-estimator-doc-link:hover {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1411,8 +1419,7 @@ div.sk-label-container:hover .sk-estimator-doc-link:hover,
 
 div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
 .sk-estimator-doc-link.fitted:hover,
-div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-.sk-estimator-doc-link.fitted:hover {
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -1445,45 +1452,15 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   border: var(--sklearn-color-fitted-level-3);
 }
 
-.sk-estimator-doc-link:hover span {
+.sk-estimator-doc-link:hover span,
+.sk-estimator-doc-link:focus-visible span {
   display: block;
 }
 
-/* "?"-specific style due to the `<a>` HTML tag */
-
-.sk-global a.estimator_doc_link {
-  float: right;
-  font-size: 1rem;
-  line-height: 1em;
-  font-family: monospace;
-  background-color: var(--sklearn-color-unfitted-level-0);
-  border-radius: 1rem;
-  height: 1rem;
-  width: 1rem;
-  text-decoration: none;
-  /* unfitted */
-  color: var(--sklearn-color-unfitted-level-1);
-  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-}
-
-.sk-global a.estimator_doc_link.fitted {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-0);
-  border: var(--sklearn-color-fitted-level-1) 1pt solid;
-  color: var(--sklearn-color-fitted-level-1);
-}
-
-/* On hover */
-.sk-global a.estimator_doc_link:hover {
-  /* unfitted */
-  background-color: var(--sklearn-color-unfitted-level-3);
-  color: var(--sklearn-color-background);
-  text-decoration: none;
-}
-
-.sk-global a.estimator_doc_link.fitted:hover {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-3);
+/* Focus ring round and outside of the small circular icon */
+.sk-global .sk-estimator-doc-link:focus-visible {
+  border-radius: 1em;
+  outline-offset: 1px;
 }
 
 .sk-top-container.sk-global {
@@ -1538,10 +1515,19 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 /*
     `table td`is set in notebook with right text-align.
     We need to overwrite it.
+    Padding added here so params without a doc link look like params
+    with a link.
 */
 .estimator-table table td.param {
     text-align: left;
     position: relative;
+    padding: .5em;
+}
+
+/*
+    When the cell holds a link, the link brings its own padding
+*/
+.estimator-table table td.param:has(a.param-doc-link) {
     padding: 0;
 }
 
@@ -1560,11 +1546,6 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
     text-align: left !important;
 }
 
-.user-set td i,
-.default td i {
-    color: black;
-}
-
 td.fitted-att-type {
     white-space: preserve nowrap;
 }
@@ -1581,14 +1562,6 @@ a.param-doc-link:visited {
     color: inherit;
     display: block;
     padding: .5em;
-}
-
-@supports(anchor-name: --doc-link) {
-    a.param-doc-link,
-    a.param-doc-link:link,
-    a.param-doc-link:visited {
-    anchor-name: --doc-link;
-    }
 }
 
 /* "hack" to make the entire area of the cell containing the link clickable */
@@ -1632,7 +1605,9 @@ a.param-doc-link::before {
     border: thin solid var(--sklearn-color-fitted-level-3);
 }
 
-.param-doc-link:hover .param-doc-description {
+/* The tooltip is shown on hover and when the link takes keyboard focus. */
+.param-doc-link:hover .param-doc-description,
+.param-doc-link:focus .param-doc-description {
     display: block;
 }
 
@@ -1650,14 +1625,8 @@ a.param-doc-link::before {
     background-color: transparent;
 }
 
-.copy-paste-icon:focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: 1px;
-}
-
 .features {
   font-family: monospace;
-  cursor: pointer;
   background-color: var(--sklearn-color-unfitted-level-0);
   border: 1px dotted var(--sklearn-color-border-box);
   border-radius: .20em;
@@ -1671,13 +1640,15 @@ a.param-doc-link::before {
 
 .features summary {
   cursor: pointer;
-  display: flex;
   margin-bottom: 0;
   text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
   padding: .25em;
+}
+
+.features summary .features-summary-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
 .features details[open] > summary {
@@ -1689,15 +1660,6 @@ a.param-doc-link::before {
 .features.fitted details[open] > summary {
   background-color: var(--sklearn-color-fitted-level-2);
   border-radius: .20em 0 0 0;
-}
-
-.features details > summary .arrow::before {
-  content: "▸";
-  color: grey;
-}
-
-.features details[open] > summary .arrow::before {
-  content: "▾";
 }
 
 .features details:hover > summary {
@@ -1740,9 +1702,16 @@ a.param-doc-link::before {
   filter: grayscale(100%) opacity(60%);
 }
 
+/* The grayscale filter above also applies to the focus ring. Reset it.
+  The copy-paste buttons ring's style lives in estimator.css. */
+.features .copy-paste-icon:focus-visible {
+  filter: none;
+}
+
 .features .features-container table {
   width: 100%;
   margin: 0.01em;
+  table-layout: inherit;
 }
 
 .features .features-container table tr:nth-child(odd) {
@@ -1755,10 +1724,6 @@ a.param-doc-link::before {
 
 .features .features-container table tr:hover {
   background-color: #e0e0e0;
-}
-
-.features .features-container table {
-  table-layout: inherit;
 }
 
 .features .features-container table td {
@@ -1774,8 +1739,8 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-1" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;standardscaler&#x27;, StandardScaler(with_std=False)),
-                (&#x27;logisticregression&#x27;, LogisticRegression(C=2.0))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-1" type="checkbox" ><label for="sk-estimator-id-1" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></div></label><div class="sk-toggleable__content " data-param-prefix="">
+</style><body><div id="sk-container-id-1" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;standardscaler&#x27;, StandardScaler(with_std=False)),
+                (&#x27;logisticregression&#x27;, LogisticRegression(C=2.0))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>Pipeline</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link ">i<span>Not fitted</span></span></span></span></summary><div class="sk-toggleable__content " data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1793,7 +1758,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-steps;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples">
             steps
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-steps;">
             steps: list of tuples<br><br>List of (name of step, estimator) tuples that are to be chained in<br>sequential order. To be compatible with the scikit-learn API, all steps<br>must define `fit`. All non-last steps must also define `transform`. See<br>:ref:`Combining Estimators &lt;combining_estimators&gt;` for more details.</span>
         </a>
@@ -1813,7 +1778,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-transform_input;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-tuple%20or%20list%20of%20str%2C%20default%3D%28%22X_val%22%2C%29">
             transform_input
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-transform_input;">
             transform_input: tuple or list of str, default=(&quot;X_val&quot;,)<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>By default, the validation set `X_val` is always transformed.<br><br>You can only use this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6<br><br>.. versionchanged:: 1.10<br>    The default changed from `None` to `(&quot;X_val&quot;,)`.</span>
         </a>
@@ -1833,7 +1798,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-memory;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone">
             memory
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-memory;">
             memory: str or object with the joblib.Memory interface, default=None<br><br>Used to cache the fitted transformers of the pipeline. The last step<br>will never be cached, even if it is a transformer. By default, no<br>caching is performed. If a string is given, it is the path to the<br>caching directory. Enabling caching triggers a clone of the transformers<br>before fitting. Therefore, the transformer instance given to the<br>pipeline cannot be inspected directly. Use the attribute ``named_steps``<br>or ``steps`` to inspect estimators within the pipeline. Caching the<br>transformers is advantageous when fitting is time consuming. See<br>:ref:`sphx_glr_auto_examples_neighbors_plot_caching_nearest_neighbors.py`<br>for an example on how to enable caching.</span>
         </a>
@@ -1853,7 +1818,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: bool, default=False<br><br>If True, the time elapsed while fitting each step will be printed as it<br>is completed.</span>
         </a>
@@ -1865,7 +1830,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-2" type="checkbox" ><label for="sk-estimator-id-2" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>StandardScaler</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="standardscaler__">
+    </div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>StandardScaler</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="standardscaler__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1883,7 +1848,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_std;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue">
             with_std
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_std;">
             with_std: bool, default=True<br><br>If True, scale the data to unit variance (or equivalently,<br>unit standard deviation).</span>
         </a>
@@ -1903,7 +1868,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-copy;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue">
             copy
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-copy;">
             copy: bool, default=True<br><br>If False, try to avoid a copy and do inplace scaling instead.<br>This is not guaranteed to always work inplace; e.g. if the data is<br>not a NumPy array or scipy.sparse CSR matrix, a copy may still be<br>returned.</span>
         </a>
@@ -1923,7 +1888,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_mean;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue">
             with_mean
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_mean;">
             with_mean: bool, default=True<br><br>If True, center the data before scaling.<br>This does not work (and will raise an exception) when attempted on<br>sparse matrices, because centering them entails building a dense<br>matrix which in common use cases is likely to be too large to fit in<br>memory.</span>
         </a>
@@ -1935,7 +1900,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-item"><div class="sk-estimator  sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-3" type="checkbox" ><label for="sk-estimator-id-3" class="sk-toggleable__label  sk-toggleable__label-arrow"><div><div>LogisticRegression</div></div><div><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></div></label><div class="sk-toggleable__content " data-param-prefix="logisticregression__">
+    </div></details></div></div><div class="sk-item"><div class="sk-estimator  sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label "><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>LogisticRegression</span></span><span><a class="sk-estimator-doc-link " rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></span></span></summary><div class="sk-toggleable__content " data-param-prefix="logisticregression__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -1953,7 +1918,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-C;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
             C
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-C;">
             C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
         </a>
@@ -1973,7 +1938,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-penalty;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=penalty,-%7B%27l1%27%2C%20%27l2%27%2C%20%27elasticnet%27%2C%20None%7D%2C%20default%3D%27l2%27">
             penalty
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-penalty;">
             penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. versionadded:: 0.19<br>   l1 penalty with SAGA solver (allowing &#x27;multinomial&#x27; + L1)<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
         </a>
@@ -1993,7 +1958,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-l1_ratio;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=l1_ratio,-float%2C%20default%3D0.0">
             l1_ratio
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-l1_ratio;">
             l1_ratio: float, default=0.0<br><br>The Elastic-Net mixing parameter, with `0 &lt;= l1_ratio &lt;= 1`. Setting<br>`l1_ratio=1` gives a pure L1-penalty, setting `l1_ratio=0` gives a pure<br>L2-penalty. Any value between 0 and 1 gives an Elastic-Net penalty of the form<br>`l1_ratio * L1 + (1 - l1_ratio) * L2`.<br><br>.. warning::<br>   Certain values of `l1_ratio`, i.e. some penalties, may not work with some<br>   solvers. See the parameter `solver` below, to know the compatibility between<br>   the penalty and solver.<br><br>.. versionchanged:: 1.8<br>    Default value changed from None to 0.0.<br><br>.. deprecated:: 1.8<br>    `None` is deprecated and will be removed in version 1.10. Always use<br>    `l1_ratio` to specify the penalty type.</span>
         </a>
@@ -2013,7 +1978,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-dual;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=dual,-bool%2C%20default%3DFalse">
             dual
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-dual;">
             dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.</span>
         </a>
@@ -2033,7 +1998,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-tol;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=tol,-float%2C%20default%3D1e-4">
             tol
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-tol;">
             tol: float, default=1e-4<br><br>Tolerance for stopping criteria.</span>
         </a>
@@ -2053,7 +2018,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-fit_intercept;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=fit_intercept,-bool%2C%20default%3DTrue">
             fit_intercept
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-fit_intercept;">
             fit_intercept: bool, default=True<br><br>Specifies if a constant (a.k.a. bias or intercept) should be<br>added to the decision function.</span>
         </a>
@@ -2073,7 +2038,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-intercept_scaling;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=intercept_scaling,-float%2C%20default%3D1">
             intercept_scaling
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-intercept_scaling;">
             intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.</span>
         </a>
@@ -2093,7 +2058,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-class_weight;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone">
             class_weight
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-class_weight;">
             class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.<br><br>.. versionadded:: 0.17<br>   *class_weight=&#x27;balanced&#x27;*</span>
         </a>
@@ -2113,7 +2078,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=random_state,-int%2C%20RandomState%20instance%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance, default=None<br><br>Only used for `solver` == &#x27;sag&#x27;, &#x27;saga&#x27; or &#x27;liblinear&#x27; to shuffle the<br>data. It has no effect on the other solvers.<br>See :term:`Glossary &lt;random_state&gt;` for details.</span>
         </a>
@@ -2133,7 +2098,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-solver;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=solver,-%7B%27lbfgs%27%2C%20%27liblinear%27%2C%20%27newton-cd%27%2C%20%27newton-cd-gram%27%2C%20%27newton-cg%27%2C%20%20%20%20%20%20%20%20%20%20%20%20%20%27newton-cholesky%27%2C%20%27sag%27%2C%20%27saga%27%7D%2C%20default%3D%27lbfgs%27">
             solver
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-solver;">
             solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           no<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 0.17<br>   Stochastic Average Gradient (SAG) descent solver. Multinomial support in<br>   version 0.18.<br>.. versionadded:: 0.19<br>   SAGA solver.<br>.. versionchanged:: 0.22<br>   The default solver changed from &#x27;liblinear&#x27; to &#x27;lbfgs&#x27; in 0.22.<br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
         </a>
@@ -2153,7 +2118,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_iter;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=max_iter,-int%2C%20default%3D100">
             max_iter
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_iter;">
             max_iter: int, default=100<br><br>Maximum number of iterations taken for the solvers to converge.</span>
         </a>
@@ -2173,7 +2138,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>For the liblinear and lbfgs solvers set verbose to any positive<br>number for verbosity.</span>
         </a>
@@ -2193,7 +2158,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-warm_start;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
             warm_start
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-warm_start;">
             warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.<br><br>.. versionadded:: 0.17<br>   *warm_start* to support *lbfgs*, *newton-cg*, *sag*, *saga* solvers.</span>
         </a>
@@ -2213,7 +2178,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_jobs;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=n_jobs,-int%2C%20default%3DNone">
             n_jobs
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_jobs;">
             n_jobs: int, default=None<br><br>Does not have any effect.<br><br>.. deprecated:: 1.8<br>   `n_jobs` is deprecated in version 1.8 and will be removed in 1.10.</span>
         </a>
@@ -2225,7 +2190,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+    </div></details></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
  SPDX-License-Identifier: BSD-3-Clause
 */
 
@@ -2305,12 +2270,15 @@ function copyFeatureNamesToClipboard(element) {
 
     navigator.clipboard.writeText(formattedText)
         .then(() => {
-            element.style.display = 'none';
-            element.parentElement.appendChild(copyMark);
+            /* Hide only the icon image: display none would remove the
+             * focused button and drop keyboard focus to the page body. */
+            element.style.backgroundImage = 'none';
+            element.appendChild(copyMark);
 
             setTimeout(() => {
                 copyMark.remove();
                 element.innerHTML = originalHTML;
+                element.style.backgroundImage = '';
                 element.style = originalStyle;
             }, 1000);
         })
@@ -2325,6 +2293,39 @@ function copyFeatureNamesToClipboard(element) {
         });
     return false;
 }
+
+/* Prevent keys pressed inside a diagram from triggering notebook actions
+ * (entering edit mode, moving the cell selection, scrolling the notebook).
+ * The listener is on `window` in the capture phase because the notebook
+ * processes its shortcuts on the document during capture, before any
+ * listener attached inside the page body would run.
+ */
+if (!window.skEstimatorKeydownGuard) {
+    window.skEstimatorKeydownGuard = true;
+    window.addEventListener('keydown', function(event) {
+        const container = event.target instanceof Element
+            ? event.target.closest('.sk-top-container') : null;
+        if (container === null) {
+            return;
+        }
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.stopPropagation();
+            /* Space only has a native action on summaries and buttons.
+             * Anywhere else its default is to scroll the notebook, which
+             * moves the focused element out of view. */
+            if (event.key === ' ' && !event.target.matches('summary, button')) {
+                event.preventDefault();
+            }
+        } else if (event.key === 'Escape') {
+            /* Step back out to the diagram itself, so the keyboard position
+             * stays inside it instead of dropping to the page body. */
+            event.target.blur();
+            container.focus();
+            event.stopPropagation();
+        }
+    }, true);
+}
+
 /**
  * Adapted from Skrub
  * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -2384,7 +2385,6 @@ function detectTheme(element) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-
 function forceTheme(elementId) {
     const estimatorElement = document.querySelector(`#${elementId}`);
     if (estimatorElement === null) {
@@ -2441,6 +2441,9 @@ with <code class="docutils literal notranslate"><span class="pre">X</span></code
   --sklearn-color-fitted-level-1: #d4ebff;
   --sklearn-color-fitted-level-2: #b3dbfd;
   --sklearn-color-fitted-level-3: cornflowerblue;
+  /* Chosen to keep at least 3:1 contrast (WCAG 1.4.11) against every
+  background (in both light and dark themes). */
+  --sklearn-color-focus: #8f3ce0;
 }
 
 .sk-global.light {
@@ -2466,15 +2469,20 @@ with <code class="docutils literal notranslate"><span class="pre">X</span></code
   padding: 0;
 }
 
-.sk-global input.sk-hidden--visually {
-  border: 0;
-  clip-path: inset(100%);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
+/* The first selector is the scrollable container itself which is focusable. */
+.sk-global:focus-visible,
+.sk-global :focus-visible {
+  outline: 2px solid var(--sklearn-color-focus);
+  outline-offset: -2px;
+  border-radius: 0.25em;
+}
+
+/* Focus ring sits outside copy-paste icon.
+   The outline is repeated because notebooks sets it. We need
+   a more specific selector than the generic rule above. */
+.sk-global .copy-paste-icon:focus-visible {
+    outline: 2px solid var(--sklearn-color-focus);
+    outline-offset: 2px;
 }
 
 .sk-global div.sk-dashed-wrapped {
@@ -2572,35 +2580,42 @@ clickable and can be expanded/collapsed.
 }
 
 /* Toggleable label */
-.sk-global label.sk-toggleable__label {
+.sk-global summary.sk-toggleable__label {
   cursor: pointer;
-  display: flex;
+  text-align: center;
   width: 100%;
   margin-bottom: 0;
   padding: 0.5em;
   box-sizing: border-box;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
 }
 
-.sk-global label.sk-toggleable__label .caption {
+.sk-global summary::marker {
+  color: var(--sklearn-color-icon)
+}
+
+.sk-global summary.sk-toggleable__label--no-marker {
+  list-style: none;
+}
+
+/* Lay out the label content (name + doc link) in a row next to the marker. */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-left: 0.5em;
+}
+
+/* Stack the estimator name/caption with flex, since they are spans.
+  <summary> only accepts phrasing content */
+.sk-global summary.sk-toggleable__label .sk-toggleable__label-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-global summary.sk-toggleable__label .caption {
   font-size: 0.6rem;
   font-weight: lighter;
   color: var(--sklearn-color-text-muted);
-}
-
-.sk-global label.sk-toggleable__label-arrow:before {
-  /* Arrow on the left of the label */
-  content: "▸";
-  float: left;
-  margin-right: 0.25em;
-  color: var(--sklearn-color-icon);
-}
-
-.sk-global label.sk-toggleable__label-arrow:hover:before {
-  color: var(--sklearn-color-text);
 }
 
 /* Toggleable content - dropdown */
@@ -2630,65 +2645,57 @@ clickable and can be expanded/collapsed.
   background-color: var(--sklearn-color-fitted-level-0);
 }
 
-.sk-global input.sk-toggleable__control:checked~div.sk-toggleable__content {
+.sk-global details[open] > div.sk-toggleable__content {
   /* Expand drop-down */
   display: block;
   width: 100%;
   overflow: visible;
 }
 
-.sk-global input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
-  content: "▾";
-}
-
 /* Pipeline/ColumnTransformer-specific style */
 
-.sk-global div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label details[open] > summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-label.fitted details[open] > summary.sk-toggleable__label {
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
 /* Estimator-specific style */
 
 /* Colorize estimator box */
-.sk-global div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator details[open] > summary.sk-toggleable__label {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
-.sk-global div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+.sk-global div.sk-estimator.fitted details[open] > summary.sk-toggleable__label {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-2);
 }
 
-.sk-global div.sk-label label.sk-toggleable__label,
+/* Estimator label */
+.sk-global div.sk-label summary.sk-toggleable__label,
 .sk-global div.sk-label label {
   /* The background is the default theme color */
   color: var(--sklearn-color-text-on-default-background);
+  font-family: monospace;
+  font-weight: bold;
+  line-height: 1.2em;
 }
 
 /* On hover, darken the color of the background */
-.sk-global div.sk-label:hover label.sk-toggleable__label {
+.sk-global div.sk-label:hover summary.sk-toggleable__label {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-unfitted-level-2);
 }
 
 /* Label box, darken color on hover, fitted */
-.sk-global div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+.sk-global div.sk-label.fitted:hover summary.sk-toggleable__label.fitted {
   color: var(--sklearn-color-text);
   background-color: var(--sklearn-color-fitted-level-2);
-}
-
-/* Estimator label */
-
-.sk-global div.sk-label label {
-  font-family: monospace;
-  font-weight: bold;
-  line-height: 1.2em;
 }
 
 .sk-global div.sk-label-container {
@@ -2742,7 +2749,7 @@ a:visited.sk-estimator-doc-link {
   text-align: center;
   /* unfitted */
   border: var(--sklearn-color-unfitted-level-3) 1pt solid;
-  color: var(--sklearn-color-unfitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
 .sk-estimator-doc-link.fitted,
@@ -2751,14 +2758,15 @@ a:visited.sk-estimator-doc-link.fitted {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-0);
   border: var(--sklearn-color-fitted-level-3) 1pt solid;
-  color: var(--sklearn-color-fitted-level-3);
+  color: var(--sklearn-color-text);
 }
 
-/* On hover */
+/* On hover.
+   The descendant selectors are needed to outrank `a:link.sk-estimator-doc-link`
+   above, which is more specific than a bare `.sk-estimator-doc-link:hover`. */
 div.sk-estimator:hover .sk-estimator-doc-link:hover,
 .sk-estimator-doc-link:hover,
-div.sk-label-container:hover .sk-estimator-doc-link:hover,
-.sk-estimator-doc-link:hover {
+div.sk-label-container:hover .sk-estimator-doc-link:hover {
   /* unfitted */
   background-color: var(--sklearn-color-unfitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -2768,8 +2776,7 @@ div.sk-label-container:hover .sk-estimator-doc-link:hover,
 
 div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
 .sk-estimator-doc-link.fitted:hover,
-div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
-.sk-estimator-doc-link.fitted:hover {
+div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover {
   /* fitted */
   background-color: var(--sklearn-color-fitted-level-3);
   border: var(--sklearn-color-fitted-level-0) 1pt solid;
@@ -2802,45 +2809,15 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
   border: var(--sklearn-color-fitted-level-3);
 }
 
-.sk-estimator-doc-link:hover span {
+.sk-estimator-doc-link:hover span,
+.sk-estimator-doc-link:focus-visible span {
   display: block;
 }
 
-/* "?"-specific style due to the `<a>` HTML tag */
-
-.sk-global a.estimator_doc_link {
-  float: right;
-  font-size: 1rem;
-  line-height: 1em;
-  font-family: monospace;
-  background-color: var(--sklearn-color-unfitted-level-0);
-  border-radius: 1rem;
-  height: 1rem;
-  width: 1rem;
-  text-decoration: none;
-  /* unfitted */
-  color: var(--sklearn-color-unfitted-level-1);
-  border: var(--sklearn-color-unfitted-level-1) 1pt solid;
-}
-
-.sk-global a.estimator_doc_link.fitted {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-0);
-  border: var(--sklearn-color-fitted-level-1) 1pt solid;
-  color: var(--sklearn-color-fitted-level-1);
-}
-
-/* On hover */
-.sk-global a.estimator_doc_link:hover {
-  /* unfitted */
-  background-color: var(--sklearn-color-unfitted-level-3);
-  color: var(--sklearn-color-background);
-  text-decoration: none;
-}
-
-.sk-global a.estimator_doc_link.fitted:hover {
-  /* fitted */
-  background-color: var(--sklearn-color-fitted-level-3);
+/* Focus ring round and outside of the small circular icon */
+.sk-global .sk-estimator-doc-link:focus-visible {
+  border-radius: 1em;
+  outline-offset: 1px;
 }
 
 .sk-top-container.sk-global {
@@ -2895,10 +2872,19 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 /*
     `table td`is set in notebook with right text-align.
     We need to overwrite it.
+    Padding added here so params without a doc link look like params
+    with a link.
 */
 .estimator-table table td.param {
     text-align: left;
     position: relative;
+    padding: .5em;
+}
+
+/*
+    When the cell holds a link, the link brings its own padding
+*/
+.estimator-table table td.param:has(a.param-doc-link) {
     padding: 0;
 }
 
@@ -2917,11 +2903,6 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
     text-align: left !important;
 }
 
-.user-set td i,
-.default td i {
-    color: black;
-}
-
 td.fitted-att-type {
     white-space: preserve nowrap;
 }
@@ -2938,14 +2919,6 @@ a.param-doc-link:visited {
     color: inherit;
     display: block;
     padding: .5em;
-}
-
-@supports(anchor-name: --doc-link) {
-    a.param-doc-link,
-    a.param-doc-link:link,
-    a.param-doc-link:visited {
-    anchor-name: --doc-link;
-    }
 }
 
 /* "hack" to make the entire area of the cell containing the link clickable */
@@ -2989,7 +2962,9 @@ a.param-doc-link::before {
     border: thin solid var(--sklearn-color-fitted-level-3);
 }
 
-.param-doc-link:hover .param-doc-description {
+/* The tooltip is shown on hover and when the link takes keyboard focus. */
+.param-doc-link:hover .param-doc-description,
+.param-doc-link:focus .param-doc-description {
     display: block;
 }
 
@@ -3007,14 +2982,8 @@ a.param-doc-link::before {
     background-color: transparent;
 }
 
-.copy-paste-icon:focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: 1px;
-}
-
 .features {
   font-family: monospace;
-  cursor: pointer;
   background-color: var(--sklearn-color-unfitted-level-0);
   border: 1px dotted var(--sklearn-color-border-box);
   border-radius: .20em;
@@ -3028,13 +2997,15 @@ a.param-doc-link::before {
 
 .features summary {
   cursor: pointer;
-  display: flex;
   margin-bottom: 0;
   text-align: center;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5em;
   padding: .25em;
+}
+
+.features summary .features-summary-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
 .features details[open] > summary {
@@ -3046,15 +3017,6 @@ a.param-doc-link::before {
 .features.fitted details[open] > summary {
   background-color: var(--sklearn-color-fitted-level-2);
   border-radius: .20em 0 0 0;
-}
-
-.features details > summary .arrow::before {
-  content: "▸";
-  color: grey;
-}
-
-.features details[open] > summary .arrow::before {
-  content: "▾";
 }
 
 .features details:hover > summary {
@@ -3097,9 +3059,16 @@ a.param-doc-link::before {
   filter: grayscale(100%) opacity(60%);
 }
 
+/* The grayscale filter above also applies to the focus ring. Reset it.
+  The copy-paste buttons ring's style lives in estimator.css. */
+.features .copy-paste-icon:focus-visible {
+  filter: none;
+}
+
 .features .features-container table {
   width: 100%;
   margin: 0.01em;
+  table-layout: inherit;
 }
 
 .features .features-container table tr:nth-child(odd) {
@@ -3112,10 +3081,6 @@ a.param-doc-link::before {
 
 .features .features-container table tr:hover {
   background-color: #e0e0e0;
-}
-
-.features .features-container table {
-  table-layout: inherit;
 }
 
 .features .features-container table td {
@@ -3131,9 +3096,9 @@ a.param-doc-link::before {
   justify-content: center;
   margin-top: 0.5em;
 }
-</style><body><div id="sk-container-id-2" tabindex="0" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;sc&#x27;, StandardScaler()),
+</style><body><div id="sk-container-id-2" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;sc&#x27;, StandardScaler()),
                 (&#x27;clf&#x27;, HistGradientBoostingClassifier())],
-         transform_input=[&#x27;X_val&#x27;])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-4" type="checkbox" ><label for="sk-estimator-id-4" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>Pipeline</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted" data-param-prefix="">
+         transform_input=[&#x27;X_val&#x27;])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>Pipeline</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3151,7 +3116,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-steps;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples">
             steps
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-steps;">
             steps: list of tuples<br><br>List of (name of step, estimator) tuples that are to be chained in<br>sequential order. To be compatible with the scikit-learn API, all steps<br>must define `fit`. All non-last steps must also define `transform`. See<br>:ref:`Combining Estimators &lt;combining_estimators&gt;` for more details.</span>
         </a>
@@ -3171,7 +3136,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-transform_input;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-tuple%20or%20list%20of%20str%2C%20default%3D%28%22X_val%22%2C%29">
             transform_input
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-transform_input;">
             transform_input: tuple or list of str, default=(&quot;X_val&quot;,)<br><br>The names of the :term:`metadata` parameters that should be transformed by the<br>pipeline before passing it to the step consuming it.<br><br>This enables transforming some input arguments to ``fit`` (other than ``X``)<br>to be transformed by the steps of the pipeline up to the step which requires<br>them. Requirement is defined via :ref:`metadata routing &lt;metadata_routing&gt;`.<br>For instance, this can be used to pass a validation set through the pipeline.<br><br>By default, the validation set `X_val` is always transformed.<br><br>You can only use this if metadata routing is enabled, which you<br>can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br><br>.. versionadded:: 1.6<br><br>.. versionchanged:: 1.10<br>    The default changed from `None` to `(&quot;X_val&quot;,)`.</span>
         </a>
@@ -3191,7 +3156,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-memory;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone">
             memory
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-memory;">
             memory: str or object with the joblib.Memory interface, default=None<br><br>Used to cache the fitted transformers of the pipeline. The last step<br>will never be cached, even if it is a transformer. By default, no<br>caching is performed. If a string is given, it is the path to the<br>caching directory. Enabling caching triggers a clone of the transformers<br>before fitting. Therefore, the transformer instance given to the<br>pipeline cannot be inspected directly. Use the attribute ``named_steps``<br>or ``steps`` to inspect estimators within the pipeline. Caching the<br>transformers is advantageous when fitting is time consuming. See<br>:ref:`sphx_glr_auto_examples_neighbors_plot_caching_nearest_neighbors.py`<br>for an example on how to enable caching.</span>
         </a>
@@ -3211,7 +3176,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: bool, default=False<br><br>If True, the time elapsed while fitting each step will be printed as it<br>is completed.</span>
         </a>
@@ -3241,7 +3206,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=classes_,-ndarray%20of%20shape%20%28n_classes%2C%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: ndarray of shape (n_classes,)<br><br>The classes labels. Only exist if the last step of the pipeline is a<br>classifier.</span>
         </a>
@@ -3259,7 +3224,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`. Only defined if the<br>underlying first estimator in `steps` exposes such an attribute<br>when fit.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -3274,7 +3239,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-5" type="checkbox" ><label for="sk-estimator-id-5" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>StandardScaler</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="sc__">
+    </div></details></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>StandardScaler</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="sc__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3292,7 +3257,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-copy;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue">
             copy
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-copy;">
             copy: bool, default=True<br><br>If False, try to avoid a copy and do inplace scaling instead.<br>This is not guaranteed to always work inplace; e.g. if the data is<br>not a NumPy array or scipy.sparse CSR matrix, a copy may still be<br>returned.</span>
         </a>
@@ -3312,7 +3277,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_mean;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue">
             with_mean
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_mean;">
             with_mean: bool, default=True<br><br>If True, center the data before scaling.<br>This does not work (and will raise an exception) when attempted on<br>sparse matrices, because centering them entails building a dense<br>matrix which in common use cases is likely to be too large to fit in<br>memory.</span>
         </a>
@@ -3332,7 +3297,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-with_std;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue">
             with_std
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-with_std;">
             with_std: bool, default=True<br><br>If True, scale the data to unit variance (or equivalently,<br>unit standard deviation).</span>
         </a>
@@ -3362,7 +3327,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-mean_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=mean_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             mean_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-mean_;">
             mean_: ndarray of shape (n_features,) or None<br><br>The mean value for each feature in the training set.<br>Equal to ``None`` when ``with_mean=False`` and ``with_std=False``.</span>
         </a>
@@ -3380,7 +3345,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -3398,7 +3363,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_samples_seen_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=n_samples_seen_,-int%20or%20ndarray%20of%20shape%20%28n_features%2C%29">
             n_samples_seen_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_samples_seen_;">
             n_samples_seen_: int or ndarray of shape (n_features,)<br><br>The number of samples processed by the estimator for each feature.<br>If there are no missing samples, the ``n_samples_seen`` will be an<br>integer, otherwise it will be an array of dtype int. If<br>`sample_weights` are used it will be a float (if no missing data)<br>or an array of dtype float that sums the weights seen so far.<br>Will be reset on new calls to fit, but increments across<br>``partial_fit`` calls.</span>
         </a>
@@ -3416,7 +3381,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-scale_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=scale_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             scale_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-scale_;">
             scale_: ndarray of shape (n_features,) or None<br><br>Per feature relative scaling of the data to achieve zero mean and unit<br>variance. Generally this is calculated using `np.sqrt(var_)`. If a<br>variance is zero, we can&#x27;t achieve unit variance, and the data is left<br>as-is, giving a scaling factor of 1. `scale_` is equal to `None`<br>when `with_std=False`.<br><br>.. versionadded:: 0.17<br>   *scale_*</span>
         </a>
@@ -3434,7 +3399,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-var_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=var_,-ndarray%20of%20shape%20%28n_features%2C%29%20or%20None">
             var_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-var_;">
             var_: ndarray of shape (n_features,) or None<br><br>The variance for each feature in the training set. Used to compute<br>`scale_`. Equal to ``None`` when ``with_mean=False`` and<br>``with_std=False``.</span>
         </a>
@@ -3449,24 +3414,25 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div>
+    </div></details></div></div>
         <div class="features fitted">
           <details>
             <summary>
-              <div class="arrow"></div>
-              <div>20 features</div>
-              <div class="image-container">
-                <button type="button" class="copy-paste-icon"
-                  title="Copy output features (max 100)"
-                  aria-label="Copy output features (max 100)"
-                  onclick="
-                  event.stopPropagation();
-                  event.preventDefault();
-                  copyFeatureNamesToClipboard(this);
-                  "
-                >
-                </button>
-              </div>
+              <span class="features-summary-content">
+                <span>20 features</span>
+                <span class="image-container">
+                  <button type="button" class="copy-paste-icon"
+                    title="Copy output features (max 100)"
+                    aria-label="Copy output features (max 100)"
+                    onclick="
+                    event.stopPropagation();
+                    event.preventDefault();
+                    copyFeatureNamesToClipboard(this);
+                    "
+                  >
+                  </button>
+                </span>
+              </span>
             </summary>
             <div class="features-container">
                 <table class="features-table">
@@ -3577,7 +3543,7 @@ a.param-doc-link::before {
             </div>
           </details>
         </div>
-    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually sk-global" id="sk-estimator-id-6" type="checkbox" ><label for="sk-estimator-id-6" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>HistGradientBoostingClassifier</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html">?<span>Documentation for HistGradientBoostingClassifier</span></a></div></label><div class="sk-toggleable__content fitted" data-param-prefix="clf__">
+    <div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>HistGradientBoostingClassifier</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html">?<span>Documentation for HistGradientBoostingClassifier</span></a></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="clf__">
         <div class="estimator-table">
             <details>
                 <summary>Parameters</summary>
@@ -3595,7 +3561,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-loss;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=loss,-%7B%27log_loss%27%7D%2C%20default%3D%27log_loss%27">
             loss
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-loss;">
             loss: {&#x27;log_loss&#x27;}, default=&#x27;log_loss&#x27;<br><br>The loss function to use in the boosting process.<br><br>For binary classification problems, &#x27;log_loss&#x27; is also known as logistic loss,<br>binomial deviance or binary crossentropy. Internally, the model fits one tree<br>per boosting iteration and uses the logistic sigmoid function (expit) as<br>inverse link function to compute the predicted positive class probability.<br><br>For multiclass classification problems, &#x27;log_loss&#x27; is also known as multinomial<br>deviance or categorical crossentropy. Internally, the model fits one tree per<br>boosting iteration and per class and uses the softmax function as inverse link<br>function to compute the predicted probabilities of the classes.</span>
         </a>
@@ -3615,7 +3581,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-learning_rate;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=learning_rate,-float%2C%20default%3D0.1">
             learning_rate
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-learning_rate;">
             learning_rate: float, default=0.1<br><br>The learning rate, also known as *shrinkage*. This is used as a<br>multiplicative factor for the leaves values. Use ``1`` for no<br>shrinkage.</span>
         </a>
@@ -3635,7 +3601,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_iter;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=max_iter,-int%2C%20default%3D100">
             max_iter
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_iter;">
             max_iter: int, default=100<br><br>The maximum number of iterations of the boosting process, i.e. the<br>maximum number of trees for binary classification. For multiclass<br>classification, `n_classes` trees per iteration are built.</span>
         </a>
@@ -3655,7 +3621,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_leaf_nodes;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=max_leaf_nodes,-int%20or%20None%2C%20default%3D31">
             max_leaf_nodes
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_leaf_nodes;">
             max_leaf_nodes: int or None, default=31<br><br>The maximum number of leaves for each tree. Must be strictly greater<br>than 1. If None, there is no maximum limit.</span>
         </a>
@@ -3675,7 +3641,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_depth;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=max_depth,-int%20or%20None%2C%20default%3DNone">
             max_depth
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_depth;">
             max_depth: int or None, default=None<br><br>The maximum depth of each tree. The depth of a tree is the number of<br>edges to go from the root to the deepest leaf.<br>Depth isn&#x27;t constrained by default.</span>
         </a>
@@ -3695,7 +3661,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-min_samples_leaf;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=min_samples_leaf,-int%2C%20default%3D20">
             min_samples_leaf
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-min_samples_leaf;">
             min_samples_leaf: int, default=20<br><br>The minimum number of samples per leaf. For small datasets with less<br>than a few hundred samples, it is recommended to lower this value<br>since only very shallow trees would be built.<br><br>This constraint is applied to the sample count (number of data rows),<br>not the sum of sample weights.</span>
         </a>
@@ -3715,7 +3681,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-l2_regularization;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=l2_regularization,-float%2C%20default%3D0">
             l2_regularization
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-l2_regularization;">
             l2_regularization: float, default=0<br><br>The L2 regularization parameter penalizing leaves with small hessians.<br>Use ``0`` for no regularization (default).</span>
         </a>
@@ -3735,7 +3701,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_features;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=max_features,-float%2C%20default%3D1.0">
             max_features
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_features;">
             max_features: float, default=1.0<br><br>Proportion of randomly chosen features in each and every node split.<br>This is a form of regularization, smaller values make the trees weaker<br>learners and might prevent overfitting.<br>If interaction constraints from `interaction_cst` are present, only allowed<br>features are taken into account for the subsampling.<br><br>.. versionadded:: 1.4</span>
         </a>
@@ -3755,7 +3721,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-max_bins;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=max_bins,-int%2C%20default%3D255">
             max_bins
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-max_bins;">
             max_bins: int, default=255<br><br>The maximum number of bins to use for non-missing values. Before<br>training, each feature of the input array `X` is binned into<br>integer-valued bins, which allows for a much faster training stage.<br>Features with a small number of unique values may use less than<br>``max_bins`` bins. In addition to the ``max_bins`` bins, one more bin<br>is always reserved for missing values. Must be no larger than 255.</span>
         </a>
@@ -3775,7 +3741,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-categorical_features;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=categorical_features,-array-like%20of%20%7Bbool%2C%20int%2C%20str%7D%20of%20shape%20%28n_features%29%20%20%20%20%20%20%20%20%20%20%20%20%20or%20shape%20%28n_categorical_features%2C%29%2C%20default%3D%27from_dtype%27">
             categorical_features
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-categorical_features;">
             categorical_features: array-like of {bool, int, str} of shape (n_features)             or shape (n_categorical_features,), default=&#x27;from_dtype&#x27;<br><br>Indicates the categorical features.<br><br>- None : no feature will be considered categorical.<br>- boolean array-like : boolean mask indicating categorical features.<br>- integer array-like : integer indices indicating categorical<br>  features.<br>- str array-like: names of categorical features (assuming the training<br>  data has feature names).<br>- `&quot;from_dtype&quot;`: dataframe columns with dtype &quot;Categorical&quot; and &quot;Enum&quot; are<br>  considered to be categorical features. The input must be a dataframe that<br>  is supported by narwhals (or supports it): :func:`narwhals.from_native` must<br>  work. This is the case, for instance, for pandas and polars DataFrames.<br><br>For each categorical feature, there must be at most `max_bins` unique<br>categories. Missing values for categorical features should be<br>represented by ``np.nan``; unknown categories at prediction time are<br>also treated as missing values.<br><br>Read more in the :ref:`User Guide &lt;categorical_support_gbdt&gt;`.<br><br>.. versionadded:: 0.24<br><br>.. versionchanged:: 1.2<br>   Added support for feature names.<br><br>.. versionchanged:: 1.4<br>   Added `&quot;from_dtype&quot;` option.<br><br>.. versionchanged:: 1.6<br>   The default value changed from `None` to `&quot;from_dtype&quot;`.</span>
         </a>
@@ -3795,7 +3761,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-monotonic_cst;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=monotonic_cst,-array-like%20of%20int%20of%20shape%20%28n_features%29%20or%20dict%2C%20default%3DNone">
             monotonic_cst
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-monotonic_cst;">
             monotonic_cst: array-like of int of shape (n_features) or dict, default=None<br><br>Monotonic constraint to enforce on each feature are specified using the<br>following integer values:<br><br>- 1: monotonic increase<br>- 0: no constraint<br>- -1: monotonic decrease<br><br>If a dict with str keys, map feature to monotonic constraints by name.<br>If an array, the features are mapped to constraints by position. See<br>:ref:`monotonic_cst_features_names` for a usage example.<br><br>The constraints are only valid for binary classifications and hold<br>over the probability of the positive class.<br>Read more in the :ref:`User Guide &lt;monotonic_cst_gbdt&gt;`.<br><br>.. versionadded:: 0.23<br><br>.. versionchanged:: 1.2<br>   Accept dict of constraints with feature names as keys.</span>
         </a>
@@ -3815,7 +3781,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-interaction_cst;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=interaction_cst,-%7B%22pairwise%22%2C%20%22no_interactions%22%7D%20or%20sequence%20of%20lists/tuples/sets%20%20%20%20%20%20%20%20%20%20%20%20%20of%20int%2C%20default%3DNone">
             interaction_cst
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-interaction_cst;">
             interaction_cst: {&quot;pairwise&quot;, &quot;no_interactions&quot;} or sequence of lists/tuples/sets             of int, default=None<br><br>Specify interaction constraints, the sets of features which can<br>interact with each other in child node splits.<br><br>Each item specifies the set of feature indices that are allowed<br>to interact with each other. If there are more features than<br>specified in these constraints, they are treated as if they were<br>specified as an additional set.<br><br>The strings &quot;pairwise&quot; and &quot;no_interactions&quot; are shorthands for<br>allowing only pairwise or no interactions, respectively.<br><br>For instance, with 5 features in total, `interaction_cst=[{0, 1}]`<br>is equivalent to `interaction_cst=[{0, 1}, {2, 3, 4}]`,<br>and specifies that each branch of a tree will either only split<br>on features 0 and 1 or only split on features 2, 3 and 4.<br><br>See :ref:`this example&lt;ice-vs-pdp&gt;` on how to use `interaction_cst`.<br><br>.. versionadded:: 1.2</span>
         </a>
@@ -3835,7 +3801,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-warm_start;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=warm_start,-bool%2C%20default%3DFalse">
             warm_start
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-warm_start;">
             warm_start: bool, default=False<br><br>When set to ``True``, reuse the solution of the previous call to fit<br>and add more estimators to the ensemble. For results to be valid, the<br>estimator should be re-trained on the same data only.<br>See :term:`the Glossary &lt;warm_start&gt;`.</span>
         </a>
@@ -3855,7 +3821,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-early_stopping;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=early_stopping,-%27auto%27%20or%20bool%2C%20default%3D%27auto%27">
             early_stopping
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-early_stopping;">
             early_stopping: &#x27;auto&#x27; or bool, default=&#x27;auto&#x27;<br><br>If &#x27;auto&#x27;, early stopping is enabled if the sample size is larger than<br>10000 or if `X_val` and `y_val` are passed to `fit`. If True, early stopping<br>is enabled, otherwise early stopping is disabled.<br><br>.. versionadded:: 0.23</span>
         </a>
@@ -3875,7 +3841,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-scoring;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=scoring,-str%20or%20callable%20or%20None%2C%20default%3D%27loss%27">
             scoring
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-scoring;">
             scoring: str or callable or None, default=&#x27;loss&#x27;<br><br>Scoring method to use for early stopping. Only used if `early_stopping`<br>is enabled. Options:<br><br>- str: see :ref:`scoring_string_names` for options.<br>- callable: a scorer callable object (e.g., function) with signature<br>  ``scorer(estimator, X, y)``. See :ref:`scoring_callable` for details.<br>- `None`: :ref:`accuracy &lt;accuracy_score&gt;` is used.<br>- &#x27;loss&#x27;: early stopping is checked w.r.t the loss value.</span>
         </a>
@@ -3895,7 +3861,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-validation_fraction;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=validation_fraction,-int%20or%20float%20or%20None%2C%20default%3D0.1">
             validation_fraction
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-validation_fraction;">
             validation_fraction: int or float or None, default=0.1<br><br>Proportion (or absolute size) of training data to set aside as<br>validation data for early stopping. If None, early stopping is done on<br>the training data.<br>The value is ignored if either early stopping is not performed, e.g.<br>`early_stopping=False`, or if `X_val` and `y_val` are passed to fit.</span>
         </a>
@@ -3915,7 +3881,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_iter_no_change;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=n_iter_no_change,-int%2C%20default%3D10">
             n_iter_no_change
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_iter_no_change;">
             n_iter_no_change: int, default=10<br><br>Used to determine when to &quot;early stop&quot;. The fitting process is<br>stopped when none of the last ``n_iter_no_change`` scores are better<br>than the ``n_iter_no_change - 1`` -th-to-last one, up to some<br>tolerance. Only used if early stopping is performed.</span>
         </a>
@@ -3935,7 +3901,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-tol;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=tol,-float%2C%20default%3D1e-7">
             tol
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-tol;">
             tol: float, default=1e-7<br><br>The absolute tolerance to use when comparing scores. The higher the<br>tolerance, the more likely we are to early stop: higher tolerance<br>means that it will be harder for subsequent iterations to be<br>considered an improvement upon the reference score.</span>
         </a>
@@ -3955,7 +3921,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-verbose;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=verbose,-int%2C%20default%3D0">
             verbose
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-verbose;">
             verbose: int, default=0<br><br>The verbosity level. If not zero, print some information about the<br>fitting process. ``1`` prints only summary info, ``2`` prints info per<br>iteration.</span>
         </a>
@@ -3975,7 +3941,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-random_state;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone">
             random_state
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-random_state;">
             random_state: int, RandomState instance or None, default=None<br><br>Pseudo-random number generator to control the subsampling in the<br>binning process, and the train/validation data split if early stopping<br>is enabled.<br>Pass an int for reproducible output across multiple function calls.<br>See :term:`Glossary &lt;random_state&gt;`.</span>
         </a>
@@ -3995,7 +3961,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-class_weight;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone">
             class_weight
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-class_weight;">
             class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form `{class_label: weight}`.<br>If not given, all classes are supposed to have weight one.<br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as `n_samples / (n_classes * np.bincount(y))`.<br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if `sample_weight` is specified.<br><br>.. versionadded:: 1.2</span>
         </a>
@@ -4025,7 +3991,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-classes_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=classes_,-array%2C%20shape%20%3D%20%28n_classes%2C%29">
             classes_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-classes_;">
             classes_: array, shape = (n_classes,)<br><br>Class labels.</span>
         </a>
@@ -4043,7 +4009,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-do_early_stopping_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=do_early_stopping_,-bool">
             do_early_stopping_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-do_early_stopping_;">
             do_early_stopping_: bool<br><br>Indicates whether early stopping is used during training.</span>
         </a>
@@ -4061,7 +4027,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-is_categorical_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=is_categorical_,-ndarray%2C%20shape%20%28n_features%2C%20%29%20or%20None">
             is_categorical_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-is_categorical_;">
             is_categorical_: ndarray, shape (n_features, ) or None<br><br>Boolean mask for the categorical features. ``None`` if there are no<br>categorical features.</span>
         </a>
@@ -4079,7 +4045,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_features_in_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=n_features_in_,-int">
             n_features_in_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_features_in_;">
             n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
         </a>
@@ -4097,7 +4063,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_iter_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=n_iter_,-int">
             n_iter_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_iter_;">
             n_iter_: int<br><br>The number of iterations as selected by early stopping, depending on<br>the `early_stopping` parameter. Otherwise it corresponds to max_iter.</span>
         </a>
@@ -4115,7 +4081,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-n_trees_per_iteration_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=n_trees_per_iteration_,-int">
             n_trees_per_iteration_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-n_trees_per_iteration_;">
             n_trees_per_iteration_: int<br><br>The number of tree that are built at each iteration. This is equal to 1<br>for binary classification, and to ``n_classes`` for multiclass<br>classification.</span>
         </a>
@@ -4133,7 +4099,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-train_score_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=train_score_,-ndarray%2C%20shape%20%28n_iter_%2B1%2C%29">
             train_score_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-train_score_;">
             train_score_: ndarray, shape (n_iter_+1,)<br><br>The scores at each iteration on the training data. The first entry<br>is the score of the ensemble before the first iteration. Scores are<br>computed according to the ``scoring`` parameter. If ``scoring`` is<br>not &#x27;loss&#x27;, scores are computed on a subset of at most 10 000<br>samples. Empty if no early stopping.</span>
         </a>
@@ -4151,7 +4117,7 @@ a.param-doc-link::before {
             style="anchor-name: --doc-link-validation_score_;"
             rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#:~:text=validation_score_,-ndarray%2C%20shape%20%28n_iter_%2B1%2C%29">
             validation_score_
-            <span class="param-doc-description"
+            <span class="param-doc-description" tabindex="-1"
             style="position-anchor: --doc-link-validation_score_;">
             validation_score_: ndarray, shape (n_iter_+1,)<br><br>The scores at each iteration on the held-out validation data. The<br>first entry is the score of the ensemble before the first iteration.<br>Scores are computed according to the ``scoring`` parameter. Empty if<br>no early stopping or if ``validation_fraction`` is None.</span>
         </a>
@@ -4166,7 +4132,7 @@ a.param-doc-link::before {
                 </table>
             </details>
         </div>
-    </div></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
+    </div></details></div></div></div></div></div></div><script>/*  Authors: The scikit-learn developers
  SPDX-License-Identifier: BSD-3-Clause
 */
 
@@ -4246,12 +4212,15 @@ function copyFeatureNamesToClipboard(element) {
 
     navigator.clipboard.writeText(formattedText)
         .then(() => {
-            element.style.display = 'none';
-            element.parentElement.appendChild(copyMark);
+            /* Hide only the icon image: display none would remove the
+             * focused button and drop keyboard focus to the page body. */
+            element.style.backgroundImage = 'none';
+            element.appendChild(copyMark);
 
             setTimeout(() => {
                 copyMark.remove();
                 element.innerHTML = originalHTML;
+                element.style.backgroundImage = '';
                 element.style = originalStyle;
             }, 1000);
         })
@@ -4266,6 +4235,39 @@ function copyFeatureNamesToClipboard(element) {
         });
     return false;
 }
+
+/* Prevent keys pressed inside a diagram from triggering notebook actions
+ * (entering edit mode, moving the cell selection, scrolling the notebook).
+ * The listener is on `window` in the capture phase because the notebook
+ * processes its shortcuts on the document during capture, before any
+ * listener attached inside the page body would run.
+ */
+if (!window.skEstimatorKeydownGuard) {
+    window.skEstimatorKeydownGuard = true;
+    window.addEventListener('keydown', function(event) {
+        const container = event.target instanceof Element
+            ? event.target.closest('.sk-top-container') : null;
+        if (container === null) {
+            return;
+        }
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.stopPropagation();
+            /* Space only has a native action on summaries and buttons.
+             * Anywhere else its default is to scroll the notebook, which
+             * moves the focused element out of view. */
+            if (event.key === ' ' && !event.target.matches('summary, button')) {
+                event.preventDefault();
+            }
+        } else if (event.key === 'Escape') {
+            /* Step back out to the diagram itself, so the keyboard position
+             * stays inside it instead of dropping to the page body. */
+            event.target.blur();
+            container.focus();
+            event.stopPropagation();
+        }
+    }, true);
+}
+
 /**
  * Adapted from Skrub
  * https://github.com/skrub-data/skrub/blob/403466d1d5d4dc76a7ef569b3f8228db59a31dc3/skrub/_reporting/_data/templates/report.js#L789
@@ -4325,7 +4327,6 @@ function detectTheme(element) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-
 function forceTheme(elementId) {
     const estimatorElement = document.querySelector(`#${elementId}`);
     if (estimatorElement === null) {
@@ -4379,7 +4380,7 @@ with regard to the other estimators in scikit-learn.</p>
 <p>In order to prepare <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.migration_to_sparray.html">SciPy migration from sparse matrices to sparse arrays</a>,
 all scikit-learn estimators that accept sparse matrices as input now also accept
 sparse arrays.</p>
-<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.360 seconds)</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.367 seconds)</p>
 <div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-release-highlights-plot-release-highlights-1-7-0-py">
 <div class="binder-badge docutils container">
 <a class="reference external image-reference" href="https://mybinder.org/v2/gh/scikit-learn/scikit-learn/main?urlpath=lab/tree/notebooks/auto_examples/release_highlights/plot_release_highlights_1_7_0.ipynb"><img alt="Launch binder" src="../../_images/binder_badge_logo21.svg" style="width: 150px;" />
