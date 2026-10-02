@@ -941,7 +941,7 @@ improved HTML representation.
                 penalty
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-penalty;">
-                penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. versionadded:: 0.19<br>   l1 penalty with SAGA solver (allowing &#x27;multinomial&#x27; + L1)<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
+                penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
             </a>
         </td>
                 <td class="value">&#x27;deprecated&#x27;</td>
@@ -1061,7 +1061,7 @@ improved HTML representation.
                 class_weight
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-class_weight;">
-                class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.<br><br>.. versionadded:: 0.17<br>   *class_weight=&#x27;balanced&#x27;*</span>
+                class_weight: dict or &#x27;balanced&#x27;, default=None<br><br>Weights associated with classes in the form ``{class_label: weight}``.<br>If not given, all classes are supposed to have weight one.<br><br>The &quot;balanced&quot; mode uses the values of y to automatically adjust<br>weights inversely proportional to class frequencies in the input data<br>as ``n_samples / (n_classes * np.bincount(y))``.<br><br>Note that these weights will be multiplied with sample_weight (passed<br>through the fit method) if sample_weight is specified.</span>
             </a>
         </td>
                 <td class="value">None</td>
@@ -1101,7 +1101,7 @@ improved HTML representation.
                 solver
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-solver;">
-                solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 0.17<br>   Stochastic Average Gradient (SAG) descent solver. Multinomial support in<br>   version 0.18.<br>.. versionadded:: 0.19<br>   SAGA solver.<br>.. versionchanged:: 0.22<br>   The default solver changed from &#x27;liblinear&#x27; to &#x27;lbfgs&#x27; in 0.22.<br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
+                solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
             </a>
         </td>
                 <td class="value">&#x27;lbfgs&#x27;</td>
@@ -1161,7 +1161,7 @@ improved HTML representation.
                 warm_start
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-warm_start;">
-                warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.<br><br>.. versionadded:: 0.17<br>   *warm_start* to support *lbfgs*, *newton-cg*, *sag*, *saga* solvers.</span>
+                warm_start: bool, default=False<br><br>When set to True, reuse the solution of the previous call to fit as<br>initialization, otherwise, just erase the previous solution.<br>Useless for liblinear solver. See :term:`the Glossary &lt;warm_start&gt;`.</span>
             </a>
         </td>
                 <td class="value">False</td>
@@ -2243,7 +2243,7 @@ with `X` using the `transform_input` parameter.
                 n_features_in_
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
-                n_features_in_: int<br><br>Number of features seen during :term:`fit`. Only defined if the<br>underlying first estimator in `steps` exposes such an attribute<br>when fit.<br><br>.. versionadded:: 0.24</span>
+                n_features_in_: int<br><br>Number of features seen during :term:`fit`. Only defined if the<br>underlying first estimator in `steps` exposes such an attribute<br>when fit.</span>
             </a>
         </td>
                <td class="fitted-att-type">int</td>
@@ -2364,7 +2364,7 @@ with `X` using the `transform_input` parameter.
                 n_features_in_
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
-                n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
+                n_features_in_: int<br><br>Number of features seen during :term:`fit`.</span>
             </a>
         </td>
                <td class="fitted-att-type">int</td>
@@ -2400,7 +2400,7 @@ with `X` using the `transform_input` parameter.
                 scale_
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-scale_;">
-                scale_: ndarray of shape (n_features,) or None<br><br>Per feature relative scaling of the data to achieve zero mean and unit<br>variance. Generally this is calculated using `np.sqrt(var_)`. If a<br>variance is zero, we can&#x27;t achieve unit variance, and the data is left<br>as-is, giving a scaling factor of 1. `scale_` is equal to `None`<br>when `with_std=False`.<br><br>.. versionadded:: 0.17<br>   *scale_*</span>
+                scale_: ndarray of shape (n_features,) or None<br><br>Per feature relative scaling of the data to achieve zero mean and unit<br>variance. Generally this is calculated using `np.sqrt(var_)`. If a<br>variance is zero, we can&#x27;t achieve unit variance, and the data is left<br>as-is, giving a scaling factor of 1. `scale_` is equal to `None`<br>when `with_std=False`.</span>
             </a>
         </td>
                <td class="fitted-att-type">ndarray[float64](20,)</td>
@@ -2760,7 +2760,7 @@ with `X` using the `transform_input` parameter.
                 categorical_features
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-categorical_features;">
-                categorical_features: array-like of {bool, int, str} of shape (n_features)             or shape (n_categorical_features,), default=&#x27;from_dtype&#x27;<br><br>Indicates the categorical features.<br><br>- None : no feature will be considered categorical.<br>- boolean array-like : boolean mask indicating categorical features.<br>- integer array-like : integer indices indicating categorical<br>  features.<br>- str array-like: names of categorical features (assuming the training<br>  data has feature names).<br>- `&quot;from_dtype&quot;`: dataframe columns with dtype &quot;Categorical&quot; and &quot;Enum&quot; are<br>  considered to be categorical features. The input must be a dataframe that<br>  is supported by narwhals (or supports it): :func:`narwhals.from_native` must<br>  work. This is the case, for instance, for pandas and polars DataFrames.<br><br>For each categorical feature, there must be at most `max_bins` unique<br>categories. Missing values for categorical features should be<br>represented by ``np.nan``; unknown categories at prediction time are<br>also treated as missing values.<br><br>Read more in the :ref:`User Guide &lt;categorical_support_gbdt&gt;`.<br><br>.. versionadded:: 0.24<br><br>.. versionchanged:: 1.2<br>   Added support for feature names.<br><br>.. versionchanged:: 1.4<br>   Added `&quot;from_dtype&quot;` option.<br><br>.. versionchanged:: 1.6<br>   The default value changed from `None` to `&quot;from_dtype&quot;`.</span>
+                categorical_features: array-like of {bool, int, str} of shape (n_features)             or shape (n_categorical_features,), default=&#x27;from_dtype&#x27;<br><br>Indicates the categorical features.<br><br>- None : no feature will be considered categorical.<br>- boolean array-like : boolean mask indicating categorical features.<br>- integer array-like : integer indices indicating categorical<br>  features.<br>- str array-like: names of categorical features (assuming the training<br>  data has feature names).<br>- `&quot;from_dtype&quot;`: dataframe columns with dtype &quot;Categorical&quot; and &quot;Enum&quot; are<br>  considered to be categorical features. The input must be a dataframe that<br>  is supported by narwhals (or supports it): :func:`narwhals.from_native` must<br>  work. This is the case, for instance, for pandas and polars DataFrames.<br><br>For each categorical feature, there must be at most `max_bins` unique<br>categories. Missing values for categorical features should be<br>represented by ``np.nan``; unknown categories at prediction time are<br>also treated as missing values.<br><br>Read more in the :ref:`User Guide &lt;categorical_support_gbdt&gt;`.<br><br>.. versionchanged:: 1.2<br>   Added support for feature names.<br><br>.. versionchanged:: 1.4<br>   Added `&quot;from_dtype&quot;` option.<br><br>.. versionchanged:: 1.6<br>   The default value changed from `None` to `&quot;from_dtype&quot;`.</span>
             </a>
         </td>
                 <td class="value">&#x27;from_dtype&#x27;</td>
@@ -2780,7 +2780,7 @@ with `X` using the `transform_input` parameter.
                 monotonic_cst
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-monotonic_cst;">
-                monotonic_cst: array-like of int of shape (n_features) or dict, default=None<br><br>Monotonic constraint to enforce on each feature are specified using the<br>following integer values:<br><br>- 1: monotonic increase<br>- 0: no constraint<br>- -1: monotonic decrease<br><br>If a dict with str keys, map feature to monotonic constraints by name.<br>If an array, the features are mapped to constraints by position. See<br>:ref:`monotonic_cst_features_names` for a usage example.<br><br>The constraints are only valid for binary classifications and hold<br>over the probability of the positive class.<br>Read more in the :ref:`User Guide &lt;monotonic_cst_gbdt&gt;`.<br><br>.. versionadded:: 0.23<br><br>.. versionchanged:: 1.2<br>   Accept dict of constraints with feature names as keys.</span>
+                monotonic_cst: array-like of int of shape (n_features) or dict, default=None<br><br>Monotonic constraint to enforce on each feature are specified using the<br>following integer values:<br><br>- 1: monotonic increase<br>- 0: no constraint<br>- -1: monotonic decrease<br><br>If a dict with str keys, map feature to monotonic constraints by name.<br>If an array, the features are mapped to constraints by position. See<br>:ref:`monotonic_cst_features_names` for a usage example.<br><br>The constraints are only valid for binary classifications and hold<br>over the probability of the positive class.<br>Read more in the :ref:`User Guide &lt;monotonic_cst_gbdt&gt;`.<br><br>.. versionchanged:: 1.2<br>   Accept dict of constraints with feature names as keys.</span>
             </a>
         </td>
                 <td class="value">None</td>
@@ -2840,7 +2840,7 @@ with `X` using the `transform_input` parameter.
                 early_stopping
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-early_stopping;">
-                early_stopping: &#x27;auto&#x27; or bool, default=&#x27;auto&#x27;<br><br>If &#x27;auto&#x27;, early stopping is enabled if the sample size is larger than<br>10000 or if `X_val` and `y_val` are passed to `fit`. If True, early stopping<br>is enabled, otherwise early stopping is disabled.<br><br>.. versionadded:: 0.23</span>
+                early_stopping: &#x27;auto&#x27; or bool, default=&#x27;auto&#x27;<br><br>If &#x27;auto&#x27;, early stopping is enabled if the sample size is larger than<br>10000 or if `X_val` and `y_val` are passed to `fit`. If True, early stopping<br>is enabled, otherwise early stopping is disabled.</span>
             </a>
         </td>
                 <td class="value">&#x27;auto&#x27;</td>
@@ -3064,7 +3064,7 @@ with `X` using the `transform_input` parameter.
                 n_features_in_
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-n_features_in_;">
-                n_features_in_: int<br><br>Number of features seen during :term:`fit`.<br><br>.. versionadded:: 0.24</span>
+                n_features_in_: int<br><br>Number of features seen during :term:`fit`.</span>
             </a>
         </td>
                <td class="fitted-att-type">int</td>
@@ -3429,7 +3429,7 @@ sparse arrays.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.365 seconds)
+   **Total running time of the script:** (0 minutes 0.358 seconds)
 
 
 .. _sphx_glr_download_auto_examples_release_highlights_plot_release_highlights_1_7_0.py:
