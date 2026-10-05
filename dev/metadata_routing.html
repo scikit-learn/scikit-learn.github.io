@@ -782,12 +782,15 @@ splitters such as <a class="reference internal" href="modules/generated/sklearn.
 requested by default.</p>
 <section id="usage-examples">
 <h2><span class="section-number">4.1. </span>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading">#</a></h2>
-<p>Here we present a few examples to show some common use-cases. Our goal is to pass
-<code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> and <code class="docutils literal notranslate"><span class="pre">groups</span></code> through <a class="reference internal" href="modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_validate</span></code></a>, which
-routes the metadata to <a class="reference internal" href="modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegressionCV</span></code></a> and to a custom scorer
-made with <a class="reference internal" href="modules/generated/sklearn.metrics.make_scorer.html#sklearn.metrics.make_scorer" title="sklearn.metrics.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer</span></code></a>, both of which <em>can</em> use the metadata in their
-methods. In these examples we want to individually set whether to use the metadata
-within the different <a class="reference internal" href="glossary.html#term-consumer"><span class="xref std std-term">consumers</span></a>.</p>
+<p>For convenience and a faster start into metadata routing, see
+<a class="reference internal" href="#metadata-routing-auto-request-user"><span class="std std-ref">auto-requested metadata</span></a>.</p>
+<p>The following examples use explicit <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> calls and are designed to
+show some common use-cases. Our goal here is to pass <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> and <code class="docutils literal notranslate"><span class="pre">groups</span></code>
+through <a class="reference internal" href="modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_validate</span></code></a>, which routes the metadata to
+<a class="reference internal" href="modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegressionCV</span></code></a> and to a custom scorer made with
+<a class="reference internal" href="modules/generated/sklearn.metrics.make_scorer.html#sklearn.metrics.make_scorer" title="sklearn.metrics.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer</span></code></a>, both of which <em>can</em> use the metadata in their methods. In
+these examples we want to individually set whether to use the metadata within the
+different <a class="reference internal" href="glossary.html#term-consumer"><span class="xref std std-term">consumers</span></a>.</p>
 <p>The examples in this section require the following imports and data:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_scorer</span><span class="p">,</span> <span class="n">accuracy_score</span>
@@ -978,14 +981,48 @@ should be passed to the estimator’s scorer or not:</p>
 <span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">set_score_request</span><span class="p">(</span><span class="n">sample_weight</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>At the end of the <strong>Usage Examples</strong> section, we disable the configuration flag for
-metadata routing:</p>
+</section>
+<section id="auto-requested-metadata">
+<span id="metadata-routing-auto-request-user"></span><h2><span class="section-number">4.3. </span>Auto-requested metadata<a class="headerlink" href="#auto-requested-metadata" title="Link to this heading">#</a></h2>
+<p>By default, most <a class="reference internal" href="glossary.html#term-consumer"><span class="xref std std-term">consumers</span></a> leave metadata requests as <code class="docutils literal notranslate"><span class="pre">None</span></code>, so
+you must call <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> before passing that metadata through a
+<a class="reference internal" href="glossary.html#term-router"><span class="xref std std-term">router</span></a>. In addition, consumers can <strong>auto-request</strong> selected metadata when you
+enable a second configuration flag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sklearn</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a> and <a class="reference internal" href="modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a> for
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests</span></code>. Both <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing</span></code> and
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests</span></code> must be <code class="docutils literal notranslate"><span class="pre">True</span></code> for auto-requests to take effect.</p>
+<p>Auto-requests are declared for specific metadata such as <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>, <code class="docutils literal notranslate"><span class="pre">X_val</span></code>,
+<code class="docutils literal notranslate"><span class="pre">y_val</span></code> and <code class="docutils literal notranslate"><span class="pre">sample_weight_val</span></code>. Once a metadata is supported, methods that take
+that argument are expected to auto-request it. (<code class="docutils literal notranslate"><span class="pre">groups</span></code> in <code class="docutils literal notranslate"><span class="pre">Group*Fold</span></code> is not an
+auto-request and is requested by default whether auto-requests are switched on or off
+since they raise an error if <code class="docutils literal notranslate"><span class="pre">groups</span></code> is not provided.)</p>
+<p>Note that auto-requests are subject to change and stability guarantees applied to the
+rest of the scikit-learn API do not apply here. They may grow or change over time.</p>
+<p>For most use cases it is enough to set <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code>
+(with metadata routing enabled) and leave request values unchanged. Use
+<code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> only when you need to opt out, alias, or handle a
+consumer that does not yet auto-request the metadata you pass.</p>
+<p>You can still override any auto-request (or default request) with
+<code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code>. Values set that way take precedence. In particular,
+<code class="docutils literal notranslate"><span class="pre">set_fit_request(sample_weight=False)</span></code> opts out of receiving <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> even
+when auto-requests are enabled.</p>
+<p>If you pass metadata that no consumer requests (including under auto-requests), the
+router still raises an error.</p>
+<p>Developers who implement auto-requests should follow
+<a class="reference internal" href="auto_examples/miscellaneous/plot_metadata_routing.html#metadata-routing-auto-request"><span class="std std-ref">Default and Auto-Requested Metadata</span></a>.</p>
+<p>Finally, we disable the configuration flag for metadata routing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sklearn</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="metadata-routing-support-status">
-<span id="metadata-routing-models"></span><h2><span class="section-number">4.3. </span>Metadata Routing Support Status<a class="headerlink" href="#metadata-routing-support-status" title="Link to this heading">#</a></h2>
+<span id="metadata-routing-models"></span><h2><span class="section-number">4.4. </span>Metadata Routing Support Status<a class="headerlink" href="#metadata-routing-support-status" title="Link to this heading">#</a></h2>
 <p>All consumers (i.e. simple estimators which only consume metadata and don’t
 route them) support metadata routing, meaning they can be used inside
 meta-estimators which support metadata routing. However, development of support
@@ -1108,7 +1145,8 @@ meta-estimators and tools which support and don’t yet support metadata routing
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-interface">4.2. API Interface</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-routing-support-status">4.3. Metadata Routing Support Status</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#auto-requested-metadata">4.3. Auto-requested metadata</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#metadata-routing-support-status">4.4. Metadata Routing Support Status</a></li>
 </ul>
   </nav></div>
 
