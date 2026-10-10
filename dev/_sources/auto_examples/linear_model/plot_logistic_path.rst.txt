@@ -104,7 +104,7 @@ Here we remove the third class to make the problem a binary classification
 Compute regularization path
 ---------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 50-60
+.. GENERATED FROM PYTHON SOURCE LINES 50-61
 
 .. code-block:: Python
 
@@ -117,6 +117,7 @@ Compute regularization path
     from sklearn.svm import l1_min_c
 
     cs = l1_min_c(X, y, loss="log") * np.logspace(0, 1, 16)
+    alphas = 1 / cs
 
 
 
@@ -125,14 +126,14 @@ Compute regularization path
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-65
+.. GENERATED FROM PYTHON SOURCE LINES 62-66
 
 Create a pipeline with `StandardScaler` and `LogisticRegression`, to normalize
 the data before fitting a linear model, in order to speed-up convergence and
 make the coefficients comparable. Also, as a side effect, since the data is now
 centered around 0, we don't need to fit an intercept.
 
-.. GENERATED FROM PYTHON SOURCE LINES 65-84
+.. GENERATED FROM PYTHON SOURCE LINES 66-85
 
 .. code-block:: Python
 
@@ -148,8 +149,8 @@ centered around 0, we don't need to fit an intercept.
         ),
     )
     coefs_ = []
-    for c in cs:
-        clf.set_params(logisticregression__C=c)
+    for alpha in alphas:
+        clf.set_params(logisticregression__alpha=alpha)
         clf.fit(X, y)
         coefs_.append(clf["logisticregression"].coef_.ravel().copy())
 
@@ -162,12 +163,12 @@ centered around 0, we don't need to fit an intercept.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 85-87
+.. GENERATED FROM PYTHON SOURCE LINES 86-88
 
 Plot regularization path
 ------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 87-104
+.. GENERATED FROM PYTHON SOURCE LINES 88-107
 
 .. code-block:: Python
 
@@ -179,10 +180,12 @@ Plot regularization path
 
     plt.figure(figsize=(10, 6))
     for i in range(coefs_.shape[1]):
-        plt.semilogx(cs, coefs_[:, i], marker="o", color=colors[i], label=feature_names[i])
+        plt.semilogx(
+            alphas, coefs_[:, i], marker="o", color=colors[i], label=feature_names[i]
+        )
 
     ymin, ymax = plt.ylim()
-    plt.xlabel("C")
+    plt.xlabel("alpha")
     plt.ylabel("Coefficients")
     plt.title("Logistic Regression Path")
     plt.legend()
@@ -203,7 +206,7 @@ Plot regularization path
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.084 seconds)
+   **Total running time of the script:** (0 minutes 0.070 seconds)
 
 
 .. _sphx_glr_download_auto_examples_linear_model_plot_logistic_path.py:

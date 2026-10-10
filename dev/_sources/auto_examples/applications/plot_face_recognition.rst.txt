@@ -854,7 +854,7 @@ minimizing the log loss.
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-16" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;scaler&#x27;, StandardScaler()),
+    </style><body><div id="sk-container-id-6" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;scaler&#x27;, StandardScaler()),
                     (&#x27;pca&#x27;,
                      PCA(n_components=150, svd_solver=&#x27;randomized&#x27;, whiten=True)),
                     (&#x27;nystroem&#x27;, Nystroem(random_state=42)),
@@ -1427,6 +1427,26 @@ minimizing the log loss.
 
             <tr class="default">
                 <td><button type="button" class="copy-paste-icon"
+                     aria-label="Copy alpha to clipboard"
+                     onclick="copyToClipboard('alpha',
+                              this.parentElement.nextElementSibling)"
+                ></button></td>
+                <td class="param">
+            <a class="param-doc-link"
+                style="anchor-name: --doc-link-alpha;"
+                rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=alpha,-float%2C%20default%3D1.0">
+                alpha
+                <span class="param-doc-description" tabindex="-1"
+                style="position-anchor: --doc-link-alpha;">
+                alpha: float, default=1.0<br><br>Regularization strength that multiplies the penalty term (both L1 and L2).<br>``alpha = 0`` is equivalent to unpenalized logistic regression. In this case,<br>the design matrix `X` must have full column rank (no collinearities).<br>Values of `alpha` must be in the range `[0.0, inf)`.<br>For a visual example on the effect of tuning the `alpha` parameter with an L1<br>penalty, see: :ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.<br><br>.. warning::<br>   In order to already use `alpha` during the deprecation period of `C`, just<br>   set `alpha` explicitly and don&#x27;t change `C` (leave `C` at its default).<br>   If `C` is set to any value other than its default, `C` will be used and<br>   `alpha` is ignored.<br>   Note that the new `alpha` is equivalent to `C=1/alpha`.</span>
+            </a>
+        </td>
+                <td class="value">1.0</td>
+            </tr>
+    
+
+            <tr class="default">
+                <td><button type="button" class="copy-paste-icon"
                      aria-label="Copy C to clipboard"
                      onclick="copyToClipboard('C',
                               this.parentElement.nextElementSibling)"
@@ -1438,10 +1458,10 @@ minimizing the log loss.
                 C
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-C;">
-                C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
+                C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br><br>.. deprecated:: 1.10<br>   `C` was deprecated in version 1.10 and will be removed in 1.14.<br>   Use `alpha` instead.<br>   Note that the new `alpha` is equivalent to `C=1/alpha`.</span>
             </a>
         </td>
-                <td class="value">1.0</td>
+                <td class="value">&#x27;deprecated&#x27;</td>
             </tr>
     
 
@@ -1873,7 +1893,7 @@ minimizing the log loss.
         }
     }
 
-    forceTheme('sk-container-id-16');</script></body>
+    forceTheme('sk-container-id-6');</script></body>
     </div>
     <br />
     <br />
@@ -1884,7 +1904,7 @@ Tuning the pipeline with successive halving
 -------------------------------------------
 
 We tune the ``gamma`` and ``n_components`` of the Nystroem approximation and
-the ``C`` regularization of the logistic regression with a successive halving
+the ``alpha`` regularization of the logistic regression with a successive halving
 search (:class:`~sklearn.model_selection.HalvingRandomSearchCV`). The search
 minimizes the log loss (``neg_log_loss``) and screens many candidates on small
 training subsets before investing compute in the most promising ones. We set
@@ -1907,7 +1927,7 @@ even in the first halving iteration.
     param_distributions = {
         "nystroem__gamma": loguniform(1e-4, 1e-1),
         "nystroem__n_components": randint(50, 200),
-        "logreg__C": loguniform(1e-2, 1e2),
+        "logreg__alpha": loguniform(1e-2, 1e2),
     }
     clf = HalvingRandomSearchCV(
         model,
@@ -1930,7 +1950,7 @@ even in the first halving iteration.
  .. code-block:: none
 
     Fitting the classifier to the training set
-    done in 11.039s
+    done in 10.528s
 
 
 
@@ -2626,14 +2646,14 @@ even in the first halving iteration.
       justify-content: center;
       margin-top: 0.5em;
     }
-    </style><body><div id="sk-container-id-17" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;scaler&#x27;, StandardScaler()),
+    </style><body><div id="sk-container-id-7" tabindex="0" role="region" aria-label="Pipeline estimator diagram" class="sk-top-container sk-global"><div class="sk-text-repr-fallback"><pre>Pipeline(steps=[(&#x27;scaler&#x27;, StandardScaler()),
                     (&#x27;pca&#x27;,
                      PCA(n_components=150, svd_solver=&#x27;randomized&#x27;, whiten=True)),
                     (&#x27;nystroem&#x27;,
-                     Nystroem(gamma=np.float64(0.0011756010900231862),
-                              n_components=173, random_state=42)),
+                     Nystroem(gamma=np.float64(0.005047786565710607),
+                              n_components=195, random_state=42)),
                     (&#x27;logreg&#x27;,
-                     LogisticRegression(C=np.float64(20.651425578959262),
+                     LogisticRegression(alpha=np.float64(0.06788387912421222),
                                         max_iter=5000))])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label fitted sk-toggleable"><details class="sk-toggleable" ><summary class="sk-toggleable__label fitted"><span class="sk-toggleable__label-content"><span class="sk-toggleable__label-name"><span>Pipeline</span></span><span><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.pipeline.Pipeline.html">?<span>Documentation for Pipeline</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></span></span></summary><div class="sk-toggleable__content fitted" data-param-prefix="">
             <div class="estimator-table">
                 <details>
@@ -3697,9 +3717,9 @@ even in the first halving iteration.
      [ 0.02, 0.02, 0.02,...,-0.01,-0.01,-0.01],
      [ 0.03, 0.03, 0.03,..., 0.  , 0.  , 0.  ],
      ...,
-     [-0.03,-0.02,-0.02,...,-0.01,-0.01, 0.04],
-     [-0.03,-0.02, 0.01,...,-0.07,-0.04, 0.01],
-     [ 0.01,-0.  ,-0.02,...,-0.03, 0.  , 0.03]]</td>
+     [-0.03,-0.04,-0.02,...,-0.02,-0.  , 0.03],
+     [ 0.05, 0.01,-0.03,..., 0.02, 0.01, 0.  ],
+     [-0.02,-0.01, 0.05,..., 0.03,-0.  ,-0.02]]</td>
 
 
            </tr>
@@ -3717,7 +3737,7 @@ even in the first halving iteration.
             </a>
         </td>
                <td class="fitted-att-type">ndarray[float32](150,)</td>
-               <td>[482.04,267.97,127.02,...,  0.83,  0.82,  0.8 ]</td>
+               <td>[482.04,267.97,127.02,...,  0.83,  0.82,  0.81]</td>
 
 
            </tr>
@@ -3825,7 +3845,7 @@ even in the first halving iteration.
             </a>
         </td>
                <td class="fitted-att-type">float32</td>
-               <td>np.float32(0.12380742)</td>
+               <td>np.float32(0.123819835)</td>
 
 
            </tr>
@@ -3843,7 +3863,7 @@ even in the first halving iteration.
             </a>
         </td>
                <td class="fitted-att-type">ndarray[float32](150,)</td>
-               <td>[682.03,508.52,350.11,..., 28.27, 28.09, 27.76]</td>
+               <td>[682.03,508.52,350.11,..., 28.26, 28.07, 27.91]</td>
 
 
            </tr>
@@ -4404,7 +4424,7 @@ even in the first halving iteration.
                 gamma: float, default=None<br><br>Gamma parameter for the RBF, laplacian, polynomial, exponential chi2<br>and sigmoid kernels. Interpretation of the default value is left to<br>the kernel; see the documentation for sklearn.metrics.pairwise.<br>Ignored by other kernels.</span>
             </a>
         </td>
-                <td class="value">np.float64(0....6010900231862)</td>
+                <td class="value">np.float64(0....7786565710607)</td>
             </tr>
     
 
@@ -4424,7 +4444,7 @@ even in the first halving iteration.
                 n_components: int, default=100<br><br>Number of features to construct.<br>How many data points will be used to construct the mapping.</span>
             </a>
         </td>
-                <td class="value">173</td>
+                <td class="value">195</td>
             </tr>
     
 
@@ -4574,8 +4594,8 @@ even in the first halving iteration.
                 component_indices_: ndarray of shape (n_components)<br><br>Indices of ``components_`` in the training set.</span>
             </a>
         </td>
-               <td class="fitted-att-type">ndarray[int64](173,)</td>
-               <td>[244,467,836,..., 65,141,266]</td>
+               <td class="fitted-att-type">ndarray[int64](195,)</td>
+               <td>[244,467,836,..., 33, 31,720]</td>
 
 
            </tr>
@@ -4592,14 +4612,14 @@ even in the first halving iteration.
                 components_: ndarray of shape (n_components, n_features)<br><br>Subset of training points used to construct the feature map.</span>
             </a>
         </td>
-               <td class="fitted-att-type">ndarray[float32](173, 150)</td>
-               <td>[[ 1.45,-0.18, 0.09,..., 1.1 ,-0.4 ,-0.04],
-     [-0.18,-0.9 , 2.32,...,-1.88,-0.8 ,-2.62],
-     [ 1.18,-1.99,-0.16,..., 0.77, 0.96,-0.45],
+               <td class="fitted-att-type">ndarray[float32](195, 150)</td>
+               <td>[[ 1.45,-0.18, 0.09,..., 0.52, 0.54, 1.15],
+     [-0.18,-0.9 , 2.32,...,-0.51,-0.53, 1.89],
+     [ 1.18,-1.99,-0.16,..., 0.9 , 0.76, 1.27],
      ...,
-     [ 1.01, 0.23,-0.32,..., 1.7 , 0.67,-0.36],
-     [ 2.09, 0.53,-0.95,..., 0.24, 0.57,-1.17],
-     [ 0.28,-0.53, 1.28,...,-0.81,-1.98, 0.77]]</td>
+     [-3.47, 1.44, 2.12,...,-0.78,-1.89, 1.55],
+     [-1.43, 0.52, 0.78,..., 1.18,-1.47,-0.48],
+     [-0.61, 0.3 , 1.04,..., 1.52, 1.45,-0.95]]</td>
 
 
            </tr>
@@ -4634,14 +4654,14 @@ even in the first halving iteration.
                 normalization_: ndarray of shape (n_components, n_components)<br><br>Normalization matrix needed for embedding.<br>Square root of the kernel matrix on ``components_``.</span>
             </a>
         </td>
-               <td class="fitted-att-type">ndarray[float32](173, 173)</td>
-               <td>[[ 2.91, 0.03,-0.1 ,..., 0.02,-0.15, 0.09],
-     [ 0.03, 1.53, 0.05,...,-0.02,-0.01, 0.1 ],
-     [-0.1 , 0.05, 2.39,..., 0.12,-0.12,-0.04],
+               <td class="fitted-att-type">ndarray[float32](195, 195)</td>
+               <td>[[ 1.33,-0.  ,-0.03,..., 0.01, 0.01, 0.02],
+     [-0.  , 1.03, 0.  ,..., 0.  ,-0.01, 0.  ],
+     [-0.03, 0.  , 1.18,..., 0.  , 0.02, 0.01],
      ...,
-     [ 0.02,-0.02, 0.12,..., 2.97,-0.03,-0.05],
-     [-0.15,-0.01,-0.12,...,-0.03, 3.72,-0.17],
-     [ 0.09, 0.1 ,-0.04,...,-0.05,-0.17, 2.45]]</td>
+     [ 0.01, 0.  , 0.  ,..., 1.02, 0.  , 0.  ],
+     [ 0.01,-0.01, 0.02,..., 0.  , 1.27,-0.02],
+     [ 0.02, 0.  , 0.01,..., 0.  ,-0.02, 1.13]]</td>
 
 
            </tr>
@@ -4655,7 +4675,7 @@ even in the first halving iteration.
               <details>
                 <summary>
                   <span class="features-summary-content">
-                    <span>100 of 173 features</span>
+                    <span>100 of 195 features</span>
                     <span class="image-container">
                       <button type="button" class="copy-paste-icon"
                         title="Copy output features (max 100)"
@@ -5188,21 +5208,21 @@ even in the first halving iteration.
                     
             <tr class="user-set">
                 <td><button type="button" class="copy-paste-icon"
-                     aria-label="Copy C to clipboard"
-                     onclick="copyToClipboard('C',
+                     aria-label="Copy alpha to clipboard"
+                     onclick="copyToClipboard('alpha',
                               this.parentElement.nextElementSibling)"
                 ></button></td>
                 <td class="param">
             <a class="param-doc-link"
-                style="anchor-name: --doc-link-C;"
-                rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
-                C
+                style="anchor-name: --doc-link-alpha;"
+                rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=alpha,-float%2C%20default%3D1.0">
+                alpha
                 <span class="param-doc-description" tabindex="-1"
-                style="position-anchor: --doc-link-C;">
-                C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br>For a visual example on the effect of tuning the `C` parameter<br>with an L1 penalty, see:<br>:ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.</span>
+                style="position-anchor: --doc-link-alpha;">
+                alpha: float, default=1.0<br><br>Regularization strength that multiplies the penalty term (both L1 and L2).<br>``alpha = 0`` is equivalent to unpenalized logistic regression. In this case,<br>the design matrix `X` must have full column rank (no collinearities).<br>Values of `alpha` must be in the range `[0.0, inf)`.<br>For a visual example on the effect of tuning the `alpha` parameter with an L1<br>penalty, see: :ref:`sphx_glr_auto_examples_linear_model_plot_logistic_path.py`.<br><br>.. warning::<br>   In order to already use `alpha` during the deprecation period of `C`, just<br>   set `alpha` explicitly and don&#x27;t change `C` (leave `C` at its default).<br>   If `C` is set to any value other than its default, `C` will be used and<br>   `alpha` is ignored.<br>   Note that the new `alpha` is equivalent to `C=1/alpha`.</span>
             </a>
         </td>
-                <td class="value">np.float64(20.651425578959262)</td>
+                <td class="value">np.float64(0....8387912421222)</td>
             </tr>
     
 
@@ -5240,6 +5260,26 @@ even in the first halving iteration.
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-penalty;">
                 penalty: {&#x27;l1&#x27;, &#x27;l2&#x27;, &#x27;elasticnet&#x27;, None}, default=&#x27;l2&#x27;<br><br>Specify the norm of the penalty:<br><br>- `None`: no penalty is added;<br>- `&#x27;l2&#x27;`: add an L2 penalty term and it is the default choice;<br>- `&#x27;l1&#x27;`: add an L1 penalty term;<br>- `&#x27;elasticnet&#x27;`: both L1 and L2 penalty terms are added.<br><br>.. warning::<br>   Some penalties may not work with some solvers. See the parameter<br>   `solver` below, to know the compatibility between the penalty and<br>   solver.<br><br>.. deprecated:: 1.8<br>   `penalty` was deprecated in version 1.8 and will be removed in 1.10.<br>   Use `l1_ratio` and `C` instead. `l1_ratio=0` for `penalty=&#x27;l2&#x27;`,<br>   `l1_ratio=1` for `penalty=&#x27;l1&#x27;`, `l1_ratio` set to any float between 0 and 1<br>   for `penalty=&#x27;elasticnet&#x27;`, and `C=np.inf` for `penalty=None`.</span>
+            </a>
+        </td>
+                <td class="value">&#x27;deprecated&#x27;</td>
+            </tr>
+    
+
+            <tr class="default">
+                <td><button type="button" class="copy-paste-icon"
+                     aria-label="Copy C to clipboard"
+                     onclick="copyToClipboard('C',
+                              this.parentElement.nextElementSibling)"
+                ></button></td>
+                <td class="param">
+            <a class="param-doc-link"
+                style="anchor-name: --doc-link-C;"
+                rel="noreferrer" target="_blank" href="https://scikit-learn.org/dev/modules/generated/sklearn.linear_model.LogisticRegression.html#:~:text=C,-float%2C%20default%3D1.0">
+                C
+                <span class="param-doc-description" tabindex="-1"
+                style="position-anchor: --doc-link-C;">
+                C: float, default=1.0<br><br>Inverse of regularization strength; must be a positive float.<br>Like in support vector machines, smaller values specify stronger<br>regularization. `C=np.inf` results in unpenalized logistic regression.<br><br>.. deprecated:: 1.10<br>   `C` was deprecated in version 1.10 and will be removed in 1.14.<br>   Use `alpha` instead.<br>   Note that the new `alpha` is equivalent to `C=1/alpha`.</span>
             </a>
         </td>
                 <td class="value">&#x27;deprecated&#x27;</td>
@@ -5510,14 +5550,14 @@ even in the first halving iteration.
                 coef_: ndarray or CSR matrix of shape (1, n_features) or (n_classes, n_features)<br><br>Coefficients of the features in the decision function.<br><br>`coef_` is of shape (1, n_features) when the given problem is binary.<br><br>By default, it will be created as a dense array, but can be turned to<br>sparse (CSR format) through :meth:`sparsify` (which can be beneficial<br>under L1 regularization when many coefficients are zero), and back to<br>dense through :meth:`densify`.</span>
             </a>
         </td>
-               <td class="fitted-att-type">ndarray[float32](7, 173)</td>
-               <td>[[-3.8 ,-0.65,-1.93,..., 0.19,-0.24, 1.32],
-     [ 1.44, 6.44,-1.16,...,-4.56, 3.59, 3.43],
-     [ 6.67,-0.41, 8.34,...,-1.84,-0.91, 0.87],
+               <td class="fitted-att-type">ndarray[float32](7, 195)</td>
+               <td>[[-1.99,-0.28, 0.12,..., 2.81,-0.62,-1.92],
+     [ 1.54, 3.83,-2.41,...,-0.12,-3.34,-1.32],
+     [ 5.17,-0.47, 5.2 ,...,-0.79,-3.5 , 1.33],
      ...,
-     [ 1.24,-2.96,-1.58,...,-1.07, 1.53, 0.24],
-     [-0.93,-0.89,-2.36,..., 3.72,-1.41, 2.44],
-     [ 0.23, 2.97,-1.78,...,-1.89,-0.59,-3.4 ]]</td>
+     [ 1.  ,-1.09,-1.22,...,-0.23,-0.95, 0.1 ],
+     [-0.9 ,-0.46,-0.98,...,-0.11, 6.8 , 0.05],
+     [ 0.33, 0.79,-1.22,...,-1.55, 2.32, 3.35]]</td>
 
 
            </tr>
@@ -5535,7 +5575,7 @@ even in the first halving iteration.
             </a>
         </td>
                <td class="fitted-att-type">ndarray[float32](7,)</td>
-               <td>[ 2.23, 1.41,-4.03,...,-0.85, 1.54,-0.93]</td>
+               <td>[ 0.28, 0.75,-1.37,...,-0.19, 0.17,-0.32]</td>
 
 
            </tr>
@@ -5553,7 +5593,7 @@ even in the first halving iteration.
             </a>
         </td>
                <td class="fitted-att-type">int</td>
-               <td>173</td>
+               <td>195</td>
 
 
            </tr>
@@ -5571,7 +5611,7 @@ even in the first halving iteration.
             </a>
         </td>
                <td class="fitted-att-type">ndarray[int32](1,)</td>
-               <td>[83]</td>
+               <td>[94]</td>
 
 
            </tr>
@@ -5785,7 +5825,7 @@ even in the first halving iteration.
         }
     }
 
-    forceTheme('sk-container-id-17');</script></body>
+    forceTheme('sk-container-id-7');</script></body>
     </div>
     <br />
     <br />
@@ -5828,17 +5868,17 @@ precision-recall curves. The pipeline handles preprocessing internally.
     done in 0.008s
                        precision    recall  f1-score   support
 
-         Ariel Sharon       0.64      0.54      0.58        13
-         Colin Powell       0.83      0.87      0.85        60
-      Donald Rumsfeld       0.74      0.63      0.68        27
-        George W Bush       0.86      0.95      0.90       146
-    Gerhard Schroeder       0.72      0.72      0.72        25
-          Hugo Chavez       0.78      0.47      0.58        15
-           Tony Blair       0.90      0.72      0.80        36
+         Ariel Sharon       0.67      0.46      0.55        13
+         Colin Powell       0.83      0.90      0.86        60
+      Donald Rumsfeld       0.93      0.52      0.67        27
+        George W Bush       0.79      0.96      0.87       146
+    Gerhard Schroeder       0.84      0.64      0.73        25
+          Hugo Chavez       0.82      0.60      0.69        15
+           Tony Blair       0.92      0.67      0.77        36
 
-             accuracy                           0.83       322
-            macro avg       0.78      0.70      0.73       322
-         weighted avg       0.82      0.83      0.82       322
+             accuracy                           0.82       322
+            macro avg       0.83      0.68      0.73       322
+         weighted avg       0.83      0.82      0.81       322
 
 
 
@@ -5938,7 +5978,7 @@ to inspect the model's mistakes at a glance.
 
 
 .. image-sg:: /auto_examples/applications/images/sphx_glr_plot_face_recognition_002.png
-   :alt: predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Blair true:      Blair, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Schroeder true:      Schroeder, predicted: Powell true:      Powell, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Bush
+   :alt: predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Blair true:      Blair, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Schroeder, predicted: Powell true:      Powell, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Bush, predicted: Bush true:      Bush
    :srcset: /auto_examples/applications/images/sphx_glr_plot_face_recognition_002.png
    :class: sphx-glr-single-img
 
@@ -6012,7 +6052,7 @@ TensorFlow to implement such models.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 11.414 seconds)
+   **Total running time of the script:** (0 minutes 20.812 seconds)
 
 
 .. _sphx_glr_download_auto_examples_applications_plot_face_recognition.py:

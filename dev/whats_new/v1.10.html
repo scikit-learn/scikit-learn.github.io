@@ -995,6 +995,29 @@ convergence issues have been fixed, e.g. for certain ill-conditioned problems wi
 low regularization and nearly collinear features. The fix is about treating small
 or even negative curvature.
 By <a class="reference external" href="https://github.com/lorentzenchr">Christian Lorentzen</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34412">#34412</a></p></li>
+<li><p><span class="raw-html"><span class="badge text-bg-warning">API Change</span></span>  The parameters <code class="docutils literal notranslate"><span class="pre">C</span></code> of <a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.LogisticRegression</span></code></a> and <code class="docutils literal notranslate"><span class="pre">Cs</span></code> of
+<a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.LogisticRegressionCV</span></code></a> are deprecated and will be removed in
+version 1.14. The relationship is</p>
+<ul class="simple">
+<li><p>for <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code>: <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">1/C</span></code></p></li>
+<li><p>for <code class="docutils literal notranslate"><span class="pre">LogisticRegressionCV</span></code>: <code class="docutils literal notranslate"><span class="pre">alphas</span> <span class="pre">=</span> <span class="pre">Cs</span></code> for integer values, <code class="docutils literal notranslate"><span class="pre">alphas</span> <span class="pre">=</span> <span class="pre">1/Cs</span></code> for
+array-likes of float</p></li>
+</ul>
+<p>They have the following default values:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha=1.0</span></code> for <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code>, meaning it is the same default as <code class="docutils literal notranslate"><span class="pre">C=1.0</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alphas=10</span></code> for <code class="docutils literal notranslate"><span class="pre">LogisticRegressionCV</span></code>, meaning it is the same default as <code class="docutils literal notranslate"><span class="pre">Cs=10</span></code>.</p></li>
+</ul>
+<p>This means, the defaults result in the same model as before (up to floating point
+precision).</p>
+<p>With this change the penalty parameter of most linear models is <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, the larger
+its value the stronger the penalty. For L2-penalties, the parametrization is
+similar to <a class="reference internal" href="../modules/generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.Ridge</span></code></a> where the penalty gets weaker the larger the
+training dataset (by a factor of <code class="docutils literal notranslate"><span class="pre">1/n_samples</span></code>).</p>
+<p>For <a class="reference internal" href="../modules/generated/sklearn.linear_model.LogisticRegressionCV.html#sklearn.linear_model.LogisticRegressionCV" title="sklearn.linear_model.LogisticRegressionCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">linear_model.LogisticRegressionCV</span></code></a>, also the attributes <code class="docutils literal notranslate"><span class="pre">C_</span></code> and <code class="docutils literal notranslate"><span class="pre">Cs_</span></code>
+are deprecated. Use the new attributes <code class="docutils literal notranslate"><span class="pre">alpha_</span></code> and <code class="docutils literal notranslate"><span class="pre">alphas_</span></code> instead.
+By <a class="reference external" href="https://github.com/lorentzenchr">Christian Lorentzen</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/32042">#32042</a></p>
+</li>
 </ul>
 </section>
 <section id="sklearn-manifold">
