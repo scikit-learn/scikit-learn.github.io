@@ -97,6 +97,10 @@ See :ref:`array_api` for more details.
   compatible inputs.
   By :user:`Yaroslav Korobko <Tialo>` and :user:`Omar Salman <OmarManzoor>`. :pr:`34785`
 
+- |Enhancement| :class:`linear_model.LogisticRegression` now supports array API compatible inputs
+  with `solver="newton-cg"`.
+  By :user:`Christian Lorentzen <lorentzenchr>` and :user:`Omar Salman <OmarManzoor>`. :pr:`34412`
+
 - |Enhancement| Add support for array inputs from mixed namespaces and devices for:
   :func:`sklearn.metrics.det_curve`,
   :func:`sklearn.metrics.roc_curve`,
@@ -105,10 +109,6 @@ See :ref:`array_api` for more details.
   :func:`sklearn.metrics.balanced_accuracy_score`,
   :func:`sklearn.metrics.cohen_kappa_score`.
   By :user:`Lucy Liu <lucyleeow>`. :pr:`34442`
-
-  |Enhancement|:class:`linear_model.LogisticRegression` now supports array API compatible inputs
-  with `solver="newton-cg"`.
-  By :user:`Christian Lorentzen <lorentzenchr>` and :user:`Omar Salman <OmarManzoor>`. :pr:`34412`
 
 - |Fix| :class:`model_selection.GridSearchCV`, :class:`model_selection.RandomizedSearchCV`,
   :func:`model_selection.cross_validate` and :func:`model_selection.cross_val_score`
@@ -187,13 +187,13 @@ Callbacks
   ``ceil(n_samples**(1/3))``.
   By :user:`Zeyu Sun <zeyusun>` :pr:`33856`
 
-- |Fix| :class:`calibration.CalibratedClassifierCV` with ``method="sigmoid"`` now
-  converts :term:`predict_proba` outputs to logits (`log(p/(1-p))`) before calibration
-  instead of passing probabilities directly to the calibrator. For
-  ``method="temperature"``, :term:`predict_proba` outputs are converted to
-  multinomial logits. Estimators that only expose :term:`decision_function` are
-  unaffected. Calibration now prefers :term:`predict_proba` over
-  :term:`decision_function` when both are available.
+- |Fix| :class:`calibration.CalibratedClassifierCV` with ``method="sigmoid"`` now converts
+  :term:`predict_proba` outputs to logits (`log(p/(1-p))`) before calibration instead
+  of passing probabilities directly to the calibrator. For ``method="temperature"``,
+  :term:`predict_proba` outputs are converted to multinomial logits. Estimators passed
+  as parameter `estimator` to `CalibratedClassifierCV` that only expose
+  :term:`decision_function` are unaffected. Calibration now prefers
+  :term:`predict_proba` over :term:`decision_function` when both are available.
   By :user:`Olivier Grisel <ogrisel>` and :user:`Antoine Baker <antoinebaker>`. :pr:`34313`
 
 - |API| :func:`calibration.calibration_curve`,
@@ -214,7 +214,7 @@ Callbacks
 - |Efficiency| :class:`cluster.AgglomerativeClustering` and
   :class:`cluster.FeatureAgglomeration` with `linkage="single"`, as well as
   :class:`cluster.HDBSCAN`, are now faster for inputs that produce deep
-  union-find trees. Restored path compression avoids quadratic time while
+  union-find trees. Restored path compression avoids quadratic time when
   constructing the single-linkage hierarchy.
   By :user:`Chris Boseak <cboseak>`. :pr:`34872`
 
@@ -239,10 +239,11 @@ Callbacks
 :mod:`sklearn.ensemble`
 -----------------------
 
-- |Efficiency| Part of the fit of :class:`sklearn.ensemble.GradientBoostingClassifier` was optimized.
-  The speed-up is mainly visible for deeper trees, which is not the primary use case
-  for gradient boosting but can occur in grid searches. For very deep trees, this can
-  be up to 20 times faster.
+- |Efficiency| The terminal-node update step (a.k.a. line search step) of fitting
+  :class:`sklearn.ensemble.GradientBoostingClassifier` was optimized.
+  This mainly benefits deeper trees, which are not the primary use case for gradient
+  boosting but can appear in grid searches. For very deep trees, this can speed up
+  training by up to a factor of 20.
   By :user:`Arthur Lacote <cakedev0>` :pr:`32911`
 
 - |Efficiency| Fitting in :class:`sklearn.ensemble.HistGradientBoostingClassifier` and :class:`sklearn.ensemble.HistGradientBoostingRegressor` was optimized to be faster, by speeding up assignment of bins.
@@ -255,10 +256,13 @@ Callbacks
   Binning without sample weights was also optimized.
   By :user:`Arthur Lacote <cakedev0>`. :pr:`34248`
 
-- |Efficiency| Prediction in :class:`sklearn.ensemble.HistGradientBoostingClassifier` and :class:`sklearn.ensemble.HistGradientBoostingRegressor` is faster when using categoricals.
+- |Efficiency| Prediction in :class:`sklearn.ensemble.HistGradientBoostingClassifier` and
+  :class:`sklearn.ensemble.HistGradientBoostingRegressor` is faster when using categoricals
+  via parameter `categorical_features`.
   By :user:`Itamar Turner-Trauring <itamarst>`. :pr:`34486`
 
-- |Efficiency| :class:`sklearn.ensemble.RandomForestClassifer` training is now faster on sparse datasets.
+- |Efficiency| Training :class:`sklearn.ensemble.RandomForestClassifier` and
+  :class:`sklearn.ensemble.RandomForestRegressor` on sparse data is now faster.
   By :user:`Itamar Turner-Trauring <itamarst>`. :pr:`34586`
 
 - |Efficiency| Parallelism in :class:`sklearn.ensemble.BaggingClassifier` and :class:`sklearn.ensemble.BaggingRegressor` now uses threads in some cases where this is faster than the default process pool.
@@ -301,7 +305,7 @@ Callbacks
 :mod:`sklearn.inspection`
 -------------------------
 
-- |Enhancement| The parameter `multiclass_colors` was deprecated in favour of `target_colors` in
+- |API| The parameter `multiclass_colors` was deprecated in favour of `target_colors` in
   :class:`inspection.DecisionBoundaryDisplay`. The attribute `multiclass_colors_` was
   also renamed to `target_colors_`. Now they can be used for binary problems as well
   without causing confusion (which will be added in a follow-up PR).
@@ -312,8 +316,8 @@ Callbacks
 
 - |MajorFeature| The generalized linear models (GLM) :class:`linear_model.GammaRegressor`,
   :class:`linear_model.PoissonRegressor` and :class:`linear_model.TweedieRegressor`
-  are now able to fit L1 and Elastic-Net penalties with the new parameter `l1_ratio`
-  together with the 2 new solvers `"newton-cd"` and `"newton-cd-gram"`.
+  are now able to fit L1 (Lasso) and Elastic-Net penalties with the new parameter
+  `l1_ratio` together with the 2 new solvers `"newton-cd"` and `"newton-cd-gram"`.
   These new solvers are also available for :class:`linear_model.LogisticRegression`.
   They are based on the Newton solver infrastructure introduced for `"newton-cholesky"`
   and take advantage of the already available and fast (e.g. via gap safe screening
@@ -321,14 +325,14 @@ Callbacks
 
   - `"newton-cd-gram"` constructs the full Hessian (gram) matrix and then uses
     `ElasticNet(precompute=True)` as the inner solver. It is a good choice for
-    `n_samples >> n_features`.
+    `n_samples >> n_features` (at least whenever `l1_ratio > 0`).
   - `"newton-cd"` avoids constructing the full Hessian matrix, but formulates the
     minimization problem for the inner solver as a penalized least squares problem
     (which amounts to taking the square root of the Hessian; this is even done with
     great care for multiclass/multinomial logistic regression using an analytic LDL
     decomposition of the multinomial covariance matrix per sample) and then uses
     `ElasticNet(precompute=False)` on it. It is a good choice for
-    `n_features > n_samples`.
+    `n_features > n_samples` (at least whenever `l1_ratio > 0`).
 
     By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`34561`, :pr:`34377`, :pr:`34523`. :pr:`34681`
 
@@ -351,29 +355,31 @@ Callbacks
   By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`33759`
 
 - |Enhancement| :class:`linear_model.ElasticNetCV`, :class:`linear_model.LassoCV` and
-  :class:`linear_model.MultiTaskElasticNetCV` as well as :func:`enet_path` and
-  :func:`lasso_path` are now faster. The (relative) speed-up is larger for lower
-  tolerance (larger values of `tol`) and achieved by avoiding to re-calculate the
-  residuals and the column norms of `X` for each penalty `alpha` along the path.
+  :class:`linear_model.MultiTaskElasticNetCV` as well as :func:`linear_model.enet_path`
+  and :func:`linear_model.lasso_path` are now faster. The (relative) speed-up is larger
+  for lower convergence requirements (larger values of `tol`) and is achieved by
+  avoiding recalculating the residuals and column norms of `X` for each penalty `alpha`
+  along the path.
   By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`34572`
 
 - |Enhancement| :class:`linear_model.ElasticNetCV`, :class:`linear_model.LassoCV` and
   :class:`linear_model.MultiTaskElasticNetCV` now avoid prematurely converting `X` to
-  F-contiguous array or sparse CSC because the inner cross validation take subsamples
-  of `X` which then need the same conversion again, anyway. So this PR can avoid memory
-  copies of `X`.
+  an F-contiguous array or a sparse CSC array because the inner cross validation takes
+  subsamples of `X` which then need the same conversion again, anyway. This avoids
+  memory copies of `X`.
   By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`34613`
 
 - |Fix| The `solver="newton-cg"` for :class:`linear_model.LogisticRegression`,
   :class:`linear_model.PoissonRegressor` and other GLMs is now more robust. Many
   convergence issues have been fixed, e.g. for certain ill-conditioned problems with
-  low regularization and nearly collinear features. The fix is about treating small
-  or even negative curvature.
+  low regularization and nearly collinear features. In particular, it now handles
+  small or negative curvature more robustly.
   By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`34412`
 
 - |API| The parameters `C` of :class:`linear_model.LogisticRegression` and `Cs` of
   :class:`linear_model.LogisticRegressionCV` are deprecated and will be removed in
-  version 1.14. The relationship is
+  version 1.14. There are new parameters `alpha` and `alphas` instead with the
+  following relationship:
 
   - for `LogisticRegression`: `alpha = 1/C`
   - for `LogisticRegressionCV`: `alphas = Cs` for integer values, `alphas = 1/Cs` for
@@ -384,7 +390,7 @@ Callbacks
   - `alpha=1.0` for `LogisticRegression`, meaning it is the same default as `C=1.0`.
   - `alphas=10` for `LogisticRegressionCV`, meaning it is the same default as `Cs=10`.
 
-  This means, the defaults result in the same model as before (up to floating point
+  This means that the defaults result in the same models as before (up to floating point
   precision).
 
   With this change the penalty parameter of most linear models is `alpha`, the larger
@@ -408,10 +414,11 @@ Callbacks
 :mod:`sklearn.metrics`
 ----------------------
 
-- |Efficiency| :func:`metrics.nan_euclidean_distances` is now several times faster on dense data,
-  with a more moderate speed-up for :class:`impute.KNNImputer` and estimators using
-  ``metric="nan_euclidean"`` such as :class:`neighbors.NearestNeighbors`.
-  By :user:`Roman Yurchak <rth>`. :pr:`1140`
+- |Efficiency| :func:`metrics.pairwise.nan_euclidean_distances` is now several times faster on
+  dense data, with a more moderate speed-up for :class:`impute.KNNImputer` and
+  estimators using ``metric="nan_euclidean"`` such as
+  :class:`neighbors.NearestNeighbors`.
+  By :user:`Roman Yurchak <rth>`. :pr:`34277`
 
 - |Enhancement| :func:`~metrics.confusion_matrix_at_thresholds`, :func:`~metrics.roc_curve`,
   :func:`~metrics.precision_recall_curve`, :func:`~metrics.det_curve`, and
@@ -426,7 +433,7 @@ Callbacks
   By :user:`Lucy Liu <lucyleeow>`. :pr:`34083`
 
 - |API| The default value of the `average` parameter of
-  :func:`precision_recall_fscore_support` will change from `None` to `"binary"` in
+  :func:`metrics.precision_recall_fscore_support` will change from `None` to `"binary"` in
   version 1.12.
   By :user:`François Paugam <FrancoisPgm>`. :pr:`34190`
 
@@ -442,7 +449,7 @@ Callbacks
 
 - |Efficiency| :class:`mixture.GaussianMixture` with ``covariance_type="tied"`` is now faster,
   with the speed-up most visible for many components or high-dimensional data.
-  By :user:`Roman Yurchak <rth>`. :pr:`1140`
+  By :user:`Roman Yurchak <rth>`. :pr:`34277`
 
 :mod:`sklearn.model_selection`
 ------------------------------
@@ -466,7 +473,7 @@ Callbacks
 
 - |Efficiency| :meth:`neighbors.KNeighborsRegressor.predict` is now faster for regression with
   many output targets.
-  By :user:`Roman Yurchak <rth>`. :pr:`1140`
+  By :user:`Roman Yurchak <rth>`. :pr:`34277`
 
 * |Efficiency| :class:`sklearn.neighbors.KNeighborsClassifier` is now faster when running with multiple threads. The statistics returned from :class:`sklearn.neighbors.BallTree` and :class:`sklearn.neighbors.KDTree` no longer reset on each query, and are no longer incorrect when the tree is used from multiple threads.
   By :user:`Itamar Turner-Trauring <itamarst>`. :pr:`34187`
@@ -484,9 +491,9 @@ Callbacks
 :mod:`sklearn.pipeline`
 -----------------------
 
-- |Fix| The default value for the `transform_input` parameter of :class:`Pipeline` was changed
-  from `None` to `("X_val",)` so that the validation set, when passed to `fit`, is
-  always transformed alongside `X`, to prevent easy to miss mistakes.
+- |Fix| The default value for the `transform_input` parameter of :class:`pipeline.Pipeline`
+  was changed from `None` to `("X_val",)` so that the validation set, when passed to
+  :term:`fit`, is always transformed alongside `X`, to prevent easy to miss mistakes.
   By :user:`Jérémie du Boisberranger <jeremiedbb>`. :pr:`34263`
 
 :mod:`sklearn.preprocessing`
@@ -505,7 +512,7 @@ Callbacks
 
 - |Enhancement| :class:`preprocessing.QuantileTransformer` can now handle sample weight values
   by subsampling using sample weights if subsampling is enabled or otherwise using
-  `_weighted_percentile`. The default method of calculating percentiles for both
+  a weighted percentile method. The default method of calculating percentiles for both
   weighted and unweighted cases is now fixed to "averaged_inverted_cdf".
   Support is only implemented for dense X.
   By :user:`Karassay Raushanbek <kaekkr>` and :user:`Shruti Nath <snath-xoc>`. :pr:`32761`
