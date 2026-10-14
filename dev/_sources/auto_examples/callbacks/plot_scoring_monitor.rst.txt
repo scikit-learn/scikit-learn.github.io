@@ -1175,7 +1175,7 @@ the standard scaler and the logistic regression.
             </a>
         </td>
                <td class="fitted-att-type">dict</td>
-               <td>{&#x27;me...me&#x27;: array([0.2606...  0.62448344]), &#x27;me...me&#x27;: array([0.0064...  0.0055871 ]), &#x27;me...cy&#x27;: array([0.26 ,...0.296, 0.321]), &#x27;me...on&#x27;: array([0.2680...  0.33077058]), ...}</td>
+               <td>{&#x27;me...me&#x27;: array([0.2561...  0.61028781]), &#x27;me...me&#x27;: array([0.0063...  0.0058332 ]), &#x27;me...cy&#x27;: array([0.26 ,...0.296, 0.321]), &#x27;me...on&#x27;: array([0.2680...  0.33077058]), ...}</td>
 
 
            </tr>
@@ -1247,7 +1247,7 @@ the standard scaler and the logistic regression.
             </a>
         </td>
                <td class="fitted-att-type">float</td>
-               <td>0.4094</td>
+               <td>0.4115</td>
 
 
            </tr>
@@ -2098,10 +2098,10 @@ the standard scaler and the logistic regression.
                 dual
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-dual;">
-                dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.</span>
+                dual: bool, default=False<br><br>Dual (constrained) or primal (regularized, see also<br>:ref:`this equation &lt;regularized-logistic-loss&gt;`) formulation. Dual formulation<br>is only implemented for l2 penalty with liblinear solver. Prefer `dual=False`<br>when n_samples &gt; n_features.<br><br>.. deprecated:: 1.10<br>   `dual` is deprecated and will be removed in version 1.12.</span>
             </a>
         </td>
-                <td class="value">False</td>
+                <td class="value">&#x27;deprecated&#x27;</td>
             </tr>
     
 
@@ -2158,10 +2158,10 @@ the standard scaler and the logistic regression.
                 intercept_scaling
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-intercept_scaling;">
-                intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.</span>
+                intercept_scaling: float, default=1<br><br>Useful only when the solver `liblinear` is used<br>and `self.fit_intercept` is set to `True`. In this case, `x` becomes<br>`[x, self.intercept_scaling]`,<br>i.e. a &quot;synthetic&quot; feature with constant value equal to<br>`intercept_scaling` is appended to the instance vector.<br>The intercept becomes<br>``intercept_scaling * synthetic_feature_weight``.<br><br>.. note::<br>    The synthetic feature weight is subject to L1 or L2<br>    regularization as all other features.<br>    To lessen the effect of regularization on synthetic feature weight<br>    (and therefore on the intercept) `intercept_scaling` has to be increased.<br><br>.. deprecated:: 1.10<br>   `intercept_scaling` is deprecated and will be removed in version 1.12.</span>
             </a>
         </td>
-                <td class="value">1</td>
+                <td class="value">&#x27;deprecated&#x27;</td>
             </tr>
     
 
@@ -2218,7 +2218,7 @@ the standard scaler and the logistic regression.
                 solver
                 <span class="param-doc-description" tabindex="-1"
                 style="position-anchor: --doc-link-solver;">
-                solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For small datasets, &#x27;liblinear&#x27; is a good choice, whereas &#x27;sag&#x27;<br>  and &#x27;saga&#x27; are faster for large ones;<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.</span>
+                solver: {&#x27;lbfgs&#x27;, &#x27;liblinear&#x27;, &#x27;newton-cd&#x27;, &#x27;newton-cd-gram&#x27;, &#x27;newton-cg&#x27;,             &#x27;newton-cholesky&#x27;, &#x27;sag&#x27;, &#x27;saga&#x27;}, default=&#x27;lbfgs&#x27;<br><br>Algorithm to use in the optimization problem. Default is &#x27;lbfgs&#x27;.<br>To choose a solver, you might want to consider the following aspects:<br><br>- &#x27;lbfgs&#x27; is a good default solver because it works reasonably well for a wide<br>  class of problems.<br>- For :term:`multiclass` problems (`n_classes &gt;= 3`), all solvers except<br>  &#x27;liblinear&#x27; minimize the full multinomial loss, &#x27;liblinear&#x27; will raise an<br>  error.<br>- &#x27;newton-cholesky&#x27; is a good choice for<br>  `n_samples` &gt;&gt; `n_features * n_classes`, especially with one-hot encoded<br>  categorical features with rare categories. Be aware that the memory usage<br>  of this solver has a quadratic dependency on `n_features * n_classes`<br>  because it explicitly computes the full Hessian matrix.<br>- For very large datasets &#x27;sag&#x27; and &#x27;saga&#x27; are a good choice.<br>- &#x27;liblinear&#x27; can only handle binary classification by default. To apply a<br>  one-versus-rest scheme for the multiclass setting one can wrap it with the<br>  :class:`~sklearn.multiclass.OneVsRestClassifier`.<br><br>.. warning::<br>   The choice of the algorithm depends on the penalty chosen (`l1_ratio=0`<br>   for L2-penalty, `l1_ratio=1` for L1-penalty and `0 &lt; l1_ratio &lt; 1` for<br>   Elastic-Net) and on (multinomial) multiclass support:<br><br>   ================= ======================== ======================<br>   solver            l1_ratio                 multinomial multiclass<br>   ================= ======================== ======================<br>   &#x27;lbfgs&#x27;           l1_ratio=0               yes<br>   &#x27;liblinear&#x27;       l1_ratio=1 or l1_ratio=0 no<br>   &#x27;newton-cd&#x27;       0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cd-gram&#x27;  0&lt;=l1_ratio&lt;=1           yes<br>   &#x27;newton-cg&#x27;       l1_ratio=0               yes<br>   &#x27;newton-cholesky&#x27; l1_ratio=0               yes<br>   &#x27;sag&#x27;             l1_ratio=0               yes<br>   &#x27;saga&#x27;            0&lt;=l1_ratio&lt;=1           yes<br>   ================= ======================== ======================<br><br>.. note::<br>   &#x27;sag&#x27; and &#x27;saga&#x27; fast convergence is only guaranteed on features<br>   with approximately the same scale. You can preprocess the data with<br>   a scaler from :mod:`sklearn.preprocessing`.<br><br>.. seealso::<br>   Refer to the :ref:`User Guide &lt;Logistic_regression&gt;` for more<br>   information regarding :class:`LogisticRegression` and more specifically the<br>   :ref:`Table &lt;logistic_regression_solvers&gt;`<br>   summarizing solver/penalty supports.<br><br>.. versionadded:: 1.2<br>   newton-cholesky solver. Multinomial support in version 1.6.<br>.. deprecated:: 1.10<br>   The solver &#x27;liblinear&#x27; is deprecated and will be removed in version 1.12.</span>
             </a>
         </td>
                 <td class="value">&#x27;lbfgs&#x27;</td>
@@ -2699,10 +2699,10 @@ Let's look at the results of the grid search.
       <tbody>
         <tr>
           <th>5</th>
-          <td>0.624483</td>
-          <td>0.046375</td>
-          <td>0.005587</td>
-          <td>0.000707</td>
+          <td>0.610288</td>
+          <td>0.053419</td>
+          <td>0.005833</td>
+          <td>0.000826</td>
           <td>100.00</td>
           <td>False</td>
           <td>{'logisticregression__alpha': 100.0, 'standard...</td>
@@ -2733,10 +2733,10 @@ Let's look at the results of the grid search.
         </tr>
         <tr>
           <th>4</th>
-          <td>0.089170</td>
-          <td>0.003586</td>
-          <td>0.006384</td>
-          <td>0.000323</td>
+          <td>0.087406</td>
+          <td>0.004052</td>
+          <td>0.006346</td>
+          <td>0.000337</td>
           <td>100.00</td>
           <td>True</td>
           <td>{'logisticregression__alpha': 100.0, 'standard...</td>
@@ -2767,10 +2767,10 @@ Let's look at the results of the grid search.
         </tr>
         <tr>
           <th>2</th>
-          <td>0.220839</td>
-          <td>0.011625</td>
-          <td>0.006461</td>
-          <td>0.000295</td>
+          <td>0.218747</td>
+          <td>0.010557</td>
+          <td>0.006435</td>
+          <td>0.000405</td>
           <td>1.00</td>
           <td>True</td>
           <td>{'logisticregression__alpha': 1.0, 'standardsc...</td>
@@ -2801,10 +2801,10 @@ Let's look at the results of the grid search.
         </tr>
         <tr>
           <th>3</th>
-          <td>1.724551</td>
-          <td>0.058198</td>
-          <td>0.006089</td>
-          <td>0.000093</td>
+          <td>1.700966</td>
+          <td>0.056014</td>
+          <td>0.006180</td>
+          <td>0.000165</td>
           <td>1.00</td>
           <td>False</td>
           <td>{'logisticregression__alpha': 1.0, 'standardsc...</td>
@@ -2835,10 +2835,10 @@ Let's look at the results of the grid search.
         </tr>
         <tr>
           <th>0</th>
-          <td>0.260666</td>
-          <td>0.015198</td>
-          <td>0.006472</td>
-          <td>0.000147</td>
+          <td>0.256100</td>
+          <td>0.013977</td>
+          <td>0.006335</td>
+          <td>0.000319</td>
           <td>0.01</td>
           <td>True</td>
           <td>{'logisticregression__alpha': 0.01, 'standards...</td>
@@ -2869,10 +2869,10 @@ Let's look at the results of the grid search.
         </tr>
         <tr>
           <th>1</th>
-          <td>1.945729</td>
-          <td>0.111029</td>
-          <td>0.006251</td>
-          <td>0.000198</td>
+          <td>1.910560</td>
+          <td>0.106555</td>
+          <td>0.006099</td>
+          <td>0.000132</td>
           <td>0.01</td>
           <td>False</td>
           <td>{'logisticregression__alpha': 0.01, 'standards...</td>
@@ -3292,7 +3292,7 @@ References
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 12.895 seconds)
+   **Total running time of the script:** (0 minutes 12.706 seconds)
 
 
 .. _sphx_glr_download_auto_examples_callbacks_plot_scoring_monitor.py:
