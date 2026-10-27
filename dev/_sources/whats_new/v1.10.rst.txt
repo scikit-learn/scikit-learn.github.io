@@ -160,7 +160,7 @@ Metadata routing
 Refer to the :ref:`Metadata Routing User Guide <metadata_routing>` for
 more details.
 
-- |Feature| |Feature| Added support for auto-requesting metadata through
+- |Feature| Added support for auto-requesting metadata through
   ``set_config(enable_metadata_auto_requests=True)``. This enables automatic routing of
   common metadata like ``sample_weight``, or ``X_val``. :term:`Consumers <consumer>`
   (estimators, scorers, and CV splitters) and consuming :term:`routers <router>` can now
@@ -170,7 +170,7 @@ more details.
   for more details.
   By `Adrin Jalali`_ and :user:`Stefanie Senger <StefanieSenger>`. :pr:`31413`
 
-- |Feature| |Feature| :class:`~ensemble.HistGradientBoostingClassifier` and
+- |Feature| :class:`~ensemble.HistGradientBoostingClassifier` and
   :class:`~ensemble.HistGradientBoostingRegressor` auto-request `X_val`, `y_val` and
   `sample_weight_val` when metadata routing and auto-requests are enabled via
   :func:`~sklearn.set_config`.
@@ -178,9 +178,20 @@ more details.
 
 - |Feature| scikit-learn estimators that inherit from :class:`~sklearn.base.BaseEstimator` now
   auto-request `sample_weight` on methods that accept it when metadata routing and
-  auto-requests are enabled via :func:`~sklearn.set_config`. Third-party estimators can
-  opt in with :class:`~sklearn.utils.metadata_routing.AutoRequestMixin`.
+  auto-requests are enabled via :func:`~sklearn.set_config`. This includes consuming
+  :term:`routers <router>` that expose those methods via ``add_self_request`` (for
+  example CV estimators and other meta-estimators that consume `sample_weight` in
+  ``fit`` and/or ``score``). Third-party estimators can opt in with
+  :class:`~sklearn.utils.metadata_routing.AutoRequestMixin`.
   By :user:`Stefanie Senger <StefanieSenger>`. :pr:`34966`
+
+- |Feature| :class:`~ensemble.BaggingClassifier`, :class:`~ensemble.BaggingRegressor`,
+  :class:`~ensemble.IsolationForest` and :class:`~multiclass.OutputCodeClassifier` now
+  expose their own `sample_weight` consumption via `add_self_request` and auto-request
+  `sample_weight` on their methods (`fit` and / or `score`) when metadata routing and
+  auto-requests are enabled via :func:`~sklearn.set_config`.
+  By :user:`Stefanie Senger
+  <StefanieSenger>`. :pr:`35095`
 
 Callbacks
 ---------
