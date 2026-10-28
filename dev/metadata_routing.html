@@ -998,17 +998,22 @@ enable a second configuration flag:</p>
 <p>See <a class="reference internal" href="modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a> and <a class="reference internal" href="modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a> for
 <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests</span></code>. Both <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing</span></code> and
 <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests</span></code> must be <code class="docutils literal notranslate"><span class="pre">True</span></code> for auto-requests to take effect.</p>
-<p>Auto-requests are declared for specific metadata such as <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>, <code class="docutils literal notranslate"><span class="pre">X_val</span></code>,
-<code class="docutils literal notranslate"><span class="pre">y_val</span></code> and <code class="docutils literal notranslate"><span class="pre">sample_weight_val</span></code>. Once a metadata is supported, methods that take
-that argument are expected to auto-request it. (<code class="docutils literal notranslate"><span class="pre">groups</span></code> in <code class="docutils literal notranslate"><span class="pre">Group*Fold</span></code> is not an
-auto-request and is requested by default whether auto-requests are switched on or off
-since they raise an error if <code class="docutils literal notranslate"><span class="pre">groups</span></code> is not provided.)</p>
+<p>In scikit-learn, <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> is auto-requested on estimator methods that accept it
+(typically <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">score</span></code>), on meta-estimators that also consume it themselves, and
+on scorers whose metric accepts <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> (for example those from
+<a class="reference internal" href="modules/generated/sklearn.metrics.make_scorer.html#sklearn.metrics.make_scorer" title="sklearn.metrics.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer</span></code></a> / <a class="reference internal" href="modules/generated/sklearn.metrics.get_scorer.html#sklearn.metrics.get_scorer" title="sklearn.metrics.get_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_scorer</span></code></a>). Validation-set metadata
+(<code class="docutils literal notranslate"><span class="pre">X_val</span></code>, <code class="docutils literal notranslate"><span class="pre">y_val</span></code> and <code class="docutils literal notranslate"><span class="pre">sample_weight_val</span></code>) is auto-requested where those arguments are
+consumed (in <a class="reference internal" href="modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html#sklearn.ensemble.HistGradientBoostingClassifier" title="sklearn.ensemble.HistGradientBoostingClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistGradientBoostingClassifier</span></code></a> and
+<a class="reference internal" href="modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html#sklearn.ensemble.HistGradientBoostingRegressor" title="sklearn.ensemble.HistGradientBoostingRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistGradientBoostingRegressor</span></code></a>). (<code class="docutils literal notranslate"><span class="pre">groups</span></code> in <code class="docutils literal notranslate"><span class="pre">Group*Fold</span></code> is not an
+auto-request: it is requested by default whether auto-requests are on or off, because
+those splitters raise if <code class="docutils literal notranslate"><span class="pre">groups</span></code> is missing.)</p>
 <p>Note that auto-requests are subject to change and stability guarantees applied to the
 rest of the scikit-learn API do not apply here. They may grow or change over time.</p>
-<p>For most use cases it is enough to set <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code>
-(with metadata routing enabled) and leave request values unchanged. Use
-<code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> only when you need to opt out, alias, or handle a
-consumer that does not yet auto-request the metadata you pass.</p>
+<p>For most use cases it is enough to set <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code> (with
+metadata routing enabled) and leave request values unchanged. Specifically, you can pass
+your <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> through a router without calling <code class="docutils literal notranslate"><span class="pre">set_fit_request</span></code> or
+<code class="docutils literal notranslate"><span class="pre">set_score_request</span></code>. Use <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> when you need to opt out, set an alias,
+or handle a consumer that does not auto-request the metadata you pass.</p>
 <p>You can still override any auto-request (or default request) with
 <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code>. Values set that way take precedence. In particular,
 <code class="docutils literal notranslate"><span class="pre">set_fit_request(sample_weight=False)</span></code> opts out of receiving <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> even

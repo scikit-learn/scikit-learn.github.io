@@ -2216,11 +2216,16 @@ estimators and scorers are scale invariant. For example, weights <code class="do
 differ by a constant factor of 10. Note however that several estimators
 are not invariant to the scale of weights.</p>
 <p><code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> can be both an argument of the estimator’s <a class="reference internal" href="#term-fit"><span class="xref std std-term">fit</span></a> method
-for model training or a parameter of a <a class="reference internal" href="#term-scorer"><span class="xref std std-term">scorer</span></a> for model
-evaluation. These callables are said to <em>consume</em> the sample weights
-while other components of scikit-learn can <em>route</em>  the weights to the
-underlying estimators or scorers (see
-<a class="reference internal" href="#glossary-metadata-routing"><span class="std std-ref">Metadata Routing</span></a>).</p>
+for model training or a parameter of a <a class="reference internal" href="#term-scorer"><span class="xref std std-term">scorer</span></a> for model evaluation.
+These callables are said to <em>consume</em> the sample weights while other components
+of scikit-learn can <em>route</em>  the weights to the underlying estimators or scorers
+(see <a class="reference internal" href="#glossary-metadata-routing"><span class="std std-ref">Metadata Routing</span></a>). When <a class="reference internal" href="metadata_routing.html#metadata-routing"><span class="std std-ref">metadata routing</span></a> is enabled together with
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code> (see <a class="reference internal" href="modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a>),
+estimators, meta-estimators that also consume weights, and scorers that accept
+<code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> <strong>auto-request</strong> it. You then do not need
+<code class="docutils literal notranslate"><span class="pre">set_fit_request(sample_weight=True)</span></code> or
+<code class="docutils literal notranslate"><span class="pre">set_score_request(sample_weight=True)</span></code>. See
+<a class="reference internal" href="metadata_routing.html#metadata-routing-auto-request-user"><span class="std std-ref">Auto-requested metadata</span></a>.</p>
 <p>Weighting samples can be useful in several contexts. For instance, if
 the training data is not uniformly sampled from the target population,
 it can be corrected by weighting the training data points based on the
