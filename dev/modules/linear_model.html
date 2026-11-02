@@ -896,8 +896,24 @@ a linear kernel.</p>
 </section>
 <section id="ridge-complexity">
 <h3><span class="section-number">1.1.2.3. </span>Ridge Complexity<a class="headerlink" href="#ridge-complexity" title="Link to this heading">#</a></h3>
-<p>This method has the same order of complexity as
-<a class="reference internal" href="#ordinary-least-squares"><span class="std std-ref">Ordinary Least Squares</span></a>.</p>
+<p>The computational cost of <a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a> depends on the solver and the shape of
+<code class="docutils literal notranslate"><span class="pre">X</span></code>. The <code class="docutils literal notranslate"><span class="pre">&quot;cholesky&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;sparse_cg&quot;</span></code> solvers use the primal formulation
+when <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">&gt;=</span> <span class="pre">n_features</span></code>, solving a system with <code class="docutils literal notranslate"><span class="pre">n_features</span></code> unknowns:</p>
+<div class="math notranslate nohighlight">
+\[(X^T X + \alpha I) w = X^T y.\]</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">&lt;</span> <span class="pre">n_features</span></code>, they use the dual formulation, solving a system
+with <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> unknowns and recovering the coefficients as follows:</p>
+<div class="math notranslate nohighlight">
+\[(X X^T + \alpha I) c = y, \qquad w = X^T c.\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(I\)</span> is the identity matrix of the appropriate size, and <span class="math notranslate nohighlight">\(X\)</span> and
+<span class="math notranslate nohighlight">\(y\)</span> denote the data after centering and sample-weight rescaling, when
+applicable. Using the dual formulation can be more efficient when there are many
+more features than samples.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&quot;cholesky&quot;</span></code> solver explicitly forms the corresponding Gram matrix.
+Storing the Gram matrix requires memory proportional to
+<span class="math notranslate nohighlight">\(n_{\text{features}}^2\)</span> in the primal formulation and
+<span class="math notranslate nohighlight">\(n_{\text{samples}}^2\)</span> in the dual formulation. In contrast, <code class="docutils literal notranslate"><span class="pre">&quot;sparse_cg&quot;</span></code> uses
+matrix-vector products without forming it.</p>
 </section>
 <section id="setting-the-regularization-parameter-leave-one-out-cross-validation">
 <h3><span class="section-number">1.1.2.4. </span>Setting the regularization parameter: leave-one-out Cross-Validation<a class="headerlink" href="#setting-the-regularization-parameter-leave-one-out-cross-validation" title="Link to this heading">#</a></h3>
