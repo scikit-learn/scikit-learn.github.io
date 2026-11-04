@@ -10,10 +10,10 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://scikit-learn.org/stable/modules/linear_model.html" />
 <meta property="og:site_name" content="scikit-learn" />
-<meta property="og:description" content="The following are a set of methods intended for regression in which the target value is expected to be a linear combination of the features. In mathematical notation, the predicted value\hat{y} can..." />
+<meta property="og:description" content="Linear models cover a wide range of different models, most of them regressors but also some important classifiers. What they all have in common is that their predictions are a linear combination of..." />
 <meta property="og:image" content="https://scikit-learn.org/stable/_images/sphx_glr_plot_ols_ridge_001.png" />
 <meta property="og:image:alt" content="scikit-learn" />
-<meta name="description" content="The following are a set of methods intended for regression in which the target value is expected to be a linear combination of the features. In mathematical notation, the predicted value\hat{y} can..." />
+<meta name="description" content="Linear models cover a wide range of different models, most of them regressors but also some important classifiers. What they all have in common is that their predictions are a linear combination of..." />
 
     <title>1.1. Linear Models &#8212; scikit-learn 1.10.dev0 documentation</title>
   
@@ -737,23 +737,41 @@
                   
   <section id="linear-models">
 <span id="linear-model"></span><h1><span class="section-number">1.1. </span>Linear Models<a class="headerlink" href="#linear-models" title="Link to this heading">#</a></h1>
-<p>The following are a set of methods intended for regression in which
-the target value is expected to be a linear combination of the features.
-In mathematical notation, the predicted value <span class="math notranslate nohighlight">\(\hat{y}\)</span> can be
-written as:</p>
+<p>Linear models cover a wide range of different models, most of them regressors but
+also some important classifiers. What they all have in common is that their predictions
+are a linear combination of the <span class="math notranslate nohighlight">\(p=n_{\text{features}}\)</span> features, or a function
+thereof. This linear combination is learned from the data and parametrized by
+coefficients <span class="math notranslate nohighlight">\(w\)</span>. In mathematical notation, the predicted value <span class="math notranslate nohighlight">\(\hat{y}\)</span>
+can be written as</p>
 <div class="math notranslate nohighlight">
 \[\hat{y}(w, x) = w_0 + w_1 x_1 + ... + w_p x_p\]</div>
-<p>Across the module, we designate the vector <span class="math notranslate nohighlight">\(w = (w_1,
-..., w_p)\)</span> as <code class="docutils literal notranslate"><span class="pre">coef_</span></code> and <span class="math notranslate nohighlight">\(w_0\)</span> as <code class="docutils literal notranslate"><span class="pre">intercept_</span></code>.</p>
+<p>or, more generally, <span class="math notranslate nohighlight">\(\hat{y}(w, x) = h(w_0 + w_1 x_1 + ...)\)</span> with some inverse
+link or response function <span class="math notranslate nohighlight">\(h\)</span>.
+Across the module, we designate the vector <span class="math notranslate nohighlight">\(w = (w_1, ..., w_p)\)</span> as <code class="docutils literal notranslate"><span class="pre">coef_</span></code> and
+<span class="math notranslate nohighlight">\(w_0\)</span> as <code class="docutils literal notranslate"><span class="pre">intercept_</span></code>. For brevity, we denote the linear predictor as</p>
+<div class="math notranslate nohighlight">
+\[Xw = w_0 + X \cdot w \,,\]</div>
+<p>such that it includes the intercept <span class="math notranslate nohighlight">\(w_0\)</span>. You might also think of <span class="math notranslate nohighlight">\(X\)</span> as
+the data matrix extended by a column of ones. In the implementation, scikit-learn
+tries to avoid as much as possible to build this extended matrix explicitly which would
+double the memory consumption. For norms of the coefficients as used in penalties, the
+intercept is always excluded, for example:</p>
+<div class="math notranslate nohighlight">
+\[||w||_2^2 = w_1^2 + ... + w_p^2 \,.\]</div>
+<p>A consequence of the common linear predictor for all linear models is that each feature
+in <code class="docutils literal notranslate"><span class="pre">X</span></code> as passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> contributes a separate additive linear term. Non-linear terms
+and interactions of features must be added in the preprocessing as shown further down
+in <a class="reference internal" href="#polynomial-regression"><span class="std std-ref">Polynomial regression</span></a>. On top, it is considered good
+practice to standardize <code class="docutils literal notranslate"><span class="pre">X</span></code> before fitting a linear model.</p>
 <p>To perform classification with generalized linear models, see
 <a class="reference internal" href="#logistic-regression"><span class="std std-ref">Logistic regression</span></a>.</p>
 <section id="ordinary-least-squares">
 <span id="id1"></span><h2><span class="section-number">1.1.1. </span>Ordinary Least Squares<a class="headerlink" href="#ordinary-least-squares" title="Link to this heading">#</a></h2>
-<p><a class="reference internal" href="generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearRegression</span></code></a> fits a linear model with coefficients
-<span class="math notranslate nohighlight">\(w = (w_1, ..., w_p)\)</span> to minimize the residual sum
-of squares between the observed targets in the dataset, and the
-targets predicted by the linear approximation. Mathematically it
-solves a problem of the form:</p>
+<p><a class="reference internal" href="generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearRegression</span></code></a> predicts the conditional expectation <span class="math notranslate nohighlight">\(E(y|X)\)</span> by the
+linear predictor <span class="math notranslate nohighlight">\(Xw\)</span>. The coefficients and the intercept are fitted to minimize
+the residual sum of squares between the observed targets in the dataset, and the
+targets predicted by the linear approximation. Mathematically, it solves the least
+squares problem:</p>
 <div class="math notranslate nohighlight">
 \[\min_{w} || X w - y||_2^2\]</div>
 <figure class="align-center">
@@ -773,15 +791,34 @@ solves a problem of the form:</p>
 <span class="go">0.0</span>
 </pre></div>
 </div>
-<p>The coefficient estimates for Ordinary Least Squares rely on the
-independence of the features. When features are correlated and some
-columns of the design matrix <span class="math notranslate nohighlight">\(X\)</span> have an approximately linear
-dependence, the design matrix becomes close to singular
-and as a result, the least-squares estimate becomes highly sensitive
-to random errors in the observed target, producing a large
-variance. This situation of <em>multicollinearity</em> can arise, for
-example, when data are collected without an experimental design.</p>
-<p class="rubric">Examples</p>
+<p>When features are correlated, e.g. some columns of the design matrix <span class="math notranslate nohighlight">\(X\)</span> have an
+approximately linear dependence, the design matrix becomes ill-conditioned (close to
+singular) and as a result, the least squares estimate becomes highly sensitive
+to random errors or small changes in the observed target <span class="math notranslate nohighlight">\(y\)</span>, leading to a large
+inflation of the variance of the estimated coefficients. This situation of
+<em>multicollinearity</em> can arise, for example, when data are collected without an
+experimental design like in an observational study.</p>
+<p>One possible remedy is to add a penalty for the size of the coefficients as in
+<a class="reference internal" href="#ridge-regression"><span class="std std-ref">Ridge regression</span></a>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="weighted-least-squares">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Weighted Least Squares<a class="headerlink" href="#weighted-least-squares" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">With sample weights <span class="math notranslate nohighlight">\(s=\text{sample_weight}\)</span>, <a class="reference internal" href="generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearRegression</span></code></a>
+minimizes the weighted squared error:</p>
+<div class="math notranslate nohighlight">
+\[\min_{w} \sum_i s_i (X_i w - y_i)^2\]</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="complexity-of-ols">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Complexity of OLS<a class="headerlink" href="#complexity-of-ols" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">For dense <code class="docutils literal notranslate"><span class="pre">X</span></code>, the least squares solution is computed using the singular value
+decomposition of <span class="math notranslate nohighlight">\(X\)</span> via <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html#scipy.linalg.lstsq" title="(in SciPy v1.18.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">SciPy</span> <span class="pre">lstsq</span></code></a>.
+For a matrix <span class="math notranslate nohighlight">\(X\)</span> of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">p)=(n_samples,</span> <span class="pre">n_features)</span></code> this method has a
+cost of <span class="math notranslate nohighlight">\(O(\max(n, p)\min(n, p)^2)\)</span>.</p>
+<p class="sd-card-text">For sparse <code class="docutils literal notranslate"><span class="pre">X</span></code>, the least squares problem is solved by the iterative solver
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.lsqr.html#scipy.sparse.linalg.lsqr" title="(in SciPy v1.18.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">SciPy</span> <span class="pre">lsqr</span></code></a>.</p>
+</div>
+</details><p class="rubric">Examples</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../auto_examples/linear_model/plot_ols_ridge.html#sphx-glr-auto-examples-linear-model-plot-ols-ridge-py"><span class="std std-ref">Ordinary Least Squares and Ridge Regression</span></a></p></li>
 </ul>
@@ -791,19 +828,12 @@ example, when data are collected without an experimental design.</p>
 be useful when they represent some physical or naturally non-negative
 quantities (e.g., frequency counts or prices of goods).
 <a class="reference internal" href="generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression" title="sklearn.linear_model.LinearRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearRegression</span></code></a> accepts a boolean <code class="docutils literal notranslate"><span class="pre">positive</span></code>
-parameter: when set to <code class="docutils literal notranslate"><span class="pre">True</span></code> <a class="reference external" href="https://en.wikipedia.org/wiki/Non-negative_least_squares">Non-Negative Least Squares</a> are then applied.</p>
+parameter: when set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference external" href="https://en.wikipedia.org/wiki/Non-negative_least_squares">Non-Negative Least Squares</a> are then applied via
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.nnls.html#scipy.optimize.nnls" title="(in SciPy v1.18.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">SciPy</span> <span class="pre">nnls</span></code></a>.</p>
 <p class="rubric">Examples</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../auto_examples/linear_model/plot_nnls.html#sphx-glr-auto-examples-linear-model-plot-nnls-py"><span class="std std-ref">Non-negative least squares</span></a></p></li>
 </ul>
-</section>
-<section id="ordinary-least-squares-complexity">
-<h3><span class="section-number">1.1.1.2. </span>Ordinary Least Squares Complexity<a class="headerlink" href="#ordinary-least-squares-complexity" title="Link to this heading">#</a></h3>
-<p>The least squares solution is computed using the singular value
-decomposition of <span class="math notranslate nohighlight">\(X\)</span>. If <span class="math notranslate nohighlight">\(X\)</span> is a matrix of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>
-this method has a cost of
-<span class="math notranslate nohighlight">\(O(n_{\text{samples}} n_{\text{features}}^2)\)</span>, assuming that
-<span class="math notranslate nohighlight">\(n_{\text{samples}} \geq n_{\text{features}}\)</span>.</p>
 </section>
 </section>
 <section id="ridge-regression-and-classification">
@@ -1582,7 +1612,7 @@ Once fitted, the <a class="reference internal" href="generated/sklearn.linear_mo
 method of <a class="reference internal" href="generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a> predicts
 the probability of the positive class <span class="math notranslate nohighlight">\(P(y_i=1|X_i)\)</span> as</p>
 <div class="math notranslate nohighlight">
-\[\hat{p}(X_i) = \operatorname{expit}(X_i w + w_0) = \frac{1}{1 + \exp(-X_i w - w_0)}.\]</div>
+\[\hat{p}(X_i) = \operatorname{expit}(X_i w) = \frac{1}{1 + \exp(-X_i w)}.\]</div>
 <p>As an optimization problem, binary
 class logistic regression with regularization term <span class="math notranslate nohighlight">\(r(w)\)</span> minimizes the
 following objective function:</p>
@@ -2653,7 +2683,6 @@ This way, we can solve the XOR problem with a linear classifier:</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ordinary-least-squares">1.1.1. Ordinary Least Squares</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-negative-least-squares">1.1.1.1. Non-Negative Least Squares</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ordinary-least-squares-complexity">1.1.1.2. Ordinary Least Squares Complexity</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ridge-regression-and-classification">1.1.2. Ridge regression and classification</a><ul class="nav section-nav flex-column">
