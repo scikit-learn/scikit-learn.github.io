@@ -5325,8 +5325,9 @@ it passed as <code class="docutils literal notranslate"><span class="pre">sample
 <li><p>Class-level request defaults using <code class="docutils literal notranslate"><span class="pre">__metadata_request__{method}</span></code> class attributes,
 which apply to all instances of a class, and can even remove a metadata from the
 metadata routing machinery if necessary.</p></li>
-<li><p>Auto-requests, which apply at instance level only if
-<code class="docutils literal notranslate"><span class="pre">set_config(enable_metadata_auto_requests=True)</span></code> is set by the user.
+<li><p>Auto-requests, which apply at instance level when
+<code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code> (the default). Set it to <code class="docutils literal notranslate"><span class="pre">False</span></code> with
+<code class="docutils literal notranslate"><span class="pre">set_config(enable_metadata_auto_requests=False)</span></code> to leave these requests unset.
 Developers can add these via the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">add_auto_request</span></code>
 method. By instance level we mean they are actualised inside <code class="docutils literal notranslate"><span class="pre">get_metadata_routing</span></code>
@@ -5343,8 +5344,8 @@ to these as “auto-requests”.</p></li>
 </span>    <span class="n">__metadata_request__fit</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;</span><span class="s2">sample_weight</span><span class="s2">&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span><span class="w">
 </span><span class="w">
 </span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_metadata_routing</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="p">:</span><span class="w">
-</span>        <span class="c1"># Each instance can configure metadata which should be auto-requested if</span><span class="w">
-</span>        <span class="c1"># `set_config(enable_metadata_auto_requests=True)` is set. The</span><span class="w">
+</span>        <span class="c1"># Each instance can configure metadata which is auto-requested when</span><span class="w">
+</span>        <span class="c1"># `enable_metadata_auto_requests` is `True` (the default). The</span><span class="w">
 </span>        <span class="c1"># `add_auto_request` method does this.</span><span class="w">
 </span>        <span class="n">requests</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="p">)</span><span class="o">.</span><span class="n">get_metadata_routing</span><span class="p">(</span><span class="p">)</span><span class="w">
 </span>        <span class="n">requests</span><span class="o">.</span><span class="n">predict</span><span class="o">.</span><span class="n">add_auto_request</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">other_metadata</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
@@ -5359,18 +5360,18 @@ to these as “auto-requests”.</p></li>
 </span>        <span class="n">check_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_metadata</span><span class="o">=</span><span class="n">other_metadata</span><span class="p">)</span><span class="w">
 </span>        <span class="k">return</span> <a class="sphx-glr-backref-module-numpy sphx-glr-backref-type-py-function reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html#numpy.ones" title="numpy.ones"><span class="n">np</span><span class="o">.</span><span class="n">ones</span></a><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
-<p>Let’s see the default class-level requests:</p>
+<p>Let’s see the class-level requests with auto-requests disabled:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">clf</span> <span class="o">=</span> <span class="n">ClassifierWithRequestDefaults</span><span class="p">(</span><span class="p">)</span><span class="w">
-</span><span class="n">print_routing</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span><span class="w">
+</span><span class="k">with</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><span class="n">config_context</span></a><span class="p">(</span><span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">print_routing</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{'fit': {'sample_weight': True},
  'predict': {'other_metadata': None},
  'score': {'sample_weight': None}}
 </pre></div>
 </div>
-<p>And now with auto requests enabled:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">with</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><span class="n">config_context</span></a><span class="p">(</span><span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="p">:</span><span class="w">
-</span>    <span class="n">print_routing</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span><span class="w">
+<p>Auto-requests are enabled by default, so <code class="docutils literal notranslate"><span class="pre">other_metadata</span></code> is requested too:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">print_routing</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{'fit': {'sample_weight': True},
  'predict': {'other_metadata': True},
@@ -5384,7 +5385,7 @@ overridden:</p>
 </span><span class="n">print_routing</span><span class="p">(</span><span class="n">clf</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{'fit': {'sample_weight': False},
- 'predict': {'other_metadata': None},
+ 'predict': {'other_metadata': True},
  'score': {'sample_weight': None}}
 </pre></div>
 </div>
@@ -5427,9 +5428,9 @@ above:</p>
 </span><span class="w">
 </span><span class="n">meta_est</span> <span class="o">=</span> <span class="n">RouterConsumerClassifierWithAutoRequests</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">ExampleClassifier</span><span class="p">(</span><span class="p">)</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
-<p>With the default <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=False</span></code>, no request is automatically
-set:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">print_routing</span><span class="p">(</span><span class="n">meta_est</span><span class="p">)</span><span class="w">
+<p>With auto-requests disabled, no request is automatically set:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">with</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><span class="n">config_context</span></a><span class="p">(</span><span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">print_routing</span><span class="p">(</span><span class="n">meta_est</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{'$self_request': {'fit': {'sample_weight': None},
                    'score': {'sample_weight': None}},
@@ -5441,10 +5442,9 @@ set:</p>
                           'score': {'sample_weight': None}}}}
 </pre></div>
 </div>
-<p>When auto-requests are enabled, the consuming router requests <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code>
-for its own usage:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">with</span> <a class="sphx-glr-backref-module-sklearn sphx-glr-backref-type-py-function reference internal" href="../../modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><span class="n">config_context</span></a><span class="p">(</span><span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="p">:</span><span class="w">
-</span>    <span class="n">print_routing</span><span class="p">(</span><span class="n">meta_est</span><span class="p">)</span><span class="w">
+<p>Auto-requests are enabled by default, so the consuming router requests
+<code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> for its own usage:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">print_routing</span><span class="p">(</span><span class="n">meta_est</span><span class="p">)</span><span class="w">
 </span></pre></div></div>
 <div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>{'$self_request': {'fit': {'sample_weight': True},
                    'score': {'sample_weight': None}},

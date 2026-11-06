@@ -4734,7 +4734,7 @@ The meta-estimator cannot use `aliased_sample_weight`, because it expects
 it passed as `sample_weight`. This would apply even if
 `set_fit_request(sample_weight=True)` was set on it.
 
-.. GENERATED FROM PYTHON SOURCE LINES 461-485
+.. GENERATED FROM PYTHON SOURCE LINES 461-486
 
 .. _metadata_routing_auto_request:
 
@@ -4750,8 +4750,9 @@ There are two ways for developers to set request values before the user calls
 1. Class-level request defaults using `__metadata_request__{method}` class attributes,
    which apply to all instances of a class, and can even remove a metadata from the
    metadata routing machinery if necessary.
-2. Auto-requests, which apply at instance level only if
-   `set_config(enable_metadata_auto_requests=True)` is set by the user.
+2. Auto-requests, which apply at instance level when
+   `enable_metadata_auto_requests=True` (the default). Set it to `False` with
+   `set_config(enable_metadata_auto_requests=False)` to leave these requests unset.
    Developers can add these via the
    :func:`~sklearn.utils.metadata_routing.MethodMetadataRequest.add_auto_request`
    method. By instance level we mean they are actualised inside `get_metadata_routing`
@@ -4761,7 +4762,7 @@ There are two ways for developers to set request values before the user calls
 
 Here is an example demonstrating both approaches on a :term:`consumer`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 485-512
+.. GENERATED FROM PYTHON SOURCE LINES 486-513
 
 .. code-block:: Python
 
@@ -4775,8 +4776,8 @@ Here is an example demonstrating both approaches on a :term:`consumer`:
         __metadata_request__fit = {"sample_weight": True}
 
         def get_metadata_routing(self):
-            # Each instance can configure metadata which should be auto-requested if
-            # `set_config(enable_metadata_auto_requests=True)` is set. The
+            # Each instance can configure metadata which is auto-requested when
+            # `enable_metadata_auto_requests` is `True` (the default). The
             # `add_auto_request` method does this.
             requests = super().get_metadata_routing()
             requests.predict.add_auto_request("other_metadata")
@@ -4799,16 +4800,17 @@ Here is an example demonstrating both approaches on a :term:`consumer`:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 513-514
+.. GENERATED FROM PYTHON SOURCE LINES 514-515
 
-Let's see the default class-level requests:
+Let's see the class-level requests with auto-requests disabled:
 
-.. GENERATED FROM PYTHON SOURCE LINES 514-517
+.. GENERATED FROM PYTHON SOURCE LINES 515-519
 
 .. code-block:: Python
 
     clf = ClassifierWithRequestDefaults()
-    print_routing(clf)
+    with config_context(enable_metadata_auto_requests=False):
+        print_routing(clf)
 
 
 
@@ -4825,16 +4827,15 @@ Let's see the default class-level requests:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 518-519
+.. GENERATED FROM PYTHON SOURCE LINES 520-521
 
-And now with auto requests enabled:
+Auto-requests are enabled by default, so `other_metadata` is requested too:
 
-.. GENERATED FROM PYTHON SOURCE LINES 519-522
+.. GENERATED FROM PYTHON SOURCE LINES 521-523
 
 .. code-block:: Python
 
-    with config_context(enable_metadata_auto_requests=True):
-        print_routing(clf)
+    print_routing(clf)
 
 
 
@@ -4851,13 +4852,13 @@ And now with auto requests enabled:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 525-528
+.. GENERATED FROM PYTHON SOURCE LINES 526-529
 
 The routing can still be modified by the user with `set_*_request` methods, which take
 precedence over the previous two ways to set requests. Class-level requests are
 overridden:
 
-.. GENERATED FROM PYTHON SOURCE LINES 528-531
+.. GENERATED FROM PYTHON SOURCE LINES 529-532
 
 .. code-block:: Python
 
@@ -4873,17 +4874,17 @@ overridden:
  .. code-block:: none
 
     {'fit': {'sample_weight': False},
-     'predict': {'other_metadata': None},
+     'predict': {'other_metadata': True},
      'score': {'sample_weight': None}}
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 532-533
+.. GENERATED FROM PYTHON SOURCE LINES 533-534
 
 Auto-requests can also be overridden:
 
-.. GENERATED FROM PYTHON SOURCE LINES 533-538
+.. GENERATED FROM PYTHON SOURCE LINES 534-539
 
 .. code-block:: Python
 
@@ -4907,7 +4908,7 @@ Auto-requests can also be overridden:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 539-545
+.. GENERATED FROM PYTHON SOURCE LINES 540-546
 
 Auto-requests can also be set on composite methods such as `fit_transform` or
 `fit_predict`. Since the requests of a composite method are composed from those of
@@ -4916,13 +4917,13 @@ for metadata which is not already present in the requests of any of the componen
 methods. Otherwise, call `add_auto_request` on the component method, and the
 composite method inherits the request.
 
-.. GENERATED FROM PYTHON SOURCE LINES 547-550
+.. GENERATED FROM PYTHON SOURCE LINES 548-551
 
 On a consuming :term:`router`, apply `add_auto_request` on the `MetadataRequest`, then
 attach it with ``add_self_request``. Here we subclass `RouterConsumerClassifier` from
 above:
 
-.. GENERATED FROM PYTHON SOURCE LINES 550-571
+.. GENERATED FROM PYTHON SOURCE LINES 551-572
 
 .. code-block:: Python
 
@@ -4954,16 +4955,16 @@ above:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 572-574
+.. GENERATED FROM PYTHON SOURCE LINES 573-574
 
-With the default `enable_metadata_auto_requests=False`, no request is automatically
-set:
+With auto-requests disabled, no request is automatically set:
 
-.. GENERATED FROM PYTHON SOURCE LINES 574-576
+.. GENERATED FROM PYTHON SOURCE LINES 574-577
 
 .. code-block:: Python
 
-    print_routing(meta_est)
+    with config_context(enable_metadata_auto_requests=False):
+        print_routing(meta_est)
 
 
 
@@ -4985,17 +4986,16 @@ set:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 577-579
+.. GENERATED FROM PYTHON SOURCE LINES 578-580
 
-When auto-requests are enabled, the consuming router requests `sample_weight`
-for its own usage:
+Auto-requests are enabled by default, so the consuming router requests
+`sample_weight` for its own usage:
 
-.. GENERATED FROM PYTHON SOURCE LINES 579-582
+.. GENERATED FROM PYTHON SOURCE LINES 580-582
 
 .. code-block:: Python
 
-    with config_context(enable_metadata_auto_requests=True):
-        print_routing(meta_est)
+    print_routing(meta_est)
 
 
 

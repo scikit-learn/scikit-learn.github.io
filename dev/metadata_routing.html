@@ -783,7 +783,11 @@ requested by default.</p>
 <section id="usage-examples">
 <h2><span class="section-number">4.1. </span>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading">#</a></h2>
 <p>For convenience and a faster start into metadata routing, see
-<a class="reference internal" href="#metadata-routing-auto-request-user"><span class="std std-ref">auto-requested metadata</span></a>.</p>
+<a class="reference internal" href="#metadata-routing-auto-request-user"><span class="std std-ref">auto-requested metadata</span></a>.
+For this section, we disable auto-requests (which are enabled by default):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sklearn</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The following examples use explicit <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> calls and are designed to
 show some common use-cases. Our goal here is to pass <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> and <code class="docutils literal notranslate"><span class="pre">groups</span></code>
 through <a class="reference internal" href="modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate" title="sklearn.model_selection.cross_validate"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_validate</span></code></a>, which routes the metadata to
@@ -981,22 +985,15 @@ should be passed to the estimator’s scorer or not:</p>
 <span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">set_score_request</span><span class="p">(</span><span class="n">sample_weight</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>We reset <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code> (its default value) for the next section:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sklearn</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="auto-requested-metadata">
 <span id="metadata-routing-auto-request-user"></span><h2><span class="section-number">4.3. </span>Auto-requested metadata<a class="headerlink" href="#auto-requested-metadata" title="Link to this heading">#</a></h2>
-<p>By default, most <a class="reference internal" href="glossary.html#term-consumer"><span class="xref std std-term">consumers</span></a> leave metadata requests as <code class="docutils literal notranslate"><span class="pre">None</span></code>, so
-you must call <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> before passing that metadata through a
-<a class="reference internal" href="glossary.html#term-router"><span class="xref std std-term">router</span></a>. In addition, consumers can <strong>auto-request</strong> selected metadata when you
-enable a second configuration flag:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sklearn</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">enable_metadata_routing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">enable_metadata_auto_requests</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">... </span><span class="p">)</span>
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="modules/generated/sklearn.set_config.html#sklearn.set_config" title="sklearn.set_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_config</span></code></a> and <a class="reference internal" href="modules/generated/sklearn.config_context.html#sklearn.config_context" title="sklearn.config_context"><code class="xref py py-func docutils literal notranslate"><span class="pre">config_context</span></code></a> for
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests</span></code>. Both <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing</span></code> and
-<code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests</span></code> must be <code class="docutils literal notranslate"><span class="pre">True</span></code> for auto-requests to take effect.</p>
+<p><a class="reference internal" href="glossary.html#term-consumer"><span class="xref std std-term">Consumers</span></a> <strong>auto-request</strong> selected metadata by default
+when metadata routing is enabled.</p>
 <p>In scikit-learn, <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> is auto-requested on estimator methods that accept it
 (typically <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">score</span></code>), on meta-estimators that also consume it themselves, and
 on scorers whose metric accepts <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> (for example those from
@@ -1008,11 +1005,11 @@ auto-request: it is requested by default whether auto-requests are on or off, be
 those splitters raise if <code class="docutils literal notranslate"><span class="pre">groups</span></code> is missing.)</p>
 <p>Note that auto-requests are subject to change and stability guarantees applied to the
 rest of the scikit-learn API do not apply here. They may grow or change over time.</p>
-<p>For most use cases it is enough to set <code class="docutils literal notranslate"><span class="pre">enable_metadata_auto_requests=True</span></code> (with
-metadata routing enabled) and leave request values unchanged. Specifically, you can pass
-your <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> through a router without calling <code class="docutils literal notranslate"><span class="pre">set_fit_request</span></code> or
-<code class="docutils literal notranslate"><span class="pre">set_score_request</span></code>. Use <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> when you need to opt out, set an alias,
-or handle a consumer that does not auto-request the metadata you pass.</p>
+<p>For most use cases it is enough to enable metadata routing and leave request values
+unchanged. Specifically, you can pass your <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> through a router without
+calling <code class="docutils literal notranslate"><span class="pre">set_fit_request</span></code> or <code class="docutils literal notranslate"><span class="pre">set_score_request</span></code>. Use <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code> only
+when you need to opt out, set an alias, or handle a consumer that does not yet
+auto-request the metadata you pass.</p>
 <p>You can still override any auto-request (or default request) with
 <code class="docutils literal notranslate"><span class="pre">set_{method}_request</span></code>. Values set that way take precedence. In particular,
 <code class="docutils literal notranslate"><span class="pre">set_fit_request(sample_weight=False)</span></code> opts out of receiving <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> even
