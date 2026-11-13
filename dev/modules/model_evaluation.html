@@ -3199,6 +3199,9 @@ Data mining and knowledge discovery handbook (pp. 667-685). Springer US.</p></li
 (NDCG) are ranking metrics implemented in <a class="reference internal" href="generated/sklearn.metrics.dcg_score.html#sklearn.metrics.dcg_score" title="sklearn.metrics.dcg_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">dcg_score</span></code></a>
 and <a class="reference internal" href="generated/sklearn.metrics.ndcg_score.html#sklearn.metrics.ndcg_score" title="sklearn.metrics.ndcg_score"><code class="xref py py-func docutils literal notranslate"><span class="pre">ndcg_score</span></code></a> ; they compare a predicted order to
 ground-truth scores, such as the relevance of answers to a query.</p>
+<p>The input data has shape (n_samples, n_items) where each sample represents a single
+query or ranking problem, and the items are the candidates (e.g., answers) to be
+ranked by their predicted scores against ground-truth relevance.</p>
 <p>From the Wikipedia page for Discounted Cumulative Gain:</p>
 <p>“Discounted cumulative gain (DCG) is a measure of ranking quality. In
 information retrieval, it is often used to measure effectiveness of web search
@@ -3218,14 +3221,16 @@ rather than a ground-truth ranking. So if the ground-truth consists only of an
 ordering, the ranking loss should be preferred; if the ground-truth consists of
 actual usefulness scores (e.g. 0 for irrelevant, 1 for relevant, 2 for very
 relevant), NDCG can be used.</p>
-<p>For one sample, given the vector of continuous ground-truth values for each
-target <span class="math notranslate nohighlight">\(y \in \mathbb{R}^{M}\)</span>, where <span class="math notranslate nohighlight">\(M\)</span> is the number of outputs, and
-the prediction <span class="math notranslate nohighlight">\(\hat{y}\)</span>, which induces the ranking function <span class="math notranslate nohighlight">\(f\)</span>, the
-DCG score is</p>
+<p>For one query, let <span class="math notranslate nohighlight">\(y \in \mathbb{R}^{M}\)</span> denote the ground-truth values
+for <span class="math notranslate nohighlight">\(M\)</span> items (e.g., answers), and <span class="math notranslate nohighlight">\(\hat{y}\)</span> the predicted scores for each.
+The ranking function <span class="math notranslate nohighlight">\(f\)</span> orders the items (e.g., answers) by <span class="math notranslate nohighlight">\(\hat{y}\)</span> in
+descending order. The DCG score is then:</p>
 <div class="math notranslate nohighlight">
 \[\sum_{r=1}^{\min(K, M)}\frac{y_{f(r)}}{\log(1 + r)}\]</div>
-<p>and the NDCG score is the DCG score divided by the DCG score obtained for
-<span class="math notranslate nohighlight">\(y\)</span>.</p>
+<p>where <span class="math notranslate nohighlight">\(y_{f(r)}\)</span> is the true target value for the element at rank position
+<span class="math notranslate nohighlight">\(r\)</span> in the predicted order.</p>
+<p>The NDCG score is the DCG score of the predictions <span class="math notranslate nohighlight">\(\hat{y}\)</span> divided by the
+DCG score of the ideal ranking <span class="math notranslate nohighlight">\(y\)</span>.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="references-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">References<a class="headerlink" href="#references-3" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
