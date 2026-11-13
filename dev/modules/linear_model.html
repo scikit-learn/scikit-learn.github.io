@@ -1284,12 +1284,16 @@ function optimized by the model.</p>
 </section>
 <section id="multi-task-lasso">
 <span id="id10"></span><h2><span class="section-number">1.1.4. </span>Multi-task Lasso<a class="headerlink" href="#multi-task-lasso" title="Link to this heading">#</a></h2>
-<p>The <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLasso.html#sklearn.linear_model.MultiTaskLasso" title="sklearn.linear_model.MultiTaskLasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskLasso</span></code></a> is a linear model that estimates sparse
-coefficients for multiple regression problems jointly: <code class="docutils literal notranslate"><span class="pre">y</span></code> is a 2D array,
-of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_tasks)</span></code>. The constraint is that the selected
-features are the same for all the regression problems, also called tasks.</p>
+<p>The <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLasso.html#sklearn.linear_model.MultiTaskLasso" title="sklearn.linear_model.MultiTaskLasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskLasso</span></code></a> is a linear model that estimates sparse coefficients for
+multiple regression problems, or tasks, jointly: <code class="docutils literal notranslate"><span class="pre">y</span></code> is a 2-dimensional array of
+shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_targets)</span></code>, in maths often expressed as capital letter <span class="math notranslate nohighlight">\(Y\)</span>.
+The coefficients are also 2-dimensional, <span class="math notranslate nohighlight">\(W\)</span> is of shape
+<code class="docutils literal notranslate"><span class="pre">(n_features,</span> <span class="pre">n_targets)</span></code> and accessible as the transpose of the coefficient
+attribute, <code class="docutils literal notranslate"><span class="pre">coef_.T</span></code>. The constraint is that the selected features are the same for
+all the regression problems. This is enforced by the penalty, which couples each
+feature’s coefficients across all tasks.</p>
 <p>The following figure compares the location of the non-zero entries in the
-coefficient matrix W obtained with a simple Lasso or a MultiTaskLasso.
+coefficient matrix <span class="math notranslate nohighlight">\(W\)</span> obtained with a simple Lasso or a MultiTaskLasso.
 The Lasso estimates yield scattered non-zeros while the non-zeros of
 the MultiTaskLasso are full columns.</p>
 <p class="centered">
@@ -1312,7 +1316,8 @@ The objective function to minimize is:</p>
 <p class="sd-card-text">and <span class="math notranslate nohighlight">\(\ell_1\)</span> <span class="math notranslate nohighlight">\(\ell_2\)</span> reads</p>
 <div class="math notranslate nohighlight">
 \[||A||_{2 1} = \sum_i \sqrt{\sum_j a_{ij}^2}.\]</div>
-<p class="sd-card-text">The implementation in the class <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLasso.html#sklearn.linear_model.MultiTaskLasso" title="sklearn.linear_model.MultiTaskLasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskLasso</span></code></a> uses
+<p class="sd-card-text">In both above norms, the index <span class="math notranslate nohighlight">\(j\)</span> is for the dimension of tasks.
+The implementation in the class <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLasso.html#sklearn.linear_model.MultiTaskLasso" title="sklearn.linear_model.MultiTaskLasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskLasso</span></code></a> uses
 coordinate descent as the algorithm to fit the coefficients.</p>
 </div>
 </details></section>
