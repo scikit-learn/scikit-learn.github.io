@@ -1027,24 +1027,46 @@ Estimation for Nonorthogonal Problems. Technometrics, 12(1), 55-67.</a></p>
 </section>
 <section id="lasso">
 <span id="id5"></span><h2><span class="section-number">1.1.3. </span>Lasso<a class="headerlink" href="#lasso" title="Link to this heading">#</a></h2>
-<p>The <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a> is a linear model that estimates sparse coefficients, i.e., it is
-able to set coefficients exactly to zero.
-It is useful in some contexts due to its tendency to prefer solutions
+<p>The <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a> is a linear model that estimates sparse coefficients, meaning that
+it is able to set coefficients exactly to zero. A feature with a zero coefficient
+could be excluded from the model.
+Lasso is useful in some contexts due to its tendency to prefer solutions
 with fewer non-zero coefficients, effectively reducing the number of
 features upon which the given solution is dependent. For this reason,
 Lasso and its variants are fundamental to the field of compressed sensing.
 Under certain conditions, it can recover the exact set of non-zero coefficients (see
 <a class="reference internal" href="../auto_examples/applications/plot_tomography_l1_reconstruction.html#sphx-glr-auto-examples-applications-plot-tomography-l1-reconstruction-py"><span class="std std-ref">Compressive sensing: tomography reconstruction with L1 prior (Lasso)</span></a>).</p>
-<p>Mathematically, it consists of a linear model with an added regularization term.
+<p>Mathematically, it consists of a linear model with an additional regularization term in
+the form of the <span class="math notranslate nohighlight">\(\ell_1\)</span>-norm of the coefficients.
 The objective function to minimize is:</p>
 <div class="math notranslate nohighlight">
 \[\min_{w} P(w) = {\frac{1}{2n_{\text{samples}}} ||X w - y||_2 ^ 2 + \alpha ||w||_1}\]</div>
 <p>The lasso estimate thus solves the least-squares with added penalty
 <span class="math notranslate nohighlight">\(\alpha ||w||_1\)</span>, where <span class="math notranslate nohighlight">\(\alpha\)</span> is a constant and <span class="math notranslate nohighlight">\(||w||_1\)</span> is the
 <span class="math notranslate nohighlight">\(\ell_1\)</span>-norm of the coefficient vector.</p>
-<p>The implementation in the class <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a> uses coordinate descent as
-the algorithm to fit the coefficients. See <a class="reference internal" href="#least-angle-regression"><span class="std std-ref">Least Angle Regression</span></a>
-for another implementation:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Different scaling of penalty</strong> <code class="docutils literal notranslate"><span class="pre">alpha</span></code></p>
+<p>The objective function of the Lasso has a different normalization with
+<code class="docutils literal notranslate"><span class="pre">1/n_samples</span></code> in front of the squared error. The Ridge objective can be expressed
+in the same way and then reads</p>
+<div class="math notranslate nohighlight">
+\[\min_{w} P(w) = {\frac{1}{2n_{\text{samples}}} ||X w - y||_2 ^ 2
++ \frac{\alpha}{2n_{\text{samples}}} ||w||_1}\]</div>
+<p>This shows that different estimators use a different scaling behaviour of the penalty
+parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> with the sample size <code class="docutils literal notranslate"><span class="pre">n_samples</span></code>. Thus the influence of
+<code class="docutils literal notranslate"><span class="pre">alpha</span></code> fades with increasing <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> for Ridge but not for Lasso.</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="weighted-lasso">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Weighted Lasso<a class="headerlink" href="#weighted-lasso" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">With sample weights <span class="math notranslate nohighlight">\(s=\text{sample_weight}\)</span>, <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a> minimizes:</p>
+<div class="math notranslate nohighlight">
+\[\min_{w} \frac{1}{\sum_i s_i}\sum_i s_i (X_i w - y_i)^2 + \alpha ||w||_1^2\]</div>
+</div>
+</details><p>The implementation of the class <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a> uses
+<a class="reference internal" href="#coordinate-descent"><span class="std std-ref">coordinate descent</span></a> as the algorithm to fit the
+coefficients. See <a class="reference internal" href="#least-angle-regression"><span class="std std-ref">Least Angle Regression</span></a> for another implementation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lasso</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span> <span class="o">=</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reg</span><span class="o">.</span><span class="n">fit</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -1084,7 +1106,7 @@ in IEEE Journal of Selected Topics in Signal Processing, 2007
 </ul>
 </div>
 </details><section id="coordinate-descent-with-gap-safe-screening-rules">
-<span id="coordinate-descent"></span><h3><span class="section-number">1.1.3.1. </span>Coordinate Descent with Gap Safe Screening Rules<a class="headerlink" href="#coordinate-descent-with-gap-safe-screening-rules" title="Link to this heading">#</a></h3>
+<span id="coordinate-descent"></span><h3><span class="section-number">1.1.3.1. </span>Coordinate descent with gap safe screening rules<a class="headerlink" href="#coordinate-descent-with-gap-safe-screening-rules" title="Link to this heading">#</a></h3>
 <p>Coordinate descent (CD) is a strategy to solve a minimization problem that considers a
 single feature <span class="math notranslate nohighlight">\(j\)</span> at a time. This way, the optimization problem is reduced to a
 1-dimensional problem which is easier to solve:</p>
@@ -1122,12 +1144,15 @@ dual scaling</p>
 \end{cases}\end{split}\]</div>
 <p class="sd-card-text">the stopping criterion is</p>
 <div class="math notranslate nohighlight">
-\[\text{tol} \frac{||y||_2^2}{n_{\text{samples}}} &lt; G(w, cr)\,.\]</div>
+\[\text{tol} \frac{||y||_2^2}{n_{\text{samples}}} \leq G(w, cr)\,.\]</div>
 </div>
-</details><p>A clever method to speedup the coordinate descent algorithm is to screen features such
-that at optimum <span class="math notranslate nohighlight">\(w_j = 0\)</span>. Gap safe screening rules are such a
-tool. Anywhere during the optimization algorithm, they can tell which feature we can
-safely exclude, i.e., set to zero with certainty.</p>
+</details><p>A clever method to speedup the coordinate descent algorithm is to screen features. The
+idea is to identify and exclude features with solution <span class="math notranslate nohighlight">\(w_j = 0\)</span> as early as
+possible. Gap safe screening rules are such a tool. At any point during the
+optimization, they can tell if a feature can be safely excluded from further
+optimization and set to zero with certainty. The price for the certainty is that this
+rule does not identify all of them, but the closer to the optimum the more it
+identifies.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="references-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">References<a class="headerlink" href="#references-3" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
@@ -1146,18 +1171,23 @@ Journal of Machine Learning Research 18(128):1-33, 2017.</a></p></li>
 </ul>
 </div>
 </details></section>
-<section id="setting-regularization-parameter">
-<h3><span class="section-number">1.1.3.2. </span>Setting regularization parameter<a class="headerlink" href="#setting-regularization-parameter" title="Link to this heading">#</a></h3>
+<section id="setting-the-regularization-parameter">
+<h3><span class="section-number">1.1.3.2. </span>Setting the regularization parameter<a class="headerlink" href="#setting-the-regularization-parameter" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">alpha</span></code> parameter controls the degree of sparsity of the estimated
-coefficients.</p>
+coefficients. In contrast to <a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a>, there is no computational shortcut for
+leave-one-out cross-validation. At least two good options remain to select <code class="docutils literal notranslate"><span class="pre">alpha</span></code>,
+both faster than a plain <a class="reference internal" href="generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="sklearn.model_selection.GridSearchCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a>:
+either compute cross-validation, which still benefits from fast <code class="docutils literal notranslate"><span class="pre">alpha</span></code>-path
+computations, or use information based selection criteria.</p>
 <section id="using-cross-validation">
 <h4><span class="section-number">1.1.3.2.1. </span>Using cross-validation<a class="headerlink" href="#using-cross-validation" title="Link to this heading">#</a></h4>
-<p>scikit-learn exposes objects that set the Lasso <code class="docutils literal notranslate"><span class="pre">alpha</span></code> parameter by
-cross-validation: <a class="reference internal" href="generated/sklearn.linear_model.LassoCV.html#sklearn.linear_model.LassoCV" title="sklearn.linear_model.LassoCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoCV</span></code></a> and <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsCV.html#sklearn.linear_model.LassoLarsCV" title="sklearn.linear_model.LassoLarsCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsCV</span></code></a>.
-<a class="reference internal" href="generated/sklearn.linear_model.LassoLarsCV.html#sklearn.linear_model.LassoLarsCV" title="sklearn.linear_model.LassoLarsCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsCV</span></code></a> is based on the <a class="reference internal" href="#least-angle-regression"><span class="std std-ref">Least Angle Regression</span></a> algorithm
-explained below.</p>
-<p>For high-dimensional datasets with many collinear features,
-<a class="reference internal" href="generated/sklearn.linear_model.LassoCV.html#sklearn.linear_model.LassoCV" title="sklearn.linear_model.LassoCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoCV</span></code></a> is most often preferable. However, <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsCV.html#sklearn.linear_model.LassoLarsCV" title="sklearn.linear_model.LassoLarsCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsCV</span></code></a> has
+<p>Scikit-learn exposes estimators that select the Lasso <code class="docutils literal notranslate"><span class="pre">alpha</span></code> parameter by
+<a class="reference internal" href="../glossary.html#term-cross-validation"><span class="xref std std-term">cross-validation</span></a>: <a class="reference internal" href="generated/sklearn.linear_model.LassoCV.html#sklearn.linear_model.LassoCV" title="sklearn.linear_model.LassoCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoCV</span></code></a> and <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsCV.html#sklearn.linear_model.LassoLarsCV" title="sklearn.linear_model.LassoLarsCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsCV</span></code></a>. Both estimators
+exploit the fact that computing a full path of <code class="docutils literal notranslate"><span class="pre">alpha</span></code> values over a single fold is
+relatively cheap.</p>
+<p>For high-dimensional datasets with many collinear features, <a class="reference internal" href="generated/sklearn.linear_model.LassoCV.html#sklearn.linear_model.LassoCV" title="sklearn.linear_model.LassoCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoCV</span></code></a> with its
+coordinate descent solver is most often preferable. However, <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsCV.html#sklearn.linear_model.LassoLarsCV" title="sklearn.linear_model.LassoLarsCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsCV</span></code></a> with
+its <a class="reference internal" href="#least-angle-regression"><span class="std std-ref">least angle algorithm</span></a> has
 the advantage of exploring more relevant values of <code class="docutils literal notranslate"><span class="pre">alpha</span></code> parameter, and
 if the number of samples is very small compared to the number of
 features, it is often faster than <a class="reference internal" href="generated/sklearn.linear_model.LassoCV.html#sklearn.linear_model.LassoCV" title="sklearn.linear_model.LassoCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoCV</span></code></a>.</p>
@@ -1167,15 +1197,15 @@ features, it is often faster than <a class="reference internal" href="generated/
 <span id="lasso-lars-ic"></span><h4><span class="section-number">1.1.3.2.2. </span>Information-criteria based model selection<a class="headerlink" href="#information-criteria-based-model-selection" title="Link to this heading">#</a></h4>
 <p>Alternatively, the estimator <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsIC.html#sklearn.linear_model.LassoLarsIC" title="sklearn.linear_model.LassoLarsIC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsIC</span></code></a> proposes to use the
 Akaike information criterion (AIC) and the Bayes Information criterion (BIC).
-It is a computationally cheaper alternative to find the optimal value of alpha
+It is a computationally cheaper alternative to find the optimal value of <code class="docutils literal notranslate"><span class="pre">alpha</span></code>
 as the regularization path is computed only once instead of k+1 times
 when using k-fold cross-validation.</p>
 <p>Indeed, these criteria are computed on the in-sample training set. In short,
 they penalize the over-optimistic scores of the different Lasso models by
-their flexibility (cf. to “Mathematical details” section below).</p>
+their flexibility, see the <em>Mathematical details</em> of <a class="reference internal" href="#aic-bic"><span class="std std-ref">AIC and BIC criteria</span></a>.</p>
 <p>However, such criteria need a proper estimation of the degrees of freedom of
 the solution, are derived for large samples (asymptotic results) and assume the
-correct model is candidates under investigation. They also tend to break when
+correct model is among the candidates under investigation. They also tend to break when
 the problem is badly conditioned (e.g. more features than samples).</p>
 <figure class="align-center">
 <a class="reference external image-reference" href="../auto_examples/linear_model/plot_lasso_lars_ic.html"><img alt="../_images/sphx_glr_plot_lasso_lars_ic_001.png" height="240" src="../_images/sphx_glr_plot_lasso_lars_ic_001.png" width="320" />
@@ -1189,31 +1219,30 @@ the problem is badly conditioned (e.g. more features than samples).</p>
 </section>
 <section id="aic-and-bic-criteria">
 <span id="aic-bic"></span><h4><span class="section-number">1.1.3.2.3. </span>AIC and BIC criteria<a class="headerlink" href="#aic-and-bic-criteria" title="Link to this heading">#</a></h4>
-<p>The definition of AIC (and thus BIC) might differ in the literature. In this
-section, we give more information regarding the criterion computed in
-scikit-learn.</p>
+<p>The definition of AIC, and thus BIC, may differ across the literature. In this section,
+we give more information regarding the criterion computed in scikit-learn.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-2">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-2" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">The AIC criterion is defined as:</p>
 <div class="math notranslate nohighlight">
-\[AIC = -2 \log(\hat{L}) + 2 d\]</div>
-<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\hat{L}\)</span> is the maximum likelihood of the model and
-<span class="math notranslate nohighlight">\(d\)</span> is the number of parameters (as well referred to as degrees of
-freedom in the previous section).</p>
+\[AIC = -2 \log(\mathcal{L}) + 2 p\]</div>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\mathcal{L}\)</span> is the maximum likelihood of the model and <span class="math notranslate nohighlight">\(p\)</span> is the
+number of parameters (also referred to as degrees of freedom in the previous section,
+i.e. <code class="docutils literal notranslate"><span class="pre">n_features</span></code> or <code class="docutils literal notranslate"><span class="pre">n_features</span> <span class="pre">+</span> <span class="pre">1</span></code> if the intercept is included).</p>
 <p class="sd-card-text">The definition of BIC replaces the constant <span class="math notranslate nohighlight">\(2\)</span> by <span class="math notranslate nohighlight">\(\log(N)\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[BIC = -2 \log(\hat{L}) + \log(N) d\]</div>
+\[BIC = -2 \log(\mathcal{L}) + \log(N) p\]</div>
 <p class="sd-card-text">where <span class="math notranslate nohighlight">\(N\)</span> is the number of samples.</p>
 <p class="sd-card-text">For a linear Gaussian model, the maximum log-likelihood is defined as:</p>
 <div class="math notranslate nohighlight">
-\[\log(\hat{L}) = - \frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{2\sigma^2}\]</div>
-<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\sigma^2\)</span> is an estimate of the noise variance,
+\[\log(\mathcal{L}) = - \frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{2\sigma^2}\]</div>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\sigma^2\)</span> is the noise variance and is estimated from the given <code class="docutils literal notranslate"><span class="pre">y</span></code>,
 <span class="math notranslate nohighlight">\(y_i\)</span> and <span class="math notranslate nohighlight">\(\hat{y}_i\)</span> are respectively the true and predicted
 targets, and <span class="math notranslate nohighlight">\(n\)</span> is the number of samples.</p>
 <p class="sd-card-text">Plugging the maximum log-likelihood in the AIC formula yields:</p>
 <div class="math notranslate nohighlight">
-\[AIC = n \log(2 \pi \sigma^2) + \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sigma^2} + 2 d\]</div>
+\[AIC = n \log(2 \pi \sigma^2) + \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sigma^2} + 2 p\]</div>
 <p class="sd-card-text">The first term of the above expression is sometimes discarded since it is a
 constant when <span class="math notranslate nohighlight">\(\sigma^2\)</span> is provided. In addition,
 it is sometimes stated that the AIC is equivalent to the <span class="math notranslate nohighlight">\(C_p\)</span> statistic
@@ -1224,10 +1253,9 @@ noise variance. In <a class="reference internal" href="generated/sklearn.linear_
 not provided (default), the noise variance is estimated via the unbiased
 estimator <a class="footnote-reference brackets" href="#id9" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a> defined as:</p>
 <div class="math notranslate nohighlight">
-\[\sigma^2 = \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{n - p}\]</div>
-<p class="sd-card-text">where <span class="math notranslate nohighlight">\(p\)</span> is the number of features and <span class="math notranslate nohighlight">\(\hat{y}_i\)</span> is the
-predicted target using an ordinary least squares regression. Note, that this
-formula is valid only when <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">&gt;</span> <span class="pre">n_features</span></code>.</p>
+\[\sigma^2 = \frac{\sum_{i=1}^{n} (y_i - \tilde{y}_i)^2}{n - p}\]</div>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\tilde{y}_i\)</span> is the predicted target using an ordinary least squares
+regression. Note, that this formula is valid only when <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">&gt;</span> <span class="pre">n_features</span></code>.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id8" role="doc-footnote">
@@ -1247,10 +1275,10 @@ Neural computation 15.7 (2003): 1691-1714.</a></p>
 </details></section>
 <section id="comparison-with-the-regularization-parameter-of-svm">
 <h4><span class="section-number">1.1.3.2.4. </span>Comparison with the regularization parameter of SVM<a class="headerlink" href="#comparison-with-the-regularization-parameter-of-svm" title="Link to this heading">#</a></h4>
-<p>The equivalence between <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and the regularization parameter <code class="docutils literal notranslate"><span class="pre">C</span></code> of SVM
-is given by <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">/</span> <span class="pre">C</span></code> or <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">/</span> <span class="pre">(n_samples</span> <span class="pre">*</span> <span class="pre">C)</span></code>,
-depending on the estimator and the exact objective function optimized by the
-model.</p>
+<p>The equivalence between <code class="docutils literal notranslate"><span class="pre">alpha</span></code> and the regularization parameter <code class="docutils literal notranslate"><span class="pre">C</span></code> of
+<a class="reference internal" href="svm.html#svm"><span class="std std-ref">Support Vector Machines</span></a> is given by <code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">/</span> <span class="pre">C</span></code> or
+<code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">/</span> <span class="pre">(n_samples</span> <span class="pre">*</span> <span class="pre">C)</span></code>, depending on the estimator and the exact objective
+function optimized by the model.</p>
 </section>
 </section>
 </section>
@@ -2736,8 +2764,8 @@ This way, we can solve the XOR problem with a linear classifier:</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lasso">1.1.3. Lasso</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coordinate-descent-with-gap-safe-screening-rules">1.1.3.1. Coordinate Descent with Gap Safe Screening Rules</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-regularization-parameter">1.1.3.2. Setting regularization parameter</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coordinate-descent-with-gap-safe-screening-rules">1.1.3.1. Coordinate descent with gap safe screening rules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-the-regularization-parameter">1.1.3.2. Setting the regularization parameter</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#using-cross-validation">1.1.3.2.1. Using cross-validation</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#information-criteria-based-model-selection">1.1.3.2.2. Information-criteria based model selection</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#aic-and-bic-criteria">1.1.3.2.3. AIC and BIC criteria</a></li>
