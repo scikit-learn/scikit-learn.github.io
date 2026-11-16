@@ -697,10 +697,10 @@ be linked from the what’s new file for the new version of scikit-learn.</p></l
 </ul>
 <p class="rubric">Permissions</p>
 <ul class="simple">
-<li><p>The release manager must be a <strong>maintainer</strong> of the
-<a class="github reference external" href="https://github.com/scikit-learn/scikit-learn">scikit-learn/scikit-learn</a> repository to be able to publish on
-<code class="docutils literal notranslate"><span class="pre">pypi.org</span></code> and <code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> (via a manual trigger of a dedicated Github Actions
-workflow).</p></li>
+<li><p>The release manager must be a <strong>release team</strong> member, i.e. a <strong>maintainer</strong>
+of the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn-release">scikit-learn/scikit-learn-release</a>
+repository, to be able to publish on <code class="docutils literal notranslate"><span class="pre">pypi.org</span></code> and <code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> (via a manual trigger
+of a dedicated Github Actions workflow).</p></li>
 <li><p>The release manager must be a <strong>maintainer</strong> of the
 <a class="github reference external" href="https://github.com/conda-forge/scikit-learn-feedstock">conda-forge/scikit-learn-feedstock</a> repository to be able to publish
 on <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>. This can be changed by editing the <code class="docutils literal notranslate"><span class="pre">recipe/meta.yaml</span></code> file in the
@@ -736,7 +736,7 @@ progress.</p>
 <span class="k">* [ ]</span> Set an upper bound on build dependencies in the release branch
 <span class="k">* [ ]</span> Generate the changelog in the release branch
 <span class="k">* [ ]</span> Check that the wheels for the release can be built successfully
-<span class="k">* [ ]</span> Merge the PR with <span class="sb">`[cd build]`</span> commit message to upload wheels to the staging repo
+<span class="k">* [ ]</span> Merge the PR and manually trigger the <span class="sb">`publish.yml`</span> workflow in scikit-learn-release
 <span class="k">* [ ]</span> Upload the wheels and source tarball to https://test.pypi.org
 <span class="k">* [ ]</span> Create tag on the main repo
 <span class="k">* [ ]</span> Confirm bot detected at https://github.com/conda-forge/scikit-learn-feedstock
@@ -793,21 +793,24 @@ and publish packages for the development branch of scikit-learn. See also
 <a class="reference internal" href="../install.html#install-nightly-builds"><span class="std std-ref">Installing nightly builds</span></a>.</p>
 </div>
 </li>
-<li><p>Once all the CD jobs have completed successfully in the PR, merge it with the
-<code class="docutils literal notranslate"><span class="pre">[cd</span> <span class="pre">build]</span></code> marker in the commit message. This time the results will be
-uploaded to the staging area. You should then be able to upload the generated
-artifacts (<code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">.whl</span></code> files) to <a class="reference external" href="https://test.pypi.org/">https://test.pypi.org/</a> using the “Run
-workflow” form for the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml">PyPI publishing workflow</a>.</p>
+<li><p>Once all the CD jobs have completed successfully in the PR, you can merge
+it in <strong>rebase mode</strong>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This PR should be merged with the rebase mode instead of the usual squash mode
 because we want to keep the history in the <code class="docutils literal notranslate"><span class="pre">1.10.X</span></code> branch close
 to the history of the main branch which will help for future bug fix releases.</p>
-<p>In addition if on merging, the last commit, containing the <code class="docutils literal notranslate"><span class="pre">[cd</span> <span class="pre">build]</span></code> marker,
-is empty, the CD jobs won’t be triggered. In this case, you can directly push
-a commit with the marker in the <code class="docutils literal notranslate"><span class="pre">1.10.X</span></code> branch to trigger them.</p>
 </div>
 </li>
+<li><p>Trigger manually the <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow in scikit-learn-release using
+<code class="docutils literal notranslate"><span class="pre">1.10.X</span></code> in the “scikit-learn maintenance branch” input
+field:
+<a class="github reference external" href="https://github.com/scikit-learn/scikit-learn-release/actions/workflows/publish.yml">scikit-learn/scikit-learn-release</a></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow will first build the wheel, then ask for
+approval from a release team member to upload it to <code class="docutils literal notranslate"><span class="pre">testPyPI</span></code> (through
+the “Required reviewers” GitHub feature). As a sanity check, once
+uploaded to <code class="docutils literal notranslate"><span class="pre">testPyPI</span></code>, you can install the wheel and run the tests
+locally.</p></li>
 <li><p>If the steps above went fine, proceed <strong>with caution</strong> to create a new tag for the
 release. This should be done only when you are almost certain that the release is
 ready, since adding a new tag to the main repository can trigger certain automated
@@ -829,29 +832,26 @@ release, targeting the <code class="docutils literal notranslate"><span class="p
 Make sure to update the PR such that it will be synchronized with the <code class="docutils literal notranslate"><span class="pre">main</span></code>
 branch. In particular, backport migrations that may have been added since the last
 release.</p></li>
-<li><p>Trigger the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml">PyPI publishing workflow</a>
-again, but this time to upload the artifacts to the real <a class="reference external" href="https://pypi.org/">https://pypi.org/</a>. To do
-so, replace <code class="docutils literal notranslate"><span class="pre">testpypi</span></code> with <code class="docutils literal notranslate"><span class="pre">pypi</span></code> in the “Run workflow” form.</p>
+<li><p>In the same <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow run, a release team member can
+authorize the upload to <code class="docutils literal notranslate"><span class="pre">PyPI</span></code> <a class="reference external" href="https://pypi.org/">https://pypi.org/</a>.</p>
 <p><strong>Alternatively</strong>, it is possible to collect locally the generated binary wheel
 packages and source tarball and upload them all to PyPI.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="uploading-artifacts-from-local">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Uploading artifacts from local<a class="headerlink" href="#uploading-artifacts-from-local" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Check out at the release tag and run the following commands.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rm<span class="w"> </span>-r<span class="w"> </span>dist
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>wheelhouse_uploader<span class="w"> </span>twine
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>wheelhouse_uploader<span class="w"> </span>fetch<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--version<span class="w"> </span><span class="m">1</span>.10.0rc1<span class="w"> </span>--local-folder<span class="w"> </span>dist<span class="w"> </span>scikit-learn<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
-</pre></div>
-</div>
-<p class="sd-card-text">These commands will download all the binary packages accumulated in the <a class="reference external" href="https://anaconda.org/scikit-learn-wheels-staging/scikit-learn/files">staging
-area on the anaconda.org hosting service</a> and put
-them in your local <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder. Check the contents of the <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder:
-it should contain all the wheels along with the source tarball <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code>. Make
-sure you do not have developer versions or older versions of the scikit-learn
-package in that folder. Before uploading to PyPI, you can test uploading to
-<code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> first.</p>
+<p class="sd-card-text">Download all the artifacts from the wheel build GitHub workflow and
+put them into a local <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder. Check the contents of the
+<code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder: it should contain all the wheels along with the source
+tarball <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code>. Make sure you do not have developer versions or
+older versions of the scikit-learn package in that folder. Before
+uploading to PyPI, you can test uploading to <code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> first.</p>
+<p class="sd-card-text">Note: manual uploads are forbidden by the trusted publishing setting
+for security reasons. In the unlikely event where the current trusted
+publisher (i.e. the <code class="docutils literal notranslate"><span class="pre">scikit-learn-release</span></code> GitHub Actions workflow) cannot
+be used anymore, it would be necessary to reconfigure the
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> project on pypi.org and test.pypi.org to disable trusted
+publishing so as to allow manual uploads again. But we should not do
+this unless we have a good reason to.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>twine<span class="w"> </span>upload<span class="w"> </span>--verbose<span class="w"> </span>--repository-url<span class="w"> </span>https://test.pypi.org/legacy/<span class="w"> </span>dist/*
 </pre></div>
 </div>
@@ -898,7 +898,7 @@ progress.</p>
 <span class="k">* [ ]</span> Set an upper bound on build dependencies in the release branch
 <span class="k">* [ ]</span> Generate the changelog in the release branch
 <span class="k">* [ ]</span> Check that the wheels for the release can be built successfully
-<span class="k">* [ ]</span> Merge the PR with <span class="sb">`[cd build]`</span> commit message to upload wheels to the staging repo
+<span class="k">* [ ]</span> Merge the PR and manually trigger the <span class="sb">`publish.yml`</span> workflow in scikit-learn-release
 <span class="k">* [ ]</span> Upload the wheels and source tarball to https://test.pypi.org
 <span class="k">* [ ]</span> Create tag on the main repo
 <span class="k">* [ ]</span> Confirm bot detected at https://github.com/conda-forge/scikit-learn-feedstock
@@ -967,21 +967,24 @@ and publish packages for the development branch of scikit-learn. See also
 <a class="reference internal" href="../install.html#install-nightly-builds"><span class="std std-ref">Installing nightly builds</span></a>.</p>
 </div>
 </li>
-<li><p>Once all the CD jobs have completed successfully in the PR, merge it with the
-<code class="docutils literal notranslate"><span class="pre">[cd</span> <span class="pre">build]</span></code> marker in the commit message. This time the results will be
-uploaded to the staging area. You should then be able to upload the generated
-artifacts (<code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">.whl</span></code> files) to <a class="reference external" href="https://test.pypi.org/">https://test.pypi.org/</a> using the “Run
-workflow” form for the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml">PyPI publishing workflow</a>.</p>
+<li><p>Once all the CD jobs have completed successfully in the PR, you can merge
+it in <strong>rebase mode</strong>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This PR should be merged with the rebase mode instead of the usual squash mode
 because we want to keep the history in the <code class="docutils literal notranslate"><span class="pre">1.10.X</span></code> branch close
 to the history of the main branch which will help for future bug fix releases.</p>
-<p>In addition if on merging, the last commit, containing the <code class="docutils literal notranslate"><span class="pre">[cd</span> <span class="pre">build]</span></code> marker,
-is empty, the CD jobs won’t be triggered. In this case, you can directly push
-a commit with the marker in the <code class="docutils literal notranslate"><span class="pre">1.10.X</span></code> branch to trigger them.</p>
 </div>
 </li>
+<li><p>Trigger manually the <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow in scikit-learn-release using
+<code class="docutils literal notranslate"><span class="pre">1.10.X</span></code> in the “scikit-learn maintenance branch” input
+field:
+<a class="github reference external" href="https://github.com/scikit-learn/scikit-learn-release/actions/workflows/publish.yml">scikit-learn/scikit-learn-release</a></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow will first build the wheel, then ask for
+approval from a release team member to upload it to <code class="docutils literal notranslate"><span class="pre">testPyPI</span></code> (through
+the “Required reviewers” GitHub feature). As a sanity check, once
+uploaded to <code class="docutils literal notranslate"><span class="pre">testPyPI</span></code>, you can install the wheel and run the tests
+locally.</p></li>
 <li><p>If the steps above went fine, proceed <strong>with caution</strong> to create a new tag for the
 release. This should be done only when you are almost certain that the release is
 ready, since adding a new tag to the main repository can trigger certain automated
@@ -1000,29 +1003,26 @@ the repo even though the website isn’t updated and wheels aren’t uploaded ye
 <li><p>Confirm that the bot has detected the tag on the conda-forge feedstock repository
 <a class="github reference external" href="https://github.com/conda-forge/scikit-learn-feedstock">conda-forge/scikit-learn-feedstock</a>. If not, submit a PR for the
 release, targeting the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p></li>
-<li><p>Trigger the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml">PyPI publishing workflow</a>
-again, but this time to upload the artifacts to the real <a class="reference external" href="https://pypi.org/">https://pypi.org/</a>. To do
-so, replace <code class="docutils literal notranslate"><span class="pre">testpypi</span></code> with <code class="docutils literal notranslate"><span class="pre">pypi</span></code> in the “Run workflow” form.</p>
+<li><p>In the same <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow run, a release team member can
+authorize the upload to <code class="docutils literal notranslate"><span class="pre">PyPI</span></code> <a class="reference external" href="https://pypi.org/">https://pypi.org/</a>.</p>
 <p><strong>Alternatively</strong>, it is possible to collect locally the generated binary wheel
 packages and source tarball and upload them all to PyPI.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="uploading-artifacts-from-local-2">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Uploading artifacts from local<a class="headerlink" href="#uploading-artifacts-from-local-2" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Check out at the release tag and run the following commands.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rm<span class="w"> </span>-r<span class="w"> </span>dist
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>wheelhouse_uploader<span class="w"> </span>twine
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>wheelhouse_uploader<span class="w"> </span>fetch<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--version<span class="w"> </span><span class="m">1</span>.10.0<span class="w"> </span>--local-folder<span class="w"> </span>dist<span class="w"> </span>scikit-learn<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
-</pre></div>
-</div>
-<p class="sd-card-text">These commands will download all the binary packages accumulated in the <a class="reference external" href="https://anaconda.org/scikit-learn-wheels-staging/scikit-learn/files">staging
-area on the anaconda.org hosting service</a> and put
-them in your local <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder. Check the contents of the <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder:
-it should contain all the wheels along with the source tarball <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code>. Make
-sure you do not have developer versions or older versions of the scikit-learn
-package in that folder. Before uploading to PyPI, you can test uploading to
-<code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> first.</p>
+<p class="sd-card-text">Download all the artifacts from the wheel build GitHub workflow and
+put them into a local <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder. Check the contents of the
+<code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder: it should contain all the wheels along with the source
+tarball <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code>. Make sure you do not have developer versions or
+older versions of the scikit-learn package in that folder. Before
+uploading to PyPI, you can test uploading to <code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> first.</p>
+<p class="sd-card-text">Note: manual uploads are forbidden by the trusted publishing setting
+for security reasons. In the unlikely event where the current trusted
+publisher (i.e. the <code class="docutils literal notranslate"><span class="pre">scikit-learn-release</span></code> GitHub Actions workflow) cannot
+be used anymore, it would be necessary to reconfigure the
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> project on pypi.org and test.pypi.org to disable trusted
+publishing so as to allow manual uploads again. But we should not do
+this unless we have a good reason to.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>twine<span class="w"> </span>upload<span class="w"> </span>--verbose<span class="w"> </span>--repository-url<span class="w"> </span>https://test.pypi.org/legacy/<span class="w"> </span>dist/*
 </pre></div>
 </div>
@@ -1115,7 +1115,7 @@ progress.</p>
 <span class="k">* [ ]</span> Set an upper bound on build dependencies in the release branch
 <span class="k">* [ ]</span> Generate the changelog in the release branch
 <span class="k">* [ ]</span> Check that the wheels for the release can be built successfully
-<span class="k">* [ ]</span> Merge the PR with <span class="sb">`[cd build]`</span> commit message to upload wheels to the staging repo
+<span class="k">* [ ]</span> Merge the PR and manually trigger the <span class="sb">`publish.yml`</span> workflow in scikit-learn-release
 <span class="k">* [ ]</span> Upload the wheels and source tarball to https://test.pypi.org
 <span class="k">* [ ]</span> Create tag on the main repo
 <span class="k">* [ ]</span> Confirm bot detected at https://github.com/conda-forge/scikit-learn-feedstock
@@ -1181,21 +1181,24 @@ and publish packages for the development branch of scikit-learn. See also
 <a class="reference internal" href="../install.html#install-nightly-builds"><span class="std std-ref">Installing nightly builds</span></a>.</p>
 </div>
 </li>
-<li><p>Once all the CD jobs have completed successfully in the PR, merge it with the
-<code class="docutils literal notranslate"><span class="pre">[cd</span> <span class="pre">build]</span></code> marker in the commit message. This time the results will be
-uploaded to the staging area. You should then be able to upload the generated
-artifacts (<code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">.whl</span></code> files) to <a class="reference external" href="https://test.pypi.org/">https://test.pypi.org/</a> using the “Run
-workflow” form for the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml">PyPI publishing workflow</a>.</p>
+<li><p>Once all the CD jobs have completed successfully in the PR, you can merge
+it in <strong>rebase mode</strong>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This PR should be merged with the rebase mode instead of the usual squash mode
 because we want to keep the history in the <code class="docutils literal notranslate"><span class="pre">1.9.X</span></code> branch close
 to the history of the main branch which will help for future bug fix releases.</p>
-<p>In addition if on merging, the last commit, containing the <code class="docutils literal notranslate"><span class="pre">[cd</span> <span class="pre">build]</span></code> marker,
-is empty, the CD jobs won’t be triggered. In this case, you can directly push
-a commit with the marker in the <code class="docutils literal notranslate"><span class="pre">1.9.X</span></code> branch to trigger them.</p>
 </div>
 </li>
+<li><p>Trigger manually the <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow in scikit-learn-release using
+<code class="docutils literal notranslate"><span class="pre">1.9.X</span></code> in the “scikit-learn maintenance branch” input
+field:
+<a class="github reference external" href="https://github.com/scikit-learn/scikit-learn-release/actions/workflows/publish.yml">scikit-learn/scikit-learn-release</a></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow will first build the wheel, then ask for
+approval from a release team member to upload it to <code class="docutils literal notranslate"><span class="pre">testPyPI</span></code> (through
+the “Required reviewers” GitHub feature). As a sanity check, once
+uploaded to <code class="docutils literal notranslate"><span class="pre">testPyPI</span></code>, you can install the wheel and run the tests
+locally.</p></li>
 <li><p>If the steps above went fine, proceed <strong>with caution</strong> to create a new tag for the
 release. This should be done only when you are almost certain that the release is
 ready, since adding a new tag to the main repository can trigger certain automated
@@ -1214,29 +1217,26 @@ the repo even though the website isn’t updated and wheels aren’t uploaded ye
 <li><p>Confirm that the bot has detected the tag on the conda-forge feedstock repository
 <a class="github reference external" href="https://github.com/conda-forge/scikit-learn-feedstock">conda-forge/scikit-learn-feedstock</a>. If not, submit a PR for the
 release, targeting the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p></li>
-<li><p>Trigger the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/actions/workflows/publish_pypi.yml">PyPI publishing workflow</a>
-again, but this time to upload the artifacts to the real <a class="reference external" href="https://pypi.org/">https://pypi.org/</a>. To do
-so, replace <code class="docutils literal notranslate"><span class="pre">testpypi</span></code> with <code class="docutils literal notranslate"><span class="pre">pypi</span></code> in the “Run workflow” form.</p>
+<li><p>In the same <code class="docutils literal notranslate"><span class="pre">publish.yml</span></code> workflow run, a release team member can
+authorize the upload to <code class="docutils literal notranslate"><span class="pre">PyPI</span></code> <a class="reference external" href="https://pypi.org/">https://pypi.org/</a>.</p>
 <p><strong>Alternatively</strong>, it is possible to collect locally the generated binary wheel
 packages and source tarball and upload them all to PyPI.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="uploading-artifacts-from-local-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Uploading artifacts from local<a class="headerlink" href="#uploading-artifacts-from-local-3" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Check out at the release tag and run the following commands.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rm<span class="w"> </span>-r<span class="w"> </span>dist
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>wheelhouse_uploader<span class="w"> </span>twine
-<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>wheelhouse_uploader<span class="w"> </span>fetch<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--version<span class="w"> </span><span class="m">1</span>.9.2<span class="w"> </span>--local-folder<span class="w"> </span>dist<span class="w"> </span>scikit-learn<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>https://pypi.anaconda.org/scikit-learn-wheels-staging/simple/scikit-learn/
-</pre></div>
-</div>
-<p class="sd-card-text">These commands will download all the binary packages accumulated in the <a class="reference external" href="https://anaconda.org/scikit-learn-wheels-staging/scikit-learn/files">staging
-area on the anaconda.org hosting service</a> and put
-them in your local <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder. Check the contents of the <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder:
-it should contain all the wheels along with the source tarball <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code>. Make
-sure you do not have developer versions or older versions of the scikit-learn
-package in that folder. Before uploading to PyPI, you can test uploading to
-<code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> first.</p>
+<p class="sd-card-text">Download all the artifacts from the wheel build GitHub workflow and
+put them into a local <code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder. Check the contents of the
+<code class="docutils literal notranslate"><span class="pre">./dist</span></code> folder: it should contain all the wheels along with the source
+tarball <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code>. Make sure you do not have developer versions or
+older versions of the scikit-learn package in that folder. Before
+uploading to PyPI, you can test uploading to <code class="docutils literal notranslate"><span class="pre">test.pypi.org</span></code> first.</p>
+<p class="sd-card-text">Note: manual uploads are forbidden by the trusted publishing setting
+for security reasons. In the unlikely event where the current trusted
+publisher (i.e. the <code class="docutils literal notranslate"><span class="pre">scikit-learn-release</span></code> GitHub Actions workflow) cannot
+be used anymore, it would be necessary to reconfigure the
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> project on pypi.org and test.pypi.org to disable trusted
+publishing so as to allow manual uploads again. But we should not do
+this unless we have a good reason to.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>twine<span class="w"> </span>upload<span class="w"> </span>--verbose<span class="w"> </span>--repository-url<span class="w"> </span>https://test.pypi.org/legacy/<span class="w"> </span>dist/*
 </pre></div>
 </div>
