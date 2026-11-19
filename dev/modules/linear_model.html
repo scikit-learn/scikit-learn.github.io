@@ -1040,7 +1040,7 @@ Under certain conditions, it can recover the exact set of non-zero coefficients 
 the form of the <span class="math notranslate nohighlight">\(\ell_1\)</span>-norm of the coefficients.
 The objective function to minimize is:</p>
 <div class="math notranslate nohighlight">
-\[\min_{w} P(w) = {\frac{1}{2n_{\text{samples}}} ||X w - y||_2 ^ 2 + \alpha ||w||_1}\]</div>
+\[\min_{w} P(w) = {\frac{1}{2n_{\text{samples}}} ||X w - y||_2^2 + \alpha ||w||_1}\]</div>
 <p>The lasso estimate thus solves the least-squares with added penalty
 <span class="math notranslate nohighlight">\(\alpha ||w||_1\)</span>, where <span class="math notranslate nohighlight">\(\alpha\)</span> is a constant and <span class="math notranslate nohighlight">\(||w||_1\)</span> is the
 <span class="math notranslate nohighlight">\(\ell_1\)</span>-norm of the coefficient vector.</p>
@@ -1051,8 +1051,8 @@ The objective function to minimize is:</p>
 <code class="docutils literal notranslate"><span class="pre">1/n_samples</span></code> in front of the squared error. The Ridge objective can be expressed
 in the same way and then reads</p>
 <div class="math notranslate nohighlight">
-\[\min_{w} P(w) = {\frac{1}{2n_{\text{samples}}} ||X w - y||_2 ^ 2
-+ \frac{\alpha}{2n_{\text{samples}}} ||w||_1}\]</div>
+\[\min_{w} P(w) = {\frac{1}{2n_{\text{samples}}} ||X w - y||_2^2
++ \frac{\alpha}{2n_{\text{samples}}} ||w||_2^2}\]</div>
 <p>This shows that different estimators use a different scaling behaviour of the penalty
 parameter <code class="docutils literal notranslate"><span class="pre">alpha</span></code> with the sample size <code class="docutils literal notranslate"><span class="pre">n_samples</span></code>. Thus the influence of
 <code class="docutils literal notranslate"><span class="pre">alpha</span></code> fades with increasing <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> for Ridge but not for Lasso.</p>
@@ -1111,7 +1111,7 @@ in IEEE Journal of Selected Topics in Signal Processing, 2007
 single feature <span class="math notranslate nohighlight">\(j\)</span> at a time. This way, the optimization problem is reduced to a
 1-dimensional problem which is easier to solve:</p>
 <div class="math notranslate nohighlight">
-\[\min_{w_j} {\frac{1}{2n_{\text{samples}}} ||x_j w_j + X_{-j}w_{-j} - y||_2 ^ 2 + \alpha |w_j|}\]</div>
+\[\min_{w_j} {\frac{1}{2n_{\text{samples}}} ||x_j w_j + X_{-j}w_{-j} - y||_2^2 + \alpha |w_j|}\]</div>
 <p>with index <span class="math notranslate nohighlight">\(-j\)</span> meaning all features but <span class="math notranslate nohighlight">\(j\)</span>. The solution is</p>
 <div class="math notranslate nohighlight">
 \[w_j = \frac{S(x_j^T (y - X_{-j}w_{-j}), n_{\text{samples}}\alpha)}{||x_j||_2^2}\]</div>
@@ -1126,13 +1126,15 @@ It stops if the duality gap is smaller than the provided tolerance <code class="
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To simplify the math, we assume here no intercept, and <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">X</span></code> are mean
+centered.</p>
 <p class="sd-card-text">The duality gap <span class="math notranslate nohighlight">\(G(w, v)\)</span> is an upper bound of the difference between the
 current primal objective function of the Lasso, <span class="math notranslate nohighlight">\(P(w)\)</span>, and its minimum
 <span class="math notranslate nohighlight">\(P(w^\star)\)</span>, i.e. <span class="math notranslate nohighlight">\(G(w, v) \geq P(w) - P(w^\star)\)</span>. It is given by
 <span class="math notranslate nohighlight">\(G(w, v) = P(w) - D(v)\)</span> with dual objective function</p>
 <div class="math notranslate nohighlight">
 \[D(v) = \frac{1}{2n_{\text{samples}}}(2 y^Tv - ||v||_2^2)\]</div>
-<p class="sd-card-text">subject to <span class="math notranslate nohighlight">\(v \in ||X^Tv||_{\infty} \leq n_{\text{samples}}\alpha\)</span>.
+<p class="sd-card-text">subject to <span class="math notranslate nohighlight">\(||X^Tv||_{\infty} \leq n_{\text{samples}}\alpha\)</span>.
 At optimum, the duality gap is zero, <span class="math notranslate nohighlight">\(G(w^\star, v^\star) = 0\)</span> (a property
 called strong duality).
 With (scaled) dual variable <span class="math notranslate nohighlight">\(v = c r\)</span>, current residual <span class="math notranslate nohighlight">\(r = y - Xw\)</span> and
@@ -1196,7 +1198,7 @@ features, it is often faster than <a class="reference internal" href="generated/
 <section id="information-criteria-based-model-selection">
 <span id="lasso-lars-ic"></span><h4><span class="section-number">1.1.3.2.2. </span>Information-criteria based model selection<a class="headerlink" href="#information-criteria-based-model-selection" title="Link to this heading">#</a></h4>
 <p>Alternatively, the estimator <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsIC.html#sklearn.linear_model.LassoLarsIC" title="sklearn.linear_model.LassoLarsIC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsIC</span></code></a> proposes to use the
-Akaike information criterion (AIC) and the Bayes Information criterion (BIC).
+Akaike information criterion (AIC) or the Bayesian information criterion (BIC).
 It is a computationally cheaper alternative to find the optimal value of <code class="docutils literal notranslate"><span class="pre">alpha</span></code>
 as the regularization path is computed only once instead of k+1 times
 when using k-fold cross-validation.</p>
@@ -1207,6 +1209,9 @@ their flexibility, see the <em>Mathematical details</em> of <a class="reference 
 the solution, are derived for large samples (asymptotic results) and assume the
 correct model is among the candidates under investigation. They also tend to break when
 the problem is badly conditioned (e.g. more features than samples).</p>
+<p>If the assumptions are met, AIC tends to select the model with optimal prediction
+performance, while BIC tends to identify the true sparse model if the true model is
+in the candidate list.</p>
 <figure class="align-center">
 <a class="reference external image-reference" href="../auto_examples/linear_model/plot_lasso_lars_ic.html"><img alt="../_images/sphx_glr_plot_lasso_lars_ic_001.png" height="240" src="../_images/sphx_glr_plot_lasso_lars_ic_001.png" width="320" />
 </a>
@@ -1226,49 +1231,49 @@ we give more information regarding the criterion computed in scikit-learn.</p>
 <span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-2" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">The AIC criterion is defined as:</p>
 <div class="math notranslate nohighlight">
-\[AIC = -2 \log(\mathcal{L}) + 2 p\]</div>
-<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\mathcal{L}\)</span> is the maximum likelihood of the model and <span class="math notranslate nohighlight">\(p\)</span> is the
-number of parameters (also referred to as degrees of freedom in the previous section,
-i.e. <code class="docutils literal notranslate"><span class="pre">n_features</span></code> or <code class="docutils literal notranslate"><span class="pre">n_features</span> <span class="pre">+</span> <span class="pre">1</span></code> if the intercept is included).</p>
-<p class="sd-card-text">The definition of BIC replaces the constant <span class="math notranslate nohighlight">\(2\)</span> by <span class="math notranslate nohighlight">\(\log(N)\)</span>:</p>
+\[AIC = -2 \log(\mathcal{L}) + 2 \mathrm{df}\]</div>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\mathcal{L}\)</span> is the maximum likelihood of the model and
+<span class="math notranslate nohighlight">\(\mathrm{df}\)</span> is the effective number of degrees of freedom. For the Lasso,
+<span class="math notranslate nohighlight">\(\mathrm{df}\)</span> is the number of non-zero coefficients (without penalty,
+<code class="docutils literal notranslate"><span class="pre">alpha=0</span></code>, we would simply have <code class="docutils literal notranslate"><span class="pre">df=n_features</span></code> or <code class="docutils literal notranslate"><span class="pre">n_features</span> <span class="pre">+</span> <span class="pre">1</span></code> if the
+intercept is included).</p>
+<p class="sd-card-text">The definition of BIC replaces the constant <span class="math notranslate nohighlight">\(2\)</span> by <span class="math notranslate nohighlight">\(\log(n)\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[BIC = -2 \log(\mathcal{L}) + \log(N) p\]</div>
-<p class="sd-card-text">where <span class="math notranslate nohighlight">\(N\)</span> is the number of samples.</p>
+\[BIC = -2 \log(\mathcal{L}) + \log(n) \mathrm{df}\]</div>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(n\)</span> is the number of samples.</p>
 <p class="sd-card-text">For a linear Gaussian model, the maximum log-likelihood is defined as:</p>
 <div class="math notranslate nohighlight">
-\[\log(\mathcal{L}) = - \frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{2\sigma^2}\]</div>
+\[\log(\mathcal{L}) = - \frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2)
+                    - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{2\sigma^2}\]</div>
 <p class="sd-card-text">where <span class="math notranslate nohighlight">\(\sigma^2\)</span> is the noise variance and is estimated from the given <code class="docutils literal notranslate"><span class="pre">y</span></code>,
 <span class="math notranslate nohighlight">\(y_i\)</span> and <span class="math notranslate nohighlight">\(\hat{y}_i\)</span> are respectively the true and predicted
 targets, and <span class="math notranslate nohighlight">\(n\)</span> is the number of samples.</p>
 <p class="sd-card-text">Plugging the maximum log-likelihood in the AIC formula yields:</p>
 <div class="math notranslate nohighlight">
-\[AIC = n \log(2 \pi \sigma^2) + \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sigma^2} + 2 p\]</div>
+\[AIC = n \log(2 \pi \sigma^2) + \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sigma^2}
+      + 2 \mathrm{df}\]</div>
 <p class="sd-card-text">The first term of the above expression is sometimes discarded since it is a
 constant when <span class="math notranslate nohighlight">\(\sigma^2\)</span> is provided. In addition,
 it is sometimes stated that the AIC is equivalent to the <span class="math notranslate nohighlight">\(C_p\)</span> statistic
-<a class="footnote-reference brackets" href="#id8" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>. In a strict sense, however, it is equivalent only up to some constant
+<a class="footnote-reference brackets" href="#id7" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>. In a strict sense, however, it is equivalent only up to some constant
 and a multiplicative factor.</p>
 <p class="sd-card-text">At last, we mentioned above that <span class="math notranslate nohighlight">\(\sigma^2\)</span> is an estimate of the
 noise variance. In <a class="reference internal" href="generated/sklearn.linear_model.LassoLarsIC.html#sklearn.linear_model.LassoLarsIC" title="sklearn.linear_model.LassoLarsIC"><code class="xref py py-class docutils literal notranslate"><span class="pre">LassoLarsIC</span></code></a> when the parameter <code class="docutils literal notranslate"><span class="pre">noise_variance</span></code> is
 not provided (default), the noise variance is estimated via the unbiased
-estimator <a class="footnote-reference brackets" href="#id9" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a> defined as:</p>
+estimator of the variance of the corresponding Ordinary Least Squares (OLS) model
+defined as:</p>
 <div class="math notranslate nohighlight">
 \[\sigma^2 = \frac{\sum_{i=1}^{n} (y_i - \tilde{y}_i)^2}{n - p}\]</div>
-<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\tilde{y}_i\)</span> is the predicted target using an ordinary least squares
-regression. Note, that this formula is valid only when <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">&gt;</span> <span class="pre">n_features</span></code>.</p>
+<p class="sd-card-text">where <span class="math notranslate nohighlight">\(\tilde{y}_i\)</span> are the predictions of the OLS regression with <span class="math notranslate nohighlight">\(p\)</span>
+number of coefficients (also counting the intercept). Note that this formula is
+valid only when <span class="math notranslate nohighlight">\(n &gt; p\)</span>.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id8" role="doc-footnote">
+<aside class="footnote brackets" id="id7" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">12</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://arxiv.org/abs/0712.0881.pdf">Zou, Hui, Trevor Hastie, and Robert Tibshirani.
 “On the degrees of freedom of the lasso.”
 The Annals of Statistics 35.5 (2007): 2173-2192.</a></p>
-</aside>
-<aside class="footnote brackets" id="id9" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">13</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://doi.org/10.1162/089976603321891864">Cherkassky, Vladimir, and Yunqian Ma.
-“Comparison of model selection for regression.”
-Neural computation 15.7 (2003): 1691-1714.</a></p>
 </aside>
 </aside>
 </div>
@@ -1283,7 +1288,7 @@ function optimized by the model.</p>
 </section>
 </section>
 <section id="multi-task-lasso">
-<span id="id10"></span><h2><span class="section-number">1.1.4. </span>Multi-task Lasso<a class="headerlink" href="#multi-task-lasso" title="Link to this heading">#</a></h2>
+<span id="id8"></span><h2><span class="section-number">1.1.4. </span>Multi-task Lasso<a class="headerlink" href="#multi-task-lasso" title="Link to this heading">#</a></h2>
 <p>The <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLasso.html#sklearn.linear_model.MultiTaskLasso" title="sklearn.linear_model.MultiTaskLasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskLasso</span></code></a> is a linear model that estimates sparse coefficients for
 multiple regression problems, or tasks, jointly: <code class="docutils literal notranslate"><span class="pre">y</span></code> is a 2-dimensional array of
 shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_targets)</span></code>, in maths often expressed as capital letter <span class="math notranslate nohighlight">\(Y\)</span>.
@@ -1309,7 +1314,7 @@ the MultiTaskLasso are full columns.</p>
 <span class="math notranslate nohighlight">\(\ell_1\)</span> <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm for regularization.
 The objective function to minimize is:</p>
 <div class="math notranslate nohighlight">
-\[\min_{W} { \frac{1}{2n_{\text{samples}}} ||X W - Y||_{\text{Fro}} ^ 2 + \alpha ||W||_{21}}\]</div>
+\[\min_{W} { \frac{1}{2n_{\text{samples}}} ||X W - Y||_{\text{Fro}}^2 + \alpha ||W||_{21}}\]</div>
 <p class="sd-card-text">where <span class="math notranslate nohighlight">\(\text{Fro}\)</span> indicates the Frobenius norm</p>
 <div class="math notranslate nohighlight">
 \[||A||_{\text{Fro}} = \sqrt{\sum_{ij} a_{ij}^2}\]</div>
@@ -1322,23 +1327,21 @@ coordinate descent as the algorithm to fit the coefficients.</p>
 </div>
 </details></section>
 <section id="elastic-net">
-<span id="id11"></span><h2><span class="section-number">1.1.5. </span>Elastic-Net<a class="headerlink" href="#elastic-net" title="Link to this heading">#</a></h2>
-<p><a class="reference internal" href="generated/sklearn.linear_model.ElasticNet.html#sklearn.linear_model.ElasticNet" title="sklearn.linear_model.ElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticNet</span></code></a> is a linear regression model trained with both
-<span class="math notranslate nohighlight">\(\ell_1\)</span> and <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm regularization of the coefficients.
-This combination  allows for learning a sparse model where few of
-the weights are non-zero like <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a>, while still maintaining
-the regularization properties of <a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a>. We control the convex
-combination of <span class="math notranslate nohighlight">\(\ell_1\)</span> and <span class="math notranslate nohighlight">\(\ell_2\)</span> using the <code class="docutils literal notranslate"><span class="pre">l1_ratio</span></code>
-parameter.</p>
+<span id="id9"></span><h2><span class="section-number">1.1.5. </span>Elastic-Net<a class="headerlink" href="#elastic-net" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="generated/sklearn.linear_model.ElasticNet.html#sklearn.linear_model.ElasticNet" title="sklearn.linear_model.ElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticNet</span></code></a> is a linear regression model that combines the <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm
+penalty of <a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a> with the <span class="math notranslate nohighlight">\(\ell_1\)</span>-norm penalty of <a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a>.
+This combines the strengths of both: <span class="math notranslate nohighlight">\(\ell_1\)</span> is able to produce sparse models
+with only a few non-zero coefficients while <span class="math notranslate nohighlight">\(\ell_2\)</span> guards against numerical
+instabilities and can potentially achieve a better out-of-sample squared error loss.
+The convex combination of <span class="math notranslate nohighlight">\(\ell_1\)</span> and <span class="math notranslate nohighlight">\(\ell_2\)</span> is called elastic-net
+penalty. This mixing is controlled by the <code class="docutils literal notranslate"><span class="pre">l1_ratio</span></code> parameter.</p>
 <p>Elastic-net is useful when there are multiple features that are
 correlated with one another. Lasso is likely to pick one of these
 at random, while elastic-net is likely to pick both.</p>
-<p>A practical advantage of trading-off between Lasso and Ridge is that it
-allows Elastic-Net to inherit some of Ridge’s stability under rotation.</p>
-<p>The objective function to minimize is in this case</p>
+<p>With <span class="math notranslate nohighlight">\(\rho=\text{l1_ratio}\)</span>, the objective function to minimize is</p>
 <div class="math notranslate nohighlight">
-\[\min_{w} { \frac{1}{2n_{\text{samples}}} ||X w - y||_2 ^ 2 + \alpha \rho ||w||_1 +
-\frac{\alpha(1-\rho)}{2} ||w||_2 ^ 2}\]</div>
+\[\min_{w} { \frac{1}{2n_{\text{samples}}} ||X w - y||_2^2 + \alpha \rho ||w||_1 +
+\frac{\alpha(1-\rho)}{2} ||w||_2^2}\]</div>
 <figure class="align-center">
 <a class="reference external image-reference" href="../auto_examples/linear_model/plot_lasso_lasso_lars_elasticnet_path.html"><img alt="../_images/sphx_glr_plot_lasso_lasso_lars_elasticnet_path_002.png" height="240" src="../_images/sphx_glr_plot_lasso_lasso_lars_elasticnet_path_002.png" width="320" />
 </a>
@@ -1351,33 +1354,74 @@ allows Elastic-Net to inherit some of Ridge’s stability under rotation.</p>
 <li><p><a class="reference internal" href="../auto_examples/linear_model/plot_lasso_lasso_lars_elasticnet_path.html#sphx-glr-auto-examples-linear-model-plot-lasso-lasso-lars-elasticnet-path-py"><span class="std std-ref">Lasso, Lasso-LARS, and Elastic Net paths</span></a></p></li>
 <li><p><a class="reference internal" href="../auto_examples/linear_model/plot_elastic_net_precomputed_gram_matrix_with_weighted_samples.html#sphx-glr-auto-examples-linear-model-plot-elastic-net-precomputed-gram-matrix-with-weighted-samples-py"><span class="std std-ref">Fitting an Elastic Net with a precomputed Gram Matrix and Weighted Samples</span></a></p></li>
 </ul>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="references-4">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-4">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-4" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To simplify the math, we assume here no intercept, and <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">X</span></code> are mean
+centered.</p>
+<p class="sd-card-text">Interestingly, there are two different dual formulations for Elastic-Net. The
+first one can be derived by starting with the Lasso and adding <code class="docutils literal notranslate"><span class="pre">n_features</span></code>
+artificial observations to <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> to incorporate the <span class="math notranslate nohighlight">\(\ell_2\)</span> penalty.
+The artificial observations come with <code class="docutils literal notranslate"><span class="pre">n_features</span></code> additional dual variables
+<span class="math notranslate nohighlight">\(u\)</span>, and the dual objective function reads</p>
+<div class="math notranslate nohighlight">
+\[D(v, u) = \frac{1}{2n_{\text{samples}}}(2 y^Tv - ||v||_2^2)
+- \frac{\alpha(1-\rho)}{2} ||u||_2^2\]</div>
+<p class="sd-card-text">with the dual feasible set
+<span class="math notranslate nohighlight">\(\{(v, u): ||X^Tv - n_{\text{samples}}\alpha (1-\rho)u||_{\infty}
+\leq n_{\text{samples}}\alpha \rho\}\)</span>.
+At the optimum, <span class="math notranslate nohighlight">\(v^\star = y - Xw^\star\)</span> and <span class="math notranslate nohighlight">\(u^\star = w^\star\)</span>.
+As for the Lasso, a dual feasible point is obtained by rescaling the current
+residual and coefficients, <span class="math notranslate nohighlight">\((v, u) = c \cdot (y - Xw, w)\)</span>.
+The disadvantage is that for pure Ridge regression with
+<span class="math notranslate nohighlight">\(\rho = \text{l1_ratio} = 0\)</span>, this constraint becomes an equality and
+this simple rescaling does not yield a dual feasible point anymore.</p>
+<p class="sd-card-text">The alternative formulation is derived by a direct computation of the dual and
+results in</p>
+<div class="math notranslate nohighlight">
+\[D(v) = \frac{1}{2n_{\text{samples}}}(2 y^Tv - ||v||_2^2)
+- \frac{1}{2n_{\text{samples}}^2 \alpha(1-\rho)}
+  \sum_j (\left|x_j \cdot v \right| - n_{\text{samples}}\alpha\rho)_+^2\]</div>
+<p class="sd-card-text">Here, <span class="math notranslate nohighlight">\((x)_+= \max(x, 0)\)</span> denotes the positive part and <span class="math notranslate nohighlight">\(x_j\)</span> the
+<span class="math notranslate nohighlight">\(j\)</span>-th column of <code class="docutils literal notranslate"><span class="pre">X</span></code>. Surprisingly, the dual feasible set equals the whole of
+<span class="math notranslate nohighlight">\(\mathbb{R}^{n_{\text{samples}}}\)</span>, i.e. there are no restrictions on <span class="math notranslate nohighlight">\(v\)</span>.
+The disadvantage is that this formulation only holds for <span class="math notranslate nohighlight">\(\alpha(1-\rho) &gt; 0\)</span>
+(in particular <code class="docutils literal notranslate"><span class="pre">l1_ratio</span></code> must be smaller than 1). This second formulation is used
+in case of pure Ridge with <code class="docutils literal notranslate"><span class="pre">l1_ratio=0</span></code> where the first dual version breaks down.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="references-4">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">References<a class="headerlink" href="#references-4" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">The following two references explain the iterations
-used in the coordinate descent solver of scikit-learn, as well as
-the duality gap computation used for convergence control.</p>
+<p class="sd-card-text">The first reference is the one that introduced the elastic-net, the second provides
+the alternative dual objective function. For references on the coordinate descent
+algorithm that underlies this estimator, see
+<a class="reference internal" href="#coordinate-descent"><span class="std std-ref">coordinate descent</span></a> above.</p>
 <ul class="simple">
-<li><p>“Regularization Path For Generalized linear Models by Coordinate Descent”,
-Friedman, Hastie &amp; Tibshirani, J Stat Softw, 2010 (<a class="reference external" href="https://www.jstatsoft.org/article/view/v033i01/v33i01.pdf">Paper</a>).</p></li>
-<li><p>“An Interior-Point Method for Large-Scale L1-Regularized Least Squares,”
-S. J. Kim, K. Koh, M. Lustig, S. Boyd and D. Gorinevsky,
-in IEEE Journal of Selected Topics in Signal Processing, 2007
-(<a class="reference external" href="https://web.stanford.edu/~boyd/papers/pdf/l1_ls.pdf">Paper</a>)</p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1111/j.1467-9868.2005.00503.x">Zou, H., &amp; Hastie, T. (2005).
+Regularization and variable selection via the elastic net.
+Journal of the Royal Statistical Society Series B: Statistical Methodology, 67(2), 301-320.</a></p></li>
+<li><p><a class="reference external" href="https://arxiv.org/abs/1602.05205">Dünner, C., Forte, S., Takáč, M., &amp; Jaggi, M. (2016).
+Primal-Dual Rates and Certificates. International Conference on Machine Learning.</a></p></li>
 </ul>
 </div>
 </details></section>
 <section id="multi-task-elastic-net">
-<span id="id12"></span><h2><span class="section-number">1.1.6. </span>Multi-task Elastic-Net<a class="headerlink" href="#multi-task-elastic-net" title="Link to this heading">#</a></h2>
-<p>The <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskElasticNet.html#sklearn.linear_model.MultiTaskElasticNet" title="sklearn.linear_model.MultiTaskElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskElasticNet</span></code></a> is an elastic-net model that estimates sparse
-coefficients for multiple regression problems jointly: <code class="docutils literal notranslate"><span class="pre">Y</span></code> is a 2D array
-of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_tasks)</span></code>. The constraint is that the selected
-features are the same for all the regression problems, also called tasks.</p>
-<p>Mathematically, it consists of a linear model trained with a mixed
-<span class="math notranslate nohighlight">\(\ell_1\)</span> <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm and <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm for regularization.
-The objective function to minimize is:</p>
+<span id="id10"></span><h2><span class="section-number">1.1.6. </span>Multi-task Elastic-Net<a class="headerlink" href="#multi-task-elastic-net" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskElasticNet.html#sklearn.linear_model.MultiTaskElasticNet" title="sklearn.linear_model.MultiTaskElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskElasticNet</span></code></a> is the multi-task counterpart of <a class="reference internal" href="generated/sklearn.linear_model.ElasticNet.html#sklearn.linear_model.ElasticNet" title="sklearn.linear_model.ElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticNet</span></code></a>:
+it fits multiple regression problems (tasks) jointly, with <code class="docutils literal notranslate"><span class="pre">Y</span></code> being a 2D array of
+shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_tasks)</span></code>.
+It extends <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskLasso.html#sklearn.linear_model.MultiTaskLasso" title="sklearn.linear_model.MultiTaskLasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskLasso</span></code></a> in the same way that <a class="reference internal" href="generated/sklearn.linear_model.ElasticNet.html#sklearn.linear_model.ElasticNet" title="sklearn.linear_model.ElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticNet</span></code></a> extends
+<a class="reference internal" href="generated/sklearn.linear_model.Lasso.html#sklearn.linear_model.Lasso" title="sklearn.linear_model.Lasso"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lasso</span></code></a>, i.e. by adding a Ridge-like penalty.
+The mixed <span class="math notranslate nohighlight">\(\ell_1\)</span> <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm couples each feature’s coefficients across
+all tasks such that the selected features are the same for all tasks.
+The additional squared Frobenius norm has the same beneficial properties as the
+<span class="math notranslate nohighlight">\(\ell_2\)</span> penalty of <a class="reference internal" href="generated/sklearn.linear_model.ElasticNet.html#sklearn.linear_model.ElasticNet" title="sklearn.linear_model.ElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">ElasticNet</span></code></a>. As it is a plain sum of squares
+over all coefficients, it does not couple the tasks.</p>
+<p>Mathematically, the multi-task elastic-net penalty is a convex combination of the
+<span class="math notranslate nohighlight">\(\ell_1\)</span> <span class="math notranslate nohighlight">\(\ell_2\)</span>-norm and the squared Frobenius norm, controlled by
+<span class="math notranslate nohighlight">\(\rho=\text{l1_ratio}\)</span>. The objective function to minimize is:</p>
 <div class="math notranslate nohighlight">
-\[\min_{W} { \frac{1}{2n_{\text{samples}}} ||X W - Y||_{\text{Fro}}^2 + \alpha \rho ||W||_{2 1} +
+\[\min_{W} { \frac{1}{2n_{\text{samples}}} ||X W - Y||_{\text{Fro}}^2 + \alpha \rho ||W||_{21} +
 \frac{\alpha(1-\rho)}{2} ||W||_{\text{Fro}}^2}\]</div>
 <p>The implementation in the class <a class="reference internal" href="generated/sklearn.linear_model.MultiTaskElasticNet.html#sklearn.linear_model.MultiTaskElasticNet" title="sklearn.linear_model.MultiTaskElasticNet"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiTaskElasticNet</span></code></a> uses coordinate descent as
 the algorithm to fit the coefficients.</p>
@@ -1385,7 +1429,7 @@ the algorithm to fit the coefficients.</p>
 <code class="docutils literal notranslate"><span class="pre">alpha</span></code> (<span class="math notranslate nohighlight">\(\alpha\)</span>) and <code class="docutils literal notranslate"><span class="pre">l1_ratio</span></code> (<span class="math notranslate nohighlight">\(\rho\)</span>) by cross-validation.</p>
 </section>
 <section id="least-angle-regression">
-<span id="id13"></span><h2><span class="section-number">1.1.7. </span>Least Angle Regression<a class="headerlink" href="#least-angle-regression" title="Link to this heading">#</a></h2>
+<span id="id11"></span><h2><span class="section-number">1.1.7. </span>Least Angle Regression<a class="headerlink" href="#least-angle-regression" title="Link to this heading">#</a></h2>
 <p>Least-angle regression (LARS) is a regression algorithm for
 high-dimensional data, developed by Bradley Efron, Trevor Hastie, Iain
 Johnstone and Robert Tibshirani. LARS is similar to forward stepwise
@@ -1498,7 +1542,7 @@ S. G. Mallat, Z. Zhang, 1993.</p></li>
 </div>
 </details></section>
 <section id="bayesian-regression">
-<span id="id15"></span><h2><span class="section-number">1.1.10. </span>Bayesian Regression<a class="headerlink" href="#bayesian-regression" title="Link to this heading">#</a></h2>
+<span id="id13"></span><h2><span class="section-number">1.1.10. </span>Bayesian Regression<a class="headerlink" href="#bayesian-regression" title="Link to this heading">#</a></h2>
 <p>Bayesian regression techniques can be used to include regularization
 parameters in the estimation procedure: the regularization parameter is
 not set in a hard sense but tuned to the data at hand.</p>
@@ -1537,7 +1581,7 @@ by Radford M. Neal.</p></li>
 </ul>
 </div>
 </details><section id="bayesian-ridge-regression">
-<span id="id16"></span><h3><span class="section-number">1.1.10.1. </span>Bayesian Ridge Regression<a class="headerlink" href="#bayesian-ridge-regression" title="Link to this heading">#</a></h3>
+<span id="id14"></span><h3><span class="section-number">1.1.10.1. </span>Bayesian Ridge Regression<a class="headerlink" href="#bayesian-ridge-regression" title="Link to this heading">#</a></h3>
 <p><a class="reference internal" href="generated/sklearn.linear_model.BayesianRidge.html#sklearn.linear_model.BayesianRidge" title="sklearn.linear_model.BayesianRidge"><code class="xref py py-class docutils literal notranslate"><span class="pre">BayesianRidge</span></code></a> estimates a probabilistic model of the
 regression problem as described above.
 The prior for the coefficient <span class="math notranslate nohighlight">\(w\)</span> is given by a spherical Gaussian:</p>
@@ -1601,8 +1645,8 @@ is more robust to ill-posed problems.</p>
 <span id="automatic-relevance-determination"></span><h3><span class="section-number">1.1.10.2. </span>Automatic Relevance Determination - ARD<a class="headerlink" href="#automatic-relevance-determination-ard" title="Link to this heading">#</a></h3>
 <p>The Automatic Relevance Determination (as being implemented in
 <a class="reference internal" href="generated/sklearn.linear_model.ARDRegression.html#sklearn.linear_model.ARDRegression" title="sklearn.linear_model.ARDRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">ARDRegression</span></code></a>) is a kind of linear model which is very similar to the
-<a class="reference internal" href="#id16">Bayesian Ridge Regression</a>, but that leads to sparser coefficients <span class="math notranslate nohighlight">\(w\)</span>
-<a class="footnote-reference brackets" href="#id21" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id22" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<a class="reference internal" href="#id14">Bayesian Ridge Regression</a>, but that leads to sparser coefficients <span class="math notranslate nohighlight">\(w\)</span>
+<a class="footnote-reference brackets" href="#id19" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id20" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p><a class="reference internal" href="generated/sklearn.linear_model.ARDRegression.html#sklearn.linear_model.ARDRegression" title="sklearn.linear_model.ARDRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">ARDRegression</span></code></a> poses a different prior over <span class="math notranslate nohighlight">\(w\)</span>: it drops
 the spherical Gaussian distribution for a centered elliptic Gaussian
 distribution. This means each coefficient <span class="math notranslate nohighlight">\(w_{i}\)</span> can itself be drawn from
@@ -1612,37 +1656,37 @@ a Gaussian distribution, centered on zero and with a precision
 \[p(w|\lambda) = \mathcal{N}(w|0,A^{-1})\]</div>
 <p>with <span class="math notranslate nohighlight">\(A\)</span> being a positive definite diagonal matrix and
 <span class="math notranslate nohighlight">\(\text{diag}(A) = \lambda = \{\lambda_{1},...,\lambda_{p}\}\)</span>.</p>
-<p>In contrast to the <a class="reference internal" href="#id16">Bayesian Ridge Regression</a>, each coordinate of
+<p>In contrast to the <a class="reference internal" href="#id14">Bayesian Ridge Regression</a>, each coordinate of
 <span class="math notranslate nohighlight">\(w_{i}\)</span> has its own standard deviation <span class="math notranslate nohighlight">\(\frac{1}{\lambda_i}\)</span>. The
 prior over all <span class="math notranslate nohighlight">\(\lambda_i\)</span> is chosen to be the same gamma distribution
 given by the hyperparameters <span class="math notranslate nohighlight">\(\lambda_1\)</span> and <span class="math notranslate nohighlight">\(\lambda_2\)</span>.</p>
 <p>ARD is also known in the literature as <em>Sparse Bayesian Learning</em> and <em>Relevance
-Vector Machine</em> <a class="footnote-reference brackets" href="#id23" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id25" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
-<p>See <a class="reference internal" href="../auto_examples/linear_model/plot_ard.html#sphx-glr-auto-examples-linear-model-plot-ard-py"><span class="std std-ref">Comparing Linear Bayesian Regressors</span></a> for a worked-out comparison between ARD and <a class="reference internal" href="#id16">Bayesian Ridge Regression</a>.</p>
+Vector Machine</em> <a class="footnote-reference brackets" href="#id21" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id23" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.</p>
+<p>See <a class="reference internal" href="../auto_examples/linear_model/plot_ard.html#sphx-glr-auto-examples-linear-model-plot-ard-py"><span class="std std-ref">Comparing Linear Bayesian Regressors</span></a> for a worked-out comparison between ARD and <a class="reference internal" href="#id14">Bayesian Ridge Regression</a>.</p>
 <p>See <a class="reference internal" href="../auto_examples/linear_model/plot_lasso_and_elasticnet.html#sphx-glr-auto-examples-linear-model-plot-lasso-and-elasticnet-py"><span class="std std-ref">L1-based models for Sparse Signals</span></a> for a comparison between various methods - Lasso, ARD and ElasticNet - on correlated data.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id21" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id17">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id19" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">1</a><span class="fn-bracket">]</span></span>
 <p>Christopher M. Bishop: Pattern Recognition and Machine Learning, Chapter 7.2.1</p>
 </aside>
-<aside class="footnote brackets" id="id22" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">2</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id20" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">2</a><span class="fn-bracket">]</span></span>
 <p>David Wipf and Srikantan Nagarajan: <a class="reference external" href="https://papers.nips.cc/paper/3372-a-new-view-of-automatic-relevance-determination.pdf">A New View of Automatic Relevance Determination</a></p>
 </aside>
-<aside class="footnote brackets" id="id23" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">3</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id21" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id17">3</a><span class="fn-bracket">]</span></span>
 <p>Michael E. Tipping: <a class="reference external" href="https://www.jmlr.org/papers/volume1/tipping01a/tipping01a.pdf">Sparse Bayesian Learning and the Relevance Vector Machine</a></p>
 </aside>
-<aside class="footnote brackets" id="id25" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id20">4</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id23" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">4</a><span class="fn-bracket">]</span></span>
 <p>Tristan Fletcher: <a class="reference external" href="https://citeseerx.ist.psu.edu/document?repid=rep1&amp;type=pdf&amp;doi=3dc9d625404fdfef6eaccc3babddefe4c176abd4">Relevance Vector Machines Explained</a></p>
 </aside>
 </aside>
 </section>
 </section>
 <section id="logistic-regression">
-<span id="id26"></span><h2><span class="section-number">1.1.11. </span>Logistic regression<a class="headerlink" href="#logistic-regression" title="Link to this heading">#</a></h2>
+<span id="id24"></span><h2><span class="section-number">1.1.11. </span>Logistic regression<a class="headerlink" href="#logistic-regression" title="Link to this heading">#</a></h2>
 <p>The logistic regression is implemented in <a class="reference internal" href="generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression" title="sklearn.linear_model.LogisticRegression"><code class="xref py py-class docutils literal notranslate"><span class="pre">LogisticRegression</span></code></a>. Despite
 its name, it is implemented as a linear model for classification rather than
 regression in terms of the scikit-learn/ML nomenclature. The logistic
@@ -1742,13 +1786,13 @@ using only <span class="math notranslate nohighlight">\(K-1\)</span> weight vect
 determined by the other class probabilities by leveraging the fact that all
 class probabilities must sum to one. We deliberately choose to overparameterize the model
 using <span class="math notranslate nohighlight">\(K\)</span> weight vectors for ease of implementation and to preserve the
-symmetrical inductive bias regarding ordering of classes, see <a class="footnote-reference brackets" href="#id39" id="id27" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>. This effect becomes
+symmetrical inductive bias regarding ordering of classes, see <a class="footnote-reference brackets" href="#id37" id="id25" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>. This effect becomes
 especially important when using regularization. The choice of overparameterization can be
-detrimental for unpenalized models since then the solution may not be unique, as shown in <a class="footnote-reference brackets" href="#id39" id="id28" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>.</p>
+detrimental for unpenalized models since then the solution may not be unique, as shown in <a class="footnote-reference brackets" href="#id37" id="id26" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>.</p>
 </div>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-4">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-5">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-4" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-5" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">Let <span class="math notranslate nohighlight">\(y_i \in \{1, \ldots, K\}\)</span> be the label (ordinal) encoded target variable for observation <span class="math notranslate nohighlight">\(i\)</span>.
 Instead of a single coefficient vector, we now have
 a matrix of coefficients <span class="math notranslate nohighlight">\(W\)</span> where each row vector <span class="math notranslate nohighlight">\(W_k\)</span> corresponds to class
@@ -1969,16 +2013,16 @@ to get a non “null” (all feature weights to zero) model.</p></li>
 <li><p>The “lbfgs”, “newton-cg”, “newton-cholesky” and “sag” solvers only support
 <span class="math notranslate nohighlight">\(\ell_2\)</span> regularization or no regularization, and are found to converge
 faster for some high-dimensional data. These solvers (and “saga”)
-learn a true multinomial logistic regression model <a class="footnote-reference brackets" href="#id34" id="id29" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.</p></li>
-<li><p>The “sag” solver uses Stochastic Average Gradient descent <a class="footnote-reference brackets" href="#id35" id="id30" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>. It is faster
+learn a true multinomial logistic regression model <a class="footnote-reference brackets" href="#id32" id="id27" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.</p></li>
+<li><p>The “sag” solver uses Stochastic Average Gradient descent <a class="footnote-reference brackets" href="#id33" id="id28" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>. It is faster
 than other solvers for large datasets, when both the number of samples and the
 number of features are large.</p></li>
-<li><p>The “saga” solver <a class="footnote-reference brackets" href="#id36" id="id31" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> is a variant of “sag” that also supports the non-smooth
+<li><p>The “saga” solver <a class="footnote-reference brackets" href="#id34" id="id29" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> is a variant of “sag” that also supports the non-smooth
 <span class="math notranslate nohighlight">\(\ell_1\)</span> penalty (<code class="docutils literal notranslate"><span class="pre">l1_ratio=1</span></code>). This is therefore the solver of choice for
 sparse multinomial logistic regression. It is also the only solver that supports
 Elastic-Net (<code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;</span> <span class="pre">l1_ratio</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>).</p></li>
 <li><p>The “lbfgs” is an optimization algorithm that approximates the
-Broyden–Fletcher–Goldfarb–Shanno algorithm <a class="footnote-reference brackets" href="#id37" id="id32" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, which belongs to
+Broyden–Fletcher–Goldfarb–Shanno algorithm <a class="footnote-reference brackets" href="#id35" id="id30" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a>, which belongs to
 quasi-Newton methods. As such, it can deal with a wide range of different training
 data and is therefore the default solver. Its performance, however, suffers on poorly
 scaled datasets and on datasets with one-hot encoded categorical features with rare
@@ -1990,34 +2034,34 @@ but has a few shortcomings: Only <span class="math notranslate nohighlight">\(\e
 Furthermore, because the Hessian matrix is explicitly computed, the memory usage
 has a quadratic dependency on <code class="docutils literal notranslate"><span class="pre">n_features</span></code> as well as on <code class="docutils literal notranslate"><span class="pre">n_classes</span></code>.</p></li>
 </ul>
-<p class="sd-card-text">For a comparison of some of these solvers, see <a class="footnote-reference brackets" href="#id38" id="id33" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>.</p>
+<p class="sd-card-text">For a comparison of some of these solvers, see <a class="footnote-reference brackets" href="#id36" id="id31" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id34" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id29">5</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id32" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id27">5</a><span class="fn-bracket">]</span></span>
 <p>Christopher M. Bishop: Pattern Recognition and Machine Learning, Chapter 4.3.4</p>
 </aside>
-<aside class="footnote brackets" id="id35" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id30">6</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id33" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id28">6</a><span class="fn-bracket">]</span></span>
 <p>Mark Schmidt, Nicolas Le Roux, and Francis Bach: <a class="reference external" href="https://hal.inria.fr/hal-00860051/document">Minimizing Finite Sums with the Stochastic Average Gradient.</a></p>
 </aside>
-<aside class="footnote brackets" id="id36" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id31">7</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id34" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id29">7</a><span class="fn-bracket">]</span></span>
 <p>Aaron Defazio, Francis Bach, Simon Lacoste-Julien:
 <a class="reference external" href="https://arxiv.org/abs/1407.0202">SAGA: A Fast Incremental Gradient Method With Support for
 Non-Strongly Convex Composite Objectives.</a></p>
 </aside>
-<aside class="footnote brackets" id="id37" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id32">8</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id35" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id30">8</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm</a></p>
 </aside>
-<aside class="footnote brackets" id="id38" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id33">9</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id36" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id31">9</a><span class="fn-bracket">]</span></span>
 <p>Thomas P. Minka <a class="reference external" href="https://tminka.github.io/papers/logreg/minka-logreg.pdf">“A comparison of numerical optimizers for logistic regression”</a></p>
 </aside>
-<aside class="footnote brackets" id="id39" role="doc-footnote">
+<aside class="footnote brackets" id="id37" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id27">1</a>,<a role="doc-backlink" href="#id28">2</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id25">1</a>,<a role="doc-backlink" href="#id26">2</a>)</span>
 <p><a class="reference external" href="https://arxiv.org/abs/1311.6529">Simon, Noah, J. Friedman and T. Hastie.
 “A Blockwise Descent Algorithm for Group-penalized Multiresponse and
 Multinomial Regression.”</a></p>
@@ -2048,16 +2092,16 @@ to warm-starting (see <a class="reference internal" href="../glossary.html#term-
 </section>
 </section>
 <section id="generalized-linear-models">
-<span id="generalized-linear-regression"></span><span id="id40"></span><h2><span class="section-number">1.1.12. </span>Generalized Linear Models<a class="headerlink" href="#generalized-linear-models" title="Link to this heading">#</a></h2>
+<span id="generalized-linear-regression"></span><span id="id38"></span><h2><span class="section-number">1.1.12. </span>Generalized Linear Models<a class="headerlink" href="#generalized-linear-models" title="Link to this heading">#</a></h2>
 <p>Generalized Linear Models (GLM) extend linear models in two ways
-<a class="footnote-reference brackets" href="#id43" id="id41" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>. First, the predicted values <span class="math notranslate nohighlight">\(\hat{y}\)</span> are linked to a linear
+<a class="footnote-reference brackets" href="#id41" id="id39" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>. First, the predicted values <span class="math notranslate nohighlight">\(\hat{y}\)</span> are linked to a linear
 combination of the input variables <span class="math notranslate nohighlight">\(X\)</span> via an inverse link function
 <span class="math notranslate nohighlight">\(h\)</span> as</p>
 <div class="math notranslate nohighlight">
 \[\hat{y}(w, X) = h(Xw).\]</div>
 <p>Secondly, the squared loss function is replaced by the unit deviance
 <span class="math notranslate nohighlight">\(d\)</span> of a distribution in the exponential family (or more precisely, a
-reproductive exponential dispersion model (EDM) <a class="footnote-reference brackets" href="#id44" id="id42" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>).</p>
+reproductive exponential dispersion model (EDM) <a class="footnote-reference brackets" href="#id42" id="id40" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>).</p>
 <p>The minimization problem becomes:</p>
 <div class="math notranslate nohighlight">
 \[\min_{w} \frac{1}{2 n_{\text{samples}}} \sum_i d(y_i, \hat{y}_i) + \frac{\alpha}{2} ||w||_2^2,\]</div>
@@ -2101,7 +2145,7 @@ provided, the average becomes a weighted average.</p>
 </div>
 <p>The Probability Density Functions (PDF) of these distributions are illustrated
 in the following figure,</p>
-<figure class="align-center" id="id50">
+<figure class="align-center" id="id48">
 <a class="reference internal image-reference" href="../_images/poisson_gamma_tweedie_distributions.png"><img alt="../_images/poisson_gamma_tweedie_distributions.png" height="350" src="../_images/poisson_gamma_tweedie_distributions.png" width="1200" />
 </a>
 <figcaption>
@@ -2109,7 +2153,7 @@ in the following figure,</p>
 distributions with different mean values (<span class="math notranslate nohighlight">\(\mu\)</span>). Observe the point
 mass at <span class="math notranslate nohighlight">\(Y=0\)</span> for the Poisson distribution and the Tweedie (power=1.5)
 distribution, but not for the Gamma distribution which has a strictly
-positive target domain.</span><a class="headerlink" href="#id50" title="Link to this image">#</a></p>
+positive target domain.</span><a class="headerlink" href="#id48" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p>The Bernoulli distribution is a discrete probability distribution modelling a
@@ -2158,13 +2202,13 @@ namely Business News, Politics and Entertainment news (Categorical).</p></li>
 </div>
 </details><p class="rubric">References</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id43" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id41">10</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id41" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id39">10</a><span class="fn-bracket">]</span></span>
 <p>McCullagh, Peter; Nelder, John (1989). Generalized Linear Models,
 Second Edition. Boca Raton: Chapman and Hall/CRC. ISBN 0-412-31760-5.</p>
 </aside>
-<aside class="footnote brackets" id="id44" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id42">11</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id42" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id40">11</a><span class="fn-bracket">]</span></span>
 <p>Jørgensen, B. (1992). The theory of exponential dispersion models
 and analysis of deviance. Monografias de matemática, no. 51.  See also
 <a class="reference external" href="https://en.wikipedia.org/wiki/Exponential_dispersion_model">Exponential dispersion model.</a></p>
@@ -2241,7 +2285,7 @@ fits a logistic regression model,
 while with <code class="docutils literal notranslate"><span class="pre">loss=&quot;hinge&quot;</span></code> it fits a linear support vector machine (SVM).</p>
 <p>You can refer to the dedicated <a class="reference internal" href="sgd.html#sgd"><span class="std std-ref">Stochastic Gradient Descent</span></a> documentation section for more details.</p>
 <section id="perceptron">
-<span id="id45"></span><h3><span class="section-number">1.1.13.1. </span>Perceptron<a class="headerlink" href="#perceptron" title="Link to this heading">#</a></h3>
+<span id="id43"></span><h3><span class="section-number">1.1.13.1. </span>Perceptron<a class="headerlink" href="#perceptron" title="Link to this heading">#</a></h3>
 <p>The <a class="reference internal" href="generated/sklearn.linear_model.Perceptron.html#sklearn.linear_model.Perceptron" title="sklearn.linear_model.Perceptron"><code class="xref py py-class docutils literal notranslate"><span class="pre">Perceptron</span></code></a> is another simple classification algorithm suitable for
 large scale learning and derives from SGD. By default:</p>
 <ul class="simple">
@@ -2448,9 +2492,9 @@ corrupted data of up to 29.3%.</p>
 </a>
 </figure>
 <p class="sd-card-text">The implementation of <a class="reference internal" href="generated/sklearn.linear_model.TheilSenRegressor.html#sklearn.linear_model.TheilSenRegressor" title="sklearn.linear_model.TheilSenRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TheilSenRegressor</span></code></a> in scikit-learn follows a
-generalization to a multivariate linear regression model <a class="footnote-reference brackets" href="#f1" id="id46" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a> using the
+generalization to a multivariate linear regression model <a class="footnote-reference brackets" href="#f1" id="id44" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a> using the
 spatial median which is a generalization of the median to multiple
-dimensions <a class="footnote-reference brackets" href="#f2" id="id47" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a>.</p>
+dimensions <a class="footnote-reference brackets" href="#f2" id="id45" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a>.</p>
 <p class="sd-card-text">In terms of time and space complexity, Theil-Sen scales according to</p>
 <div class="math notranslate nohighlight">
 \[\binom{n_{\text{samples}}}{n_{\text{subsamples}}}\]</div>
@@ -2461,11 +2505,11 @@ considering only a random subset of all possible combinations.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="f1" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id46">14</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id44">13</a><span class="fn-bracket">]</span></span>
 <p>Xin Dang, Hanxiang Peng, Xueqin Wang and Heping Zhang: <a class="reference external" href="http://home.olemiss.edu/~xdang/papers/MTSE.pdf">Theil-Sen Estimators in a Multiple Linear Regression Model.</a></p>
 </aside>
 <aside class="footnote brackets" id="f2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id47">15</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id45">14</a><span class="fn-bracket">]</span></span>
 <ol class="upperalpha simple" start="20">
 <li><p>Kärkkäinen and S. Äyrämö: <a class="reference external" href="https://users.jyu.fi/~samiayr/pdf/ayramo_eurogen05.pdf">On Computation of Spatial Median for Robust Data Mining.</a></p></li>
 </ol>
@@ -2475,7 +2519,7 @@ considering only a random subset of all possible combinations.</p>
 </div>
 </details></section>
 <section id="huber-regression">
-<span id="id48"></span><h3><span class="section-number">1.1.14.4. </span>Huber Regression<a class="headerlink" href="#huber-regression" title="Link to this heading">#</a></h3>
+<span id="id46"></span><h3><span class="section-number">1.1.14.4. </span>Huber Regression<a class="headerlink" href="#huber-regression" title="Link to this heading">#</a></h3>
 <p>The <a class="reference internal" href="generated/sklearn.linear_model.HuberRegressor.html#sklearn.linear_model.HuberRegressor" title="sklearn.linear_model.HuberRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">HuberRegressor</span></code></a> is different from <a class="reference internal" href="generated/sklearn.linear_model.Ridge.html#sklearn.linear_model.Ridge" title="sklearn.linear_model.Ridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ridge</span></code></a> because it applies a
 linear loss to samples that are defined as outliers by the <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> parameter.
 A sample is classified as an inlier if the absolute error of that sample is
@@ -2490,9 +2534,9 @@ but gives a lesser weight to them.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../auto_examples/linear_model/plot_huber_vs_ridge.html#sphx-glr-auto-examples-linear-model-plot-huber-vs-ridge-py"><span class="std std-ref">HuberRegressor vs Ridge on dataset with strong outliers</span></a></p></li>
 </ul>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-5">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-6">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-5" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-6" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text"><a class="reference internal" href="generated/sklearn.linear_model.HuberRegressor.html#sklearn.linear_model.HuberRegressor" title="sklearn.linear_model.HuberRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">HuberRegressor</span></code></a> minimizes</p>
 <div class="math notranslate nohighlight">
 \[\min_{w, \sigma} {\sum_{i=1}^n\left(\sigma + H_{\epsilon}\left(\frac{X_{i}w - y_{i}}{\sigma}\right)\sigma\right) + \alpha {||w||_2}^2}\]</div>
@@ -2528,7 +2572,7 @@ sample on the basis of how much the residual is greater than a certain threshold
 </section>
 </section>
 <section id="quantile-regression">
-<span id="id49"></span><h2><span class="section-number">1.1.15. </span>Quantile Regression<a class="headerlink" href="#quantile-regression" title="Link to this heading">#</a></h2>
+<span id="id47"></span><h2><span class="section-number">1.1.15. </span>Quantile Regression<a class="headerlink" href="#quantile-regression" title="Link to this heading">#</a></h2>
 <p>Quantile regression estimates the median or other quantiles of <span class="math notranslate nohighlight">\(y\)</span>
 conditional on <span class="math notranslate nohighlight">\(X\)</span>, while ordinary least squares (OLS) estimates the
 conditional mean.</p>
@@ -2555,9 +2599,9 @@ problem. The current implementation is based on
 <ul class="simple">
 <li><p><a class="reference internal" href="../auto_examples/linear_model/plot_quantile_regression.html#sphx-glr-auto-examples-linear-model-plot-quantile-regression-py"><span class="std std-ref">Quantile regression</span></a></p></li>
 </ul>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-6">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-7">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-6" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-7" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">As a linear model, the <a class="reference internal" href="generated/sklearn.linear_model.QuantileRegressor.html#sklearn.linear_model.QuantileRegressor" title="sklearn.linear_model.QuantileRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantileRegressor</span></code></a> gives linear predictions
 <span class="math notranslate nohighlight">\(\hat{y}(w, X) = Xw\)</span> for the <span class="math notranslate nohighlight">\(q\)</span>-th quantile, <span class="math notranslate nohighlight">\(q \in (0, 1)\)</span>.
 The weights or coefficients <span class="math notranslate nohighlight">\(w\)</span> are then found by the following
@@ -2600,9 +2644,9 @@ Cambridge University Press.</p></li>
 on nonlinear functions of the data.  This approach maintains the generally
 fast performance of linear methods, while allowing them to fit a much wider
 range of data.</p>
-<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-7">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="mathematical-details-8">
 <summary class="sd-summary-title sd-card-header">
-<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-7" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<span class="sd-summary-text">Mathematical details<a class="headerlink" href="#mathematical-details-8" title="Link to this dropdown">#</a></span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="sd-card-text">For example, a simple linear regression can be extended by constructing
 <strong>polynomial features</strong> from the coefficients.  In the standard linear
 regression case, you might have a model that looks like this for
