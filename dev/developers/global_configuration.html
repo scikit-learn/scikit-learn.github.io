@@ -748,6 +748,19 @@ admissible seeds on your local machine:</p>
 </pre></div>
 </div>
 </section>
+<section id="sklearn-tests-use-threading-backend-with-high-parallelism">
+<h3><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_USE_THREADING_BACKEND_WITH_HIGH_PARALLELISM</span></code><a class="headerlink" href="#sklearn-tests-use-threading-backend-with-high-parallelism" title="Link to this heading">#</a></h3>
+<p>As background, scikit-learn uses joblib for parallelism. joblib supports
+multiple backends, and in many cases scikit-learn defaults to using a
+process-pool based backend, with parallelism disabled.</p>
+<p>When this environment variable is set to <code class="docutils literal notranslate"><span class="pre">1</span></code>, joblib is globally configured
+with the <code class="docutils literal notranslate"><span class="pre">&quot;threading&quot;</span></code> backend, and joblib’s <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> is set to a high
+number of threads compared to number of cores. This can catch parallelism bugs,
+and potentially some thread-safety bugs, in cases where by default no
+parallelism is used.</p>
+<p>Given the focus on threading, it’s recommended that these be run on
+free-threaded Python builds.</p>
+</section>
 <section id="sklearn-skip-network-tests">
 <h3><code class="docutils literal notranslate"><span class="pre">SKLEARN_SKIP_NETWORK_TESTS</span></code><a class="headerlink" href="#sklearn-skip-network-tests" title="Link to this heading">#</a></h3>
 <p>When this environment variable is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>, tests that need network access
@@ -863,6 +876,7 @@ OpenMP support.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-ci">Testing and CI</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-seed"><code class="docutils literal notranslate"><span class="pre">SKLEARN_SEED</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-tests-global-random-seed"><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_GLOBAL_RANDOM_SEED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-tests-use-threading-backend-with-high-parallelism"><code class="docutils literal notranslate"><span class="pre">SKLEARN_TESTS_USE_THREADING_BACKEND_WITH_HIGH_PARALLELISM</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-skip-network-tests"><code class="docutils literal notranslate"><span class="pre">SKLEARN_SKIP_NETWORK_TESTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-run-float32-tests"><code class="docutils literal notranslate"><span class="pre">SKLEARN_RUN_FLOAT32_TESTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sklearn-warnings-as-errors"><code class="docutils literal notranslate"><span class="pre">SKLEARN_WARNINGS_AS_ERRORS</span></code></a></li>
