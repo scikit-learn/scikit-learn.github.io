@@ -237,9 +237,20 @@ more details.
 Callbacks
 ---------
 
+- |Efficiency| :class:`callback.CallbackContext` objects no longer hold references to their child
+  contexts. Pickling a context no longer serializes the whole callback context tree,
+  which removes a large overhead when estimators with callbacks are fitted with
+  `n_jobs > 1`.
+  By :user:`François Paugam <FrancoisPgm>`. :pr:`35270`
+
 - |API| In :class:`callback.ScoringMonitor`, the option to provide `scoring=None` to have the
   default scorer of the estimator has been removed.
   By :user:`François Paugam <FrancoisPgm>`. :pr:`34590`
+
+- |API| The `__iter__` method of :class:`callback.CallbackContext`, which yielded the context
+  and all its descendants in pre-order, has been removed. Callback contexts no longer
+  hold references to their children.
+  By :user:`François Paugam <FrancoisPgm>`. :pr:`35270`
 
 :mod:`sklearn.calibration`
 --------------------------
