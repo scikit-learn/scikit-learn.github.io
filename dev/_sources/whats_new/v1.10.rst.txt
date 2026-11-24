@@ -793,6 +793,16 @@ Callbacks
   estimators such as random forests with `class_weight="balanced"`.
   By :user:`Tony Bagnall <TonyBagnall>`. :pr:`34983`
 
+- |Fix| :func:`utils.check_array` with `copy=False` and `force_writeable=True` now
+  copies the read-only array that pandas Copy-on-Write returns for a
+  DataFrame or Series, instead of making it writeable.
+  Previously, an estimator with `copy=False` could overwrite the data
+  of other DataFrames sharing memory with the input.
+  Now, with Copy-on-Write enabled (pandas >= 3, or pandas 2 with
+  `pd.options.mode.copy_on_write = True`), the input DataFrame or Series is
+  no longer modified in place and a copy is always made.
+  By :user:`Dea María Léon <deamarialeon>`. :pr:`35469`
+
 - |API| :func:`utils.estimator_checks.check_array_api_input` now takes `X_ns_and_device`
   and `other_ns_and_device` instead of `array_namespace` and `device_name`, so
   that it is able to also cover inputs from mixed namespaces/devices.

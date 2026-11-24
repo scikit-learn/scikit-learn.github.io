@@ -1398,6 +1398,15 @@ By <a class="reference external" href="https://github.com/deamarialeon">Dea Mar�
 string class labels when using dictionary class weights, fixing failures for
 estimators such as random forests with <code class="docutils literal notranslate"><span class="pre">class_weight=&quot;balanced&quot;</span></code>.
 By <a class="reference external" href="https://github.com/TonyBagnall">Tony Bagnall</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/34983">#34983</a></p></li>
+<li><p><span class="raw-html"><span class="badge text-bg-danger">Fix</span></span>  <a class="reference internal" href="../modules/generated/sklearn.utils.check_array.html#sklearn.utils.check_array" title="sklearn.utils.check_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_array</span></code></a> with <code class="docutils literal notranslate"><span class="pre">copy=False</span></code> and <code class="docutils literal notranslate"><span class="pre">force_writeable=True</span></code> now
+copies the read-only array that pandas Copy-on-Write returns for a
+DataFrame or Series, instead of making it writeable.
+Previously, an estimator with <code class="docutils literal notranslate"><span class="pre">copy=False</span></code> could overwrite the data
+of other DataFrames sharing memory with the input.
+Now, with Copy-on-Write enabled (pandas &gt;= 3, or pandas 2 with
+<code class="docutils literal notranslate"><span class="pre">pd.options.mode.copy_on_write</span> <span class="pre">=</span> <span class="pre">True</span></code>), the input DataFrame or Series is
+no longer modified in place and a copy is always made.
+By <a class="reference external" href="https://github.com/deamarialeon">Dea María Léon</a>. <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/pull/35469">#35469</a></p></li>
 <li><p><span class="raw-html"><span class="badge text-bg-warning">API Change</span></span>  <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.estimator_checks.check_array_api_input</span></code> now takes <code class="docutils literal notranslate"><span class="pre">X_ns_and_device</span></code>
 and <code class="docutils literal notranslate"><span class="pre">other_ns_and_device</span></code> instead of <code class="docutils literal notranslate"><span class="pre">array_namespace</span></code> and <code class="docutils literal notranslate"><span class="pre">device_name</span></code>, so
 that it is able to also cover inputs from mixed namespaces/devices.
