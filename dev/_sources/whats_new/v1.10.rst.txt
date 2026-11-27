@@ -549,6 +549,16 @@ Callbacks
   :arxiv:`C.W. Royer, M.J. O'Neill and S.J. Wright (2018) <1803.02924>`.
   By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`34412`
 
+- |Fix| The solvers `"sag"` and `"saga"` of :class:`linear_model.LogisticRegression`,
+  :class:`linear_model.LogisticRegressionCV`, :class:`linear_model.Ridge` and
+  :class:`linear_model.RidgeClassifier` now take `sample_weight` into account for
+  their step size. Before, large sample weights could lead to non-convergence or
+  overflow errors and small sample weights to slow convergence. Fitted models are
+  now invariant under a rescaling of `sample_weight` together with the penalty.
+  As a consequence, results of fits with `sample_weight` may change. Fits without
+  `sample_weight` are not affected.
+  By :user:`Christian Lorentzen <lorentzenchr>`. :pr:`35417`
+
 - |Fix| The line search of the solvers `"newton-cholesky"`, `"newton-cd"` and
   `"newton-cd-gram"` of :class:`linear_model.LogisticRegression`,
   :class:`linear_model.GammaRegressor`, :class:`linear_model.PoissonRegressor` and
